@@ -1,64 +1,77 @@
-import type { DfyPipelineStep, ModuleKey } from "../appFlow/appFlowSlice";
-
 export const dashboardModules: Array<{
-  key: ModuleKey;
+  key: string;
   title: string;
   description: string;
 }> = [
   {
-    key: "businessSetup",
-    title: "Business setup",
+    key: "business_basics",
+    title: "Business basics",
     description: "Define your offer, service area, pricing logic, and operating basics.",
   },
   {
-    key: "vehicleReadiness",
-    title: "Vehicle readiness",
-    description: "Prepare inspection, comfort, safety, and presentation standards.",
+    key: "driver_page_setup",
+    title: "Driver page setup",
+    description: "Prepare the public-facing page that explains your local transport offer.",
   },
   {
-    key: "localMarketing",
-    title: "Local marketing",
-    description: "Build outreach scripts, referral targets, and local trust signals.",
-  },
-  {
-    key: "dispatchSystems",
-    title: "Dispatch systems",
+    key: "booking_tool_setup",
+    title: "Booking tool setup",
     description: "Shape booking, scheduling, payment, and client communication workflows.",
   },
   {
-    key: "launchChecklist",
-    title: "Launch checklist",
-    description: "Confirm assets, first-client actions, and weekly operating rhythm.",
+    key: "first_customer_outreach",
+    title: "First customer outreach",
+    description: "Build outreach scripts, referral targets, and first-client action steps.",
+  },
+  {
+    key: "review_referral_engine",
+    title: "Review referral engine",
+    description: "Create a repeatable system for testimonials, reviews, and referrals.",
+  },
+  {
+    key: "repeat_rider_systems",
+    title: "Repeat rider systems",
+    description: "Set up follow-up habits that turn single rides into recurring clients.",
+  },
+  {
+    key: "b2b_scale_growth",
+    title: "B2B scale growth",
+    description: "Plan partnerships with local businesses, care providers, and organizations.",
   },
 ];
 
 export const dfyPipeline: Array<{
-  key: DfyPipelineStep;
+  step: number;
   title: string;
   description: string;
 }> = [
   {
-    key: "intake",
+    step: 0,
     title: "Intake review",
     description: "Your launch details are reviewed and organized for buildout.",
   },
   {
-    key: "business-buildout",
+    step: 1,
     title: "Business buildout",
     description: "Offer structure, positioning, and operating assets are drafted.",
   },
   {
-    key: "asset-prep",
+    step: 2,
     title: "Asset preparation",
     description: "Client-facing materials and launch checklists are prepared.",
   },
   {
-    key: "launch-handoff",
+    step: 3,
+    title: "Local launch setup",
+    description: "Your launch plan is matched to target city, airports, and local niches.",
+  },
+  {
+    step: 4,
     title: "Launch handoff",
     description: "Your delivery package is reviewed and handed over.",
   },
   {
-    key: "complete",
+    step: 5,
     title: "Complete",
     description: "Your DFY launch package is complete.",
   },

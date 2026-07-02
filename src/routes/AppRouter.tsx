@@ -11,10 +11,10 @@ export function AppRouter() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/standard" replace />} />
-      <Route path="/standard" element={<FunnelPage funnel="standard" />} />
-      <Route path="/women" element={<FunnelPage funnel="women" />} />
-      <Route path="/seniors" element={<FunnelPage funnel="seniors" />} />
-      <Route path="/couples" element={<FunnelPage funnel="couples" />} />
+      <Route path="/standard" element={<FunnelPage />} />
+      <Route path="/women" element={<FunnelPage />} />
+      <Route path="/seniors" element={<FunnelPage />} />
+      <Route path="/couples" element={<FunnelPage />} />
       <Route element={<RequirePurchase />}>
         <Route path="/onboarding" element={<OnboardingPage />} />
       </Route>

@@ -1,11 +1,9 @@
-import { Bus, Languages } from "lucide-react";
+import { Bus } from "lucide-react";
 import { type ReactNode } from "react";
 import { Link, NavLink } from "react-router-dom";
 
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { setLocale, type Locale } from "../../features/appFlow/appFlowSlice";
+import { useTranslation } from "../../features/localization/useTranslation";
 import { cn } from "../../lib/cn";
-import { Button } from "../common/Button";
 
 type AppShellProps = {
   children: ReactNode;
@@ -20,9 +18,7 @@ const navItems = [
 ];
 
 export function AppShell({ children }: AppShellProps) {
-  const dispatch = useAppDispatch();
-  const locale = useAppSelector((state) => state.appFlow.locale);
-  const nextLocale: Locale = locale === "en" ? "es" : "en";
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-950">
@@ -33,7 +29,7 @@ export function AppShell({ children }: AppShellProps) {
               <Bus aria-hidden="true" className="size-5" />
             </span>
             <span>
-              <span className="block text-base font-bold">QuitTheApp</span>
+              <span className="block text-base font-bold">{t.common.appName}</span>
               <span className="block text-xs text-slate-500">Transportation launch system</span>
             </span>
           </Link>
@@ -55,14 +51,6 @@ export function AppShell({ children }: AppShellProps) {
                 </NavLink>
               ))}
             </nav>
-            <Button
-              className="h-9 px-3"
-              onClick={() => dispatch(setLocale(nextLocale))}
-              variant="secondary"
-            >
-              <Languages aria-hidden="true" className="size-4" />
-              {locale.toUpperCase()}
-            </Button>
           </div>
         </div>
       </header>

@@ -1,51 +1,24 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-export type Locale = "en" | "es";
-export type FunnelType = "standard" | "women" | "seniors" | "couples";
-export type ModuleStatus = "locked" | "available" | "in-progress" | "complete";
+import type { RootState } from "../../app/store";
+import type {
+  AppFlowState,
+  DriverProfile,
+  FunnelType,
+  Locale,
+  ModuleStatus,
+} from "./appFlowTypes";
 
-export type DriverProfile = {
-  name: string;
-  email: string;
-  phone: string;
-  city: string;
-  vehicleStatus: string;
-  launchGoal: string;
-};
+export type { AppFlowState, DriverProfile, FunnelType, Locale, ModuleStatus };
 
-export type ModuleKey =
-  | "businessSetup"
-  | "vehicleReadiness"
-  | "localMarketing"
-  | "dispatchSystems"
-  | "launchChecklist";
-
-export type ModuleStatuses = Record<ModuleKey, ModuleStatus>;
-
-export type DfyPipelineStep =
-  | "intake"
-  | "business-buildout"
-  | "asset-prep"
-  | "launch-handoff"
-  | "complete";
-
-type AppFlowState = {
-  locale: Locale;
-  activeFunnel: FunnelType;
-  hasPurchased: boolean;
-  hasDfyUpgrade: boolean;
-  onboardingCompleted: boolean;
-  driverProfile: DriverProfile | null;
-  moduleStatuses: ModuleStatuses;
-  dfyPipelineStep: DfyPipelineStep;
-};
-
-const initialModuleStatuses: ModuleStatuses = {
-  businessSetup: "available",
-  vehicleReadiness: "locked",
-  localMarketing: "locked",
-  dispatchSystems: "locked",
-  launchChecklist: "locked",
+const initialModuleStatuses: Record<string, ModuleStatus> = {
+  business_basics: "not_started",
+  driver_page_setup: "not_started",
+  booking_tool_setup: "not_started",
+  first_customer_outreach: "not_started",
+  review_referral_engine: "not_started",
+  repeat_rider_systems: "not_started",
+  b2b_scale_growth: "not_started",
 };
 
 const initialState: AppFlowState = {
@@ -56,8 +29,11 @@ const initialState: AppFlowState = {
   onboardingCompleted: false,
   driverProfile: null,
   moduleStatuses: initialModuleStatuses,
-  dfyPipelineStep: "intake",
+  dfyPipelineStep: 0,
 };
+
+const moduleStatusCycle: ModuleStatus[] = ["not_started", "in_progress", "complete"];
+const clampDfyPipelineStep = (step: number) => Math.min(5, Math.max(0, step));
 
 const appFlowSlice = createSlice({
   name: "appFlow",
@@ -66,29 +42,41 @@ const appFlowSlice = createSlice({
     setLocale: (state, action: PayloadAction<Locale>) => {
       state.locale = action.payload;
     },
+    toggleLocale: (state) => {
+      state.locale = state.locale === "en" ? "es" : "en";
+    },
     setActiveFunnel: (state, action: PayloadAction<FunnelType>) => {
       state.activeFunnel = action.payload;
     },
     completePurchase: (
       state,
-      action: PayloadAction<{ hasDfyUpgrade?: boolean } | undefined>,
+      action: PayloadAction<{ hasDfyUpgrade: boolean }>,
     ) => {
       state.hasPurchased = true;
-      state.hasDfyUpgrade = Boolean(action.payload?.hasDfyUpgrade);
+      state.hasDfyUpgrade = action.payload.hasDfyUpgrade;
     },
     submitOnboarding: (state, action: PayloadAction<DriverProfile>) => {
       state.driverProfile = action.payload;
       state.onboardingCompleted = true;
-      state.moduleStatuses.businessSetup = "in-progress";
     },
     updateModuleStatus: (
       state,
-      action: PayloadAction<{ module: ModuleKey; status: ModuleStatus }>,
+      action: PayloadAction<{ moduleId: string; status: ModuleStatus }>,
     ) => {
-      state.moduleStatuses[action.payload.module] = action.payload.status;
+      state.moduleStatuses[action.payload.moduleId] = action.payload.status;
     },
-    setDfyPipelineStep: (state, action: PayloadAction<DfyPipelineStep>) => {
-      state.dfyPipelineStep = action.payload;
+    cycleModuleStatus: (state, action: PayloadAction<{ moduleId: string }>) => {
+      const currentStatus = state.moduleStatuses[action.payload.moduleId];
+
+      if (!currentStatus) return;
+
+      const currentIndex = moduleStatusCycle.indexOf(currentStatus);
+      const nextStatus = moduleStatusCycle[(currentIndex + 1) % moduleStatusCycle.length];
+
+      state.moduleStatuses[action.payload.moduleId] = nextStatus;
+    },
+    setDfyPipelineStep: (state, action: PayloadAction<number>) => {
+      state.dfyPipelineStep = clampDfyPipelineStep(action.payload);
     },
     resetDemo: () => initialState,
   },
@@ -96,12 +84,36 @@ const appFlowSlice = createSlice({
 
 export const {
   setLocale,
+  toggleLocale,
   setActiveFunnel,
   completePurchase,
   submitOnboarding,
   updateModuleStatus,
+  cycleModuleStatus,
   setDfyPipelineStep,
   resetDemo,
 } = appFlowSlice.actions;
+
+export const selectLocale = (state: RootState) => state.appFlow.locale;
+export const selectActiveFunnel = (state: RootState) => state.appFlow.activeFunnel;
+export const selectHasPurchased = (state: RootState) => state.appFlow.hasPurchased;
+export const selectHasDfyUpgrade = (state: RootState) => state.appFlow.hasDfyUpgrade;
+export const selectOnboardingCompleted = (state: RootState) =>
+  state.appFlow.onboardingCompleted;
+export const selectDriverProfile = (state: RootState) => state.appFlow.driverProfile;
+export const selectModuleStatuses = (state: RootState) => state.appFlow.moduleStatuses;
+export const selectDfyPipelineStep = (state: RootState) => state.appFlow.dfyPipelineStep;
+export const selectCompletedModuleCount = (state: RootState) =>
+  Object.values(state.appFlow.moduleStatuses).filter((status) => status === "complete")
+    .length;
+export const selectTotalModuleCount = (state: RootState) =>
+  Object.keys(state.appFlow.moduleStatuses).length;
+export const selectLaunchProgressPercentage = (state: RootState) => {
+  const total = selectTotalModuleCount(state);
+
+  if (total === 0) return 0;
+
+  return Math.round((selectCompletedModuleCount(state) / total) * 100);
+};
 
 export default appFlowSlice.reducer;

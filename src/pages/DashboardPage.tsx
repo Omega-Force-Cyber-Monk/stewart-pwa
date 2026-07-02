@@ -6,23 +6,26 @@ import { Badge } from "../components/common/Badge";
 import { Button } from "../components/common/Button";
 import { ProgressBar } from "../components/common/ProgressBar";
 import {
+  cycleModuleStatus,
   resetDemo,
+  selectCompletedModuleCount,
+  selectLaunchProgressPercentage,
   setDfyPipelineStep,
-  updateModuleStatus,
   type ModuleStatus,
 } from "../features/appFlow/appFlowSlice";
 import { dashboardModules, dfyPipeline } from "../features/dashboard/dashboardContent";
+import { useTranslation } from "../features/localization/useTranslation";
 
 const statusTone: Record<ModuleStatus, "neutral" | "success" | "warning" | "accent"> = {
-  locked: "neutral",
-  available: "accent",
-  "in-progress": "warning",
+  not_started: "neutral",
+  in_progress: "warning",
   complete: "success",
 };
 
 export default function DashboardPage() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const {
     activeFunnel,
     dfyPipelineStep,
@@ -30,16 +33,11 @@ export default function DashboardPage() {
     hasDfyUpgrade,
     moduleStatuses,
   } = useAppSelector((state) => state.appFlow);
-
-  const completedModules = Object.values(moduleStatuses).filter(
-    (status) => status === "complete",
-  ).length;
-  const moduleProgress = (completedModules / dashboardModules.length) * 100;
-  const activePipelineIndex = dfyPipeline.findIndex((step) => step.key === dfyPipelineStep);
+  const completedModules = useAppSelector(selectCompletedModuleCount);
+  const moduleProgress = useAppSelector(selectLaunchProgressPercentage);
 
   const markNextPipelineStep = () => {
-    const nextStep = dfyPipeline[Math.min(activePipelineIndex + 1, dfyPipeline.length - 1)];
-    dispatch(setDfyPipelineStep(nextStep.key));
+    dispatch(setDfyPipelineStep(dfyPipelineStep + 1));
   };
 
   const handleReset = () => {
@@ -47,21 +45,27 @@ export default function DashboardPage() {
     navigate("/standard");
   };
 
+  const statusLabels: Record<ModuleStatus, string> = {
+    not_started: t.dashboard.statusNotStarted,
+    in_progress: t.dashboard.statusInProgress,
+    complete: t.dashboard.statusComplete,
+  };
+
   return (
     <main className="mx-auto max-w-7xl px-4 py-10">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <Badge tone={hasDfyUpgrade ? "success" : "accent"}>
-            {hasDfyUpgrade ? "DFY delivery" : "DIY modules"}
+            {hasDfyUpgrade ? t.dashboard.dfyPathTitle : t.dashboard.diyPathTitle}
           </Badge>
-          <h1 className="mt-3 text-3xl font-bold">Launch dashboard</h1>
+          <h1 className="mt-3 text-3xl font-bold">{t.dashboard.title}</h1>
           <p className="mt-2 text-slate-600">
-            {driverProfile?.name || "Driver"}, your {activeFunnel} launch workspace is ready.
+            {driverProfile?.fullName || t.common.appName}, {t.dashboard.subtitle} ({activeFunnel})
           </p>
         </div>
         <Button onClick={handleReset} variant="secondary">
           <RotateCcw aria-hidden="true" className="size-4" />
-          Reset demo
+          {t.common.resetDemo}
         </Button>
       </div>
 
@@ -69,23 +73,21 @@ export default function DashboardPage() {
         <section className="mt-8 rounded-lg border border-slate-200 bg-white p-6">
           <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
-              <h2 className="text-xl font-semibold">DFY delivery pipeline</h2>
-              <p className="mt-1 text-sm text-slate-600">
-                Track the staged buildout for your launch package.
-              </p>
+              <h2 className="text-xl font-semibold">{t.dashboard.dfyPathTitle}</h2>
+              <p className="mt-1 text-sm text-slate-600">{t.dashboard.resourcesLabel}</p>
             </div>
-            <Button onClick={markNextPipelineStep}>Advance pipeline</Button>
+            <Button onClick={markNextPipelineStep}>{t.common.next}</Button>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-5">
-            {dfyPipeline.map((step, index) => {
-              const isActive = step.key === dfyPipelineStep;
-              const isComplete = index < activePipelineIndex;
+          <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-6">
+            {dfyPipeline.map((step) => {
+              const isActive = step.step === dfyPipelineStep;
+              const isComplete = step.step < dfyPipelineStep;
 
               return (
                 <article
                   className="rounded-md border border-slate-200 bg-slate-50 p-4"
-                  key={step.key}
+                  key={step.step}
                 >
                   {isComplete ? (
                     <CheckCircle2 aria-hidden="true" className="size-5 text-emerald-600" />
@@ -106,9 +108,9 @@ export default function DashboardPage() {
         <section className="mt-8 rounded-lg border border-slate-200 bg-white p-6">
           <div className="mb-6">
             <div className="flex items-center justify-between gap-4">
-              <h2 className="text-xl font-semibold">DIY launch modules</h2>
+              <h2 className="text-xl font-semibold">{t.dashboard.diyPathTitle}</h2>
               <span className="text-sm font-medium text-slate-600">
-                {completedModules}/{dashboardModules.length} complete
+                {t.dashboard.progressLabel}: {completedModules}/{dashboardModules.length}
               </span>
             </div>
             <ProgressBar className="mt-4" value={moduleProgress} />
@@ -122,18 +124,15 @@ export default function DashboardPage() {
                 <article className="rounded-md border border-slate-200 p-4" key={module.key}>
                   <div className="flex items-start justify-between gap-3">
                     <h3 className="font-semibold">{module.title}</h3>
-                    <Badge tone={statusTone[status]}>{status}</Badge>
+                    <Badge tone={statusTone[status]}>{statusLabels[status]}</Badge>
                   </div>
                   <p className="mt-2 text-sm text-slate-600">{module.description}</p>
                   <Button
                     className="mt-4 h-9"
-                    disabled={status === "locked"}
-                    onClick={() =>
-                      dispatch(updateModuleStatus({ module: module.key, status: "complete" }))
-                    }
+                    onClick={() => dispatch(cycleModuleStatus({ moduleId: module.key }))}
                     variant="secondary"
                   >
-                    Mark complete
+                    {t.common.next}
                   </Button>
                 </article>
               );
