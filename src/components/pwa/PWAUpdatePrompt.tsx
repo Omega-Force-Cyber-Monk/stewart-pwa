@@ -1,9 +1,11 @@
 import { RefreshCw, Wifi } from "lucide-react";
+import { useState } from "react";
 import { useRegisterSW } from "virtual:pwa-register/react";
 
 import { Button } from "../common/Button";
 
 export function PWAUpdatePrompt() {
+  const [dismissedNotice, setDismissedNotice] = useState<"offline" | "refresh" | null>(null);
   const {
     offlineReady: [offlineReady, setOfflineReady],
     needRefresh: [needRefresh, setNeedRefresh],
@@ -17,15 +19,22 @@ export function PWAUpdatePrompt() {
     },
   });
 
+  const currentNotice = needRefresh ? "refresh" : offlineReady ? "offline" : null;
+
   const close = () => {
+    setDismissedNotice(currentNotice);
     setOfflineReady(false);
     setNeedRefresh(false);
   };
 
-  if (!offlineReady && !needRefresh) return null;
+  if (!currentNotice || dismissedNotice === currentNotice) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-50 rounded-lg border border-slate-200 bg-white p-4 shadow-xl md:left-auto md:w-96">
+    <div
+      aria-live="polite"
+      className="fixed bottom-4 left-4 right-4 z-50 rounded-lg border border-slate-200 bg-white p-4 shadow-xl md:left-auto md:w-96"
+      role="status"
+    >
       <div className="flex gap-3">
         <span className="grid size-9 shrink-0 place-items-center rounded-md bg-cyan-50 text-cyan-700">
           {needRefresh ? (
@@ -36,7 +45,7 @@ export function PWAUpdatePrompt() {
         </span>
         <div>
           <p className="text-sm font-semibold text-slate-950">
-            {needRefresh ? "New version available" : "Ready for offline use"}
+            {needRefresh ? "A new version is available." : "App is ready for offline use."}
           </p>
           <p className="mt-1 text-sm text-slate-600">
             {needRefresh
@@ -48,7 +57,7 @@ export function PWAUpdatePrompt() {
 
       <div className="mt-4 flex justify-end gap-2">
         <Button onClick={close} variant="secondary">
-          Close
+          {needRefresh ? "Later" : "Close"}
         </Button>
         {needRefresh && <Button onClick={() => updateServiceWorker(true)}>Update</Button>}
       </div>

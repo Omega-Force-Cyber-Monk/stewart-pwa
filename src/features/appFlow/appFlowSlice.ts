@@ -33,7 +33,7 @@ const initialState: AppFlowState = {
 };
 
 const moduleStatusCycle: ModuleStatus[] = ["not_started", "in_progress", "complete"];
-const clampDfyPipelineStep = (step: number) => Math.min(5, Math.max(0, step));
+const clampDfyPipelineStep = (step: number) => Math.min(6, Math.max(0, step));
 
 const appFlowSlice = createSlice({
   name: "appFlow",
@@ -61,9 +61,21 @@ const appFlowSlice = createSlice({
     },
     updateModuleStatus: (
       state,
-      action: PayloadAction<{ moduleId: string; status: ModuleStatus }>,
+      action: PayloadAction<{ moduleId: string; status?: ModuleStatus }>,
     ) => {
-      state.moduleStatuses[action.payload.moduleId] = action.payload.status;
+      const currentStatus = state.moduleStatuses[action.payload.moduleId];
+
+      if (!currentStatus) return;
+
+      if (action.payload.status) {
+        state.moduleStatuses[action.payload.moduleId] = action.payload.status;
+        return;
+      }
+
+      const currentIndex = moduleStatusCycle.indexOf(currentStatus);
+      const nextStatus = moduleStatusCycle[(currentIndex + 1) % moduleStatusCycle.length];
+
+      state.moduleStatuses[action.payload.moduleId] = nextStatus;
     },
     cycleModuleStatus: (state, action: PayloadAction<{ moduleId: string }>) => {
       const currentStatus = state.moduleStatuses[action.payload.moduleId];

@@ -1,5 +1,7 @@
 import { CheckCircle2 } from "lucide-react";
 
+import { ResponsiveGrid } from "../layout/ResponsiveGrid";
+import { Section } from "../layout/Section";
 import type { FunnelTheme } from "../../features/funnel/funnelTypes";
 import type { IconCardTranslation } from "../../features/localization/localizationTypes";
 import { cn } from "../../lib/cn";
@@ -12,9 +14,8 @@ type TrustSectionProps = {
 
 export function TrustSection({ cards, theme, title }: TrustSectionProps) {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12">
-      <h2 className="text-center text-3xl font-bold tracking-normal md:text-4xl">{title}</h2>
-      <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <Section title={title} titleAlign="center">
+      <ResponsiveGrid className="mt-8" columns={4} gap="sm">
         {cards.map((card) => (
           <article className={cn("rounded-lg border p-5", theme.cardClassName)} key={card.title}>
             <CheckCircle2 aria-hidden="true" className={cn("size-6", theme.accentClassName)} />
@@ -22,7 +23,7 @@ export function TrustSection({ cards, theme, title }: TrustSectionProps) {
             <p className="mt-2 text-sm leading-6 text-slate-600">{card.description}</p>
           </article>
         ))}
-      </div>
-    </section>
+      </ResponsiveGrid>
+    </Section>
   );
 }

@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
 
+import { PageContainer } from "../components/layout/PageContainer";
+
 export default function NotFoundPage() {
   return (
-    <main className="mx-auto grid min-h-[70vh] max-w-3xl place-items-center px-4 py-10 text-center">
-      <div>
+    <main>
+      <PageContainer className="grid min-h-[70vh] place-items-center py-10 text-center" size="md">
+        <div>
         <p className="text-sm font-semibold text-cyan-700">404</p>
         <h1 className="mt-3 text-3xl font-bold">Page not found</h1>
         <p className="mt-3 text-slate-600">
@@ -15,7 +18,8 @@ export default function NotFoundPage() {
         >
           Back to standard funnel
         </Link>
-      </div>
+        </div>
+      </PageContainer>
     </main>
   );
 }

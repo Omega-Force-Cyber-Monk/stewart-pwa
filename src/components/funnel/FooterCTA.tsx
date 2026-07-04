@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 
 import { Button } from "../common/Button";
+import { Section } from "../layout/Section";
 import type { FunnelTheme } from "../../features/funnel/funnelTypes";
 import { cn } from "../../lib/cn";
 
@@ -14,7 +15,7 @@ type FooterCTAProps = {
 
 export function FooterCTA({ buttonLabel, headline, onCta, text, theme }: FooterCTAProps) {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12">
+    <Section>
       <div className={cn("rounded-lg border p-8 text-center md:p-12", theme.cardClassName)}>
         <h2 className="mx-auto max-w-3xl text-3xl font-bold tracking-normal md:text-5xl">{headline}</h2>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600">{text}</p>
@@ -23,6 +24,6 @@ export function FooterCTA({ buttonLabel, headline, onCta, text, theme }: FooterC
           <ArrowRight aria-hidden="true" className="size-4" />
         </Button>
       </div>
-    </section>
+    </Section>
   );
 }

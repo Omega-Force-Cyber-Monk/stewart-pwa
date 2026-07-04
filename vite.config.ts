@@ -9,29 +9,51 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: "prompt",
-      includeAssets: ["favicon.svg", "icons.svg", "pwa-icon.svg"],
+      includeAssets: [
+        "favicon.svg",
+        "icons.svg",
+        "pwa-icon.svg",
+        "pwa-192x192.svg",
+        "pwa-512x512.svg",
+        "pwa-maskable.svg",
+        "apple-touch-icon.svg",
+      ],
       manifest: {
         name: "QuitTheApp",
         short_name: "QuitTheApp",
-        description: "A transportation business launch system for independent operators.",
+        description: "Transportation Business Launch Platform",
         theme_color: "#0891b2",
         background_color: "#ffffff",
         display: "standalone",
+        orientation: "portrait",
         start_url: "/",
         scope: "/",
         icons: [
           {
-            src: "/pwa-icon.svg",
-            sizes: "any",
+            src: "/pwa-192x192.svg",
+            sizes: "192x192",
+            type: "image/svg+xml",
+          },
+          {
+            src: "/pwa-512x512.svg",
+            sizes: "512x512",
             type: "image/svg+xml",
           },
           {
             src: "/pwa-maskable.svg",
-            sizes: "any",
+            sizes: "512x512",
             type: "image/svg+xml",
             purpose: "any maskable",
           },
+          {
+            src: "/apple-touch-icon.svg",
+            sizes: "180x180",
+            type: "image/svg+xml",
+          },
         ],
+      },
+      devOptions: {
+        enabled: true,
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,webp}"],

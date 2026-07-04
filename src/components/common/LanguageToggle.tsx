@@ -12,7 +12,7 @@ export function LanguageToggle() {
   return (
     <button
       aria-label={t.common.toggleLanguage}
-      className="fixed right-4 top-4 z-50 inline-flex h-10 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
+      className="fixed right-4 top-4 z-50 inline-flex min-h-10 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
       onClick={() => dispatch(toggleLocale())}
       type="button"
     >

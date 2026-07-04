@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 
+import { DashboardCard } from "../layout/DashboardCard";
 import { UploadPreview } from "./UploadPreview";
 import type { DriverProfile } from "../../features/appFlow/appFlowTypes";
 
@@ -32,7 +33,7 @@ export function SubmitCard({ buttonLabel, labels, profile, title }: SubmitCardPr
   const valueOrEmpty = (value: string | undefined) => value?.trim() || labels.emptyValue;
 
   return (
-    <aside className="sticky top-28 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <DashboardCard as="section" className="sticky top-28">
       <h2 className="text-lg font-bold text-slate-950">{title}</h2>
       <div className="mt-5 flex items-center gap-4">
         <UploadPreview emptyLabel={labels.headshot} imageUrl={profile.headshotPreviewUrl} />
@@ -53,6 +54,6 @@ export function SubmitCard({ buttonLabel, labels, profile, title }: SubmitCardPr
         {buttonLabel}
         <ArrowRight aria-hidden="true" className="ml-2 inline size-4" />
       </div>
-    </aside>
+    </DashboardCard>
   );
 }

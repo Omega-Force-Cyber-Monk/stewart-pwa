@@ -1,6 +1,7 @@
 import { CheckCircle2 } from "lucide-react";
 
 import { Button } from "../common/Button";
+import { Section } from "../layout/Section";
 import type { FunnelConfig } from "../../features/funnel/funnelTypes";
 import { cn } from "../../lib/cn";
 
@@ -77,8 +78,7 @@ export function PricingSection({
   whatsIncluded,
 }: PricingSectionProps) {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12" id="pricing">
-      <h2 className="text-center text-3xl font-bold tracking-normal md:text-4xl">{title}</h2>
+    <Section id="pricing" title={title} titleAlign="center">
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_0.8fr] lg:items-start">
         <PricingCard
           buttonLabel={buttonLabel}
@@ -102,6 +102,6 @@ export function PricingSection({
           </div>
         </aside>
       </div>
-    </section>
+    </Section>
   );
 }

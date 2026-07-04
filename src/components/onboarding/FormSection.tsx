@@ -1,5 +1,7 @@
 import { type ReactNode } from "react";
 
+import { DashboardCard } from "../layout/DashboardCard";
+
 type FormSectionProps = {
   children: ReactNode;
   title: string;
@@ -7,9 +9,9 @@ type FormSectionProps = {
 
 export function FormSection({ children, title }: FormSectionProps) {
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <DashboardCard as="section">
       <h2 className="text-lg font-bold text-slate-950">{title}</h2>
       <div className="mt-5 grid gap-4">{children}</div>
-    </section>
+    </DashboardCard>
   );
 }

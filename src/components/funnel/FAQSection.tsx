@@ -1,6 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
+import { Section } from "../layout/Section";
 import type { FunnelTheme } from "../../features/funnel/funnelTypes";
 import type { FaqTranslation } from "../../features/localization/localizationTypes";
 import { cn } from "../../lib/cn";
@@ -15,8 +16,7 @@ export function FAQSection({ faqs, theme, title }: FAQSectionProps) {
   const [openIndex, setOpenIndex] = useState(0);
 
   return (
-    <section className="mx-auto max-w-4xl px-4 py-12">
-      <h2 className="text-center text-3xl font-bold tracking-normal md:text-4xl">{title}</h2>
+    <Section size="md" title={title} titleAlign="center">
       <div className="mt-8 divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white">
         {faqs.map((faq, index) => {
           const isOpen = openIndex === index;
@@ -25,7 +25,7 @@ export function FAQSection({ faqs, theme, title }: FAQSectionProps) {
             <article key={faq.question}>
               <button
                 aria-expanded={isOpen}
-                className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+                className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-cyan-600"
                 onClick={() => setOpenIndex(isOpen ? -1 : index)}
                 type="button"
               >
@@ -40,6 +40,6 @@ export function FAQSection({ faqs, theme, title }: FAQSectionProps) {
           );
         })}
       </div>
-    </section>
+    </Section>
   );
 }

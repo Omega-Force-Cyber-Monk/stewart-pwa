@@ -1,5 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 
+import { ResponsiveGrid } from "../layout/ResponsiveGrid";
+import { Section } from "../layout/Section";
 import type { FunnelTheme } from "../../features/funnel/funnelTypes";
 import type { IconCardTranslation } from "../../features/localization/localizationTypes";
 import { cn } from "../../lib/cn";
@@ -13,9 +15,8 @@ type BenefitsSectionProps = {
 
 export function BenefitsSection({ benefits, icons, theme, title }: BenefitsSectionProps) {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12" id="benefits">
-      <h2 className="max-w-3xl text-3xl font-bold tracking-normal md:text-4xl">{title}</h2>
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <Section id="benefits" title={title}>
+      <ResponsiveGrid className="mt-8" columns={3} gap="sm">
         {benefits.map((benefit, index) => {
           const Icon = icons[index % icons.length];
 
@@ -35,7 +36,7 @@ export function BenefitsSection({ benefits, icons, theme, title }: BenefitsSecti
             </article>
           );
         })}
-      </div>
-    </section>
+      </ResponsiveGrid>
+    </Section>
   );
 }
