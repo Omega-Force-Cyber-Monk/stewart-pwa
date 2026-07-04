@@ -77,16 +77,6 @@ const appFlowSlice = createSlice({
 
       state.moduleStatuses[action.payload.moduleId] = nextStatus;
     },
-    cycleModuleStatus: (state, action: PayloadAction<{ moduleId: string }>) => {
-      const currentStatus = state.moduleStatuses[action.payload.moduleId];
-
-      if (!currentStatus) return;
-
-      const currentIndex = moduleStatusCycle.indexOf(currentStatus);
-      const nextStatus = moduleStatusCycle[(currentIndex + 1) % moduleStatusCycle.length];
-
-      state.moduleStatuses[action.payload.moduleId] = nextStatus;
-    },
     setDfyPipelineStep: (state, action: PayloadAction<number>) => {
       state.dfyPipelineStep = clampDfyPipelineStep(action.payload);
     },
@@ -101,7 +91,6 @@ export const {
   completePurchase,
   submitOnboarding,
   updateModuleStatus,
-  cycleModuleStatus,
   setDfyPipelineStep,
   resetDemo,
 } = appFlowSlice.actions;

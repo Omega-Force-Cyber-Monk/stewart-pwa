@@ -1,6 +1,7 @@
 import { AppShell } from "./components/layout/AppShell";
 import { InstallPrompt } from "./components/pwa/InstallPrompt";
 import { OfflineBanner } from "./components/pwa/OfflineBanner";
+import { PWAUpdatePrompt } from "./components/pwa/PWAUpdatePrompt";
 import { AppRouter } from "./routes/AppRouter";
 
 export default function App() {
@@ -10,7 +11,7 @@ export default function App() {
       <AppShell>
         <AppRouter />
       </AppShell>
-      {/* <PWAUpdatePrompt /> */}
+      <PWAUpdatePrompt />
       <InstallPrompt />
     </>
   );

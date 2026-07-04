@@ -1,8 +1,13 @@
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
-import { Badge } from "../common/Badge";
 import { Button } from "../common/Button";
 import { PageContainer } from "../layout/PageContainer";
+import bannerBg from "../../assets/bannerBg.png";
+import bannerFive from "../../assets/bannerFive.png";
+import bannerFour from "../../assets/bannerFour.png";
+import bannerOne from "../../assets/bannerOne.png";
+import bannerThree from "../../assets/bannerThree.png";
+import bannerTwo from "../../assets/bannerTwo.png";
 import type { FunnelConfig } from "../../features/funnel/funnelTypes";
 import type { FunnelTranslation } from "../../features/localization/localizationTypes";
 import { cn } from "../../lib/cn";
@@ -17,62 +22,56 @@ type HeroSectionProps = {
   onPrimaryCta: () => void;
 };
 
+const bannerImages = [
+  { alt: "Driver seated in a car", className: "w-[120px] sm:w-[150px] lg:w-[164px]", src: bannerOne },
+  { alt: "Airport transportation driver smiling", className: "w-[140px] sm:w-[180px] lg:w-[212px]", src: bannerTwo },
+  { alt: "Women transportation operators at the airport", className: "w-[190px] sm:w-[250px] lg:w-[300px]", src: bannerThree },
+  { alt: "Private driver ready for airport service", className: "w-[140px] sm:w-[180px] lg:w-[212px]", src: bannerFour },
+  { alt: "Driver greeting riders from a car", className: "w-[120px] sm:w-[150px] lg:w-[164px]", src: bannerFive },
+];
+
 export function HeroSection({
-  appName,
   config,
-  copy,
   onPrimaryCta,
-  priceLabel,
-  productName,
-  smallTrustText,
 }: HeroSectionProps) {
   return (
-    <section className="py-12 md:py-16">
-      <PageContainer className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-        <div>
-          <p className={cn("text-sm font-bold uppercase tracking-wide", config.theme.accentClassName)}>
-            {appName}
-          </p>
-          <Badge className={cn("mt-4 w-fit", config.theme.badgeClassName)}>
-            {config.audienceLabel}
-          </Badge>
-
-          <h1 className="mt-6 max-w-4xl text-4xl font-bold leading-tight tracking-normal md:text-6xl">
-            {copy.headline}
+    <section className="relative overflow-hidden bg-white">
+      <PageContainer
+        className="relative flex min-h-[620px] flex-col items-center justify-between bg-cover bg-center pt-12 sm:min-h-[700px] sm:pt-16 lg:min-h-[760px] lg:pt-20"
+        style={{ backgroundImage: `url(${bannerBg})` }}
+      >
+        <div className="mx-auto max-w-5xl text-center">
+          <h1 className="text-4xl font-extrabold leading-tight tracking-normal text-slate-950 sm:text-5xl lg:text-6xl">
+            Launch a{" "}
+            <span className="text-pink-500">Women-Focused</span>{" "}
+            Private Airport Business Built on Trust.
           </h1>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">{copy.subheadline}</p>
+          <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-slate-600 sm:text-base">
+            QuitTheApp helps women operators start a direct booking airport transportation
+            business with the backing of a trusted platform.
+          </p>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Button className={config.theme.buttonClassName} onClick={onPrimaryCta}>
-              {copy.primaryCta}
-              <ArrowRight aria-hidden="true" className="size-4" />
-            </Button>
-            <a
-              className="inline-flex min-h-11 items-center justify-center rounded-md border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-950 transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
-              href="#benefits"
-            >
-              {copy.secondaryCta}
-            </a>
-          </div>
+          <Button
+            className="mt-6 rounded-full bg-pink-500 px-5 text-xs font-bold hover:bg-pink-600 focus-visible:outline-pink-500 sm:px-6 sm:text-sm"
+            onClick={onPrimaryCta}
+          >
+            Launch My Business — ${config.price}
+            <ArrowRight aria-hidden="true" className="size-4" />
+          </Button>
+        </div>
 
-          <div className="mt-6 flex flex-wrap gap-2">
-            {copy.trustSignals.map((signal) => (
-              <span className="inline-flex items-center gap-1 text-sm font-medium text-slate-600" key={signal}>
-                <CheckCircle2 aria-hidden="true" className={cn("size-4", config.theme.accentClassName)} />
-                {signal}
-              </span>
+        <div className="w-full overflow-x-auto pb-6 pt-10 sm:overflow-visible sm:pb-10">
+          <div className="mx-auto flex min-w-max items-end justify-center gap-2 px-2 sm:min-w-0 sm:gap-3 md:gap-4 lg:gap-5">
+            {bannerImages.map((image) => (
+              <img
+                alt={image.alt}
+                className={cn("shrink-0 object-contain", image.className)}
+                key={image.src}
+                src={image.src}
+              />
             ))}
           </div>
         </div>
-
-        <aside className={cn("rounded-lg border p-6", config.theme.cardClassName)}>
-          <p className="text-sm font-semibold text-slate-500">{productName}</p>
-          <p className="mt-3 text-5xl font-bold text-slate-950">${config.price}</p>
-          <p className="mt-2 text-sm font-medium text-slate-600">{priceLabel}</p>
-          <div className={cn("mt-6 rounded-md p-4", config.theme.backgroundAccentClassName)}>
-            <p className="text-sm font-semibold text-slate-950">{smallTrustText}</p>
-          </div>
-        </aside>
       </PageContainer>
     </section>
   );

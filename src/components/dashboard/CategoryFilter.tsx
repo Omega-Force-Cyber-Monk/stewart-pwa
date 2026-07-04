@@ -26,7 +26,7 @@ export function CategoryFilter<T extends string>({
             <button
               aria-pressed={isSelected}
               className={cn(
-                "min-h-9 rounded-md border px-3 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600",
+                "min-h-9 cursor-pointer rounded-md border px-3 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600",
                 isSelected
                   ? "border-cyan-700 bg-cyan-700 text-white"
                   : "border-slate-200 bg-white text-slate-700 hover:border-cyan-200 hover:bg-cyan-50 hover:text-cyan-800",

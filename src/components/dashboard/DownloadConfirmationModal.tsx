@@ -65,7 +65,7 @@ export function DownloadConfirmationModal({
           </div>
           <button
             aria-label="Close resource modal"
-            className="grid size-9 shrink-0 place-items-center rounded-md text-slate-600 transition hover:bg-slate-100 hover:text-slate-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
+            className="grid size-9 shrink-0 cursor-pointer place-items-center rounded-md text-slate-600 transition hover:bg-slate-100 hover:text-slate-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
             onClick={onClose}
             ref={closeButtonRef}
             type="button"

@@ -15,7 +15,7 @@ type FooterCTAProps = {
 
 export function FooterCTA({ buttonLabel, headline, onCta, text, theme }: FooterCTAProps) {
   return (
-    <Section>
+    <Section id="contact">
       <div className={cn("rounded-lg border p-8 text-center md:p-12", theme.cardClassName)}>
         <h2 className="mx-auto max-w-3xl text-3xl font-bold tracking-normal md:text-5xl">{headline}</h2>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600">{text}</p>

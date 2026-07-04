@@ -18,7 +18,7 @@ export function PipelineStageSelector({
         <span className="text-sm font-bold text-slate-950">Current Project Stage</span>
         <select
           aria-label="Current Project Stage"
-          className="h-11 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-cyan-600 focus:ring-2 focus:ring-cyan-100"
+          className="h-11 cursor-pointer rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-cyan-600 focus:ring-2 focus:ring-cyan-100"
           onChange={(event) => onChange(Number(event.target.value))}
           value={currentStep}
         >

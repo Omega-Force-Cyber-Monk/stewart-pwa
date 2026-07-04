@@ -27,7 +27,7 @@ export function CheckoutUpgradeCard({
     >
       <input
         checked={checked}
-        className="mt-1 size-4 accent-cyan-700"
+        className="mt-1 size-4 cursor-pointer accent-cyan-700"
         onChange={(event) => onChange(event.target.checked)}
         type="checkbox"
       />

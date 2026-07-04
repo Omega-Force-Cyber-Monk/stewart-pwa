@@ -133,6 +133,7 @@ export type TranslationDictionary = {
     diyPathTitle: string;
     dfyPathTitle: string;
     progressLabel: string;
+    motivationalMessage: string;
     resourcesLabel: string;
     statusNotStarted: string;
     statusInProgress: string;

@@ -1,4 +1,5 @@
 import { FileText } from "lucide-react";
+import { useState } from "react";
 
 type ResourceListProps = {
   moduleTitle: string;
@@ -6,8 +7,10 @@ type ResourceListProps = {
 };
 
 export function ResourceList({ moduleTitle, resources }: ResourceListProps) {
+  const [openedResource, setOpenedResource] = useState<string | null>(null);
+
   const handleResourceClick = (resource: string) => {
-    console.info(`Placeholder resource opened: ${moduleTitle} - ${resource}`);
+    setOpenedResource(resource);
   };
 
   return (
@@ -16,7 +19,8 @@ export function ResourceList({ moduleTitle, resources }: ResourceListProps) {
         {resources.map((resource) => (
           <li key={resource}>
             <button
-              className="inline-flex h-9 items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 text-xs font-semibold text-slate-700 transition hover:border-cyan-200 hover:bg-cyan-50 hover:text-cyan-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
+              aria-pressed={openedResource === resource}
+              className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 text-xs font-semibold text-slate-700 transition hover:border-cyan-200 hover:bg-cyan-50 hover:text-cyan-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
               onClick={() => handleResourceClick(resource)}
               type="button"
             >

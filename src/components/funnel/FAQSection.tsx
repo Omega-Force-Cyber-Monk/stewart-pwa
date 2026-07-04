@@ -16,7 +16,7 @@ export function FAQSection({ faqs, theme, title }: FAQSectionProps) {
   const [openIndex, setOpenIndex] = useState(0);
 
   return (
-    <Section size="md" title={title} titleAlign="center">
+    <Section id="faq" size="md" title={title} titleAlign="center">
       <div className="mt-8 divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white">
         {faqs.map((faq, index) => {
           const isOpen = openIndex === index;
@@ -25,7 +25,7 @@ export function FAQSection({ faqs, theme, title }: FAQSectionProps) {
             <article key={faq.question}>
               <button
                 aria-expanded={isOpen}
-                className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-cyan-600"
+                className="flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-4 text-left transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-cyan-600"
                 onClick={() => setOpenIndex(isOpen ? -1 : index)}
                 type="button"
               >

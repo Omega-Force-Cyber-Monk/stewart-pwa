@@ -1,10 +1,10 @@
-import { type ReactNode } from "react";
+import { type HTMLAttributes, type ReactNode } from "react";
 
 import { cn } from "../../lib/cn";
 
 type PageContainerSize = "md" | "lg" | "xl" | "full";
 
-type PageContainerProps = {
+type PageContainerProps = HTMLAttributes<HTMLDivElement> & {
   children: ReactNode;
   className?: string;
   size?: PageContainerSize;
@@ -21,9 +21,13 @@ export function PageContainer({
   children,
   className,
   size = "xl",
+  ...props
 }: PageContainerProps) {
   return (
-    <div className={cn("mx-auto w-full px-4 sm:px-6 lg:px-8", sizeClasses[size], className)}>
+    <div
+      className={cn("mx-auto w-full px-4 sm:px-6 lg:px-8", sizeClasses[size], className)}
+      {...props}
+    >
       {children}
     </div>
   );
