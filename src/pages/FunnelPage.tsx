@@ -15,6 +15,7 @@ import { OwnBusinessSection } from "../components/funnel/OwnBusinessSection";
 import { PricingSection } from "../components/funnel/PricingSection";
 import { SiteFooter } from "../components/funnel/SiteFooter";
 import { TrustSection } from "../components/funnel/TrustSection";
+import { WomenBusinessStoriesSection } from "../components/funnel/WomenBusinessStoriesSection";
 import { WomenOperatorsSection } from "../components/funnel/WomenOperatorsSection";
 import {
   selectActiveFunnel,
@@ -56,17 +57,6 @@ export default function FunnelPage() {
       <OwnBusinessSection />
       <WomenOperatorsSection />
       <HowQuitWorksSection />
-      <BenefitsSection
-        benefits={t.marketing.benefits}
-        icons={benefitIcons}
-        theme={config.theme}
-        title={t.marketing.benefitsTitle}
-      />
-      <HowItWorksSection
-        steps={t.marketing.howItWorksSteps}
-        theme={config.theme}
-        title={t.marketing.howItWorksTitle}
-      />
       <PricingSection
         buttonLabel={t.marketing.launchCta}
         comparisonBase={t.marketing.comparisonBase}
@@ -82,11 +72,7 @@ export default function FunnelPage() {
         upgradeName={t.checkout.dfyUpgradeName}
         whatsIncluded={t.marketing.whatsIncluded}
       />
-      <TrustSection
-        cards={t.marketing.trustCards}
-        theme={config.theme}
-        title={t.marketing.trustTitle}
-      />
+      <WomenBusinessStoriesSection />
       <FAQSection faqs={t.marketing.faqs} theme={config.theme} title={t.marketing.faqTitle} />
       <FooterCTA
         buttonLabel={t.marketing.launchCta}

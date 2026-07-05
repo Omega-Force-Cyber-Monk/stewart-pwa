@@ -14,7 +14,7 @@ type TrustSectionProps = {
 
 export function TrustSection({ cards, theme, title }: TrustSectionProps) {
   return (
-    <Section id="success-stories" title={title} titleAlign="center">
+    <Section id="trust" title={title} titleAlign="center">
       <ResponsiveGrid className="mt-8" columns={4} gap="sm">
         {cards.map((card) => (
           <article className={cn("rounded-lg border p-5", theme.cardClassName)} key={card.title}>
