@@ -10,6 +10,7 @@ import { FAQSection } from "../components/funnel/FAQSection";
 import { FooterCTA } from "../components/funnel/FooterCTA";
 import { HeroSection } from "../components/funnel/HeroSection";
 import { HowItWorksSection } from "../components/funnel/HowItWorksSection";
+import { HowQuitWorksSection } from "../components/funnel/HowQuitWorksSection";
 import { OwnBusinessSection } from "../components/funnel/OwnBusinessSection";
 import { PricingSection } from "../components/funnel/PricingSection";
 import { SiteFooter } from "../components/funnel/SiteFooter";
@@ -54,6 +55,7 @@ export default function FunnelPage() {
       <CustomerBuildingSection />
       <OwnBusinessSection />
       <WomenOperatorsSection />
+      <HowQuitWorksSection />
       <BenefitsSection
         benefits={t.marketing.benefits}
         icons={benefitIcons}
