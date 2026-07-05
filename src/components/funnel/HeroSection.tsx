@@ -55,7 +55,7 @@ export function HeroSection({
   onPrimaryCta,
 }: HeroSectionProps) {
   return (
-    <section className="relative overflow-hidden bg-white">
+    <section className="relative overflow-hidden bg-[#F2F2F2]">
       <PageContainer
         className="relative flex min-h-[620px] flex-col items-center justify-between bg-cover bg-center pt-12 sm:min-h-[700px] sm:pt-16 lg:min-h-[760px] lg:pt-20"
         style={{ backgroundImage: `url(${bannerBg})` }}

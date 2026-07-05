@@ -5,6 +5,7 @@ import { Briefcase, Calendar, DollarSign, Plane, ShieldCheck, Users } from "luci
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { CheckoutModal } from "../components/checkout/CheckoutModal";
 import { BenefitsSection } from "../components/funnel/BenefitsSection";
+import { CustomerBuildingSection } from "../components/funnel/CustomerBuildingSection";
 import { FAQSection } from "../components/funnel/FAQSection";
 import { FooterCTA } from "../components/funnel/FooterCTA";
 import { HeroSection } from "../components/funnel/HeroSection";
@@ -47,6 +48,7 @@ export default function FunnelPage() {
         productName={t.checkout.baseProductName}
         smallTrustText={t.marketing.smallTrustText}
       />
+      <CustomerBuildingSection />
       <BenefitsSection
         benefits={t.marketing.benefits}
         icons={benefitIcons}
