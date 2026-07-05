@@ -1,20 +1,16 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Briefcase, Calendar, DollarSign, Plane, ShieldCheck, Users } from "lucide-react";
 
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { CheckoutModal } from "../components/checkout/CheckoutModal";
-import { BenefitsSection } from "../components/funnel/BenefitsSection";
 import { CustomerBuildingSection } from "../components/funnel/CustomerBuildingSection";
 import { FAQSection } from "../components/funnel/FAQSection";
 import { FooterCTA } from "../components/funnel/FooterCTA";
 import { HeroSection } from "../components/funnel/HeroSection";
-import { HowItWorksSection } from "../components/funnel/HowItWorksSection";
 import { HowQuitWorksSection } from "../components/funnel/HowQuitWorksSection";
 import { OwnBusinessSection } from "../components/funnel/OwnBusinessSection";
 import { PricingSection } from "../components/funnel/PricingSection";
 import { SiteFooter } from "../components/funnel/SiteFooter";
-import { TrustSection } from "../components/funnel/TrustSection";
 import { WomenBusinessStoriesSection } from "../components/funnel/WomenBusinessStoriesSection";
 import { WomenOperatorsSection } from "../components/funnel/WomenOperatorsSection";
 import {
@@ -24,8 +20,6 @@ import {
 import { getFunnelConfig, getFunnelTypeFromPathname } from "../features/funnel/funnelUtils";
 import { useTranslation } from "../features/localization/useTranslation";
 import { cn } from "../lib/cn";
-
-const benefitIcons = [Briefcase, Plane, DollarSign, Users, Calendar, ShieldCheck];
 
 export default function FunnelPage() {
   const dispatch = useAppDispatch();
@@ -57,6 +51,7 @@ export default function FunnelPage() {
       <OwnBusinessSection />
       <WomenOperatorsSection />
       <HowQuitWorksSection />
+      <FAQSection faqs={t.marketing.faqs} theme={config.theme} title={t.marketing.faqTitle} />
       <PricingSection
         buttonLabel={t.marketing.launchCta}
         comparisonBase={t.marketing.comparisonBase}
@@ -73,7 +68,7 @@ export default function FunnelPage() {
         whatsIncluded={t.marketing.whatsIncluded}
       />
       <WomenBusinessStoriesSection />
-      <FAQSection faqs={t.marketing.faqs} theme={config.theme} title={t.marketing.faqTitle} />
+      
       <FooterCTA
         buttonLabel={t.marketing.launchCta}
         headline={t.marketing.footerHeadline}
