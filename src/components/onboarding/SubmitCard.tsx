@@ -50,10 +50,13 @@ export function SubmitCard({ buttonLabel, labels, profile, title }: SubmitCardPr
         <SummaryRow label={labels.regionalAirports} value={valueOrEmpty(profile.regionalAirports)} />
         <SummaryRow label={labels.preferredDomain} value={valueOrEmpty(profile.preferredDomain)} />
       </div>
-      <div className="mt-5 rounded-md bg-cyan-50 p-4 text-sm font-semibold text-cyan-900">
+      <button
+        className="mt-5 inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-slate-950 px-4 text-sm font-semibold text-white transition hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-950"
+        type="submit"
+      >
         {buttonLabel}
-        <ArrowRight aria-hidden="true" className="ml-2 inline size-4" />
-      </div>
+        <ArrowRight aria-hidden="true" className="size-4" />
+      </button>
     </DashboardCard>
   );
 }

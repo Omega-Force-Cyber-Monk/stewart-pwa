@@ -1,7 +1,6 @@
 import { motion } from "motion/react";
 import { type FormEvent, useEffect, useRef, useState } from "react";
 
-import { Button } from "../common/Button";
 import { DropzoneField } from "./DropzoneField";
 import { FormProgress } from "./FormProgress";
 import { FormSection } from "./FormSection";
@@ -176,10 +175,6 @@ export function BusinessSetupForm({ onSubmit, t }: BusinessSetupFormProps) {
             />
           </FormSection>
         </motion.div>
-
-        <Button className="h-12 w-full lg:hidden" type="submit">
-          {t.onboarding.initializeDashboard}
-        </Button>
       </div>
 
       <div className="grid gap-4">
@@ -196,9 +191,6 @@ export function BusinessSetupForm({ onSubmit, t }: BusinessSetupFormProps) {
           profile={profile}
           title={t.onboarding.summaryTitle}
         />
-        <Button className="hidden h-12 w-full lg:inline-flex" type="submit">
-          {t.onboarding.initializeDashboard}
-        </Button>
       </div>
     </form>
   );
