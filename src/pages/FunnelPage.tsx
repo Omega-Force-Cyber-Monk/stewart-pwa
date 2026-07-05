@@ -30,7 +30,6 @@ export default function FunnelPage() {
 
   const routeFunnelType = getFunnelTypeFromPathname(location.pathname);
   const config = getFunnelConfig(activeFunnel);
-  const funnelCopy = t.funnel[activeFunnel];
 
   useEffect(() => {
     dispatch(setActiveFunnel(routeFunnelType));
@@ -39,13 +38,8 @@ export default function FunnelPage() {
   return (
     <main className={cn("min-h-[calc(100vh-73px)]", config.theme.pageClassName)}>
       <HeroSection
-        appName={t.common.appName}
         config={config}
-        copy={funnelCopy}
         onPrimaryCta={() => setIsCheckoutOpen(true)}
-        priceLabel={t.marketing.oneTimePayment}
-        productName={t.checkout.baseProductName}
-        smallTrustText={t.marketing.smallTrustText}
       />
       <CustomerBuildingSection />
       <OwnBusinessSection />
@@ -54,28 +48,14 @@ export default function FunnelPage() {
       <FAQSection faqs={t.marketing.faqs} theme={config.theme} title={t.marketing.faqTitle} />
       <PricingSection
         buttonLabel={t.marketing.launchCta}
-        comparisonBase={t.marketing.comparisonBase}
-        comparisonTitle={t.marketing.comparisonTitle}
-        comparisonUpgrade={t.marketing.comparisonUpgrade}
-        config={config}
         includedItems={t.marketing.pricingIncludes}
         oneTimePayment={t.marketing.oneTimePayment}
         onCta={() => setIsCheckoutOpen(true)}
-        optionalUpgradeTitle={t.marketing.optionalUpgradeTitle}
-        productName={t.checkout.baseProductName}
-        title={t.marketing.pricingTitle}
-        upgradeName={t.checkout.dfyUpgradeName}
         whatsIncluded={t.marketing.whatsIncluded}
       />
       <WomenBusinessStoriesSection />
 
-      <FooterCTA
-        buttonLabel={t.marketing.launchCta}
-        headline={t.marketing.footerHeadline}
-        onCta={() => setIsCheckoutOpen(true)}
-        text={t.marketing.footerText}
-        theme={config.theme}
-      />
+      <FooterCTA onCta={() => setIsCheckoutOpen(true)} />
       <SiteFooter />
       <CheckoutModal isOpen={isCheckoutOpen} onClose={() => setIsCheckoutOpen(false)} />
     </main>

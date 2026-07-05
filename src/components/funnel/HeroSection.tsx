@@ -9,16 +9,10 @@ import bannerOne from "../../assets/bannerOne.png";
 import bannerThree from "../../assets/bannerThree.png";
 import bannerTwo from "../../assets/bannerTwo.png";
 import type { FunnelConfig } from "../../features/funnel/funnelTypes";
-import type { FunnelTranslation } from "../../features/localization/localizationTypes";
 import { cn } from "../../lib/cn";
 
 type HeroSectionProps = {
-  appName: string;
   config: FunnelConfig;
-  copy: FunnelTranslation;
-  priceLabel: string;
-  productName: string;
-  smallTrustText: string;
   onPrimaryCta: () => void;
 };
 

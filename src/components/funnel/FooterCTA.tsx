@@ -2,14 +2,9 @@ import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 
 import footerCtaBackground from "../../assets/Frame 478.svg";
-import type { FunnelTheme } from "../../features/funnel/funnelTypes";
 import { PageContainer } from "../layout/PageContainer";
 
 type FooterCTAProps = {
-  buttonLabel: string;
-  headline: string;
-  text: string;
-  theme: FunnelTheme;
   onCta: () => void;
 };
 

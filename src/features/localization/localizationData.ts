@@ -13,64 +13,6 @@ export const localizationData: LocaleDictionary = {
       close: "Close",
       resetDemo: "Reset demo",
     },
-    funnel: {
-      standard: {
-        eyebrow: "Independent driver launch",
-        headline: "Build your transportation business beyond the app.",
-        subheadline:
-          "A guided launch path for drivers who want direct clients, cleaner operations, and a business they control.",
-        primaryCta: "Launch My Business",
-        secondaryCta: "Learn More",
-        benefits: [
-          "Position your private transportation offer",
-          "Prepare your driver page and booking flow",
-          "Launch with a repeatable outreach plan",
-        ],
-        trustSignals: ["Frontend-only demo", "No real payment", "Designed for local operators"],
-      },
-      women: {
-        eyebrow: "Women-led transportation",
-        headline: "Launch a safer, sharper private transportation offer.",
-        subheadline:
-          "Create a client-ready service built around trust, repeat riders, and professional local demand.",
-        primaryCta: "Launch My Business",
-        secondaryCta: "Learn More",
-        benefits: [
-          "Clarify your ideal rider niche",
-          "Package safety and trust signals",
-          "Build a repeatable launch plan",
-        ],
-        trustSignals: ["Women-focused positioning", "No real payment", "Built for independent drivers"],
-      },
-      seniors: {
-        eyebrow: "Senior mobility service",
-        headline: "Create a reliable transportation service for older adults.",
-        subheadline:
-          "Shape your offer for families, caregivers, senior communities, and dependable local mobility.",
-        primaryCta: "Launch My Business",
-        secondaryCta: "Learn More",
-        benefits: [
-          "Define senior-friendly service standards",
-          "Map local referral partners",
-          "Prepare outreach for caregivers and communities",
-        ],
-        trustSignals: ["Senior mobility niche", "No real payment", "Local launch framework"],
-      },
-      couples: {
-        eyebrow: "Couples business launch",
-        headline: "Turn two operators into one coordinated transportation brand.",
-        subheadline:
-          "Map roles, offers, client intake, and launch assets for a family-run transportation business.",
-        primaryCta: "Launch My Business",
-        secondaryCta: "Learn More",
-        benefits: [
-          "Clarify each partner's role",
-          "Build one shared launch workflow",
-          "Create a coordinated rider experience",
-        ],
-        trustSignals: ["Couples launch path", "No real payment", "Shared operating plan"],
-      },
-    },
     checkout: {
       title: "Mock checkout",
       secureCheckout: "Secure Checkout",
@@ -94,51 +36,6 @@ export const localizationData: LocaleDictionary = {
     },
     marketing: {
       launchCta: "Launch My Business",
-      learnMoreCta: "Learn More",
-      smallTrustText: "Frontend-only preview. Checkout opens in Phase 7.",
-      benefitsTitle: "Everything you need to move from app driver to business owner.",
-      benefits: [
-        {
-          title: "Business launch plan",
-          description: "Turn your transportation idea into a clear offer, service area, and launch path.",
-        },
-        {
-          title: "Airport-ready positioning",
-          description: "Create private transfer offers for riders who need reliable airport service.",
-        },
-        {
-          title: "Revenue ownership",
-          description: "Build direct customer relationships instead of depending only on platform demand.",
-        },
-        {
-          title: "Repeat rider systems",
-          description: "Set up simple follow-up and referral habits that keep good clients coming back.",
-        },
-        {
-          title: "Booking guidance",
-          description: "Understand the tools and workflows needed to accept and manage private rides.",
-        },
-        {
-          title: "Trust-first service",
-          description: "Package your professionalism, safety, and reliability into a client-ready offer.",
-        },
-      ],
-      howItWorksTitle: "How it works",
-      howItWorksSteps: [
-        {
-          title: "Purchase QuitTheApp",
-          description: "Start with the launch system and choose whether you want the optional setup upgrade later.",
-        },
-        {
-          title: "Complete business setup",
-          description: "Use the guided resources to define your offer, driver page, booking flow, and outreach plan.",
-        },
-        {
-          title: "Launch your independent transportation business",
-          description: "Begin contacting direct clients and building a repeatable local transportation asset.",
-        },
-      ],
-      pricingTitle: "Simple launch pricing",
       oneTimePayment: "One-time payment",
       whatsIncluded: "What's Included",
       pricingIncludes: [
@@ -148,29 +45,6 @@ export const localizationData: LocaleDictionary = {
         "Customer Acquisition Resources",
         "Progress Dashboard",
         "Booking System Guidance",
-      ],
-      optionalUpgradeTitle: "Optional Upgrade",
-      comparisonTitle: "Simple comparison",
-      comparisonBase: "Base system: DIY launch resources and dashboard guidance.",
-      comparisonUpgrade: "Done-For-You Setup: additional setup support for faster implementation.",
-      trustTitle: "Built for independent operators",
-      trustCards: [
-        {
-          title: "Own 100% of Your Revenue",
-          description: "Create direct relationships and keep more control over pricing and client experience.",
-        },
-        {
-          title: "No Monthly Subscription",
-          description: "Start with a one-time launch system instead of another recurring platform bill.",
-        },
-        {
-          title: "Built for Independent Drivers",
-          description: "Designed around airport transfers, local mobility, and private rider relationships.",
-        },
-        {
-          title: "Launch Faster with Proven Systems",
-          description: "Use guided templates and workflows instead of inventing every step from scratch.",
-        },
       ],
       faqTitle: "Frequently asked questions",
       faqs: [
@@ -199,8 +73,6 @@ export const localizationData: LocaleDictionary = {
           answer: "The optional upgrade represents extra setup support. Checkout and delivery logic are not implemented yet.",
         },
       ],
-      footerHeadline: "Ready to build your transportation business?",
-      footerText: "Start with a focused launch system built for drivers who want more control, better clients, and a real operating path.",
     },
     onboarding: {
       title: "Tell us about your transportation launch.",
@@ -262,64 +134,6 @@ export const localizationData: LocaleDictionary = {
       close: "Cerrar",
       resetDemo: "Reiniciar demo",
     },
-    funnel: {
-      standard: {
-        eyebrow: "Lanzamiento para conductores independientes",
-        headline: "Construye tu negocio de transporte mas alla de la app.",
-        subheadline:
-          "Un camino guiado para conductores que quieren clientes directos, operaciones mas claras y un negocio bajo su control.",
-        primaryCta: "Lanzar mi negocio",
-        secondaryCta: "Aprender mas",
-        benefits: [
-          "Define tu oferta de transporte privado",
-          "Prepara tu pagina de conductor y flujo de reservas",
-          "Lanza con un plan repetible de contacto",
-        ],
-        trustSignals: ["Demo solo frontend", "Sin pago real", "Pensado para operadores locales"],
-      },
-      women: {
-        eyebrow: "Transporte liderado por mujeres",
-        headline: "Lanza una oferta de transporte privado mas segura y profesional.",
-        subheadline:
-          "Crea un servicio listo para clientes basado en confianza, pasajeros recurrentes y demanda local.",
-        primaryCta: "Lanzar mi negocio",
-        secondaryCta: "Aprender mas",
-        benefits: [
-          "Aclara tu nicho ideal de pasajeros",
-          "Presenta senales de seguridad y confianza",
-          "Construye un plan de lanzamiento repetible",
-        ],
-        trustSignals: ["Enfoque para mujeres", "Sin pago real", "Hecho para conductoras independientes"],
-      },
-      seniors: {
-        eyebrow: "Servicio de movilidad para adultos mayores",
-        headline: "Crea un servicio de transporte confiable para adultos mayores.",
-        subheadline:
-          "Adapta tu oferta para familias, cuidadores, comunidades de adultos mayores y movilidad local confiable.",
-        primaryCta: "Lanzar mi negocio",
-        secondaryCta: "Aprender mas",
-        benefits: [
-          "Define estandares de servicio para adultos mayores",
-          "Mapea socios de referencia locales",
-          "Prepara contacto para cuidadores y comunidades",
-        ],
-        trustSignals: ["Nicho de movilidad senior", "Sin pago real", "Marco de lanzamiento local"],
-      },
-      couples: {
-        eyebrow: "Lanzamiento de negocio para parejas",
-        headline: "Convierte dos operadores en una marca de transporte coordinada.",
-        subheadline:
-          "Organiza roles, ofertas, ingreso de clientes y activos de lanzamiento para un negocio familiar de transporte.",
-        primaryCta: "Lanzar mi negocio",
-        secondaryCta: "Aprender mas",
-        benefits: [
-          "Aclara el rol de cada persona",
-          "Construye un flujo de lanzamiento compartido",
-          "Crea una experiencia coordinada para pasajeros",
-        ],
-        trustSignals: ["Ruta para parejas", "Sin pago real", "Plan operativo compartido"],
-      },
-    },
     checkout: {
       title: "Pago simulado",
       secureCheckout: "Pago seguro",
@@ -343,51 +157,6 @@ export const localizationData: LocaleDictionary = {
     },
     marketing: {
       launchCta: "Lanzar mi negocio",
-      learnMoreCta: "Aprender mas",
-      smallTrustText: "Vista previa solo frontend. El pago llega en la Fase 7.",
-      benefitsTitle: "Todo lo que necesitas para pasar de conductor de app a dueno de negocio.",
-      benefits: [
-        {
-          title: "Plan de lanzamiento",
-          description: "Convierte tu idea de transporte en una oferta clara, una zona de servicio y una ruta de lanzamiento.",
-        },
-        {
-          title: "Posicionamiento para aeropuertos",
-          description: "Crea ofertas de traslados privados para pasajeros que necesitan servicio confiable al aeropuerto.",
-        },
-        {
-          title: "Control de ingresos",
-          description: "Construye relaciones directas con clientes en vez de depender solo de la demanda de plataformas.",
-        },
-        {
-          title: "Sistemas para pasajeros recurrentes",
-          description: "Configura seguimiento y referidos simples para que buenos clientes vuelvan.",
-        },
-        {
-          title: "Guia de reservas",
-          description: "Entiende las herramientas y flujos necesarios para aceptar y administrar viajes privados.",
-        },
-        {
-          title: "Servicio basado en confianza",
-          description: "Presenta tu profesionalismo, seguridad y confiabilidad en una oferta lista para clientes.",
-        },
-      ],
-      howItWorksTitle: "Como funciona",
-      howItWorksSteps: [
-        {
-          title: "Compra QuitTheApp",
-          description: "Comienza con el sistema de lanzamiento y decide despues si quieres la mejora opcional de configuracion.",
-        },
-        {
-          title: "Completa la configuracion del negocio",
-          description: "Usa los recursos guiados para definir tu oferta, pagina de conductor, reservas y plan de contacto.",
-        },
-        {
-          title: "Lanza tu negocio independiente de transporte",
-          description: "Empieza a contactar clientes directos y a construir un activo local de transporte repetible.",
-        },
-      ],
-      pricingTitle: "Precio simple de lanzamiento",
       oneTimePayment: "Pago unico",
       whatsIncluded: "Lo que incluye",
       pricingIncludes: [
@@ -397,29 +166,6 @@ export const localizationData: LocaleDictionary = {
         "Recursos para conseguir clientes",
         "Panel de progreso",
         "Guia para sistema de reservas",
-      ],
-      optionalUpgradeTitle: "Mejora opcional",
-      comparisonTitle: "Comparacion simple",
-      comparisonBase: "Sistema base: recursos DIY y guia en el panel.",
-      comparisonUpgrade: "Configuracion Done-For-You: soporte adicional para implementar mas rapido.",
-      trustTitle: "Creado para operadores independientes",
-      trustCards: [
-        {
-          title: "Conserva el 100% de tus ingresos",
-          description: "Crea relaciones directas y controla mejor tus precios y la experiencia del cliente.",
-        },
-        {
-          title: "Sin suscripcion mensual",
-          description: "Comienza con un sistema de lanzamiento de pago unico, no otra factura recurrente.",
-        },
-        {
-          title: "Hecho para conductores independientes",
-          description: "Pensado para traslados al aeropuerto, movilidad local y relaciones con pasajeros privados.",
-        },
-        {
-          title: "Lanza mas rapido con sistemas probados",
-          description: "Usa plantillas y flujos guiados en vez de inventar cada paso desde cero.",
-        },
       ],
       faqTitle: "Preguntas frecuentes",
       faqs: [
@@ -448,8 +194,6 @@ export const localizationData: LocaleDictionary = {
           answer: "La mejora opcional representa soporte adicional de configuracion. El pago y la entrega aun no estan implementados.",
         },
       ],
-      footerHeadline: "Listo para construir tu negocio de transporte?",
-      footerText: "Comienza con un sistema de lanzamiento enfocado para conductores que quieren mas control, mejores clientes y una ruta real de operacion.",
     },
     onboarding: {
       title: "Cuentanos sobre tu lanzamiento de transporte.",

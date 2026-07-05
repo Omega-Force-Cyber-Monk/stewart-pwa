@@ -1,22 +1,13 @@
 import { motion } from "motion/react";
 
-import type { FunnelConfig } from "../../features/funnel/funnelTypes";
 import { Button } from "../common/Button";
 import { BASE_PRICE, formatPrice } from "../checkout/checkoutUtils";
 import { PageContainer } from "../layout/PageContainer";
 
 type PricingSectionProps = {
   buttonLabel: string;
-  comparisonBase: string;
-  comparisonTitle: string;
-  comparisonUpgrade: string;
-  config: FunnelConfig;
   includedItems: string[];
   oneTimePayment: string;
-  optionalUpgradeTitle: string;
-  productName: string;
-  title: string;
-  upgradeName: string;
   whatsIncluded: string;
   onCta: () => void;
 };

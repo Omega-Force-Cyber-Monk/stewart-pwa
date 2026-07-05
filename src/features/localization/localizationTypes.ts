@@ -1,25 +1,5 @@
 import type { Locale } from "../appFlow/appFlowTypes";
 
-export type FunnelTranslation = {
-  eyebrow: string;
-  headline: string;
-  subheadline: string;
-  primaryCta: string;
-  secondaryCta: string;
-  benefits: string[];
-  trustSignals: string[];
-};
-
-export type IconCardTranslation = {
-  title: string;
-  description: string;
-};
-
-export type StepTranslation = {
-  title: string;
-  description: string;
-};
-
 export type FaqTranslation = {
   question: string;
   answer: string;
@@ -36,13 +16,6 @@ export type TranslationDictionary = {
     next: string;
     close: string;
     resetDemo: string;
-  };
-
-  funnel: {
-    standard: FunnelTranslation;
-    women: FunnelTranslation;
-    seniors: FunnelTranslation;
-    couples: FunnelTranslation;
   };
 
   checkout: {
@@ -69,26 +42,11 @@ export type TranslationDictionary = {
 
   marketing: {
     launchCta: string;
-    learnMoreCta: string;
-    smallTrustText: string;
-    benefitsTitle: string;
-    benefits: IconCardTranslation[];
-    howItWorksTitle: string;
-    howItWorksSteps: StepTranslation[];
-    pricingTitle: string;
     oneTimePayment: string;
     whatsIncluded: string;
     pricingIncludes: string[];
-    optionalUpgradeTitle: string;
-    comparisonTitle: string;
-    comparisonBase: string;
-    comparisonUpgrade: string;
-    trustTitle: string;
-    trustCards: IconCardTranslation[];
     faqTitle: string;
     faqs: FaqTranslation[];
-    footerHeadline: string;
-    footerText: string;
   };
 
   onboarding: {

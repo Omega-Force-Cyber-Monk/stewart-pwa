@@ -150,27 +150,32 @@ export default function SuperAdminDashboardPage() {
   const driverProfile = useAppSelector(selectDriverProfile);
   const hasDfyUpgrade = useAppSelector(selectHasDfyUpgrade);
 
-  const currentDemoOwner: BusinessOwner | null = driverProfile
-    ? {
-        id: "owner-current-demo",
-        ownerName: driverProfile.fullName,
-        businessName: `${driverProfile.fullName} Transportation`,
-        city: driverProfile.targetCity,
-        airports: driverProfile.regionalAirports,
-        domain: getDriverDisplayDomain(driverProfile),
-        plan: hasDfyUpgrade ? "DFY" : "DIY",
-        status: "onboarding",
-        websiteStatus: "draft",
-        acuityStatus: "not_connected",
-        launchProgress: 58,
-        supportTickets: 0,
-        joinedAt: "2026-07-05",
-      }
-    : null;
+  const currentDemoOwner: BusinessOwner | null = useMemo(
+    () =>
+      driverProfile
+        ? {
+            id: "owner-current-demo",
+            ownerName: driverProfile.fullName,
+            businessName: `${driverProfile.fullName} Transportation`,
+            city: driverProfile.targetCity,
+            airports: driverProfile.regionalAirports,
+            domain: getDriverDisplayDomain(driverProfile),
+            plan: hasDfyUpgrade ? "DFY" : "DIY",
+            status: "onboarding",
+            websiteStatus: "draft",
+            acuityStatus: "not_connected",
+            launchProgress: 58,
+            supportTickets: 0,
+            joinedAt: "2026-07-05",
+          }
+        : null,
+    [driverProfile, hasDfyUpgrade],
+  );
 
-  const owners = currentDemoOwner
-    ? [currentDemoOwner, ...mockBusinessOwners]
-    : mockBusinessOwners;
+  const owners = useMemo(
+    () => (currentDemoOwner ? [currentDemoOwner, ...mockBusinessOwners] : mockBusinessOwners),
+    [currentDemoOwner],
+  );
 
   const filteredOwners = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
