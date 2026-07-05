@@ -14,6 +14,7 @@ import { OwnBusinessSection } from "../components/funnel/OwnBusinessSection";
 import { PricingSection } from "../components/funnel/PricingSection";
 import { SiteFooter } from "../components/funnel/SiteFooter";
 import { TrustSection } from "../components/funnel/TrustSection";
+import { WomenOperatorsSection } from "../components/funnel/WomenOperatorsSection";
 import {
   selectActiveFunnel,
   setActiveFunnel,
@@ -52,6 +53,7 @@ export default function FunnelPage() {
       />
       <CustomerBuildingSection />
       <OwnBusinessSection />
+      <WomenOperatorsSection />
       <BenefitsSection
         benefits={t.marketing.benefits}
         icons={benefitIcons}
