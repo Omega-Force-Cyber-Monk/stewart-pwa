@@ -47,7 +47,7 @@ const featureCards: FeatureCard[] = [
 
 export function CustomerBuildingSection() {
   return (
-    <section className="bg-[#F2F2F2] py-12 sm:py-16">
+    <section className="bg-[#F2F2F2] py-12 sm:py-16" id="whats-included">
       <PageContainer size="lg">
         <div className="rounded-[24px] bg-[linear-gradient(180deg,#FFF_0%,rgba(255,217,227,0.68)_50%,#F2F2F2_100%)] p-5 shadow-sm ring-1 ring-pink-100 sm:p-8 lg:py-10">
           <div className="text-center">

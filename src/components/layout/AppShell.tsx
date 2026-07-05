@@ -15,7 +15,7 @@ type AppShellProps = {
 
 const baseNavItems = [
   { label: "Home", to: "/standard" },
-  { label: "What's Included", to: "/standard#benefits" },
+  { label: "What's Included", to: "/standard#whats-included" },
   { label: "Success Stories", to: "/standard#success-stories" },
   { label: "FAQ", to: "/standard#faq" },
   { label: "Contact", to: "/standard#contact" },
