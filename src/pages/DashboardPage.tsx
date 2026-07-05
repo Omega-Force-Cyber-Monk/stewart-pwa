@@ -1,5 +1,5 @@
-import { RotateCcw } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { ExternalLink, Globe2, RotateCcw } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { Badge } from "../components/common/Badge";
@@ -26,6 +26,8 @@ import {
 import { diyModules } from "../features/dashboard/dashboardData";
 import { useTranslation } from "../features/localization/useTranslation";
 import { clearPersistedState } from "../app/persistStore";
+import { DashboardCard } from "../components/layout/DashboardCard";
+import { getDriverDisplayDomain, getDriverSitePath } from "../lib/driverSite";
 
 export default function DashboardPage() {
   const dispatch = useAppDispatch();
@@ -39,6 +41,8 @@ export default function DashboardPage() {
   const moduleStatuses = useAppSelector(selectModuleStatuses);
   const percentageCompleted = useAppSelector(selectLaunchProgressPercentage);
   const totalModules = diyModules.length;
+  const driverSitePath = getDriverSitePath(driverProfile);
+  const driverDisplayDomain = getDriverDisplayDomain(driverProfile);
 
   const handleReset = () => {
     dispatch(resetDemo());
@@ -70,6 +74,31 @@ export default function DashboardPage() {
             {t.common.resetDemo}
           </Button>
         </div>
+
+        <DashboardCard
+          as="section"
+          className="mt-8 flex flex-col gap-4 border-pink-100 bg-pink-50/60 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <div className="flex gap-4">
+            <span className="grid size-11 shrink-0 place-items-center rounded-full bg-white text-[#EE389C]">
+              <Globe2 aria-hidden="true" className="size-5" />
+            </span>
+            <div>
+              <h2 className="text-lg font-bold text-slate-950">Personalized customer website</h2>
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                Your public booking page is available at{" "}
+                <span className="font-semibold text-slate-950">{driverDisplayDomain}</span>.
+              </p>
+            </div>
+          </div>
+          <Link
+            className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-md bg-slate-950 px-4 text-sm font-semibold text-white transition hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-950"
+            to={driverSitePath}
+          >
+            View customer page
+            <ExternalLink aria-hidden="true" className="size-4" />
+          </Link>
+        </DashboardCard>
 
         {hasDfyUpgrade ? (
           <DFYPipeline
