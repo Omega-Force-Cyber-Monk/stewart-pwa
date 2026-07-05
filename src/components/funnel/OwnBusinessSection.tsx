@@ -21,7 +21,7 @@ const businessBenefits = [
 
 export function OwnBusinessSection() {
   return (
-    <section className="bg-[#F2F2F2] py-14 sm:py-16">
+    <section className="bg-[#F2F2F2] py-12 sm:py-16">
       <PageContainer size="lg">
         <div className=" text-center">
           <h2

@@ -40,7 +40,7 @@ export function FooterCTA({ onCta }: FooterCTAProps) {
               onClick={onCta}
               type="button"
             >
-              Start My Women-Focused Business — $495
+              Launch My Business — $495
               <ArrowRight aria-hidden="true" className="size-4" />
             </button>
           </div>

@@ -28,7 +28,7 @@ export function FAQSection({ faqs, theme, title }: FAQSectionProps) {
 
   return (
     <section className="bg-[#F2F2F2] py-12 sm:py-16" id="faq">
-      <PageContainer className="lg:px-0" size="lg">
+      <PageContainer size="lg">
         <div className="grid gap-8 rounded-[24px] bg-white px-6 py-12 sm:px-10 lg:grid-cols-[0.78fr_1.22fr] lg:px-[112px] lg:py-[72px]">
           <div>
             <h2

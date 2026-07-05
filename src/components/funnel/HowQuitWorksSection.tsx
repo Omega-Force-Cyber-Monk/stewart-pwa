@@ -161,7 +161,7 @@ function WaveLine() {
 export function HowQuitWorksSection() {
   return (
     <section className="bg-[#F2F2F2] py-12 sm:py-16">
-      <PageContainer className="lg:px-0" size="lg">
+      <PageContainer size="lg">
         <motion.div
           className="relative overflow-hidden rounded-[24px] border border-pink-300/80 bg-[#f8eef2] p-6 sm:p-10 lg:min-h-[450px] lg:p-14"
           initial={{ opacity: 0, y: 24 }}

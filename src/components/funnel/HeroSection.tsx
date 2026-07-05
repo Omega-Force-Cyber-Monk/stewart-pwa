@@ -58,6 +58,7 @@ export function HeroSection({
     <section className="relative overflow-hidden bg-[#F2F2F2]">
       <PageContainer
         className="relative flex min-h-[620px] flex-col items-center justify-between bg-cover bg-center pt-12 sm:min-h-[700px] sm:pt-16 lg:min-h-[760px] lg:pt-20"
+        size="lg"
         style={{ backgroundImage: `url(${bannerBg})` }}
       >
         <div className="mx-auto max-w-5xl text-center">

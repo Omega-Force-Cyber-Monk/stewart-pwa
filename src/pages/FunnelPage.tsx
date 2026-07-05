@@ -68,7 +68,7 @@ export default function FunnelPage() {
         whatsIncluded={t.marketing.whatsIncluded}
       />
       <WomenBusinessStoriesSection />
-      
+
       <FooterCTA
         buttonLabel={t.marketing.launchCta}
         headline={t.marketing.footerHeadline}

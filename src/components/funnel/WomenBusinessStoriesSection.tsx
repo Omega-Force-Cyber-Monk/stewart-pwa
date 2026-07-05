@@ -123,10 +123,12 @@ export function WomenBusinessStoriesSection() {
         </motion.div>
       </PageContainer>
 
-      <div className="mt-11 grid gap-5">
-        <StoryRow direction="left" stories={stories} />
-        <StoryRow direction="right" stories={stories.slice().reverse()} />
-      </div>
+      <PageContainer className="mt-11" size="lg">
+        <div className="grid gap-5 overflow-hidden">
+          <StoryRow direction="left" stories={stories} />
+          <StoryRow direction="right" stories={stories.slice().reverse()} />
+        </div>
+      </PageContainer>
     </section>
   );
 }

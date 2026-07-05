@@ -58,8 +58,8 @@ export function PricingSection({
   const paymentLabel = oneTimePayment.replace("-", " ");
 
   return (
-    <section className="bg-[#F2F2F2] py-8 sm:py-12" id="pricing">
-      <PageContainer className="lg:px-0" size="lg">
+    <section className="bg-[#F2F2F2] py-12 sm:py-16" id="pricing">
+      <PageContainer size="lg">
         <motion.div
           className="rounded-[24px] bg-white px-6 py-11 sm:px-10 lg:px-[48px] lg:py-[54px]"
           initial={{ opacity: 0, y: 24 }}
