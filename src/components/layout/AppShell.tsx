@@ -19,6 +19,7 @@ const baseNavItems = [
   { label: "Success Stories", to: "/standard#success-stories" },
   { label: "FAQ", to: "/standard#faq" },
   { label: "Contact", to: "/standard#contact" },
+  { label: "Admin", to: "/admin" },
 ];
 
 export function AppShell({ children }: AppShellProps) {

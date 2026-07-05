@@ -7,6 +7,7 @@ import FunnelPage from "../pages/FunnelPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import OnboardingPage from "../pages/OnboardingPage";
 import PersonalizedDriverPage from "../pages/PersonalizedDriverPage";
+import SuperAdminDashboardPage from "../pages/SuperAdminDashboardPage";
 
 export function AppRouter() {
   return (
@@ -23,6 +24,7 @@ export function AppRouter() {
         <Route path="/dashboard" element={<DashboardPage />} />
       </Route>
       <Route path="/site/:username" element={<PersonalizedDriverPage />} />
+      <Route path="/admin" element={<SuperAdminDashboardPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
