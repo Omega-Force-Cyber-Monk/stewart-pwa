@@ -10,7 +10,9 @@ import { FAQSection } from "../components/funnel/FAQSection";
 import { FooterCTA } from "../components/funnel/FooterCTA";
 import { HeroSection } from "../components/funnel/HeroSection";
 import { HowItWorksSection } from "../components/funnel/HowItWorksSection";
+import { OwnBusinessSection } from "../components/funnel/OwnBusinessSection";
 import { PricingSection } from "../components/funnel/PricingSection";
+import { SiteFooter } from "../components/funnel/SiteFooter";
 import { TrustSection } from "../components/funnel/TrustSection";
 import {
   selectActiveFunnel,
@@ -49,6 +51,7 @@ export default function FunnelPage() {
         smallTrustText={t.marketing.smallTrustText}
       />
       <CustomerBuildingSection />
+      <OwnBusinessSection />
       <BenefitsSection
         benefits={t.marketing.benefits}
         icons={benefitIcons}
@@ -88,6 +91,7 @@ export default function FunnelPage() {
         text={t.marketing.footerText}
         theme={config.theme}
       />
+      <SiteFooter />
       <CheckoutModal isOpen={isCheckoutOpen} onClose={() => setIsCheckoutOpen(false)} />
     </main>
   );
