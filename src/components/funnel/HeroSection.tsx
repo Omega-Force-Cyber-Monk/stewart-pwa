@@ -23,11 +23,31 @@ type HeroSectionProps = {
 };
 
 const bannerImages = [
-  { alt: "Driver seated in a car", className: "w-[120px] sm:w-[150px] lg:w-[164px]", src: bannerOne },
-  { alt: "Airport transportation driver smiling", className: "w-[140px] sm:w-[180px] lg:w-[212px]", src: bannerTwo },
-  { alt: "Women transportation operators at the airport", className: "w-[190px] sm:w-[250px] lg:w-[300px]", src: bannerThree },
-  { alt: "Private driver ready for airport service", className: "w-[140px] sm:w-[180px] lg:w-[212px]", src: bannerFour },
-  { alt: "Driver greeting riders from a car", className: "w-[120px] sm:w-[150px] lg:w-[164px]", src: bannerFive },
+  {
+    alt: "Driver seated in a car",
+    className: "hidden lg:block h-[clamp(140px,15vw,190px)]",
+    src: bannerOne,
+  },
+  {
+    alt: "Airport transportation driver smiling",
+    className: "hidden md:block h-[clamp(160px,20vw,230px)]",
+    src: bannerTwo,
+  },
+  {
+    alt: "Women transportation operators at the airport",
+    className: "h-[clamp(220px,62vw,320px)] md:h-[clamp(240px,28vw,360px)]",
+    src: bannerThree,
+  },
+  {
+    alt: "Private driver ready for airport service",
+    className: "hidden md:block h-[clamp(160px,20vw,230px)]",
+    src: bannerFour,
+  },
+  {
+    alt: "Driver greeting riders from a car",
+    className: "hidden lg:block h-[clamp(140px,15vw,190px)]",
+    src: bannerFive,
+  },
 ];
 
 export function HeroSection({
@@ -60,12 +80,12 @@ export function HeroSection({
           </Button>
         </div>
 
-        <div className="w-full overflow-x-auto pb-6 pt-10 sm:overflow-visible sm:pb-10">
-          <div className="mx-auto flex min-w-max items-end justify-center gap-2 px-2 sm:min-w-0 sm:gap-3 md:gap-4 lg:gap-5">
+        <div className="w-full overflow-hidden pb-6 pt-10 sm:pb-10">
+          <div className="mx-auto flex w-full items-end justify-center gap-3 px-2 md:gap-4 lg:gap-5">
             {bannerImages.map((image) => (
               <img
                 alt={image.alt}
-                className={cn("shrink-0 object-contain", image.className)}
+                className={cn("w-auto max-w-full shrink object-contain", image.className)}
                 key={image.src}
                 src={image.src}
               />
