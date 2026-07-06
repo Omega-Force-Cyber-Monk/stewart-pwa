@@ -1,7 +1,7 @@
 import { CalendarClock, CarFront, CheckCircle2, MapPin, Plane, ShieldCheck } from "lucide-react";
 import { motion } from "motion/react";
 import { type FormEvent, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { useAppSelector } from "../app/hooks";
 import rectangle93 from "../assets/Rectangle 93.png";
@@ -302,12 +302,6 @@ export default function PersonalizedDriverPage() {
                 <Button className="bg-[#EE389C] hover:bg-[#d92d8b]" type="submit">
                   {t.personalizedPage.requestAppointment}
                 </Button>
-                <Link
-                  className="text-sm font-semibold text-slate-600 transition hover:text-[#EE389C]"
-                  to="/dashboard"
-                >
-                  {t.personalizedPage.backToDashboard}
-                </Link>
               </div>
             </motion.form>
           </div>

@@ -1,9 +1,9 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import { RequireOnboarding, RequirePurchase } from "./RouteGuards";
+import { RequireApproval, RequireOnboarding, RequirePurchase } from "./RouteGuards";
 
+import ApprovalPendingPage from "../pages/ApprovalPendingPage";
 import ComingSoonPage from "../pages/ComingSoonPage";
-import DashboardPage from "../pages/DashboardPage";
 import FunnelPage from "../pages/FunnelPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import OnboardingPage from "../pages/OnboardingPage";
@@ -23,9 +23,11 @@ export function AppRouter() {
         <Route path="/onboarding" element={<OnboardingPage />} />
       </Route>
       <Route element={<RequireOnboarding />}>
-        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/approval" element={<ApprovalPendingPage />} />
       </Route>
-      <Route path="/site/:username" element={<PersonalizedDriverPage />} />
+      <Route element={<RequireApproval />}>
+        <Route path="/site/:username" element={<PersonalizedDriverPage />} />
+      </Route>
       {/* <Route path="/admin" element={<SuperAdminDashboardPage />} /> */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

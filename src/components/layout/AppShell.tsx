@@ -1,11 +1,17 @@
-import { ArrowRight, Menu, X } from "lucide-react";
+import { ArrowRight, Menu, RotateCcw, X } from "lucide-react";
 import { type ReactNode, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { LanguageToggle } from "../common/LanguageToggle";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { clearPersistedState } from "../../app/persistStore";
 import logoWeb from "../../assets/logoWeb.png";
-import { selectOnboardingCompleted } from "../../features/appFlow/appFlowSlice";
+import {
+  resetDemo,
+  selectApprovalStatus,
+  selectHasPurchased,
+  selectOnboardingCompleted,
+} from "../../features/appFlow/appFlowSlice";
 import { useTranslation } from "../../features/localization/useTranslation";
 import { cn } from "../../lib/cn";
 import { PageContainer } from "./PageContainer";
@@ -15,11 +21,16 @@ type AppShellProps = {
 };
 
 export function AppShell({ children }: AppShellProps) {
+  const dispatch = useAppDispatch();
   const location = useLocation();
   const navigate = useNavigate();
+  const hasPurchased = useAppSelector(selectHasPurchased);
   const onboardingCompleted = useAppSelector(selectOnboardingCompleted);
+  const approvalStatus = useAppSelector(selectApprovalStatus);
   const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const canResetDemo =
+    hasPurchased || onboardingCompleted || approvalStatus !== "not_submitted";
   const baseNavItems = [
     { label: t.navigation.home, to: "/women" },
     { label: t.navigation.whatsIncluded, to: "/women#whats-included" },
@@ -29,9 +40,7 @@ export function AppShell({ children }: AppShellProps) {
     { label: t.navigation.contact, to: "/women#contact" },
     // { label: t.navigation.admin, to: "/admin" },
   ];
-  const navItems = onboardingCompleted
-    ? [...baseNavItems, { label: t.navigation.dashboard, to: "/dashboard" }]
-    : baseNavItems;
+  const navItems = baseNavItems;
 
   useEffect(() => {
     if (!location.hash) return;
@@ -56,6 +65,13 @@ export function AppShell({ children }: AppShellProps) {
     navigate("/women#pricing", {
       state: { checkoutRequestId: Date.now() },
     });
+  };
+
+  const handleResetDemo = () => {
+    dispatch(resetDemo());
+    clearPersistedState();
+    setIsMenuOpen(false);
+    navigate("/women", { replace: true });
   };
 
   return (
@@ -147,20 +163,33 @@ export function AppShell({ children }: AppShellProps) {
               </nav>
               <div className="flex flex-col gap-3 border-t border-slate-100 pt-3 sm:flex-row sm:items-center sm:justify-between">
                 <LanguageToggle />
-                <button
-                  className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full bg-pink-500 px-5 text-sm font-bold text-white shadow-sm transition hover:bg-pink-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
-                  onClick={openCheckoutFromNav}
-                  type="button"
-                >
-                  {t.navigation.startedBusiness}
-                  <ArrowRight aria-hidden="true" className="size-4" />
-                </button>
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <button
+                    className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full bg-pink-500 px-5 text-sm font-bold text-white shadow-sm transition hover:bg-pink-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
+                    onClick={openCheckoutFromNav}
+                    type="button"
+                  >
+                    {t.navigation.startedBusiness}
+                    <ArrowRight aria-hidden="true" className="size-4" />
+                  </button>
+                </div>
               </div>
             </PageContainer>
           </div>
         )}
       </header>
       {children}
+      {canResetDemo && (
+        <button
+          aria-label={t.common.resetDemo}
+          className="fixed bottom-5 right-5 z-50 inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full border border-pink-200 bg-white px-4 text-sm font-bold text-slate-800 shadow-lg shadow-slate-950/10 transition hover:-translate-y-0.5 hover:border-pink-300 hover:bg-pink-50 hover:text-pink-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500 sm:bottom-6 sm:right-6"
+          onClick={handleResetDemo}
+          type="button"
+        >
+          <RotateCcw aria-hidden="true" className="size-4" />
+          <span className="hidden sm:inline">{t.common.resetDemo}</span>
+        </button>
+      )}
     </div>
   );
 }
