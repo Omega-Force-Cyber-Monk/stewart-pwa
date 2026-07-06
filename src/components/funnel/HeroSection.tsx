@@ -9,6 +9,7 @@ import bannerOne from "../../assets/bannerOne.png";
 import bannerThree from "../../assets/bannerThree.png";
 import bannerTwo from "../../assets/bannerTwo.png";
 import type { FunnelConfig } from "../../features/funnel/funnelTypes";
+import { useTranslation } from "../../features/localization/useTranslation";
 import { cn } from "../../lib/cn";
 
 type HeroSectionProps = {
@@ -18,27 +19,22 @@ type HeroSectionProps = {
 
 const bannerImages = [
   {
-    alt: "Driver seated in a car",
     className: "hidden lg:block h-[clamp(140px,15vw,190px)]",
     src: bannerOne,
   },
   {
-    alt: "Airport transportation driver smiling",
     className: "hidden md:block h-[clamp(160px,20vw,230px)]",
     src: bannerTwo,
   },
   {
-    alt: "Women transportation operators at the airport",
     className: "h-[clamp(220px,62vw,320px)] md:h-[clamp(240px,28vw,360px)]",
     src: bannerThree,
   },
   {
-    alt: "Private driver ready for airport service",
     className: "hidden md:block h-[clamp(160px,20vw,230px)]",
     src: bannerFour,
   },
   {
-    alt: "Driver greeting riders from a car",
     className: "hidden lg:block h-[clamp(140px,15vw,190px)]",
     src: bannerFive,
   },
@@ -48,38 +44,39 @@ export function HeroSection({
   config,
   onPrimaryCta,
 }: HeroSectionProps) {
+  const { t } = useTranslation();
+
   return (
     <section className="relative overflow-hidden bg-[#F2F2F2]">
       <PageContainer
         className="relative flex min-h-[620px] flex-col items-center justify-between bg-cover bg-center pt-12 sm:min-h-[700px] sm:pt-16 lg:min-h-[760px] lg:pt-20"
-        size="lg"
+        size="landing"
         style={{ backgroundImage: `url(${bannerBg})` }}
       >
         <div className="mx-auto max-w-5xl text-center">
           <h1 className="text-4xl font-extrabold leading-tight tracking-normal text-slate-950 sm:text-5xl lg:text-6xl">
-            Launch a{" "}
-            <span className="text-pink-500">Women-Focused</span>{" "}
-            Private Airport Business Built on Trust.
+            {t.funnelPage.hero.headlinePrefix}{" "}
+            <span className="text-pink-500">{t.funnelPage.hero.headlineHighlight}</span>{" "}
+            {t.funnelPage.hero.headlineSuffix}
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-slate-600 sm:text-base">
-            QuitTheApp helps women operators start a direct booking airport transportation
-            business with the backing of a trusted platform.
+            {t.funnelPage.hero.subtitle}
           </p>
 
           <Button
             className="mt-6 rounded-full bg-pink-500 px-5 text-xs font-bold hover:bg-pink-600 focus-visible:outline-pink-500 sm:px-6 sm:text-sm"
             onClick={onPrimaryCta}
           >
-            Launch My Business — ${config.price}
+            {t.funnelPage.hero.ctaPrefix} — ${config.price}
             <ArrowRight aria-hidden="true" className="size-4" />
           </Button>
         </div>
 
         <div className="w-full overflow-hidden pb-6 pt-10 sm:pb-10">
           <div className="mx-auto flex w-full items-end justify-center gap-3 px-2 md:gap-4 lg:gap-5">
-            {bannerImages.map((image) => (
+            {bannerImages.map((image, index) => (
               <img
-                alt={image.alt}
+                alt={t.funnelPage.hero.imageAlts[index]}
                 className={cn("w-auto max-w-full shrink object-contain", image.className)}
                 key={image.src}
                 src={image.src}

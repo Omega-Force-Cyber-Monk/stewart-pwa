@@ -2,41 +2,44 @@ import { BadgeCheck, CircleDollarSign, Globe2, Repeat2, TrendingUp, X } from "lu
 import { motion } from "motion/react";
 
 import womenImage from "../../assets/women.svg";
+import { useTranslation } from "../../features/localization/useTranslation";
 import { PageContainer } from "../layout/PageContainer";
 
 const appLimitations = [
-  { label: "Commission fees", x: 238, y: 136 },
-  { label: "Limited customer ownership", x: 256, y: 196 },
-  { label: "No control over branding", x: 256, y: 256 },
-  { label: "Inconsistent demand", x: 238, y: 316 },
+  { x: 238, y: 136 },
+  { x: 256, y: 196 },
+  { x: 256, y: 256 },
+  { x: 238, y: 316 },
 ];
 
 const businessBenefits = [
-  { icon: BadgeCheck, label: "Build your own customers", x: 82, y: 124 },
-  { icon: Repeat2, label: "Repeat riders and referrals", x: 64, y: 174 },
-  { icon: CircleDollarSign, label: "Set your own rates", x: 56, y: 224 },
-  { icon: Globe2, label: "Professional brand presence", x: 64, y: 274 },
-  { icon: TrendingUp, label: "Flexible business growth", x: 82, y: 324 },
+  { icon: BadgeCheck, x: 82, y: 124 },
+  { icon: Repeat2, x: 64, y: 174 },
+  { icon: CircleDollarSign, x: 56, y: 224 },
+  { icon: Globe2, x: 64, y: 274 },
+  { icon: TrendingUp, x: 82, y: 324 },
 ];
 
 export function OwnBusinessSection() {
+  const { t } = useTranslation();
+
   return (
     <section className="bg-[#F2F2F2] py-12 sm:py-16">
-      <PageContainer size="lg">
+      <PageContainer size="landing">
         <div className=" text-center">
           <h2
             className="text-[32px] font-semibold leading-[38px] tracking-normal text-[#101010]"
             style={{ fontFamily: "'DM Sans', ui-sans-serif, system-ui, sans-serif" }}
           >
-            Why Build Your <span className="text-pink-500">Own</span>
-            <br className="hidden sm:block" /> Business?
+            {t.funnelPage.ownBusiness.titlePrefix}{" "}
+            <span className="text-pink-500">{t.funnelPage.ownBusiness.titleHighlight}</span>
+            <br className="hidden sm:block" /> {t.funnelPage.ownBusiness.titleSuffix}
           </h2>
           <p
             className="mx-auto mt-3 max-w-md text-sm font-normal leading-5 text-[#666060]"
             style={{ fontFamily: "'DM Sans', ui-sans-serif, system-ui, sans-serif" }}
           >
-            Build a trusted brand, keep more revenue, and create lasting relationships
-            with your own customers.
+            {t.funnelPage.ownBusiness.subtitle}
           </p>
         </div>
 
@@ -50,7 +53,10 @@ export function OwnBusinessSection() {
           >
             <div className="relative h-[430px] w-full max-w-[320px]">
               <p className="absolute left-[72px] top-8 w-[150px] text-center text-sm font-semibold text-[#101010]">
-                Relying on <span className="text-pink-500">Apps</span>
+                {t.funnelPage.ownBusiness.relyingPrefix}{" "}
+                <span className="text-pink-500">
+                  {t.funnelPage.ownBusiness.relyingHighlight}
+                </span>
               </p>
 
               <svg
@@ -67,10 +73,10 @@ export function OwnBusinessSection() {
                 />
               </svg>
 
-              {appLimitations.map((item) => (
+              {appLimitations.map((item, index) => (
                 <div
                   className="absolute flex h-9 items-center justify-end gap-3"
-                  key={item.label}
+                  key={t.funnelPage.ownBusiness.appLimitations[index]}
                   style={{
                     left: 0,
                     top: item.y - 18,
@@ -78,7 +84,7 @@ export function OwnBusinessSection() {
                   }}
                 >
                   <span className="min-w-0 text-right text-sm font-medium text-[#101010]">
-                    {item.label}
+                    {t.funnelPage.ownBusiness.appLimitations[index]}
                   </span>
                   <span className="grid size-9 shrink-0 place-items-center rounded-full bg-red-500 text-white shadow-sm">
                     <X aria-hidden="true" className="size-4" />
@@ -97,7 +103,7 @@ export function OwnBusinessSection() {
           >
             <div className="grid w-full max-w-[340px] place-items-center sm:max-w-[400px] lg:max-w-[390px]">
               <img
-                alt="Women-focused private transportation driver"
+                alt={t.funnelPage.ownBusiness.imageAlt}
                 className="h-auto w-full object-contain object-center"
                 src={womenImage}
               />
@@ -113,7 +119,10 @@ export function OwnBusinessSection() {
           >
             <div className="relative h-[430px] w-full max-w-[320px]">
               <p className="absolute right-10 top-8 w-[220px] text-center text-sm font-semibold text-[#101010]">
-                <span className="text-pink-500">Women</span>-Focused Business
+                <span className="text-pink-500">
+                  {t.funnelPage.ownBusiness.womenHighlight}
+                </span>
+                {t.funnelPage.ownBusiness.womenSuffix}
               </p>
 
               <svg
@@ -130,13 +139,13 @@ export function OwnBusinessSection() {
                 />
               </svg>
 
-              {businessBenefits.map((item) => {
+              {businessBenefits.map((item, index) => {
                 const Icon = item.icon;
 
                 return (
                   <div
                     className="absolute flex h-9 items-center gap-3"
-                    key={item.label}
+                    key={t.funnelPage.ownBusiness.businessBenefits[index]}
                     style={{
                       left: item.x - 18,
                       top: item.y - 18,
@@ -146,7 +155,7 @@ export function OwnBusinessSection() {
                       <Icon aria-hidden="true" className="size-4" />
                     </span>
                     <span className="w-[210px] text-sm font-medium text-[#101010]">
-                      {item.label}
+                      {t.funnelPage.ownBusiness.businessBenefits[index]}
                     </span>
                   </div>
                 );

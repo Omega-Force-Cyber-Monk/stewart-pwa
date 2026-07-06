@@ -8,6 +8,14 @@ type PricingSectionProps = {
   buttonLabel: string;
   includedItems: string[];
   oneTimePayment: string;
+  pricingCopy: {
+    titlePrefix: string;
+    titleHighlight: string;
+    titleSecondHighlight: string;
+    titleSuffix: string;
+    subtitle: string;
+    description: string;
+  };
   whatsIncluded: string;
   onCta: () => void;
 };
@@ -41,16 +49,14 @@ export function PricingSection({
   includedItems,
   oneTimePayment,
   onCta,
+  pricingCopy,
   whatsIncluded,
 }: PricingSectionProps) {
-  const displayItems = includedItems.includes("Human support")
-    ? includedItems
-    : [...includedItems, "Human support"];
   const paymentLabel = oneTimePayment.replace("-", " ");
 
   return (
     <section className="bg-[#F2F2F2] py-12 sm:py-16" id="pricing">
-      <PageContainer size="lg">
+      <PageContainer size="landing">
         <motion.div
           className="rounded-[24px] bg-white px-6 py-11 sm:px-10 lg:px-[48px] lg:py-[54px]"
           initial={{ opacity: 0, y: 24 }}
@@ -63,12 +69,14 @@ export function PricingSection({
               className="text-[32px] font-semibold leading-[36px] tracking-normal text-[#101010] sm:text-[40px] sm:leading-[44px]"
               style={{ fontFamily: "'DM Sans', ui-sans-serif, system-ui, sans-serif" }}
             >
-              Choose the <span className="text-[#EE389C]">Plan for</span>
+              {pricingCopy.titlePrefix}{" "}
+              <span className="text-[#EE389C]">{pricingCopy.titleHighlight}</span>
               <br />
-              <span className="text-[#EE389C]">Your</span> Exclusive Journey
+              <span className="text-[#EE389C]">{pricingCopy.titleSecondHighlight}</span>{" "}
+              {pricingCopy.titleSuffix}
             </h2>
             <p className="mt-4 text-sm leading-5 text-[#666060]">
-              Flexible pricing designed to fit your goals, schedule, and budget.
+              {pricingCopy.subtitle}
             </p>
           </div>
 
@@ -88,10 +96,7 @@ export function PricingSection({
               </div>
 
               <p className="mt-4 max-w-[450px] text-xs leading-[17px] text-[#101010] sm:text-sm sm:leading-5">
-                This subscription plan includes access to the Launch Dashboard,
-                Operator Dashboard, comprehensive training resources, hosting,
-                human support, and lifetime updates-providing everything you need
-                to get started, manage your operations, and stay up to date.
+                {pricingCopy.description}
               </p>
 
               <Button
@@ -107,7 +112,7 @@ export function PricingSection({
                 {whatsIncluded}:
               </h3>
               <ul className="mt-5 grid gap-4">
-                {displayItems.map((item) => (
+                {includedItems.map((item) => (
                   <li className="flex items-center gap-3 text-base leading-6 text-[#101010]" key={item}>
                     <TickIcon />
                     <span>{item}</span>

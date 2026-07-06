@@ -2,51 +2,21 @@ import { Star } from "lucide-react";
 import { motion } from "motion/react";
 
 import operatorAvatar from "../../assets/Rectangle 93.png";
+import { useTranslation } from "../../features/localization/useTranslation";
+import type { FunnelStoryTranslation } from "../../features/localization/localizationTypes";
 import { PageContainer } from "../layout/PageContainer";
 
-const stories = [
-  {
-    location: "Knoxville, TN",
-    name: "Annette Black",
-    quote:
-      "The system is simple, professional, and it works. I set my schedule and now I'm meeting great people everyday.",
-  },
-  {
-    location: "Austin, TX",
-    name: "Maya Collins",
-    quote:
-      "I finally have a business that feels like mine. The launch tools helped me look organized from day one.",
-  },
-  {
-    location: "Tampa, FL",
-    name: "Sofia Ramirez",
-    quote:
-      "The templates made it easier to explain my airport service and start building repeat customers.",
-  },
-  {
-    location: "Charlotte, NC",
-    name: "Erica Stone",
-    quote:
-      "I stopped guessing what to do next. The steps gave me a clear path to promote my own transportation brand.",
-  },
-  {
-    location: "Phoenix, AZ",
-    name: "Nina Patel",
-    quote:
-      "This helped me show up professionally and attract riders who value dependable private transportation.",
-  },
-];
-
 type StoryCardProps = {
+  ratingLabel: string;
   location: string;
   name: string;
   quote: string;
 };
 
-function StoryCard({ location, name, quote }: StoryCardProps) {
+function StoryCard({ location, name, quote, ratingLabel }: StoryCardProps) {
   return (
     <article className="w-[270px] shrink-0 rounded-[10px] bg-white p-5 shadow-sm sm:w-[320px]">
-      <div className="flex gap-0.5 text-[#FF8A1D]" aria-label="5 star rating">
+      <div className="flex gap-0.5 text-[#FF8A1D]" aria-label={ratingLabel}>
         {Array.from({ length: 5 }).map((_, index) => (
           <Star aria-hidden="true" className="size-4 fill-current" key={index} />
         ))}
@@ -69,10 +39,11 @@ function StoryCard({ location, name, quote }: StoryCardProps) {
 
 type StoryRowProps = {
   direction: "left" | "right";
-  stories: StoryCardProps[];
+  ratingLabel: string;
+  stories: FunnelStoryTranslation[];
 };
 
-function StoryRow({ direction, stories }: StoryRowProps) {
+function StoryRow({ direction, ratingLabel, stories }: StoryRowProps) {
   const rowStories = [...stories, ...stories];
   const animation = direction === "left" ? ["0%", "-50%"] : ["-50%", "0%"];
 
@@ -86,6 +57,7 @@ function StoryRow({ direction, stories }: StoryRowProps) {
         {rowStories.map((story, index) => (
           <StoryCard
             key={`${story.name}-${index}`}
+            ratingLabel={ratingLabel}
             location={story.location}
             name={story.name}
             quote={story.quote}
@@ -97,9 +69,12 @@ function StoryRow({ direction, stories }: StoryRowProps) {
 }
 
 export function WomenBusinessStoriesSection() {
+  const { t } = useTranslation();
+  const stories = t.funnelPage.stories.items;
+
   return (
     <section className="overflow-hidden bg-[#F2F2F2] py-12 sm:py-16" id="success-stories">
-      <PageContainer size="lg">
+      <PageContainer size="landing">
         <motion.div
           className="mx-auto max-w-3xl text-center"
           initial={{ opacity: 0, y: 18 }}
@@ -111,22 +86,29 @@ export function WomenBusinessStoriesSection() {
             className="text-[32px] font-semibold leading-[38px] tracking-normal text-[#101010] sm:text-[40px] sm:leading-[46px]"
             style={{ fontFamily: "'DM Sans', ui-sans-serif, system-ui, sans-serif" }}
           >
-            <span className="text-[#EE389C]">Women Operators</span> Are
+            <span className="text-[#EE389C]">{t.funnelPage.stories.titleHighlight}</span>{" "}
+            {t.funnelPage.stories.titleFirstLineSuffix}
             <br />
-            Building Real Businesses
+            {t.funnelPage.stories.titleSecondLine}
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-sm leading-5 text-[#666060]">
-            Discover how women entrepreneurs are creating trusted brands,
-            attracting loyal customers, and growing successful transportation
-            businesses.
+            {t.funnelPage.stories.subtitle}
           </p>
         </motion.div>
       </PageContainer>
 
-      <PageContainer className="mt-11" size="lg">
+      <PageContainer className="mt-11" size="landing">
         <div className="grid gap-5 overflow-hidden">
-          <StoryRow direction="left" stories={stories} />
-          <StoryRow direction="right" stories={stories.slice().reverse()} />
+          <StoryRow
+            direction="left"
+            ratingLabel={t.funnelPage.stories.ratingLabel}
+            stories={stories}
+          />
+          <StoryRow
+            direction="right"
+            ratingLabel={t.funnelPage.stories.ratingLabel}
+            stories={stories.slice().reverse()}
+          />
         </div>
       </PageContainer>
     </section>

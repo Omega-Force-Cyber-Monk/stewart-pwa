@@ -6,6 +6,7 @@ import { LanguageToggle } from "../common/LanguageToggle";
 import { useAppSelector } from "../../app/hooks";
 import logoWeb from "../../assets/logoWeb.png";
 import { selectOnboardingCompleted } from "../../features/appFlow/appFlowSlice";
+import { useTranslation } from "../../features/localization/useTranslation";
 import { cn } from "../../lib/cn";
 import { PageContainer } from "./PageContainer";
 
@@ -13,21 +14,21 @@ type AppShellProps = {
   children: ReactNode;
 };
 
-const baseNavItems = [
-  { label: "Home", to: "/standard" },
-  { label: "What's Included", to: "/standard#whats-included" },
-  { label: "Success Stories", to: "/standard#success-stories" },
-  { label: "FAQ", to: "/standard#faq" },
-  { label: "Contact", to: "/standard#contact" },
-  { label: "Admin", to: "/admin" },
-];
-
 export function AppShell({ children }: AppShellProps) {
   const location = useLocation();
   const onboardingCompleted = useAppSelector(selectOnboardingCompleted);
+  const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const baseNavItems = [
+    { label: t.navigation.home, to: "/standard" },
+    { label: t.navigation.whatsIncluded, to: "/standard#whats-included" },
+    { label: t.navigation.successStories, to: "/standard#success-stories" },
+    { label: t.navigation.faq, to: "/standard#faq" },
+    { label: t.navigation.contact, to: "/standard#contact" },
+    { label: t.navigation.admin, to: "/admin" },
+  ];
   const navItems = onboardingCompleted
-    ? [...baseNavItems, { label: "Dashboard", to: "/dashboard" }]
+    ? [...baseNavItems, { label: t.navigation.dashboard, to: "/dashboard" }]
     : baseNavItems;
 
   useEffect(() => {
@@ -51,10 +52,13 @@ export function AppShell({ children }: AppShellProps) {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-950">
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
-        <PageContainer className="flex min-h-[64px] items-center justify-between gap-4 py-3">
+        <PageContainer
+          className="flex min-h-[64px] items-center justify-between gap-4 py-3"
+          size="landing"
+        >
           <div className="flex min-w-0 items-center">
             <Link
-              aria-label="QuitTheApp home"
+              aria-label={t.common.homeLabel}
               className="flex min-h-11 min-w-0 cursor-pointer items-center rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
               to="/standard"
             >
@@ -68,7 +72,7 @@ export function AppShell({ children }: AppShellProps) {
 
           <div className="hidden min-w-0 items-center gap-5 lg:flex">
             <nav
-              aria-label="Primary navigation"
+              aria-label={t.common.primaryNavigation}
               className="flex items-center gap-1"
             >
               {navItems.map((item) => (
@@ -93,14 +97,14 @@ export function AppShell({ children }: AppShellProps) {
               className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full bg-pink-500 px-5 text-sm font-bold text-white shadow-sm transition hover:bg-pink-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
               to="/standard#pricing"
             >
-              Started The Business
+              {t.navigation.startedBusiness}
               <ArrowRight aria-hidden="true" className="size-4" />
             </Link>
           </div>
 
           <button
             aria-expanded={isMenuOpen}
-            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            aria-label={isMenuOpen ? t.navigation.closeMenu : t.navigation.openMenu}
             className="inline-grid size-11 cursor-pointer place-items-center rounded-md border border-slate-200 bg-white text-slate-800 transition hover:bg-pink-50 hover:text-pink-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500 lg:hidden"
             onClick={() => setIsMenuOpen((current) => !current)}
             type="button"
@@ -115,8 +119,8 @@ export function AppShell({ children }: AppShellProps) {
 
         {isMenuOpen && (
           <div className="border-t border-slate-200 bg-white lg:hidden">
-            <PageContainer className="grid gap-3 py-4">
-              <nav aria-label="Mobile navigation" className="grid gap-1">
+            <PageContainer className="grid gap-3 py-4" size="landing">
+              <nav aria-label={t.common.mobileNavigation} className="grid gap-1">
                 {navItems.map((item) => (
                   <Link
                     className={cn(
@@ -138,7 +142,7 @@ export function AppShell({ children }: AppShellProps) {
                   onClick={() => setIsMenuOpen(false)}
                   to="/standard#pricing"
                 >
-                  Started The Business
+                  {t.navigation.startedBusiness}
                   <ArrowRight aria-hidden="true" className="size-4" />
                 </Link>
               </div>

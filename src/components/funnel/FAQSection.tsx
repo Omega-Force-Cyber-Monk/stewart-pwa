@@ -7,7 +7,9 @@ import { cn } from "../../lib/cn";
 import { PageContainer } from "../layout/PageContainer";
 
 type FAQSectionProps = {
+  categoryTitle: string;
   faqs: FaqTranslation[];
+  subtitle: string;
   theme: FunnelTheme;
   title: string;
 };
@@ -22,13 +24,13 @@ function splitTitle(title: string) {
   };
 }
 
-export function FAQSection({ faqs, theme, title }: FAQSectionProps) {
+export function FAQSection({ categoryTitle, faqs, subtitle, theme, title }: FAQSectionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const titleParts = splitTitle(title);
 
   return (
     <section className="bg-[#F2F2F2] py-12 sm:py-16" id="faq">
-      <PageContainer size="lg">
+      <PageContainer size="landing">
         <div className="grid gap-8 rounded-[24px] bg-white px-6 py-12 sm:px-10 lg:grid-cols-[0.78fr_1.22fr] lg:px-[112px] lg:py-[72px]">
           <div>
             <h2
@@ -40,13 +42,13 @@ export function FAQSection({ faqs, theme, title }: FAQSectionProps) {
               <span className="text-[#EE389C]">{titleParts.highlight}</span>
             </h2>
             <p className="mt-5 max-w-xs text-sm leading-5 text-[#101010]">
-              Find clear answers to common billing topics.
+              {subtitle}
             </p>
           </div>
 
           <div className="w-full">
             <h3 className="mb-5 text-xl font-semibold leading-7 text-[#101010]">
-              General FAQs
+              {categoryTitle}
             </h3>
             <div className="grid gap-4">
               {faqs.slice(0, 4).map((faq, index) => {

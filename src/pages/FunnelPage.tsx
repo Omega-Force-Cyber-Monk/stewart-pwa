@@ -45,12 +45,19 @@ export default function FunnelPage() {
       <OwnBusinessSection />
       <WomenOperatorsSection />
       <HowQuitWorksSection />
-      <FAQSection faqs={t.marketing.faqs} theme={config.theme} title={t.marketing.faqTitle} />
+      <FAQSection
+        categoryTitle={t.funnelPage.faqCategoryTitle}
+        faqs={t.marketing.faqs}
+        subtitle={t.funnelPage.faqSubtitle}
+        theme={config.theme}
+        title={t.marketing.faqTitle}
+      />
       <PricingSection
         buttonLabel={t.marketing.launchCta}
         includedItems={t.marketing.pricingIncludes}
         oneTimePayment={t.marketing.oneTimePayment}
         onCta={() => setIsCheckoutOpen(true)}
+        pricingCopy={t.funnelPage.pricing}
         whatsIncluded={t.marketing.whatsIncluded}
       />
       <WomenBusinessStoriesSection />

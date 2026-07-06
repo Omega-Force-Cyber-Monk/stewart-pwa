@@ -10,6 +10,7 @@ import { Badge } from "../components/common/Badge";
 import { Button } from "../components/common/Button";
 import { PageContainer } from "../components/layout/PageContainer";
 import { selectDriverProfile } from "../features/appFlow/appFlowSlice";
+import { useTranslation } from "../features/localization/useTranslation";
 import { createDriverSlug, getDriverDisplayDomain } from "../lib/driverSite";
 
 type BookingFormState = {
@@ -38,6 +39,7 @@ const initialBookingForm: BookingFormState = {
 
 export default function PersonalizedDriverPage() {
   const { username } = useParams();
+  const { t } = useTranslation();
   const driverProfile = useAppSelector(selectDriverProfile);
   const [form, setForm] = useState<BookingFormState>(initialBookingForm);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -46,9 +48,9 @@ export default function PersonalizedDriverPage() {
   const displayDomain = driverProfile
     ? getDriverDisplayDomain(driverProfile)
     : `${username || profileSlug}.ourdomain.com`;
-  const driverName = driverProfile?.fullName || "Your Private Airport Driver";
-  const market = driverProfile?.targetCity || "your city";
-  const airports = driverProfile?.regionalAirports || "regional airports";
+  const driverName = driverProfile?.fullName || t.personalizedPage.fallbackDriverName;
+  const market = driverProfile?.targetCity || t.personalizedPage.fallbackMarket;
+  const airports = driverProfile?.regionalAirports || t.personalizedPage.fallbackAirports;
 
   const updateField = <Field extends keyof BookingFormState>(
     field: Field,
@@ -68,7 +70,7 @@ export default function PersonalizedDriverPage() {
       <section className="py-10 sm:py-14">
         <PageContainer size="lg">
           <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <Badge tone="accent">Customer website preview</Badge>
+            <Badge tone="accent">{t.personalizedPage.previewBadge}</Badge>
             <p className="text-sm font-semibold text-slate-600">{displayDomain}</p>
           </div>
 
@@ -80,21 +82,21 @@ export default function PersonalizedDriverPage() {
               transition={{ duration: 0.35, ease: "easeOut" }}
             >
               <p className="text-sm font-semibold text-[#EE389C]">
-                Private airport transportation in {market}
+                {t.personalizedPage.heroEyebrow} {market}
               </p>
               <h1 className="mt-4 text-[36px] font-semibold leading-[42px] tracking-normal text-[#101010] sm:text-[52px] sm:leading-[60px]">
-                Book a trusted ride with {driverName}.
+                {t.personalizedPage.heroTitlePrefix} {driverName}
+                {t.personalizedPage.heroTitleSuffix}
               </h1>
               <p className="mt-5 max-w-2xl text-base leading-7 text-[#666060]">
-                Professional hotel-to-airport and airport-to-hotel transportation
-                serving {airports}. Choose your route, time, and passenger count
-                below.
+                {t.personalizedPage.heroDescriptionPrefix} {airports}.{" "}
+                {t.personalizedPage.heroDescriptionSuffix}
               </p>
               <div className="mt-8 grid gap-3 sm:grid-cols-3">
                 {[
-                  { icon: ShieldCheck, label: "Trusted local service" },
-                  { icon: Plane, label: "Airport-ready rides" },
-                  { icon: CalendarClock, label: "Easy scheduling" },
+                  { icon: ShieldCheck, label: t.personalizedPage.trustedService },
+                  { icon: Plane, label: t.personalizedPage.airportReadyRides },
+                  { icon: CalendarClock, label: t.personalizedPage.easyScheduling },
                 ].map((item) => {
                   const Icon = item.icon;
 
@@ -112,14 +114,18 @@ export default function PersonalizedDriverPage() {
 
             <div className="flex min-h-[360px] flex-col items-center justify-center gap-6 bg-pink-50 p-8 sm:min-h-[460px]">
               <img
-                alt="Private airport transportation driver"
+                alt={t.personalizedPage.driverImageAlt}
                 className="aspect-square w-full max-w-[320px] rounded-full object-cover object-center shadow-lg ring-8 ring-white"
                 src={rectangle93}
               />
               <div className="w-full max-w-md rounded-2xl bg-white p-5 text-center shadow-sm">
-                <p className="text-sm font-semibold text-slate-500">Driver profile</p>
+                <p className="text-sm font-semibold text-slate-500">
+                  {t.personalizedPage.driverProfile}
+                </p>
                 <p className="mt-1 text-xl font-semibold text-[#101010]">{driverName}</p>
-                <p className="mt-1 text-sm text-[#666060]">{market} airport transportation</p>
+                <p className="mt-1 text-sm text-[#666060]">
+                  {market} {t.personalizedPage.airportTransportation}
+                </p>
               </div>
             </div>
           </div>
@@ -130,23 +136,25 @@ export default function PersonalizedDriverPage() {
         <PageContainer size="lg">
           <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr]">
             <aside className="rounded-[20px] bg-white p-6 shadow-sm sm:p-8">
-              <h2 className="text-2xl font-semibold text-[#101010]">Service details</h2>
+              <h2 className="text-2xl font-semibold text-[#101010]">
+                {t.personalizedPage.serviceDetails}
+              </h2>
               <div className="mt-6 grid gap-4">
                 {[
                   {
                     icon: MapPin,
-                    title: "Coverage",
-                    text: `${market} hotels, homes, and ${airports}`,
+                    title: t.personalizedPage.coverage,
+                    text: `${market} ${t.personalizedPage.coverageDescriptionJoiner} ${airports}`,
                   },
                   {
                     icon: CarFront,
-                    title: "Trip types",
-                    text: "Hotel to airport, airport to hotel, and private transfer requests.",
+                    title: t.personalizedPage.tripTypes,
+                    text: t.personalizedPage.tripTypesDescription,
                   },
                   {
                     icon: CheckCircle2,
-                    title: "Booking status",
-                    text: "This demo collects appointment details locally. No real booking is sent.",
+                    title: t.personalizedPage.bookingStatus,
+                    text: t.personalizedPage.bookingStatusDescription,
                   },
                 ].map((item) => {
                   const Icon = item.icon;
@@ -181,18 +189,18 @@ export default function PersonalizedDriverPage() {
               <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <p className="text-sm font-semibold text-[#EE389C]">
-                    Acuity Scheduling Preview
+                    {t.personalizedPage.schedulingPreview}
                   </p>
                   <h2 className="mt-2 text-2xl font-semibold text-[#101010]">
-                    Schedule your airport ride
+                    {t.personalizedPage.scheduleTitle}
                   </h2>
                 </div>
-                <Badge tone="neutral">Frontend-only</Badge>
+                <Badge tone="neutral">{t.personalizedPage.frontendOnly}</Badge>
               </div>
 
               <div className="mt-6 grid gap-4 sm:grid-cols-2">
                 <label className="grid gap-2 text-sm font-semibold text-slate-700">
-                  Full name
+                  {t.personalizedPage.fullName}
                   <input
                     className="min-h-11 rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-[#EE389C] focus:ring-2 focus:ring-pink-100"
                     onChange={(event) => updateField("customerName", event.target.value)}
@@ -201,7 +209,7 @@ export default function PersonalizedDriverPage() {
                   />
                 </label>
                 <label className="grid gap-2 text-sm font-semibold text-slate-700">
-                  Email
+                  {t.personalizedPage.email}
                   <input
                     className="min-h-11 rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-[#EE389C] focus:ring-2 focus:ring-pink-100"
                     onChange={(event) => updateField("email", event.target.value)}
@@ -211,7 +219,7 @@ export default function PersonalizedDriverPage() {
                   />
                 </label>
                 <label className="grid gap-2 text-sm font-semibold text-slate-700">
-                  Phone
+                  {t.personalizedPage.phone}
                   <input
                     className="min-h-11 rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-[#EE389C] focus:ring-2 focus:ring-pink-100"
                     onChange={(event) => updateField("phone", event.target.value)}
@@ -220,7 +228,7 @@ export default function PersonalizedDriverPage() {
                   />
                 </label>
                 <label className="grid gap-2 text-sm font-semibold text-slate-700">
-                  Trip type
+                  {t.personalizedPage.tripType}
                   <select
                     className="min-h-11 rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-[#EE389C] focus:ring-2 focus:ring-pink-100"
                     onChange={(event) =>
@@ -228,12 +236,12 @@ export default function PersonalizedDriverPage() {
                     }
                     value={form.tripType}
                   >
-                    <option value="hotel_to_airport">Hotel to airport</option>
-                    <option value="airport_to_hotel">Airport to hotel</option>
+                    <option value="hotel_to_airport">{t.personalizedPage.hotelToAirport}</option>
+                    <option value="airport_to_hotel">{t.personalizedPage.airportToHotel}</option>
                   </select>
                 </label>
                 <label className="grid gap-2 text-sm font-semibold text-slate-700">
-                  Pickup location
+                  {t.personalizedPage.pickupLocation}
                   <input
                     className="min-h-11 rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-[#EE389C] focus:ring-2 focus:ring-pink-100"
                     onChange={(event) => updateField("pickup", event.target.value)}
@@ -242,7 +250,7 @@ export default function PersonalizedDriverPage() {
                   />
                 </label>
                 <label className="grid gap-2 text-sm font-semibold text-slate-700">
-                  Dropoff location
+                  {t.personalizedPage.dropoffLocation}
                   <input
                     className="min-h-11 rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-[#EE389C] focus:ring-2 focus:ring-pink-100"
                     onChange={(event) => updateField("dropoff", event.target.value)}
@@ -251,7 +259,7 @@ export default function PersonalizedDriverPage() {
                   />
                 </label>
                 <label className="grid gap-2 text-sm font-semibold text-slate-700">
-                  Date
+                  {t.personalizedPage.date}
                   <input
                     className="min-h-11 rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-[#EE389C] focus:ring-2 focus:ring-pink-100"
                     onChange={(event) => updateField("date", event.target.value)}
@@ -261,7 +269,7 @@ export default function PersonalizedDriverPage() {
                   />
                 </label>
                 <label className="grid gap-2 text-sm font-semibold text-slate-700">
-                  Time
+                  {t.personalizedPage.time}
                   <input
                     className="min-h-11 rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-[#EE389C] focus:ring-2 focus:ring-pink-100"
                     onChange={(event) => updateField("time", event.target.value)}
@@ -271,7 +279,7 @@ export default function PersonalizedDriverPage() {
                   />
                 </label>
                 <label className="grid gap-2 text-sm font-semibold text-slate-700 sm:col-span-2">
-                  Passengers
+                  {t.personalizedPage.passengers}
                   <input
                     className="min-h-11 rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-[#EE389C] focus:ring-2 focus:ring-pink-100"
                     max="8"
@@ -286,20 +294,19 @@ export default function PersonalizedDriverPage() {
 
               {isSubmitted && (
                 <div className="mt-5 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm font-semibold text-emerald-800">
-                  Appointment request preview created. In production, this would
-                  be submitted through Acuity Scheduling.
+                  {t.personalizedPage.successMessage}
                 </div>
               )}
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <Button className="bg-[#EE389C] hover:bg-[#d92d8b]" type="submit">
-                  Request appointment
+                  {t.personalizedPage.requestAppointment}
                 </Button>
                 <Link
                   className="text-sm font-semibold text-slate-600 transition hover:text-[#EE389C]"
                   to="/dashboard"
                 >
-                  Back to dashboard
+                  {t.personalizedPage.backToDashboard}
                 </Link>
               </div>
             </motion.form>

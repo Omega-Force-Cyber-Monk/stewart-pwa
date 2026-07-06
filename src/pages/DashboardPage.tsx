@@ -84,9 +84,11 @@ export default function DashboardPage() {
               <Globe2 aria-hidden="true" className="size-5" />
             </span>
             <div>
-              <h2 className="text-lg font-bold text-slate-950">Personalized customer website</h2>
+              <h2 className="text-lg font-bold text-slate-950">
+                {t.dashboard.personalizedSiteTitle}
+              </h2>
               <p className="mt-1 text-sm leading-6 text-slate-600">
-                Your public booking page is available at{" "}
+                {t.dashboard.personalizedSiteDescription}{" "}
                 <span className="font-semibold text-slate-950">{driverDisplayDomain}</span>.
               </p>
             </div>
@@ -95,7 +97,7 @@ export default function DashboardPage() {
             className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-md bg-slate-950 px-4 text-sm font-semibold text-white transition hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-950"
             to={driverSitePath}
           >
-            View customer page
+            {t.dashboard.viewCustomerPage}
             <ExternalLink aria-hidden="true" className="size-4" />
           </Link>
         </DashboardCard>

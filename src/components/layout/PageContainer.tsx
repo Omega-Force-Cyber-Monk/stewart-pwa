@@ -2,7 +2,7 @@ import { type HTMLAttributes, type ReactNode } from "react";
 
 import { cn } from "../../lib/cn";
 
-type PageContainerSize = "md" | "lg" | "xl" | "full";
+type PageContainerSize = "md" | "lg" | "xl" | "landing" | "full";
 
 type PageContainerProps = HTMLAttributes<HTMLDivElement> & {
   children: ReactNode;
@@ -14,6 +14,7 @@ const sizeClasses: Record<PageContainerSize, string> = {
   md: "max-w-4xl",
   lg: "max-w-6xl",
   xl: "max-w-7xl",
+  landing: "max-w-[1520px]",
   full: "max-w-none",
 };
 

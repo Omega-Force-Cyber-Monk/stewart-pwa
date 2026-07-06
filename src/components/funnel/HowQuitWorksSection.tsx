@@ -1,23 +1,12 @@
 import { motion } from "motion/react";
 
+import { useTranslation } from "../../features/localization/useTranslation";
 import { PageContainer } from "../layout/PageContainer";
 
 const steps = [
-  {
-    description: "Receive your guide and startup resources.",
-    number: "1",
-    title: "Get Access",
-  },
-  {
-    description: "Launch your booking system and brand.",
-    number: "2",
-    title: "Build Your Business",
-  },
-  {
-    description: "Begin attracting travelers and generating repeat bookings.",
-    number: "3",
-    title: "Get Customers",
-  },
+  { number: "1" },
+  { number: "2" },
+  { number: "3" },
 ];
 
 function WaveLine() {
@@ -159,9 +148,11 @@ function WaveLine() {
 }
 
 export function HowQuitWorksSection() {
+  const { t } = useTranslation();
+
   return (
     <section className="bg-[#F2F2F2] py-12 sm:py-16">
-      <PageContainer size="lg">
+      <PageContainer size="landing">
         <motion.div
           className="relative overflow-hidden rounded-[24px] border border-pink-300/80 bg-[#f8eef2] p-6 sm:p-10 lg:min-h-[450px] lg:p-14"
           initial={{ opacity: 0, y: 24 }}
@@ -174,22 +165,26 @@ export function HowQuitWorksSection() {
               className="text-[32px] font-semibold leading-[38px] tracking-normal text-[#2f2f35] sm:text-[40px] sm:leading-[48px]"
               style={{ fontFamily: "'DM Sans', ui-sans-serif, system-ui, sans-serif" }}
             >
-              How <span className="text-[#EE389C]">QuitTheApp</span>
+              {t.funnelPage.howWorks.titlePrefix}{" "}
+              <span className="text-[#EE389C]">{t.funnelPage.howWorks.titleHighlight}</span>
               <br />
-              Works
+              {t.funnelPage.howWorks.titleSuffix}
             </h2>
             <p
               className="mt-4 text-sm font-normal leading-5 text-[#666060]"
               style={{ fontFamily: "'DM Sans', ui-sans-serif, system-ui, sans-serif" }}
             >
-              Find your ideal tutor in three simple steps
+              {t.funnelPage.howWorks.subtitle}
             </p>
           </div>
 
           <div className="relative mt-14 lg:mt-20">
             <WaveLine />
             <div className="relative z-10 grid gap-8 md:grid-cols-3 md:gap-6 lg:items-start">
-              {steps.map((step, index) => (
+              {steps.map((step, index) => {
+                const copy = t.funnelPage.howWorks.steps[index];
+
+                return (
                 <motion.article
                   className="relative mx-auto flex w-full max-w-[260px] flex-col text-center md:text-left"
                   initial={{ opacity: 0, y: 18 }}
@@ -209,13 +204,14 @@ export function HowQuitWorksSection() {
                     {step.number}
                   </span>
                   <h3 className="relative z-10 -mt-6 text-xl font-semibold leading-7 text-[#2f2f35] sm:-mt-8">
-                    {step.title}
+                    {copy.title}
                   </h3>
                   <p className="relative z-10 mt-2 text-base leading-6 text-[#3f3f46]">
-                    {step.description}
+                    {copy.description}
                   </p>
                 </motion.article>
-              ))}
+                );
+              })}
             </div>
           </div>
         </motion.div>

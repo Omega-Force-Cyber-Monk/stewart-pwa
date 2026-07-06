@@ -29,6 +29,8 @@ import type {
   OwnerStatus,
   WebsiteStatus,
 } from "../features/admin/adminTypes";
+import { useTranslation } from "../features/localization/useTranslation";
+import type { TranslationDictionary } from "../features/localization/localizationTypes";
 import { cn } from "../lib/cn";
 import { getDriverDisplayDomain, getDriverSitePath } from "../lib/driverSite";
 
@@ -60,8 +62,8 @@ const acuityTone: Record<AcuityStatus, "neutral" | "success" | "warning" | "acce
   needs_review: "warning",
 };
 
-function formatLabel(value: string) {
-  return value.replaceAll("_", " ");
+function getStatusLabel(labels: TranslationDictionary["adminPage"]["statusLabels"], value: string) {
+  return labels[value] || value.replaceAll("_", " ");
 }
 
 function MetricCard({
@@ -91,7 +93,13 @@ function MetricCard({
   );
 }
 
-function OwnerRow({ owner }: { owner: BusinessOwner }) {
+function OwnerRow({
+  adminCopy,
+  owner,
+}: {
+  adminCopy: TranslationDictionary["adminPage"];
+  owner: BusinessOwner;
+}) {
   return (
     <tr className="border-b border-slate-100 last:border-b-0">
       <td className="min-w-[240px] px-4 py-4">
@@ -107,17 +115,17 @@ function OwnerRow({ owner }: { owner: BusinessOwner }) {
       </td>
       <td className="min-w-[180px] px-4 py-4">
         <Badge className="capitalize" tone={statusTone[owner.status]}>
-          {formatLabel(owner.status)}
+          {getStatusLabel(adminCopy.statusLabels, owner.status)}
         </Badge>
       </td>
       <td className="min-w-[180px] px-4 py-4">
         <Badge className="capitalize" tone={websiteTone[owner.websiteStatus]}>
-          {formatLabel(owner.websiteStatus)}
+          {getStatusLabel(adminCopy.statusLabels, owner.websiteStatus)}
         </Badge>
       </td>
       <td className="min-w-[190px] px-4 py-4">
         <Badge className="capitalize" tone={acuityTone[owner.acuityStatus]}>
-          {formatLabel(owner.acuityStatus)}
+          {getStatusLabel(adminCopy.statusLabels, owner.acuityStatus)}
         </Badge>
       </td>
       <td className="min-w-[180px] px-4 py-4">
@@ -127,7 +135,9 @@ function OwnerRow({ owner }: { owner: BusinessOwner }) {
             style={{ width: `${owner.launchProgress}%` }}
           />
         </div>
-        <p className="mt-2 text-sm font-semibold text-slate-600">{owner.launchProgress}% launched</p>
+        <p className="mt-2 text-sm font-semibold text-slate-600">
+          {owner.launchProgress}% {adminCopy.launched}
+        </p>
       </td>
       <td className="min-w-[230px] px-4 py-4">
         <a
@@ -145,6 +155,7 @@ function OwnerRow({ owner }: { owner: BusinessOwner }) {
 }
 
 export default function SuperAdminDashboardPage() {
+  const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const [planFilter, setPlanFilter] = useState<PlanFilter>("all");
   const driverProfile = useAppSelector(selectDriverProfile);
@@ -210,14 +221,12 @@ export default function SuperAdminDashboardPage() {
       <PageContainer className="py-10" size="xl">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <Badge tone="warning">Super admin</Badge>
+            <Badge tone="warning">{t.adminPage.badge}</Badge>
             <h1 className="mt-3 text-3xl font-bold tracking-normal text-slate-950 md:text-5xl">
-              Business owner operations
+              {t.adminPage.title}
             </h1>
             <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600">
-              Maintain the full QuitTheApp owner network: customer websites,
-              launch status, DIY/DFY plan mix, Acuity setup status, DFY
-              fulfillment, and support load.
+              {t.adminPage.subtitle}
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
@@ -226,40 +235,40 @@ export default function SuperAdminDashboardPage() {
                 className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-950 transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
                 to={getDriverSitePath(driverProfile)}
               >
-                View demo owner site
+                {t.adminPage.viewDemoOwnerSite}
                 <ExternalLink aria-hidden="true" className="size-4" />
               </Link>
             )}
             <Button>
               <Settings aria-hidden="true" className="size-4" />
-              Platform settings
+              {t.adminPage.platformSettings}
             </Button>
           </div>
         </div>
 
         <ResponsiveGrid className="mt-8" columns={4} gap="sm">
           <MetricCard
-            helper="Owners who completed checkout"
+            helper={t.adminPage.totalPurchasedHelper}
             icon={Users}
-            label="Total purchased"
+            label={t.adminPage.totalPurchased}
             value={String(totalPurchased)}
           />
           <MetricCard
-            helper="Self-guided launch customers"
+            helper={t.adminPage.diyOwnersHelper}
             icon={Users}
-            label="DIY owners"
+            label={t.adminPage.diyOwners}
             value={String(diyCount)}
           />
           <MetricCard
-            helper="Done-for-you delivery customers"
+            helper={t.adminPage.dfyOwnersHelper}
             icon={ShieldCheck}
-            label="DFY owners"
+            label={t.adminPage.dfyOwners}
             value={String(dfyCount)}
           />
           <MetricCard
-            helper={`${openTickets} support tickets open`}
+            helper={`${openTickets} ${t.adminPage.needsAttentionHelper}`}
             icon={AlertTriangle}
-            label="Needs attention"
+            label={t.adminPage.needsAttention}
             value={String(attentionCount)}
           />
         </ResponsiveGrid>
@@ -267,9 +276,9 @@ export default function SuperAdminDashboardPage() {
         <DashboardCard as="section" className="mt-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h2 className="text-xl font-bold text-slate-950">Owner directory</h2>
+              <h2 className="text-xl font-bold text-slate-950">{t.adminPage.ownerDirectory}</h2>
               <p className="mt-1 text-sm text-slate-600">
-                Search, audit, and monitor each transportation business owner.
+                {t.adminPage.ownerDirectoryDescription}
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
@@ -279,20 +288,20 @@ export default function SuperAdminDashboardPage() {
                   className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400"
                 />
                 <input
-                  aria-label="Search owners"
+                  aria-label={t.adminPage.searchOwners}
                   className="min-h-11 w-full rounded-md border border-slate-300 bg-white pl-10 pr-3 text-sm outline-none transition focus:border-[#EE389C] focus:ring-2 focus:ring-pink-100 sm:w-72"
                   onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Search owners"
+                  placeholder={t.adminPage.searchOwners}
                   value={query}
                 />
               </label>
               <select
-                aria-label="Filter by plan"
+                aria-label={t.adminPage.filterByPlan}
                 className="min-h-11 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold outline-none transition focus:border-[#EE389C] focus:ring-2 focus:ring-pink-100"
                 onChange={(event) => setPlanFilter(event.target.value as PlanFilter)}
                 value={planFilter}
               >
-                <option value="all">All plans</option>
+                <option value="all">{t.adminPage.allPlans}</option>
                 <option value="DIY">DIY</option>
                 <option value="DFY">DFY</option>
               </select>
@@ -303,19 +312,19 @@ export default function SuperAdminDashboardPage() {
             <table className="w-full border-collapse text-left">
               <thead>
                 <tr className="border-y border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
-                  <th className="px-4 py-3">Business</th>
-                  <th className="px-4 py-3">Market</th>
-                  <th className="px-4 py-3">Plan</th>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3">Website</th>
-                  <th className="px-4 py-3">Acuity</th>
-                  <th className="px-4 py-3">Launch</th>
-                  <th className="px-4 py-3">Domain</th>
+                  <th className="px-4 py-3">{t.adminPage.business}</th>
+                  <th className="px-4 py-3">{t.adminPage.market}</th>
+                  <th className="px-4 py-3">{t.adminPage.plan}</th>
+                  <th className="px-4 py-3">{t.adminPage.status}</th>
+                  <th className="px-4 py-3">{t.adminPage.website}</th>
+                  <th className="px-4 py-3">{t.adminPage.acuity}</th>
+                  <th className="px-4 py-3">{t.adminPage.launch}</th>
+                  <th className="px-4 py-3">{t.adminPage.domain}</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredOwners.map((owner) => (
-                  <OwnerRow key={owner.id} owner={owner} />
+                  <OwnerRow adminCopy={t.adminPage} key={owner.id} owner={owner} />
                 ))}
               </tbody>
             </table>
@@ -326,8 +335,10 @@ export default function SuperAdminDashboardPage() {
           <DashboardCard as="section">
             <div className="flex items-center justify-between gap-4">
               <div>
-                <h2 className="text-xl font-bold text-slate-950">DFY fulfillment queue</h2>
-                <p className="mt-1 text-sm text-slate-600">Internal delivery work for launch packages.</p>
+                <h2 className="text-xl font-bold text-slate-950">{t.adminPage.dfyQueue}</h2>
+                <p className="mt-1 text-sm text-slate-600">
+                  {t.adminPage.dfyQueueDescription}
+                </p>
               </div>
               <ShieldCheck aria-hidden="true" className="size-6 text-[#EE389C]" />
             </div>
@@ -340,10 +351,12 @@ export default function SuperAdminDashboardPage() {
                       <p className="mt-1 text-sm text-slate-600">{task.ownerName}</p>
                     </div>
                     <Badge className="capitalize" tone={fulfillmentTone[task.status]}>
-                      {formatLabel(task.status)}
+                      {getStatusLabel(t.adminPage.statusLabels, task.status)}
                     </Badge>
                   </div>
-                  <p className="mt-3 text-sm font-semibold text-slate-500">Due {task.dueDate}</p>
+                  <p className="mt-3 text-sm font-semibold text-slate-500">
+                    {t.adminPage.due} {task.dueDate}
+                  </p>
                 </article>
               ))}
             </div>
@@ -352,26 +365,30 @@ export default function SuperAdminDashboardPage() {
           <DashboardCard as="section">
             <div className="flex items-center justify-between gap-4">
               <div>
-                <h2 className="text-xl font-bold text-slate-950">Website and Acuity setup</h2>
+                <h2 className="text-xl font-bold text-slate-950">
+                  {t.adminPage.websiteAcuitySetup}
+                </h2>
                 <p className="mt-1 text-sm text-slate-600">
-                  Operational readiness for owner customer pages. Bookings remain inside Acuity.
+                  {t.adminPage.websiteAcuityDescription}
                 </p>
               </div>
               <Globe2 aria-hidden="true" className="size-6 text-[#EE389C]" />
             </div>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <div className="rounded-lg border border-slate-200 bg-slate-50 p-5">
-                <p className="text-sm font-semibold text-slate-500">Live websites</p>
+                <p className="text-sm font-semibold text-slate-500">{t.adminPage.liveWebsites}</p>
                 <p className="mt-2 text-3xl font-bold text-slate-950">{liveWebsiteCount}</p>
                 <p className="mt-2 text-sm leading-6 text-slate-600">
-                  Customer-facing owner sites currently marked live.
+                  {t.adminPage.liveWebsitesDescription}
                 </p>
               </div>
               <div className="rounded-lg border border-slate-200 bg-slate-50 p-5">
-                <p className="text-sm font-semibold text-slate-500">Acuity connected</p>
+                <p className="text-sm font-semibold text-slate-500">
+                  {t.adminPage.acuityConnected}
+                </p>
                 <p className="mt-2 text-3xl font-bold text-slate-950">{acuityConnectedCount}</p>
                 <p className="mt-2 text-sm leading-6 text-slate-600">
-                  Owners with scheduling connected or ready for handoff.
+                  {t.adminPage.acuityConnectedDescription}
                 </p>
               </div>
             </div>
@@ -390,10 +407,12 @@ export default function SuperAdminDashboardPage() {
                       </div>
                       <div className="flex flex-wrap gap-2">
                         <Badge className="capitalize" tone={websiteTone[owner.websiteStatus]}>
-                          Site: {formatLabel(owner.websiteStatus)}
+                          {t.adminPage.siteLabel}:{" "}
+                          {getStatusLabel(t.adminPage.statusLabels, owner.websiteStatus)}
                         </Badge>
                         <Badge className="capitalize" tone={acuityTone[owner.acuityStatus]}>
-                          Acuity: {formatLabel(owner.acuityStatus)}
+                          {t.adminPage.acuityLabel}:{" "}
+                          {getStatusLabel(t.adminPage.statusLabels, owner.acuityStatus)}
                         </Badge>
                       </div>
                     </div>
@@ -406,13 +425,9 @@ export default function SuperAdminDashboardPage() {
         <DashboardCard as="section" className="mt-8 border-pink-100 bg-pink-50/60">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h2 className="text-xl font-bold text-slate-950">Frontend-only admin simulator</h2>
+              <h2 className="text-xl font-bold text-slate-950">{t.adminPage.simulatorTitle}</h2>
               <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-                This dashboard is prepared for future backend operations. Today it
-                uses typed mock data plus the current demo owner profile from Redux.
-                No API calls, authentication, billing operations, booking counts, or
-                real scheduling actions are performed. Customer appointments are
-                assumed to live in Acuity.
+                {t.adminPage.simulatorDescription}
               </p>
             </div>
             <span
@@ -421,7 +436,7 @@ export default function SuperAdminDashboardPage() {
                 "border border-pink-200 bg-white text-[#EE389C]",
               )}
             >
-              Ready for backend integration
+              {t.adminPage.readyForBackend}
             </span>
           </div>
         </DashboardCard>

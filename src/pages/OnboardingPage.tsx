@@ -22,7 +22,7 @@ export default function OnboardingPage() {
       <div className="mb-8 max-w-3xl">
         <p className="text-sm font-semibold text-cyan-700">{t.common.appName}</p>
         <h1 className="mt-2 text-3xl font-bold tracking-normal text-slate-950 md:text-5xl">
-          {t.onboarding.businessSetupTitle}
+          {t.onboarding.title}
         </h1>
         <p className="mt-3 text-base leading-7 text-slate-600">{t.onboarding.subtitle}</p>
       </div>
