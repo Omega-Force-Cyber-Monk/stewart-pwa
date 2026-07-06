@@ -15,7 +15,7 @@ export default function NotFoundPage() {
         <p className="mt-3 text-slate-600">{t.notFound.description}</p>
         <Link
           className="mt-6 inline-flex h-11 cursor-pointer items-center justify-center rounded-md border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-950 transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
-          to="/standard"
+          to="/women"
         >
           {t.notFound.action}
         </Link>

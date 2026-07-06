@@ -10,7 +10,7 @@ export function RequirePurchase() {
   );
 
   if (!hasPurchased) {
-    return <Navigate to="/standard" replace state={{ from: location }} />;
+    return <Navigate to="/women" replace state={{ from: location }} />;
   }
 
   if (onboardingCompleted) {

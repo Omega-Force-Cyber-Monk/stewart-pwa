@@ -41,6 +41,7 @@ export type TranslationDictionary = {
   navigation: {
     home: string;
     whatsIncluded: string;
+    pricing: string;
     successStories: string;
     faq: string;
     contact: string;
@@ -248,6 +249,16 @@ export type TranslationDictionary = {
     successMessage: string;
     requestAppointment: string;
     backToDashboard: string;
+  };
+
+  comingSoon: {
+    badge: string;
+    standardTitle: string;
+    coupleTitle: string;
+    seniorsTitle: string;
+    titleSuffix: string;
+    description: string;
+    buttonLabel: string;
   };
 
   adminPage: {

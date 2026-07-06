@@ -19,6 +19,7 @@ export const localizationData: LocaleDictionary = {
     navigation: {
       home: "Home",
       whatsIncluded: "What's Included",
+      pricing: "Pricing",
       successStories: "Success Stories",
       faq: "FAQ",
       contact: "Contact",
@@ -33,9 +34,11 @@ export const localizationData: LocaleDictionary = {
       secureCheckout: "Secure Checkout",
       stripeInspiredBadge: "Stripe-inspired demo",
       baseProductName: "QuitTheApp Launch System",
-      baseProductDescription: "Frontend-only checkout simulation for the $495 base product.",
+      baseProductDescription:
+        "Frontend-only checkout simulation for the $495 base product.",
       dfyUpgradeName: "Done-For-You upgrade",
-      dfyUpgradeDescription: "Add the $245 DFY delivery path to switch your dashboard pipeline.",
+      dfyUpgradeDescription:
+        "Add the $245 DFY delivery path to switch your dashboard pipeline.",
       oneTimeFeeLabel: "$495 one-time fee",
       optionalUpgradeLabel: "$245 optional upgrade",
       subtotalLabel: "Subtotal",
@@ -43,7 +46,8 @@ export const localizationData: LocaleDictionary = {
       totalLabel: "Total",
       completePurchase: "Complete mock purchase",
       cancel: "Cancel",
-      securePaymentNotice: "No real payment will be processed. This is a secure-looking frontend demo.",
+      securePaymentNotice:
+        "No real payment will be processed. This is a secure-looking frontend demo.",
       closeCheckout: "Close checkout",
       successTitle: "Purchase complete",
       successMessage: "Your QuitTheApp launch system is ready.",
@@ -66,27 +70,33 @@ export const localizationData: LocaleDictionary = {
       faqs: [
         {
           question: "What is QuitTheApp?",
-          answer: "QuitTheApp is a frontend-only PWA concept for helping drivers launch an independent transportation business.",
+          answer:
+            "QuitTheApp is a frontend-only PWA concept for helping drivers launch an independent transportation business.",
         },
         {
           question: "Who is this for?",
-          answer: "It is for drivers who want direct clients, clearer positioning, and a business beyond app-based rides.",
+          answer:
+            "It is for drivers who want direct clients, clearer positioning, and a business beyond app-based rides.",
         },
         {
           question: "Is this a subscription?",
-          answer: "The planned base product is presented as a one-time payment in this funnel UI.",
+          answer:
+            "The planned base product is presented as a one-time payment in this funnel UI.",
         },
         {
           question: "Do I need technical experience?",
-          answer: "No. The system is designed to guide business setup, offers, outreach, and booking decisions step by step.",
+          answer:
+            "No. The system is designed to guide business setup, offers, outreach, and booking decisions step by step.",
         },
         {
           question: "How long does setup take?",
-          answer: "Timing depends on your market and readiness, but the flow is designed to help you organize the essentials quickly.",
+          answer:
+            "Timing depends on your market and readiness, but the flow is designed to help you organize the essentials quickly.",
         },
         {
           question: "What is the Done-For-You option?",
-          answer: "The optional upgrade represents extra setup support. Checkout and delivery logic are not implemented yet.",
+          answer:
+            "The optional upgrade represents extra setup support. Checkout and delivery logic are not implemented yet.",
         },
       ],
     },
@@ -115,22 +125,26 @@ export const localizationData: LocaleDictionary = {
         cards: [
           {
             title: "Quick Launch",
-            description: "Launch your airport transportation business with proven systems.",
+            description:
+              "Launch your airport transportation business with proven systems.",
             imageAlt: "Quick launch date selector illustration",
           },
           {
             title: "Customer Acquisition Center™",
-            description: "Get tools, scripts, and marketing resources to attract and retain clients.",
+            description:
+              "Get tools, scripts, and marketing resources to attract and retain clients.",
             imageAlt: "Customer acquisition center illustration",
           },
           {
             title: "Personalized Starting Page™",
-            description: "Show travelers why your business stands out and build trust immediately.",
+            description:
+              "Show travelers why your business stands out and build trust immediately.",
             imageAlt: "Personalized starting page tools illustration",
           },
           {
             title: "Repeat Rider Engine",
-            description: "Encourage returning customers and increase long-term bookings.",
+            description:
+              "Encourage returning customers and increase long-term bookings.",
             imageAlt: "Repeat rider engine flow illustration",
           },
         ],
@@ -174,20 +188,31 @@ export const localizationData: LocaleDictionary = {
         reasons: [
           {
             title: "Reliability",
-            description: "Customers value dependable service and professionalism.",
+            description:
+              "Customers value dependable service and professionalism.",
           },
           {
             title: "Personal Safety",
-            description: "Women travelers often prefer trusted women-operated transportation.",
+            description:
+              "Women travelers often prefer trusted women-operated transportation.",
           },
           {
             title: "Strong Demand",
-            description: "A growing market seeks personalized airport transportation.",
+            description:
+              "A growing market seeks personalized airport transportation.",
           },
         ],
         tagRows: [
-          ["Own your customer list", "Start your business in about 30 days", "Build repeat clients"],
-          ["Keep more revenue", "Operate independently", "Create a brand customers trust"],
+          [
+            "Own your customer list",
+            "Start your business in about 30 days",
+            "Build repeat clients",
+          ],
+          [
+            "Keep more revenue",
+            "Operate independently",
+            "Create a brand customers trust",
+          ],
         ],
       },
       howWorks: {
@@ -206,7 +231,8 @@ export const localizationData: LocaleDictionary = {
           },
           {
             title: "Get Customers",
-            description: "Begin attracting travelers and generating repeat bookings.",
+            description:
+              "Begin attracting travelers and generating repeat bookings.",
           },
         ],
       },
@@ -217,7 +243,8 @@ export const localizationData: LocaleDictionary = {
         titleHighlight: "Plan for",
         titleSecondHighlight: "Your",
         titleSuffix: "Exclusive Journey",
-        subtitle: "Flexible pricing designed to fit your goals, schedule, and budget.",
+        subtitle:
+          "Flexible pricing designed to fit your goals, schedule, and budget.",
         description:
           "This subscription plan includes access to the Launch Dashboard, Operator Dashboard, comprehensive training resources, hosting, human support, and lifetime updates-providing everything you need to get started, manage your operations, and stay up to date.",
       },
@@ -263,13 +290,20 @@ export const localizationData: LocaleDictionary = {
       },
       footerCta: {
         title: "Ready to Launch?",
-        subtitle: "Start building your women-focused airport transportation business today.",
+        subtitle:
+          "Start building your women-focused airport transportation business today.",
         ctaPrefix: "Launch My Business",
       },
       footer: {
         ariaLabel: "Footer navigation",
-        links: ["Privacy Policy", "Terms of Service", "Contact Support", "Contact"],
-        copyright: "© 2026 QuitTheApp. All Rights Reserved. Own Your Work. Keep What You Earn.",
+        links: [
+          "Privacy Policy",
+          "Terms of Service",
+          "Contact Support",
+          "Contact",
+        ],
+        copyright:
+          "© 2026 QuitTheApp. All Rights Reserved. Own Your Work. Keep What You Earn.",
       },
     },
     onboarding: {
@@ -290,7 +324,8 @@ export const localizationData: LocaleDictionary = {
       summaryHeadshot: "Headshot Preview",
       uploadButton: "Choose image",
       replaceImage: "Replace image",
-      uploadPlaceholder: "JPEG, PNG, or WEBP. Preview stays on this device only.",
+      uploadPlaceholder:
+        "JPEG, PNG, or WEBP. Preview stays on this device only.",
       fullNameLabel: "Full name",
       fullNamePlaceholder: "Test Driver",
       targetCityLabel: "Target city",
@@ -300,7 +335,8 @@ export const localizationData: LocaleDictionary = {
       preferredDomainLabel: "Preferred domain",
       preferredDomainPlaceholder: "testdrivertransport.com",
       headshotLabel: "Headshot preview URL",
-      headshotHelper: "Optional for now. A blob URL or image preview path can be used later.",
+      headshotHelper:
+        "Optional for now. A blob URL or image preview path can be used later.",
       initializeDashboard: "Initialize dashboard",
       validationRequired: "This field is required.",
       validationPreferredDomain: "Use letters, numbers, hyphens, or dots only.",
@@ -314,9 +350,10 @@ export const localizationData: LocaleDictionary = {
       dfyPathTitle: "Done-For-You delivery pipeline",
       personalizedSiteTitle: "Personalized customer website",
       personalizedSiteDescription: "Your public booking page is available at",
-      viewCustomerPage: "View customer page",
+      viewCustomerPage: "View My page",
       progressLabel: "Launch progress",
-      motivationalMessage: "Great progress! Complete all modules to launch your business.",
+      motivationalMessage:
+        "Great progress! Complete all modules to launch your business.",
       resourcesLabel: "Resources",
       statusNotStarted: "Not started",
       statusInProgress: "In progress",
@@ -330,8 +367,10 @@ export const localizationData: LocaleDictionary = {
       heroEyebrow: "Private airport transportation in",
       heroTitlePrefix: "Book a trusted ride with",
       heroTitleSuffix: ".",
-      heroDescriptionPrefix: "Professional hotel-to-airport and airport-to-hotel transportation serving",
-      heroDescriptionSuffix: "Choose your route, time, and passenger count below.",
+      heroDescriptionPrefix:
+        "Professional hotel-to-airport and airport-to-hotel transportation serving",
+      heroDescriptionSuffix:
+        "Choose your route, time, and passenger count below.",
       trustedService: "Trusted local service",
       airportReadyRides: "Airport-ready rides",
       easyScheduling: "Easy scheduling",
@@ -342,7 +381,8 @@ export const localizationData: LocaleDictionary = {
       coverage: "Coverage",
       coverageDescriptionJoiner: "hotels, homes, and",
       tripTypes: "Trip types",
-      tripTypesDescription: "Hotel to airport, airport to hotel, and private transfer requests.",
+      tripTypesDescription:
+        "Hotel to airport, airport to hotel, and private transfer requests.",
       bookingStatus: "Booking status",
       bookingStatusDescription:
         "This demo collects appointment details locally. No real booking is sent.",
@@ -365,6 +405,16 @@ export const localizationData: LocaleDictionary = {
       requestAppointment: "Request appointment",
       backToDashboard: "Back to dashboard",
     },
+    comingSoon: {
+      badge: "Coming soon",
+      standardTitle: "Standard funnel",
+      coupleTitle: "Couples funnel",
+      seniorsTitle: "Seniors funnel",
+      titleSuffix: "is coming soon",
+      description:
+        "This audience page is still being prepared. The women-focused funnel is the complete live experience right now.",
+      buttonLabel: "Go to the women page",
+    },
     adminPage: {
       badge: "Super admin",
       title: "Business owner operations",
@@ -381,7 +431,8 @@ export const localizationData: LocaleDictionary = {
       needsAttention: "Needs attention",
       needsAttentionHelper: "support tickets open",
       ownerDirectory: "Owner directory",
-      ownerDirectoryDescription: "Search, audit, and monitor each transportation business owner.",
+      ownerDirectoryDescription:
+        "Search, audit, and monitor each transportation business owner.",
       searchOwners: "Search owners",
       filterByPlan: "Filter by plan",
       allPlans: "All plans",
@@ -401,9 +452,11 @@ export const localizationData: LocaleDictionary = {
       websiteAcuityDescription:
         "Operational readiness for owner customer pages. Bookings remain inside Acuity.",
       liveWebsites: "Live websites",
-      liveWebsitesDescription: "Customer-facing owner sites currently marked live.",
+      liveWebsitesDescription:
+        "Customer-facing owner sites currently marked live.",
       acuityConnected: "Acuity connected",
-      acuityConnectedDescription: "Owners with scheduling connected or ready for handoff.",
+      acuityConnectedDescription:
+        "Owners with scheduling connected or ready for handoff.",
       siteLabel: "Site",
       acuityLabel: "Acuity",
       simulatorTitle: "Frontend-only admin simulator",
@@ -430,7 +483,7 @@ export const localizationData: LocaleDictionary = {
       label: "404",
       title: "Page not found",
       description: "This route is not part of the QuitTheApp launch flow.",
-      action: "Back to standard funnel",
+      action: "Back to women funnel",
     },
   },
   es: {
@@ -451,6 +504,7 @@ export const localizationData: LocaleDictionary = {
     navigation: {
       home: "Inicio",
       whatsIncluded: "Lo que incluye",
+      pricing: "Precios",
       successStories: "Historias de exito",
       faq: "FAQ",
       contact: "Contacto",
@@ -467,7 +521,8 @@ export const localizationData: LocaleDictionary = {
       baseProductName: "Sistema de lanzamiento QuitTheApp",
       baseProductDescription: "Simulacion frontend del producto base de $495.",
       dfyUpgradeName: "Mejora Done-For-You",
-      dfyUpgradeDescription: "Agrega la ruta DFY de $245 para cambiar el panel a una entrega guiada.",
+      dfyUpgradeDescription:
+        "Agrega la ruta DFY de $245 para cambiar el panel a una entrega guiada.",
       oneTimeFeeLabel: "Pago unico de $495",
       optionalUpgradeLabel: "Mejora opcional de $245",
       subtotalLabel: "Subtotal",
@@ -475,7 +530,8 @@ export const localizationData: LocaleDictionary = {
       totalLabel: "Total",
       completePurchase: "Completar pago simulado",
       cancel: "Cancelar",
-      securePaymentNotice: "No se procesara ningun pago real. Esta es una demo frontend con apariencia segura.",
+      securePaymentNotice:
+        "No se procesara ningun pago real. Esta es una demo frontend con apariencia segura.",
       closeCheckout: "Cerrar pago",
       successTitle: "Compra completada",
       successMessage: "Tu sistema de lanzamiento QuitTheApp esta listo.",
@@ -498,27 +554,33 @@ export const localizationData: LocaleDictionary = {
       faqs: [
         {
           question: "Que es QuitTheApp?",
-          answer: "QuitTheApp es un concepto de PWA frontend para ayudar a conductores a lanzar un negocio independiente de transporte.",
+          answer:
+            "QuitTheApp es un concepto de PWA frontend para ayudar a conductores a lanzar un negocio independiente de transporte.",
         },
         {
           question: "Para quien es?",
-          answer: "Es para conductores que quieren clientes directos, posicionamiento claro y un negocio mas alla de las apps de viajes.",
+          answer:
+            "Es para conductores que quieren clientes directos, posicionamiento claro y un negocio mas alla de las apps de viajes.",
         },
         {
           question: "Es una suscripcion?",
-          answer: "El producto base planeado se presenta como un pago unico en esta interfaz de funnel.",
+          answer:
+            "El producto base planeado se presenta como un pago unico en esta interfaz de funnel.",
         },
         {
           question: "Necesito experiencia tecnica?",
-          answer: "No. El sistema guia la configuracion del negocio, ofertas, contacto y decisiones de reservas paso a paso.",
+          answer:
+            "No. El sistema guia la configuracion del negocio, ofertas, contacto y decisiones de reservas paso a paso.",
         },
         {
           question: "Cuanto tarda la configuracion?",
-          answer: "Depende de tu mercado y preparacion, pero el flujo esta pensado para organizar lo esencial rapidamente.",
+          answer:
+            "Depende de tu mercado y preparacion, pero el flujo esta pensado para organizar lo esencial rapidamente.",
         },
         {
           question: "Que es la opcion Done-For-You?",
-          answer: "La mejora opcional representa soporte adicional de configuracion. El pago y la entrega aun no estan implementados.",
+          answer:
+            "La mejora opcional representa soporte adicional de configuracion. El pago y la entrega aun no estan implementados.",
         },
       ],
     },
@@ -526,7 +588,8 @@ export const localizationData: LocaleDictionary = {
       hero: {
         headlinePrefix: "Lanza un",
         headlineHighlight: "Negocio enfocado en mujeres",
-        headlineSuffix: "de transporte privado al aeropuerto basado en confianza.",
+        headlineSuffix:
+          "de transporte privado al aeropuerto basado en confianza.",
         subtitle:
           "QuitTheApp ayuda a mujeres operadoras a iniciar un negocio de transporte al aeropuerto con reservas directas y el respaldo de una plataforma confiable.",
         imageAlts: [
@@ -547,22 +610,28 @@ export const localizationData: LocaleDictionary = {
         cards: [
           {
             title: "Lanzamiento rapido",
-            description: "Lanza tu negocio de transporte al aeropuerto con sistemas probados.",
-            imageAlt: "Ilustracion de selector de fecha para lanzamiento rapido",
+            description:
+              "Lanza tu negocio de transporte al aeropuerto con sistemas probados.",
+            imageAlt:
+              "Ilustracion de selector de fecha para lanzamiento rapido",
           },
           {
             title: "Centro de adquisicion de clientes™",
-            description: "Obtén herramientas, guiones y recursos de marketing para atraer y retener clientes.",
+            description:
+              "Obtén herramientas, guiones y recursos de marketing para atraer y retener clientes.",
             imageAlt: "Ilustracion del centro de adquisicion de clientes",
           },
           {
             title: "Pagina inicial personalizada™",
-            description: "Muestra a los viajeros por que tu negocio destaca y genera confianza de inmediato.",
-            imageAlt: "Ilustracion de herramientas para pagina inicial personalizada",
+            description:
+              "Muestra a los viajeros por que tu negocio destaca y genera confianza de inmediato.",
+            imageAlt:
+              "Ilustracion de herramientas para pagina inicial personalizada",
           },
           {
             title: "Motor de pasajeros recurrentes",
-            description: "Motiva a clientes recurrentes y aumenta reservas a largo plazo.",
+            description:
+              "Motiva a clientes recurrentes y aumenta reservas a largo plazo.",
             imageAlt: "Ilustracion del flujo de pasajeros recurrentes",
           },
         ],
@@ -606,20 +675,31 @@ export const localizationData: LocaleDictionary = {
         reasons: [
           {
             title: "Confiabilidad",
-            description: "Los clientes valoran un servicio confiable y profesional.",
+            description:
+              "Los clientes valoran un servicio confiable y profesional.",
           },
           {
             title: "Seguridad personal",
-            description: "Las viajeras suelen preferir transporte confiable operado por mujeres.",
+            description:
+              "Las viajeras suelen preferir transporte confiable operado por mujeres.",
           },
           {
             title: "Alta demanda",
-            description: "Un mercado en crecimiento busca transporte personalizado al aeropuerto.",
+            description:
+              "Un mercado en crecimiento busca transporte personalizado al aeropuerto.",
           },
         ],
         tagRows: [
-          ["Controla tu lista de clientes", "Inicia tu negocio en unos 30 dias", "Crea clientes recurrentes"],
-          ["Conserva mas ingresos", "Opera de forma independiente", "Crea una marca confiable"],
+          [
+            "Controla tu lista de clientes",
+            "Inicia tu negocio en unos 30 dias",
+            "Crea clientes recurrentes",
+          ],
+          [
+            "Conserva mas ingresos",
+            "Opera de forma independiente",
+            "Crea una marca confiable",
+          ],
         ],
       },
       howWorks: {
@@ -638,7 +718,8 @@ export const localizationData: LocaleDictionary = {
           },
           {
             title: "Consigue clientes",
-            description: "Empieza a atraer viajeros y generar reservas recurrentes.",
+            description:
+              "Empieza a atraer viajeros y generar reservas recurrentes.",
           },
         ],
       },
@@ -649,7 +730,8 @@ export const localizationData: LocaleDictionary = {
         titleHighlight: "plan para",
         titleSecondHighlight: "tu",
         titleSuffix: "viaje exclusivo",
-        subtitle: "Precios flexibles disenados para tus metas, agenda y presupuesto.",
+        subtitle:
+          "Precios flexibles disenados para tus metas, agenda y presupuesto.",
         description:
           "Este plan incluye acceso al panel de lanzamiento, panel de operador, recursos completos de capacitacion, hosting, soporte humano y actualizaciones de por vida; todo lo que necesitas para empezar, administrar tus operaciones y mantenerte al dia.",
       },
@@ -695,18 +777,26 @@ export const localizationData: LocaleDictionary = {
       },
       footerCta: {
         title: "Lista para lanzar?",
-        subtitle: "Empieza hoy a construir tu negocio de transporte al aeropuerto enfocado en mujeres.",
+        subtitle:
+          "Empieza hoy a construir tu negocio de transporte al aeropuerto enfocado en mujeres.",
         ctaPrefix: "Lanzar mi negocio",
       },
       footer: {
         ariaLabel: "Navegacion del pie de pagina",
-        links: ["Politica de privacidad", "Terminos de servicio", "Soporte", "Contacto"],
-        copyright: "© 2026 QuitTheApp. Todos los derechos reservados. Trabaja para ti. Conserva lo que ganas.",
+        links: [
+          "Politica de privacidad",
+          "Terminos de servicio",
+          "Soporte",
+          "Contacto",
+        ],
+        copyright:
+          "© 2026 QuitTheApp. Todos los derechos reservados. Trabaja para ti. Conserva lo que ganas.",
       },
     },
     onboarding: {
       title: "Cuentanos sobre tu lanzamiento de transporte.",
-      subtitle: "Este formulario prepara tu experiencia de panel del lado del cliente.",
+      subtitle:
+        "Este formulario prepara tu experiencia de panel del lado del cliente.",
       businessSetupTitle: "Configuracion del negocio",
       progressPurchase: "Compra",
       progressBusinessSetup: "Configuracion del negocio",
@@ -722,7 +812,8 @@ export const localizationData: LocaleDictionary = {
       summaryHeadshot: "Vista previa de foto",
       uploadButton: "Elegir imagen",
       replaceImage: "Reemplazar imagen",
-      uploadPlaceholder: "JPEG, PNG o WEBP. La vista previa queda solo en este dispositivo.",
+      uploadPlaceholder:
+        "JPEG, PNG o WEBP. La vista previa queda solo en este dispositivo.",
       fullNameLabel: "Nombre completo",
       fullNamePlaceholder: "Conductor de prueba",
       targetCityLabel: "Ciudad objetivo",
@@ -732,7 +823,8 @@ export const localizationData: LocaleDictionary = {
       preferredDomainLabel: "Dominio preferido",
       preferredDomainPlaceholder: "transportedeprueba.com",
       headshotLabel: "URL de vista previa de foto",
-      headshotHelper: "Opcional por ahora. Mas adelante puedes usar una URL blob o una ruta de imagen.",
+      headshotHelper:
+        "Opcional por ahora. Mas adelante puedes usar una URL blob o una ruta de imagen.",
       initializeDashboard: "Inicializar panel",
       validationRequired: "Este campo es obligatorio.",
       validationPreferredDomain: "Usa solo letras, numeros, guiones o puntos.",
@@ -741,14 +833,17 @@ export const localizationData: LocaleDictionary = {
     },
     dashboard: {
       title: "Panel de lanzamiento",
-      subtitle: "Sigue tu ruta de lanzamiento del lado del cliente y tus proximos pasos.",
+      subtitle:
+        "Sigue tu ruta de lanzamiento del lado del cliente y tus proximos pasos.",
       diyPathTitle: "Modulos de lanzamiento DIY",
       dfyPathTitle: "Pipeline de entrega Done-For-You",
       personalizedSiteTitle: "Sitio personalizado para clientes",
-      personalizedSiteDescription: "Tu pagina publica de reservas esta disponible en",
-      viewCustomerPage: "Ver pagina del cliente",
+      personalizedSiteDescription:
+        "Tu pagina publica de reservas esta disponible en",
+      viewCustomerPage: "visita mi página",
       progressLabel: "Progreso del lanzamiento",
-      motivationalMessage: "Buen progreso. Completa todos los modulos para lanzar tu negocio.",
+      motivationalMessage:
+        "Buen progreso. Completa todos los modulos para lanzar tu negocio.",
       resourcesLabel: "Recursos",
       statusNotStarted: "No iniciado",
       statusInProgress: "En progreso",
@@ -764,7 +859,8 @@ export const localizationData: LocaleDictionary = {
       heroTitleSuffix: ".",
       heroDescriptionPrefix:
         "Transporte profesional de hotel al aeropuerto y del aeropuerto al hotel para",
-      heroDescriptionSuffix: "Elige tu ruta, hora y cantidad de pasajeros abajo.",
+      heroDescriptionSuffix:
+        "Elige tu ruta, hora y cantidad de pasajeros abajo.",
       trustedService: "Servicio local confiable",
       airportReadyRides: "Viajes listos para aeropuerto",
       easyScheduling: "Reserva sencilla",
@@ -799,6 +895,16 @@ export const localizationData: LocaleDictionary = {
       requestAppointment: "Solicitar cita",
       backToDashboard: "Volver al panel",
     },
+    comingSoon: {
+      badge: "Proximamente",
+      standardTitle: "Funnel estandar",
+      coupleTitle: "Funnel para parejas",
+      seniorsTitle: "Funnel para seniors",
+      titleSuffix: "estara disponible pronto",
+      description:
+        "Esta pagina de audiencia todavia se esta preparando. El funnel enfocado en mujeres es la experiencia completa disponible ahora.",
+      buttonLabel: "Ir a la pagina de mujeres",
+    },
     adminPage: {
       badge: "Super admin",
       title: "Operaciones de propietarios",
@@ -830,15 +936,18 @@ export const localizationData: LocaleDictionary = {
       domain: "Dominio",
       launched: "lanzado",
       dfyQueue: "Cola de entrega DFY",
-      dfyQueueDescription: "Trabajo interno de entrega para paquetes de lanzamiento.",
+      dfyQueueDescription:
+        "Trabajo interno de entrega para paquetes de lanzamiento.",
       due: "Vence",
       websiteAcuitySetup: "Configuracion de sitio web y Acuity",
       websiteAcuityDescription:
         "Preparacion operativa para paginas de clientes. Las reservas permanecen en Acuity.",
       liveWebsites: "Sitios activos",
-      liveWebsitesDescription: "Sitios visibles para clientes marcados como activos.",
+      liveWebsitesDescription:
+        "Sitios visibles para clientes marcados como activos.",
       acuityConnected: "Acuity conectado",
-      acuityConnectedDescription: "Propietarios con reservas conectadas o listas para entrega.",
+      acuityConnectedDescription:
+        "Propietarios con reservas conectadas o listas para entrega.",
       siteLabel: "Sitio",
       acuityLabel: "Acuity",
       simulatorTitle: "Simulador admin solo frontend",
@@ -864,7 +973,8 @@ export const localizationData: LocaleDictionary = {
     notFound: {
       label: "404",
       title: "Pagina no encontrada",
-      description: "Esta ruta no forma parte del flujo de lanzamiento de QuitTheApp.",
+      description:
+        "Esta ruta no forma parte del flujo de lanzamiento de QuitTheApp.",
       action: "Volver al funnel estandar",
     },
   },

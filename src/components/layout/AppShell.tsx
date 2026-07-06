@@ -1,6 +1,6 @@
 import { ArrowRight, Menu, X } from "lucide-react";
 import { type ReactNode, useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { LanguageToggle } from "../common/LanguageToggle";
 import { useAppSelector } from "../../app/hooks";
@@ -16,16 +16,18 @@ type AppShellProps = {
 
 export function AppShell({ children }: AppShellProps) {
   const location = useLocation();
+  const navigate = useNavigate();
   const onboardingCompleted = useAppSelector(selectOnboardingCompleted);
   const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const baseNavItems = [
-    { label: t.navigation.home, to: "/standard" },
-    { label: t.navigation.whatsIncluded, to: "/standard#whats-included" },
-    { label: t.navigation.successStories, to: "/standard#success-stories" },
-    { label: t.navigation.faq, to: "/standard#faq" },
-    { label: t.navigation.contact, to: "/standard#contact" },
-    { label: t.navigation.admin, to: "/admin" },
+    { label: t.navigation.home, to: "/women" },
+    { label: t.navigation.whatsIncluded, to: "/women#whats-included" },
+    { label: t.navigation.pricing, to: "/women#pricing" },
+    { label: t.navigation.successStories, to: "/women#success-stories" },
+    { label: t.navigation.faq, to: "/women#faq" },
+    { label: t.navigation.contact, to: "/women#contact" },
+    // { label: t.navigation.admin, to: "/admin" },
   ];
   const navItems = onboardingCompleted
     ? [...baseNavItems, { label: t.navigation.dashboard, to: "/dashboard" }]
@@ -49,6 +51,13 @@ export function AppShell({ children }: AppShellProps) {
     return location.pathname === pathname && !location.hash;
   };
 
+  const openCheckoutFromNav = () => {
+    setIsMenuOpen(false);
+    navigate("/women#pricing", {
+      state: { checkoutRequestId: Date.now() },
+    });
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-950">
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
@@ -60,7 +69,7 @@ export function AppShell({ children }: AppShellProps) {
             <Link
               aria-label={t.common.homeLabel}
               className="flex min-h-11 min-w-0 cursor-pointer items-center rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
-              to="/standard"
+              to="/women"
             >
               <img
                 alt="QuitTheApp"
@@ -93,13 +102,14 @@ export function AppShell({ children }: AppShellProps) {
 
           <div className="hidden items-center gap-3 lg:flex">
             <LanguageToggle />
-            <Link
+            <button
               className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full bg-pink-500 px-5 text-sm font-bold text-white shadow-sm transition hover:bg-pink-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
-              to="/standard#pricing"
+              onClick={openCheckoutFromNav}
+              type="button"
             >
               {t.navigation.startedBusiness}
               <ArrowRight aria-hidden="true" className="size-4" />
-            </Link>
+            </button>
           </div>
 
           <button
@@ -137,14 +147,14 @@ export function AppShell({ children }: AppShellProps) {
               </nav>
               <div className="flex flex-col gap-3 border-t border-slate-100 pt-3 sm:flex-row sm:items-center sm:justify-between">
                 <LanguageToggle />
-                <Link
+                <button
                   className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full bg-pink-500 px-5 text-sm font-bold text-white shadow-sm transition hover:bg-pink-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
-                  onClick={() => setIsMenuOpen(false)}
-                  to="/standard#pricing"
+                  onClick={openCheckoutFromNav}
+                  type="button"
                 >
                   {t.navigation.startedBusiness}
                   <ArrowRight aria-hidden="true" className="size-4" />
-                </Link>
+                </button>
               </div>
             </PageContainer>
           </div>

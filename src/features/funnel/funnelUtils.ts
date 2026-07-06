@@ -5,7 +5,7 @@ import type { FunnelConfig } from "./funnelTypes";
 export function getFunnelTypeFromPathname(pathname: string): FunnelType {
   if (pathname.startsWith("/women")) return "women";
   if (pathname.startsWith("/seniors")) return "seniors";
-  if (pathname.startsWith("/couples")) return "couples";
+  if (pathname.startsWith("/couple")) return "couples";
   if (pathname.startsWith("/standard")) return "standard";
 
   return "standard";

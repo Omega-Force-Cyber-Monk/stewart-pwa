@@ -5,7 +5,7 @@ export const funnelRouteConfigs: FunnelRouteConfig[] = [
   { path: "/standard", funnelType: "standard" },
   { path: "/women", funnelType: "women" },
   { path: "/seniors", funnelType: "seniors" },
-  { path: "/couples", funnelType: "couples" },
+  { path: "/couple", funnelType: "couples" },
 ];
 
 export const funnelConfigs: Record<FunnelType, FunnelConfig> = {
@@ -92,7 +92,7 @@ export const funnelConfigs: Record<FunnelType, FunnelConfig> = {
   },
   couples: {
     key: "couples",
-    routePath: "/couples",
+    routePath: "/couple",
     audienceLabel: "Couples & Family Operators",
     price: 495,
     dfyUpgradePrice: 245,

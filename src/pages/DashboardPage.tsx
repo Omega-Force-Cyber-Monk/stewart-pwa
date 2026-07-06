@@ -47,7 +47,7 @@ export default function DashboardPage() {
   const handleReset = () => {
     dispatch(resetDemo());
     clearPersistedState();
-    navigate("/standard");
+    navigate("/women");
   };
 
   const statusLabels: Record<ModuleStatus, string> = {

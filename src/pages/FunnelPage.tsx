@@ -21,25 +21,45 @@ import { getFunnelConfig, getFunnelTypeFromPathname } from "../features/funnel/f
 import { useTranslation } from "../features/localization/useTranslation";
 import { cn } from "../lib/cn";
 
+type FunnelLocationState = {
+  checkoutRequestId?: number;
+};
+
 export default function FunnelPage() {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const activeFunnel = useAppSelector(selectActiveFunnel);
   const { t } = useTranslation();
-  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [isCheckoutManuallyOpen, setIsCheckoutManuallyOpen] = useState(false);
+  const [dismissedCheckoutRequestId, setDismissedCheckoutRequestId] = useState<
+    number | undefined
+  >();
 
   const routeFunnelType = getFunnelTypeFromPathname(location.pathname);
+  const checkoutRequestId = (location.state as FunnelLocationState | null)?.checkoutRequestId;
   const config = getFunnelConfig(activeFunnel);
+  const isCheckoutOpen =
+    isCheckoutManuallyOpen ||
+    Boolean(checkoutRequestId && checkoutRequestId !== dismissedCheckoutRequestId);
 
   useEffect(() => {
     dispatch(setActiveFunnel(routeFunnelType));
   }, [dispatch, routeFunnelType]);
 
+  const openCheckout = () => {
+    setIsCheckoutManuallyOpen(true);
+  };
+
+  const closeCheckout = () => {
+    setIsCheckoutManuallyOpen(false);
+    setDismissedCheckoutRequestId(checkoutRequestId);
+  };
+
   return (
     <main className={cn("min-h-[calc(100vh-73px)]", config.theme.pageClassName)}>
       <HeroSection
         config={config}
-        onPrimaryCta={() => setIsCheckoutOpen(true)}
+        onPrimaryCta={openCheckout}
       />
       <CustomerBuildingSection />
       <OwnBusinessSection />
@@ -56,15 +76,15 @@ export default function FunnelPage() {
         buttonLabel={t.marketing.launchCta}
         includedItems={t.marketing.pricingIncludes}
         oneTimePayment={t.marketing.oneTimePayment}
-        onCta={() => setIsCheckoutOpen(true)}
+        onCta={openCheckout}
         pricingCopy={t.funnelPage.pricing}
         whatsIncluded={t.marketing.whatsIncluded}
       />
       <WomenBusinessStoriesSection />
 
-      <FooterCTA onCta={() => setIsCheckoutOpen(true)} />
+      <FooterCTA onCta={openCheckout} />
       <SiteFooter />
-      <CheckoutModal isOpen={isCheckoutOpen} onClose={() => setIsCheckoutOpen(false)} />
+      <CheckoutModal isOpen={isCheckoutOpen} onClose={closeCheckout} />
     </main>
   );
 }
