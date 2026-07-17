@@ -1,5 +1,4 @@
 import { type ReactNode } from "react";
-import { Navbar } from "./Navbar";
 
 type AppShellProps = {
   children: ReactNode;
@@ -8,7 +7,6 @@ type AppShellProps = {
 export function AppShell({ children }: AppShellProps) {
   return (
     <div className="min-h-screen bg-[#0b0f19] text-slate-50 font-sans selection:bg-[#f42661]/30">
-      <Navbar />
       <main>
         {children}
       </main>

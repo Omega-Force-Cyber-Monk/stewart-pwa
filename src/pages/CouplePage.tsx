@@ -2,15 +2,15 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { cn } from "../lib/cn";
-import logoWeb from "../assets/logoWeb.png";
-import { ArrowRight, CalendarDays, Check, CheckCircle2, ChevronRight, ClipboardList, Contact, Gift, Heart, Lock, Monitor, Plane, RefreshCcw, Rocket, ShieldCheck, Star, User, Users, XCircle } from "lucide-react";
+import coupleLogo from "../assets/coupleLogo.png";
+import { ArrowRight, CalendarDays, Check, CheckCircle2, ChevronRight, ClipboardList, Contact, Gift, Heart, Lock, Monitor, Plane, RefreshCcw, Rocket, ShieldCheck, Star, User, Users, XCircle, CreditCard, Clock } from "lucide-react";
 import { PageContainer } from "../components/layout/PageContainer";
-import womenBannerImage from "../assets/womenBannerImage.png";
+import coupleBanner from "../assets/coupleBanner.png";
 import womenMiddleSection from "../assets/womenMiddleSection.png";
 import reviewImage from "../assets/review.jpg";
 
 
-export default function WomenPage() {
+export default function CouplePage() {
   return (
     <>
       <Navbar />
@@ -28,96 +28,130 @@ export default function WomenPage() {
 
 function HeroBanner() {
   return (
-    <div className="relative w-full bg-[#0b0f19]">
-      {/* Background Image */}
-      <div className="absolute inset-0 z-0">
+    <div className="relative w-full bg-[#f8fafc] overflow-hidden">
+      {/* Background Image on the right side */}
+      <div className="absolute top-0 right-0 w-full lg:w-[60%] xl:w-[65%] h-[500px] lg:h-full z-0">
         <img
-          src={womenBannerImage}
-          alt="Launch a Women-Focused Private Airport Business"
-          className="w-full h-full object-cover block"
+          src={coupleBanner}
+          alt="Couple in a car"
+          className="w-full h-full object-cover object-[center_top] lg:object-center block"
+          style={{
+            WebkitMaskImage: "linear-gradient(to right, transparent, black 15%)",
+            maskImage: "linear-gradient(to right, transparent, black 15%)",
+          }}
         />
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0b0f19] via-[#0b0f19]/80 to-[#0b0f19]/40 lg:to-transparent"></div>
+        {/* Subtle gradient for text readability if needed on mobile */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#f8fafc] via-[#f8fafc]/80 to-transparent lg:hidden"></div>
       </div>
 
-      {/* Main Content dictating height */}
-      <div className="relative z-10 w-full flex items-center py-16 sm:py-20 lg:py-28">
+      <div className="relative z-10 w-full py-16 sm:py-20 lg:py-28 pt-28 sm:pt-32 lg:pt-36">
         <PageContainer size="full">
-          <div className="flex flex-col lg:flex-row w-full justify-between items-center gap-[clamp(2rem,4vw,3rem)] mt-8 lg:mt-[clamp(1rem,3vw,3rem)]">
+          <div className="flex flex-col lg:flex-row w-full justify-between items-start lg:items-center gap-10">
             {/* Left Side Content */}
-            <div className="w-full max-w-[clamp(280px,40vw,672px)] text-left z-10">
-              <h1 className="text-[clamp(2rem,3.5vw,3.75rem)] font-bold text-white leading-tight mb-[clamp(1rem,1vw,1rem)] tracking-tight">
-                Launch a <br />
-                <span className="text-[#f42661]">Women-Focused</span> <br />
-                Private Airport <br />
-                Business Built on Trust.
+            <div className="w-full lg:w-1/2 xl:w-[55%] text-left z-10 relative">
+              <h1 className="text-[clamp(2.25rem,4vw,3.5rem)] font-extrabold text-[#0b0f19] leading-[1.1] mb-6 tracking-tight uppercase">
+                Build An Airport<br />
+                Transportation Business<br />
+                <span className="text-[#2563eb] relative inline-block mt-1">
+                  Together.
+                  <svg className="absolute -bottom-2 sm:-bottom-3 left-0 w-full h-2 sm:h-3 text-[#eab308]" viewBox="0 0 100 10" preserveAspectRatio="none">
+                    <path d="M0 5 Q 50 10 100 0" fill="transparent" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                  </svg>
+                </span>
               </h1>
 
-              <p className="text-[clamp(1rem,1.2vw,1.125rem)] text-slate-200 mb-[clamp(1.5rem,2vw,2rem)] max-w-[clamp(280px,35vw,576px)] leading-relaxed">
-                QuitTheApp helps women operators start a direct-booking airport
-                transportation business with the tools to get booked, build
-                trust, and create repeat riders.
+              <p className="text-[clamp(1.125rem,1.5vw,1.25rem)] text-slate-700 font-semibold mb-8 max-w-[500px] leading-snug">
+                Build your own business, your schedule, and the life you want—while helping travelers every day.
               </p>
 
-              <ul className="space-y-[clamp(0.5rem,0.8vw,0.5rem)] mb-[clamp(1.5rem,2vw,2rem)]">
+              <ul className="space-y-3 mb-10 max-w-[500px]">
                 {[
-                  "Own your customer list",
-                  "Offer safe, professional airport rides",
-                  "Build repeat riders and referrals",
+                  "Attract & keep repeat customers",
+                  "Set your own schedule together",
                   "Keep 100% of every fare",
-                  "Create a business asset you control",
+                  "Create long-term income & freedom",
+                  "Build a real business asset as a couple",
                 ].map((item, i) => (
                   <li
                     key={i}
-                    className="flex items-center text-slate-100 text-[clamp(0.875rem,1.1vw,1.125rem)]"
+                    className="flex items-center text-[#0b0f19] font-bold text-[clamp(0.9rem,1.1vw,1.1rem)]"
                   >
-                    <CheckCircle2 className="text-[#f42661] mr-[clamp(0.5rem,0.8vw,0.75rem)] w-[clamp(1.25rem,1.8vw,1.5rem)] h-[clamp(1.25rem,1.8vw,1.5rem)] fill-[#f42661] text-white shrink-0" />
+                    <CheckCircle2 className="text-white mr-3 w-5 h-5 sm:w-6 sm:h-6 fill-[#2563eb] shrink-0" />
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
 
-              <button className="bg-[#f42661] hover:bg-[#d91950] text-white font-bold py-[clamp(0.75rem,1vw,1rem)] px-[clamp(1rem,2vw,2rem)] rounded-[clamp(0.25rem,0.5vw,0.375rem)] transition-colors shadow-lg shadow-[#f42661]/30 flex items-center justify-between group w-full sm:w-auto text-[clamp(0.875rem,1.1vw,1.125rem)]">
-                <span className="text-left leading-snug">
-                  Start My Women-Focused <br className="hidden sm:block" />
-                  Private Airport Business™ — $495
+              <button className="bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-bold py-4 px-6 rounded-[0.5rem] transition-colors shadow-lg shadow-[#eab308]/30 flex items-center justify-between group w-full sm:w-auto text-[clamp(1rem,1.2vw,1.125rem)] mb-12 sm:mb-16 lg:mb-20">
+                <span className="text-left leading-snug pr-4">
+                  Build Our Airport Transportation Business Today™
                 </span>
-                <div className="bg-white rounded-full p-[clamp(0.15rem,0.3vw,0.25rem)] ml-[clamp(0.5rem,1vw,1rem)] group-hover:translate-x-1 transition-transform shrink-0">
-                  <ChevronRight className="text-[#f42661] w-[clamp(1rem,1.2vw,1.25rem)] h-[clamp(1rem,1.2vw,1.25rem)]" />
-                </div>
+                <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 group-hover:translate-x-1 transition-transform" />
               </button>
+
+              {/* Bottom Trust Badges */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8 bg-white/90 backdrop-blur-md rounded-2xl p-4 sm:p-5 shadow-sm inline-flex border border-slate-200">
+                <div className="flex items-center gap-3">
+                  <CreditCard className="w-7 h-7 sm:w-8 sm:h-8 text-[#0b0f19] shrink-0" strokeWidth={1.5} />
+                  <div className="text-[10px] sm:text-xs font-bold text-[#0b0f19] leading-tight">
+                    One-time payment<br />
+                    <span className="font-medium text-slate-500">No monthly fees</span>
+                  </div>
+                </div>
+                <div className="hidden sm:block w-px h-10 bg-slate-200"></div>
+                <div className="flex items-center gap-3">
+                  <Clock className="w-7 h-7 sm:w-8 sm:h-8 text-[#0b0f19] shrink-0" strokeWidth={1.5} />
+                  <div className="text-[10px] sm:text-xs font-bold text-[#0b0f19] leading-tight">
+                    Quick Launch Booking Flow<br />
+                    <span className="font-medium text-slate-500">in 48-72 Hours</span>
+                  </div>
+                </div>
+                <div className="hidden sm:block w-px h-10 bg-slate-200"></div>
+                <div className="flex items-center gap-3">
+                  <ShieldCheck className="w-7 h-7 sm:w-8 sm:h-8 text-[#0b0f19] shrink-0" strokeWidth={1.5} />
+                  <div className="text-[10px] sm:text-xs font-bold text-[#0b0f19] leading-tight">
+                    Built for couples<br />
+                    <span className="font-medium text-slate-500">Your business. Your future.</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* Right Side Trust Badge - SCALED UP */}
-            <div className="flex bg-white rounded-[clamp(1rem,1.5vw,1.5rem)] p-[clamp(1.5rem,2.5vw,3rem)] shadow-2xl w-full max-w-[clamp(320px,35vw,500px)] flex-col items-center text-center lg:translate-y-[clamp(2rem,8vw,10rem)] z-10 mx-auto lg:mx-0">
-              <div className="flex items-center gap-[clamp(0.75rem,1.5vw,1.5rem)] mb-[clamp(1rem,2vw,2rem)] w-full justify-center lg:justify-start">
-                <ShieldCheck
-                  className="text-[#f42661] w-[clamp(4rem,7vw,7rem)] h-[clamp(4rem,7vw,7rem)] shrink-0"
-                  strokeWidth={1.5}
-                />
-                <div className="text-left">
-                  <h3 className="text-[#0b0f19] font-bold text-[clamp(1.25rem,1.8vw,1.75rem)] leading-tight">
-                    Trusted.
-                    <br />
-                    Professional.
-                    <br />
-                    Women Focused.
-                  </h3>
+            {/* Right Side Card */}
+            <div className="w-full lg:w-[45%] xl:w-[40%] flex justify-center lg:justify-end z-10 mt-10 lg:mt-0">
+              <div className="bg-[#0b0f19] rounded-[2rem] p-8 shadow-2xl w-full max-w-[420px] border-t-[6px] border-[#eab308]">
+                <h3 className="text-[#eab308] font-bold text-base sm:text-lg mb-6 uppercase tracking-wider">
+                  YOUR BUSINESS GROWS WHEN:
+                </h3>
+                
+                <ul className="space-y-4 mb-8">
+                  {[
+                    "Customers book again",
+                    "Families refer friends",
+                    "Hotels & airports recommend you",
+                    "Airport travelers save your card",
+                    "Your reputation compounds",
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-center text-white text-sm sm:text-[15px] font-semibold">
+                      <CheckCircle2 className="w-5 h-5 mr-3 fill-[#2563eb] text-white shrink-0" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="w-full h-px bg-slate-800 mb-8"></div>
+
+                <div>
+                  <h4 className="text-white font-extrabold text-xl sm:text-2xl leading-tight mb-4">
+                    Real Business.<br />
+                    Real Customers.<br />
+                    Real Freedom.™
+                  </h4>
+                  <svg className="w-24 sm:w-32 h-3 sm:h-4 text-[#eab308]" viewBox="0 0 100 10" preserveAspectRatio="none">
+                    <path d="M0 5 Q 50 10 100 0" fill="transparent" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                  </svg>
                 </div>
               </div>
-
-              <div className="flex items-center justify-center gap-[clamp(0.25rem,0.5vw,0.75rem)] mb-[clamp(0.5rem,1vw,1rem)] w-full mt-[clamp(0.25rem,0.5vw,0.5rem)]">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star
-                    key={star}
-                    className="text-yellow-400 w-[clamp(1.75rem,3vw,2.5rem)] h-[clamp(1.75rem,3vw,2.5rem)] fill-yellow-400"
-                  />
-                ))}
-              </div>
-
-              <p className="text-[#f42661] font-bold text-[clamp(1.25rem,1.8vw,1.75rem)] mt-[clamp(0.25rem,0.5vw,0.5rem)]">
-                Built for Success.
-              </p>
             </div>
           </div>
         </PageContainer>
@@ -125,7 +159,6 @@ function HeroBanner() {
     </div>
   );
 }
-
 const features = [
   {
     icon: CalendarDays,
@@ -155,7 +188,7 @@ function FeaturesSection() {
       <PageContainer size="full">
         <div className="text-center mb-8">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#0b0f19] tracking-tight">
-            Everything You Need to <span className="text-[#f42661]">Start Building Your Own Customers</span>
+            Everything You Need to <span className="text-[#eab308]">Start Building Your Own Customers</span>
           </h2>
         </div>
 
@@ -163,7 +196,7 @@ function FeaturesSection() {
           {features.map((feature, idx) => (
             <div key={idx} className="bg-white rounded-xl border border-slate-200 p-5 flex flex-col items-center text-center shadow-sm hover:shadow-md transition-shadow">
               <div className="mb-4 bg-white p-2">
-                <feature.icon className="w-10 h-10 text-[#f42661]" strokeWidth={1.5} />
+                <feature.icon className="w-10 h-10 text-[#eab308]" strokeWidth={1.5} />
               </div>
               <h3 className="text-lg font-bold text-[#0b0f19] mb-2 leading-snug">
                 {feature.title}
@@ -175,10 +208,10 @@ function FeaturesSection() {
           ))}
         </div>
 
-        <div className="bg-[#f42661]/5 border border-[#f42661]/10 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-4 max-w-4xl mx-auto">
-          <Gift className="w-8 h-8 text-[#f42661] shrink-0" strokeWidth={1.5} />
+        <div className="bg-[#eab308]/5 border border-[#eab308]/10 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-4 max-w-4xl mx-auto">
+          <Gift className="w-8 h-8 text-[#eab308] shrink-0" strokeWidth={1.5} />
           <p className="text-slate-700 text-xs sm:text-sm text-center sm:text-left leading-relaxed">
-            <strong className="text-[#f42661]">Also includes:</strong> Launch Dashboard™ access, hosting setup, training resources, lifetime updates, and real human support.
+            <strong className="text-[#eab308]">Also includes:</strong> Launch Dashboard™ access, hosting setup, training resources, lifetime updates, and real human support.
           </p>
         </div>
       </PageContainer>
@@ -224,7 +257,7 @@ function ComparisonSection() {
 
           {/* Left Panel: Relying on Apps */}
           <div className="w-full lg:w-[35%] p-8 sm:p-10 relative z-10">
-            <h3 className="text-2xl sm:text-3xl font-bold text-[#f42661] mb-8 text-center lg:text-left">
+            <h3 className="text-2xl sm:text-3xl font-bold text-[#eab308] mb-8 text-center lg:text-left">
               Relying on Apps
             </h3>
             <ul className="space-y-5 lg:pr-12">
@@ -238,7 +271,7 @@ function ComparisonSection() {
                   key={i}
                   className="flex items-center text-slate-800 text-sm sm:text-base font-semibold"
                 >
-                  <XCircle className="w-6 h-6 sm:w-7 sm:h-7 mr-4 fill-[#f42661] text-white shrink-0" />
+                  <XCircle className="w-6 h-6 sm:w-7 sm:h-7 mr-4 fill-[#eab308] text-white shrink-0" />
                   <span>{item}</span>
                 </li>
               ))}
@@ -248,10 +281,10 @@ function ComparisonSection() {
           {/* Spacer for desktop to let the image show through */}
           <div className="hidden lg:block lg:w-[30%] relative z-10"></div>
 
-          {/* Right Panel: Your Women-Focused Business - Solid white for hard edge */}
+          {/* Right Panel: Your Couple-Focused Business - Solid white for hard edge */}
           <div className="w-full lg:w-[35%] p-8 sm:p-10 relative z-10 bg-white">
             <h3 className="text-2xl sm:text-3xl font-bold text-[#22c55e] mb-8 text-center lg:text-left">
-              Your Women-Focused Business
+              Your Couple-Focused Business
             </h3>
             <ul className="space-y-5 lg:pl-12">
               {[
@@ -301,13 +334,13 @@ function WhyWinSection() {
     <section className="bg-white py-8 border-b border-slate-100">
       <PageContainer size="full">
         <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#0b0f19] text-center mb-6">
-          Why Women Operators Can Win
+          Why Couple Operators Can Win
         </h2>
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-4 md:divide-x divide-slate-200 w-full">
           {reasons.map((reason, idx) => (
             <div key={idx} className="flex flex-col items-center text-center px-4">
-              <reason.icon className="w-8 h-8 text-[#f42661] mb-3" strokeWidth={1.5} />
+              <reason.icon className="w-8 h-8 text-[#eab308] mb-3" strokeWidth={1.5} />
               <h4 className="font-bold text-[#0b0f19] text-sm sm:text-base leading-snug max-w-[140px]">
                 {reason.title}
               </h4>
@@ -355,11 +388,11 @@ function HowItWorksSection() {
                 
                 {/* Icon Container with Overlapping Number */}
                 <div className="relative shrink-0">
-                  <div className="absolute -left-2 sm:-left-3 top-1/2 -translate-y-1/2 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#f42661] text-white flex items-center justify-center font-bold text-xs sm:text-sm z-10 shadow-sm border border-white">
+                  <div className="absolute -left-2 sm:-left-3 top-1/2 -translate-y-1/2 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#eab308] text-white flex items-center justify-center font-bold text-xs sm:text-sm z-10 shadow-sm border border-white">
                     {step.number}
                   </div>
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#f42661]/5 border border-[#f42661]/10 flex items-center justify-center relative z-0">
-                    <step.icon className="w-7 h-7 sm:w-8 sm:h-8 text-[#f42661]" strokeWidth={1.5} />
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#eab308]/5 border border-[#eab308]/10 flex items-center justify-center relative z-0">
+                    <step.icon className="w-7 h-7 sm:w-8 sm:h-8 text-[#eab308]" strokeWidth={1.5} />
                   </div>
                 </div>
 
@@ -377,7 +410,7 @@ function HowItWorksSection() {
 
               {/* Arrow separator (hidden on mobile, hidden after last item) */}
               {idx < steps.length - 1 && (
-                <div className="hidden lg:flex shrink-0 mx-2 text-[#f42661]">
+                <div className="hidden lg:flex shrink-0 mx-2 text-[#eab308]">
                   <ArrowRight className="w-5 h-5 opacity-60" strokeWidth={2} />
                 </div>
               )}
@@ -413,7 +446,7 @@ function ReviewsSection() {
       <PageContainer size="full">
         <div className="w-full rounded-[2rem] border border-slate-200 shadow-sm p-6 sm:p-8 md:p-10 bg-white">
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#0b0f19] text-center mb-8">
-            Women Operators Are Building Real Businesses
+            Couple Operators Are Building Real Businesses
           </h2>
           
           <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-6 w-full">
@@ -444,7 +477,7 @@ function ReviewsSection() {
                   
                   {/* Author */}
                   <div>
-                    <h5 className="font-bold text-[#f42661] text-sm sm:text-base">
+                    <h5 className="font-bold text-[#eab308] text-sm sm:text-base">
                       {review.name}
                     </h5>
                     <span className="text-slate-600 text-xs sm:text-sm">
@@ -502,13 +535,13 @@ function FaqSection() {
       <PageContainer size="full">
         <div className="w-full rounded-[2rem] border border-slate-200 shadow-sm p-6 sm:p-8 md:p-10 bg-white">
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#0b0f19] text-center mb-8 sm:mb-10">
-            Frequently <span className="text-[#f42661]">Asked Questions</span>
+            Frequently <span className="text-[#eab308]">Asked Questions</span>
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
             {faqs.map((faq, idx) => (
               <div key={idx} className="flex items-start gap-4">
-                <div className="shrink-0 w-8 h-8 rounded-full bg-[#f42661] text-white flex items-center justify-center font-bold text-sm shadow-sm mt-0.5">
+                <div className="shrink-0 w-8 h-8 rounded-full bg-[#eab308] text-white flex items-center justify-center font-bold text-sm shadow-sm mt-0.5">
                   Q
                 </div>
                 <div className="flex flex-col">
@@ -546,7 +579,7 @@ function FooterCTASection() {
   ];
 
   return (
-    <section className="bg-[#0b0f19] pt-12 pb-6 border-t-4 border-[#f42661]">
+    <section className="bg-[#0b0f19] pt-12 pb-6 border-t-4 border-[#eab308]">
       <PageContainer size="full">
         {/* Main 3-Column Layout */}
         <div className="flex flex-col lg:flex-row justify-between gap-10 lg:gap-8 pb-10 border-b border-slate-800">
@@ -554,11 +587,11 @@ function FooterCTASection() {
           {/* Column 1: Intro */}
           <div className="lg:w-1/3 flex flex-col pr-0 lg:pr-8 lg:border-r border-slate-800">
             <h3 className="text-2xl sm:text-3xl font-bold text-white leading-tight mb-6">
-              Start My <span className="text-[#f42661]">Women-Focused</span><br />
+              Start My <span className="text-[#eab308]">Couple-Focused</span><br />
               Private Airport Business™
             </h3>
             <div className="flex items-start gap-4">
-              <Heart className="w-10 h-10 text-[#f42661] shrink-0 stroke-[1.5]" />
+              <Heart className="w-10 h-10 text-[#eab308] shrink-0 stroke-[1.5]" />
               <p className="text-slate-300 text-sm leading-relaxed">
                 Build a trusted, professional business that puts you in control—and your customers keep coming back.
               </p>
@@ -568,13 +601,13 @@ function FooterCTASection() {
           {/* Column 2: Pricing & Checklist */}
           <div className="lg:w-1/3 flex flex-col justify-center">
             <div className="flex items-baseline gap-3 mb-4">
-              <span className="text-4xl font-bold text-[#f42661]">$495</span>
+              <span className="text-4xl font-bold text-[#eab308]">$495</span>
               <span className="text-white font-bold text-lg">One-time payment</span>
             </div>
             <ul className="space-y-2">
               {benefits.map((benefit, i) => (
                 <li key={i} className="flex items-center text-slate-300 text-sm">
-                  <Check className="w-5 h-5 text-[#f42661] mr-3 shrink-0 stroke-[3]" />
+                  <Check className="w-5 h-5 text-[#eab308] mr-3 shrink-0 stroke-[3]" />
                   <span>{benefit}</span>
                 </li>
               ))}
@@ -583,13 +616,13 @@ function FooterCTASection() {
 
           {/* Column 3: Button & Payments */}
           <div className="lg:w-1/3 flex flex-col justify-center items-center lg:items-end">
-            <button className="bg-[#f42661] hover:bg-[#d91950] text-white font-bold py-4 px-6 rounded-lg transition-colors shadow-lg shadow-[#f42661]/20 flex items-center justify-between group w-full text-base sm:text-lg mb-4">
+            <button className="bg-[#eab308] hover:bg-[#ca8a04] text-white font-bold py-4 px-6 rounded-lg transition-colors shadow-lg shadow-[#eab308]/20 flex items-center justify-between group w-full text-base sm:text-lg mb-4">
               <span className="text-center w-full">
-                Start My Women-Focused <br className="hidden xl:block" />
+                Start My Couple-Focused <br className="hidden xl:block" />
                 Private Airport Business™ — $495
               </span>
               <div className="bg-white rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
-                <ChevronRight className="w-5 h-5 text-[#f42661] stroke-[3]" />
+                <ChevronRight className="w-5 h-5 text-[#eab308] stroke-[3]" />
               </div>
             </button>
             
@@ -646,9 +679,9 @@ function Navbar() {
     { label: "Pricing", href: "#pricing" },
   ];
 
-  const logo = logoWeb;
-  const hoverTextClass = "hover:text-[#f42661]";
-  const btnClass = "bg-[#f42661] hover:bg-[#d91950] shadow-[#f42661]/20";
+  const logo = coupleLogo;
+  const hoverTextClass = "hover:text-[#eab308]";
+  const btnClass = "bg-[#eab308] hover:bg-[#ca8a04] shadow-[#eab308]/20";
 
   return (
     <header
