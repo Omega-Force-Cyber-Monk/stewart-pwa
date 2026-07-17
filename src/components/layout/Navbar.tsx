@@ -28,10 +28,10 @@ export function Navbar() {
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent",
-        isScrolled ? "py-3 shadow-sm backdrop-blur-sm" : "py-5"
+        isScrolled ? "py-3 shadow-sm backdrop-blur-sm" : "py-5",
       )}
     >
-      <PageContainer size="landing">
+      <PageContainer size="full">
         <div className="flex items-center justify-between">
           {/* Logo Section */}
           <Link to="/" className="flex items-center gap-2 z-50">
@@ -39,13 +39,16 @@ export function Navbar() {
           </Link>
 
           {/* Right Section: Nav + CTA */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-8">
             <nav className="flex items-center gap-8">
               {navLinks.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
-                  className="text-white text-sm font-semibold tracking-wide hover:text-[#f42661] transition-colors"
+                  className={cn(
+                    "text-white text-sm font-semibold tracking-wide hover:text-[#f42661] transition-colors",
+                    isScrolled && "text-slate-300",
+                  )}
                 >
                   {link.label}
                 </a>
@@ -59,7 +62,7 @@ export function Navbar() {
 
           {/* Mobile Menu Toggle */}
           <button
-            className="md:hidden text-white z-50"
+            className="lg:hidden text-white z-50"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle Menu"
           >
@@ -70,7 +73,7 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-[#0b0f19] border-t border-slate-800 shadow-xl">
+        <div className="lg:hidden absolute top-full left-0 right-0 bg-[#0b0f19] border-t border-slate-800 shadow-xl">
           <nav className="flex flex-col p-6 gap-6">
             {navLinks.map((link) => (
               <a
