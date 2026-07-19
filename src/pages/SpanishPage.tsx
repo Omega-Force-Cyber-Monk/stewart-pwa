@@ -65,10 +65,8 @@ function SpanishNavbar() {
     <>
       <nav
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-          isScrolled
-            ? "bg-[#040a23]/95 backdrop-blur-md shadow-md py-3"
-            : "bg-[#040a23] py-4",
+          "left-0 right-0 z-50 transition-all duration-300",
+        isScrolled ? "fixed top-0 bg-[#040a23]/95 backdrop-blur-md shadow-md py-3" : "absolute top-0 bg-transparent py-4",
         )}
       >
         <PageContainer size="full">
@@ -113,10 +111,9 @@ function SpanishNavbar() {
 
               <a
                 href="#pricing"
-                className="bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-2.5 px-5 rounded-lg transition-all flex items-center gap-2 text-sm shadow-sm"
+                className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg"
               >
-                <span>Start My Private Airport Business™ — $495</span>
-                <ArrowRight className="w-4 h-4" />
+                Start My Business — $495
               </a>
             </div>
 
@@ -174,13 +171,13 @@ function SpanishNavbar() {
 
 function HeroBanner() {
   return (
-    <div className="relative w-full min-h-[100svh] flex flex-col justify-between overflow-hidden bg-[#040a23] pt-[80px]">
+    <div className="relative w-full h-[100svh] flex flex-col justify-between overflow-hidden bg-[#040a23] pt-[80px]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
           src={spanishBanner}
           alt="Spanish Banner"
-          className="w-full h-full object-cover object-[center_top] lg:object-right"
+          className="w-full h-full object-cover object-[center_top] lg:object-[right_top]"
         />
         {/* Dark overlay for text readability */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/70 to-transparent lg:to-black/30"></div>

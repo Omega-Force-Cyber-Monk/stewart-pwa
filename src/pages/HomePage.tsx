@@ -53,8 +53,8 @@ function SeniorNavbar() {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled ? "bg-[#040a23] shadow-md py-3" : "bg-[#040a23] py-4",
+        "left-0 right-0 z-50 transition-all duration-300",
+        isScrolled ? "fixed top-0 bg-[#040a23] shadow-md py-3" : "absolute top-0 bg-transparent py-4",
       )}
     >
       <PageContainer size="full">
@@ -93,16 +93,8 @@ function SeniorNavbar() {
             >
               FAQ
             </a>
-            <button className="cursor-pointer bg-[#15803d] hover:bg-[#166534] text-white font-bold py-2.5 px-4 rounded-md transition-colors text-sm flex items-center gap-3">
-              <span className="text-right leading-tight">
-                Start My Private Airport
-                <br />
-                Business™ — $495
-              </span>
-              <ArrowRight
-                className="w-7 h-7 bg-white text-[#15803d] rounded-full p-1"
-                strokeWidth={3}
-              />
+            <button className="cursor-pointer bg-[#15803d] hover:bg-[#166534] text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg">
+              Start My Business — $495
             </button>
           </nav>
         </div>
@@ -113,12 +105,12 @@ function SeniorNavbar() {
 
 function HeroBanner() {
   return (
-    <div className="relative w-full min-h-[100svh] flex flex-col justify-between overflow-hidden bg-[#040a23] pt-[80px]">
+    <div className="relative w-full h-[100svh] flex flex-col justify-between overflow-hidden bg-[#040a23] pt-[80px]">
       {/* Background Image */}
       <img
         src={seniorBanner}
         alt="Senior couple"
-        className="absolute inset-0 w-full h-full object-cover object-[center_top] lg:object-right"
+        className="absolute inset-0 w-full h-full object-cover object-[center_top] lg:object-[right_top]"
       />
       {/* Dark gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-[#040a23] via-[#040a23]/90 to-transparent w-full lg:w-[70%] xl:w-[65%]"></div>
@@ -379,7 +371,7 @@ function ComparisonSection() {
             <img
               src={coupleComparisonLeft}
               alt="Unhappy couple in car"
-              className="absolute inset-0 w-full h-full object-cover object-center"
+              className="absolute inset-0 w-full h-full object-cover object-[center_top] lg:object-[right_top]"
               style={{
                 WebkitMaskImage:
                   "linear-gradient(to right, black 60%, transparent 100%)",
@@ -437,7 +429,7 @@ function ComparisonSection() {
             <img
               src={coupleComparisonRight}
               alt="Happy couple in car"
-              className="absolute inset-0 w-full h-full object-cover object-center"
+              className="absolute inset-0 w-full h-full object-cover object-[center_top] lg:object-[right_top]"
               style={{
                 WebkitMaskImage:
                   "linear-gradient(to left, black 60%, transparent 100%)",
@@ -456,7 +448,7 @@ function ComparisonSection() {
               <img
                 src={coupleComparisonLeft}
                 alt="Unhappy couple"
-                className="absolute inset-0 w-full h-full object-cover object-center"
+                className="absolute inset-0 w-full h-full object-cover object-[center_top] lg:object-[right_top]"
                 style={{
                   WebkitMaskImage:
                     "linear-gradient(to right, black 50%, transparent 100%)",
@@ -512,7 +504,7 @@ function ComparisonSection() {
               <img
                 src={coupleComparisonRight}
                 alt="Happy couple"
-                className="absolute inset-0 w-full h-full object-cover object-center"
+                className="absolute inset-0 w-full h-full object-cover object-[center_top] lg:object-[right_top]"
                 style={{
                   WebkitMaskImage:
                     "linear-gradient(to left, black 50%, transparent 100%)",

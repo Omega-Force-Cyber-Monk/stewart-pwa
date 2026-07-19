@@ -47,13 +47,13 @@ export default function WomenPage() {
 
 function HeroBanner() {
   return (
-    <div className="relative w-full bg-[#0b0f19] min-h-[100svh] flex flex-col justify-between overflow-hidden pt-[80px]">
+    <div className="relative w-full bg-[#0b0f19] h-[100svh] flex flex-col justify-between overflow-hidden pt-[80px]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
           src={womenBannerImage}
           alt="Launch a Women-Focused Private Airport Business"
-          className="w-full h-full object-cover block"
+          className="w-full h-full object-cover object-[center_top] lg:object-[right_top]"
         />
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#0b0f19] via-[#0b0f19]/80 to-[#0b0f19]/40 lg:to-transparent"></div>
@@ -224,88 +224,115 @@ function FeaturesSection() {
 
 function ComparisonSection() {
   return (
-    <section className="bg-white py-3" id="comparison">
+    <section id="comparison" className="bg-white py-3 sm:py-4">
       <PageContainer size="full">
-        <div className="w-full rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden relative flex flex-col lg:flex-row bg-white">
-          {/* Background Image - fades on left, hard cut by right panel */}
-          <div
-            className="absolute inset-y-0 left-[20%] right-0 z-0 hidden lg:block"
-            style={{
-              WebkitMaskImage:
-                "linear-gradient(to right, transparent, black 25%)",
-              maskImage: "linear-gradient(to right, transparent, black 25%)",
-            }}
-          >
-            <img
-              src={womenMiddleSection}
-              alt="Woman at airport"
-              className="w-fit object-cover object-center"
-            />
+        <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
+          {/* Mobile: stack image above content */}
+          <div className="lg:hidden">
+            <div className="relative h-48 sm:h-60 overflow-hidden">
+              <img
+                src={womenMiddleSection}
+                alt="Woman at airport"
+                className="h-full w-full object-cover object-center"
+              />
+              <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent" />
+            </div>
+            <div className="px-5 py-4">
+              <h3 className="mb-3 text-xl font-bold text-[#f42661] text-center">
+                Relying on Apps
+              </h3>
+              <ul className="space-y-2 mb-5">
+                {[
+                  "Customers belong to the platform",
+                  "No repeat system",
+                  "Limited control",
+                  "Dependent on app traffic",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <XCircle className="h-5 w-5 shrink-0 fill-[#f42661] text-white" />
+                    <span className="text-[14px] font-semibold text-slate-800">
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <h3 className="mb-3 text-xl font-bold text-[#16a34a] text-center">
+                Your Women-Focused Business
+              </h3>
+              <ul className="space-y-2">
+                {[
+                  "You own your customers",
+                  "Repeat riders and referrals",
+                  "Set your rates and keep 100%",
+                  "Professional trust-based experience",
+                  "Real assets that grow",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <CheckCircle2 className="h-5 w-5 shrink-0 fill-[#16a34a] text-white" />
+                    <span className="text-[14px] font-semibold text-slate-800">
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
-          {/* Mobile Image (visible only on small screens) */}
-          <div
-            className="w-full h-48 sm:h-64 lg:hidden relative"
-            style={{
-              WebkitMaskImage:
-                "linear-gradient(to bottom, transparent, black 25%)",
-            }}
-          >
-            <img
-              src={womenMiddleSection}
-              alt="Woman at airport"
-              className="w-full h-full object-cover object-center"
-            />
-          </div>
+          {/* Desktop: Left | Image | Right — image is natural size, panels center vertically */}
+          <div className="hidden lg:flex flex-row items-center">
+            {/* Left */}
+            <div className="w-[32%] shrink-0 bg-white px-8 py-0 flex flex-col justify-center">
+              <h3 className="mb-4 text-[22px] font-bold text-[#f42661]">
+                Relying on Apps
+              </h3>
+              <ul className="space-y-3">
+                {[
+                  "Customers belong to the platform",
+                  "No repeat system",
+                  "Limited control",
+                  "Dependent on app traffic",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <XCircle className="h-5 w-5 shrink-0 fill-[#f42661] text-white" />
+                    <span className="text-[14px] font-semibold text-slate-800 leading-snug">
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Left Panel: Relying on Apps */}
-          <div className="w-full lg:w-[35%] p-6 relative z-10">
-            <h3 className="text-2xl sm:text-3xl font-bold text-[#f42661] mb-8 text-center lg:text-left">
-              Relying on Apps
-            </h3>
-            <ul className="space-y-5 lg:pr-12">
-              {[
-                "Customers belong to the platform",
-                "No repeat system",
-                "Limited control",
-                "Dependent on app traffic",
-              ].map((item, i) => (
-                <li
-                  key={i}
-                  className="flex items-center text-slate-800 text-sm sm:text-base font-semibold"
-                >
-                  <XCircle className="w-6 h-6 sm:w-7 sm:h-7 mr-4 fill-[#f42661] text-white shrink-0" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+            {/* Center Image — natural width/height, left edge blended */}
+            <div className="flex-1 relative overflow-hidden">
+              <img
+                src={womenMiddleSection}
+                alt="Woman at airport"
+                className="w-full h-auto block"
+              />
+            </div>
 
-          {/* Spacer for desktop to let the image show through */}
-          <div className="hidden lg:block lg:w-[30%] relative z-10"></div>
-
-          {/* Right Panel: Your Women-Focused Business - Solid white for hard edge */}
-          <div className="w-full lg:w-[35%] p-6 relative z-10 bg-white">
-            <h3 className="text-2xl sm:text-3xl font-bold text-[#22c55e] mb-8 text-center lg:text-left">
-              Your Women-Focused Business
-            </h3>
-            <ul className="space-y-5 lg:pl-12">
-              {[
-                "You own your customers",
-                "Repeat riders and referrals",
-                "Set your rates and keep 100%",
-                "Professional trust-based experience",
-                "Real assets that grow",
-              ].map((item, i) => (
-                <li
-                  key={i}
-                  className="flex items-center text-slate-800 text-sm sm:text-base font-semibold"
-                >
-                  <CheckCircle2 className="w-6 h-6 sm:w-7 sm:h-7 mr-4 fill-[#22c55e] text-white shrink-0" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+            {/* Right */}
+            <div className="w-[32%] shrink-0 bg-white px-8 py-0 flex flex-col justify-center">
+              <h3 className="mb-4 text-[22px] font-bold text-[#16a34a] leading-tight">
+                Your Women-Focused Business
+              </h3>
+              <ul className="space-y-3">
+                {[
+                  "You own your customers",
+                  "Repeat riders and referrals",
+                  "Set your rates and keep 100%",
+                  "Professional trust-based experience",
+                  "Real assets that grow",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <CheckCircle2 className="h-5 w-5 shrink-0 fill-[#16a34a] text-white" />
+                    <span className="text-[14px] font-semibold text-slate-800 leading-snug">
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </PageContainer>
@@ -729,8 +756,10 @@ function Navbar() {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled ? "bg-[#040a23] shadow-md py-1" : "bg-[#040a23] py-1",
+        "left-0 right-0 z-50 transition-all duration-300",
+        isScrolled
+          ? "fixed top-0 bg-[#040a23] shadow-md py-1"
+          : "absolute top-0 bg-transparent py-4",
       )}
     >
       <PageContainer size="full">
@@ -763,7 +792,8 @@ function Navbar() {
             </nav>
 
             <button
-              className={cn("cursor-pointer text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg",
+              className={cn(
+                "cursor-pointer text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg",
                 btnClass,
               )}
             >
@@ -800,7 +830,8 @@ function Navbar() {
               </a>
             ))}
             <button
-              className={cn("cursor-pointer text-white font-bold py-3 px-6 rounded-md transition-colors w-full mt-4",
+              className={cn(
+                "cursor-pointer text-white font-bold py-3 px-6 rounded-md transition-colors w-full mt-4",
                 btnClass,
               )}
             >

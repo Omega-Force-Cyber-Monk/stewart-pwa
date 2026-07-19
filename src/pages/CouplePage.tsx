@@ -51,13 +51,13 @@ export default function CouplePage() {
 
 function HeroBanner() {
   return (
-    <div className="relative w-full bg-[#f8fafc] overflow-hidden border-b border-gray-100 min-h-[100svh] flex flex-col justify-between pt-[80px]">
+    <div className="relative w-full bg-[#f8fafc] overflow-hidden border-b border-gray-100 h-[100svh] flex flex-col justify-between pt-[80px]">
       {/* Background Image on the right side */}
             {/* Background Image */}
       <img
         src={coupleBanner}
         alt="Couple in a car"
-        className="absolute inset-0 w-full h-full object-cover object-[center_top] lg:object-right"
+        className="absolute inset-0 w-full h-full object-cover object-[center_top] lg:object-[right_top]"
       />
       {/* White gradient overlay for dark text */}
       <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-transparent w-full lg:w-[85%] xl:w-[75%] z-0"></div>
@@ -384,7 +384,7 @@ function ComparisonSection() {
             <img
               src={coupleComparisonLeft}
               alt="Unhappy couple in car"
-              className="absolute inset-0 w-full h-full object-cover object-center"
+              className="absolute inset-0 w-full h-full object-cover object-[center_top] lg:object-[right_top]"
               style={{
                 WebkitMaskImage:
                   "linear-gradient(to right, black 60%, transparent 100%)",
@@ -446,7 +446,7 @@ function ComparisonSection() {
             <img
               src={coupleComparisonRight}
               alt="Happy couple in car"
-              className="absolute inset-0 w-full h-full object-cover object-center"
+              className="absolute inset-0 w-full h-full object-cover object-[center_top] lg:object-[right_top]"
               style={{
                 WebkitMaskImage:
                   "linear-gradient(to left, black 60%, transparent 100%)",
@@ -465,7 +465,7 @@ function ComparisonSection() {
               <img
                 src={coupleComparisonLeft}
                 alt="Unhappy couple"
-                className="absolute inset-0 w-full h-full object-cover object-center"
+                className="absolute inset-0 w-full h-full object-cover object-[center_top] lg:object-[right_top]"
                 style={{
                   WebkitMaskImage:
                     "linear-gradient(to right, black 50%, transparent 100%)",
@@ -523,7 +523,7 @@ function ComparisonSection() {
               <img
                 src={coupleComparisonRight}
                 alt="Happy couple"
-                className="absolute inset-0 w-full h-full object-cover object-center"
+                className="absolute inset-0 w-full h-full object-cover object-[center_top] lg:object-[right_top]"
                 style={{
                   WebkitMaskImage:
                     "linear-gradient(to left, black 50%, transparent 100%)",
@@ -995,8 +995,8 @@ function Navbar() {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled ? "bg-white shadow-md py-1" : "bg-white py-1",
+        "left-0 right-0 z-50 transition-all duration-300",
+        isScrolled ? "fixed top-0 bg-white shadow-md py-1" : "absolute top-0 bg-transparent py-4",
       )}
     >
       <PageContainer size="full">
