@@ -2,7 +2,9 @@ import { configureStore } from "@reduxjs/toolkit";
 import { loadPersistedState, persistStoreState } from "./persistStore";
 
 export const store = configureStore({
-  reducer: {},
+  reducer: {
+    app: (state = { initialized: true }) => state,
+  },
   preloadedState: loadPersistedState(),
 });
 

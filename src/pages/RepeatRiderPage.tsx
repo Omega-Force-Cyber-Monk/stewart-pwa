@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Play, ChevronRight, ChevronDown, FileText, History, FileSpreadsheet, Headset } from "lucide-react";
+import ContactSupportModal from "../components/dashboard/ContactSupportModal";
 
 export default function RepeatRiderPage() {
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
+  const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
 
   const toggleAccordion = (index: number) => {
     setOpenAccordion(openAccordion === index ? null : index);
@@ -193,14 +195,21 @@ export default function RepeatRiderPage() {
             </div>
             <h4 className="text-[15px] font-bold text-slate-900 mb-1">Need Help?</h4>
             <p className="text-[13px] text-slate-500 mb-6">We're here for you.</p>
-            <button className="w-full bg-[#22c55e] hover:bg-[#1ea951] text-white px-4 py-3 rounded-xl font-bold text-[14px] transition-colors">
+            <button 
+              onClick={() => setIsSupportModalOpen(true)}
+              className="w-full bg-[#22c55e] hover:bg-[#1ea951] text-white px-4 py-3 rounded-xl font-bold text-[14px] transition-colors"
+            >
               Contact Support
             </button>
           </div>
 
         </div>
       </div>
-
+      
+      <ContactSupportModal 
+        isOpen={isSupportModalOpen} 
+        onClose={() => setIsSupportModalOpen(false)} 
+      />
     </div>
   );
 }

@@ -8,6 +8,13 @@ import LaunchDashboardPage from "../pages/LaunchDashboardPage";
 import BookingSystemPage from "../pages/BookingSystemPage";
 import ReferralCardPage from "../pages/ReferralCardPage";
 import RepeatRiderPage from "../pages/RepeatRiderPage";
+import CustomerAcquisitionPage from "../pages/CustomerAcquisitionPage";
+import DirectBookingTrustPage from "../pages/DirectBookingTrustPage";
+import LaunchEssentialsPage from "../pages/LaunchEssentialsPage";
+import SellingPage from "../pages/SellingPage";
+import ResourcesAndGuidesPage from "../pages/ResourcesAndGuidesPage";
+import ProfilePage from "../pages/ProfilePage";
+import BillingPage from "../pages/BillingPage";
 import DashboardPage from "../pages/DashboardPage";
 import { DashboardLayout } from "../components/layout/DashboardLayout";
 
@@ -22,6 +29,13 @@ export function AppRouter() {
       <Route path="/booking-system" element={<DashboardLayout title="Booking System™"><BookingSystemPage /></DashboardLayout>} />
       <Route path="/referral-card" element={<DashboardLayout title="Referral Card System™"><ReferralCardPage /></DashboardLayout>} />
       <Route path="/repeat-rider" element={<DashboardLayout title="Repeat Rider Follow Up System™"><RepeatRiderPage /></DashboardLayout>} />
+      <Route path="/acquisition" element={<DashboardLayout title="Customer Acquisition™"><CustomerAcquisitionPage /></DashboardLayout>} />
+      <Route path="/trust" element={<DashboardLayout title="Direct Booking Trust Framework™"><DirectBookingTrustPage /></DashboardLayout>} />
+      <Route path="/essentials" element={<DashboardLayout title="Launch Essentials™"><LaunchEssentialsPage /></DashboardLayout>} />
+      <Route path="/selling-page" element={<DashboardLayout title="Personalized Selling Page™"><SellingPage /></DashboardLayout>} />
+      <Route path="/resources" element={<DashboardLayout title="Resources & Guides"><ResourcesAndGuidesPage /></DashboardLayout>} />
+      <Route path="/profile" element={<DashboardLayout title="My Profile"><ProfilePage /></DashboardLayout>} />
+      <Route path="/billing" element={<DashboardLayout title="Billing & Orders"><BillingPage /></DashboardLayout>} />
       {/* Add new routes here */}      <Route path="/spanish" element={<SpanishPage />} />      <Route path="/" element={<HomePage />} />
 
 
