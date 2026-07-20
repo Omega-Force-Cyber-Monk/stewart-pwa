@@ -47,16 +47,16 @@ export default function WomenPage() {
 
 function HeroBanner() {
   return (
-    <div className="relative w-full bg-[#0b0f19] h-[100svh] flex flex-col justify-between overflow-hidden pt-[80px]">
+    <div className="relative w-full bg-[#0b0f19] min-h-[100svh] flex flex-col justify-between pt-[80px]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
           src={womenBannerImage}
           alt="Launch a Women-Focused Private Airport Business"
-          className="w-full h-full object-cover object-[center_top] lg:object-[right_top]"
+          className="w-full h-full object-cover object-center"
         />
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0b0f19] via-[#0b0f19]/80 to-[#0b0f19]/40 lg:to-transparent"></div>
+        {/* <div className="absolute inset-0 bg-gradient-to-r from-[#0b0f19] via-[#0b0f19]/80 to-[#0b0f19]/40 lg:to-transparent"></div> */}
       </div>
 
       {/* Main Content dictating height */}
@@ -90,7 +90,9 @@ function HeroBanner() {
                     key={i}
                     className="flex items-center text-slate-100 text-[clamp(0.875rem,1.1vw,1.125rem)]"
                   >
-                    <CheckCircle2 className="text-[#f42661] mr-[clamp(0.5rem,0.8vw,0.75rem)] w-[clamp(1.25rem,1.8vw,1.5rem)] h-[clamp(1.25rem,1.8vw,1.5rem)] fill-[#f42661] text-white shrink-0" />
+                    <div className="rounded-full bg-[#f42661] flex items-center justify-center shrink-0 mr-[clamp(0.5rem,0.8vw,0.75rem)] w-[clamp(1.25rem,1.8vw,1.5rem)] h-[clamp(1.25rem,1.8vw,1.5rem)]">
+                      <Check className="text-white w-[60%] h-[60%]" strokeWidth={3} />
+                    </div>
                     <span>{item}</span>
                   </li>
                 ))}
@@ -209,7 +211,7 @@ function FeaturesSection() {
           ))}
         </div>
 
-        <div className="bg-[#f42661]/5 border border-[#f42661]/10 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-4 max-w-4xl mx-auto">
+        <div className="bg-[#f42661]/5 border border-[#f42661]/10 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-3 sm:gap-4 max-w-4xl mx-auto">
           <Gift className="w-8 h-8 text-[#f42661] shrink-0" strokeWidth={1.5} />
           <p className="text-slate-700 text-xs sm:text-sm text-center sm:text-left leading-relaxed">
             <strong className="text-[#f42661]">Also includes:</strong> Launch

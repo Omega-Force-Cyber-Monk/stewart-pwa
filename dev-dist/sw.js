@@ -82,7 +82,7 @@ define(['./workbox-015d236b'], (function (workbox) { 'use strict';
    */
   workbox.precacheAndRoute([{
     "url": "/index.html",
-    "revision": "0.992mu0q40u"
+    "revision": "0.ggoc7qt8bto"
   }], {});
   workbox.cleanupOutdatedCaches();
   workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("/index.html"), {
@@ -98,9 +98,10 @@ define(['./workbox-015d236b'], (function (workbox) { 'use strict';
     })]
   }), 'GET');
   workbox.registerRoute(({
+    request,
     url,
     sameOrigin
-  }) => sameOrigin && !url.pathname.startsWith("/api"), new workbox.StaleWhileRevalidate({
+  }) => sameOrigin && request.mode !== "navigate" && !url.pathname.startsWith("/api"), new workbox.StaleWhileRevalidate({
     "cacheName": "app-cache",
     plugins: []
   }), 'GET');
