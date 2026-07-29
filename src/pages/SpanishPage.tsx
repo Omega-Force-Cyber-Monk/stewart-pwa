@@ -1,16 +1,7 @@
 import spanishLogo from "../assets/spanishLogo.png";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import {
-  Menu,
-  X,
-  Smartphone,
-  BarChart3,
-  Headset,
-  DollarSign,
-  Plane,
-  User,
-} from "lucide-react";
+import { Menu, X, Plane, User } from "lucide-react";
 import { cn } from "../lib/cn";
 import {
   ArrowRight,
@@ -32,6 +23,8 @@ import {
 import { PageContainer } from "../components/layout/PageContainer";
 import spanishBanner from "../assets/spanishBanner.png";
 import reviewImage from "../assets/review.jpg";
+import standardImage from "../assets/standard.png";
+import reviewCoupleImage from "../assets/reviewCouple.png";
 
 export default function SpanishPage() {
   return (
@@ -66,7 +59,9 @@ function SpanishNavbar() {
       <nav
         className={cn(
           "left-0 right-0 z-50 transition-all duration-300",
-        isScrolled ? "fixed top-0 bg-[#040a23]/95 backdrop-blur-md shadow-md py-3" : "absolute top-0 bg-transparent py-4",
+          isScrolled
+            ? "fixed top-0 bg-[#040a23]/95 backdrop-blur-md shadow-md py-3"
+            : "absolute top-0 bg-transparent py-4",
         )}
       >
         <PageContainer size="full">
@@ -113,7 +108,7 @@ function SpanishNavbar() {
                 href="#pricing"
                 className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg"
               >
-                Start My Business — $495
+                Empezar Mi Negocio — $495
               </a>
             </div>
 
@@ -171,7 +166,7 @@ function SpanishNavbar() {
 
 function HeroBanner() {
   return (
-    <div className="relative w-full h-[100svh] flex flex-col justify-between overflow-hidden bg-[#040a23] pt-[80px]">
+    <div className="relative w-full min-h-[100svh] h-auto flex flex-col justify-between overflow-hidden bg-[#040a23] pt-[80px]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
@@ -198,17 +193,18 @@ function HeroBanner() {
               </span>
             </h1>
             <p className="text-white/90 text-[clamp(1rem,1.5vw,1.125rem)] font-medium mb-8 max-w-[550px] leading-relaxed">
-              Lanza tu negocio privado de transporte al aeropuerto y empieza a
-              recibir reservas directas, construir clientes recurrentes y
-              quédate con el 100% de cada tarifa.
+              QuitTheApp te brinda las herramientas para lanzar tu propio
+              negocio privado de transporte al aeropuerto, recibir reservas
+              directas, crear una base de clientes recurrentes y construir un
+              negocio que controlas.
             </p>
             <ul className="space-y-3 mb-10">
               {[
-                "Clientes directos y recurrentes",
-                "Tú controlas tus tarifas y horario",
-                "Sin comisiones ni precios dinámicos",
-                "Construye un negocio real y escalable",
-                "Libertad financiera para ti y tu familia",
+                "Construye tu propia lista de clientes",
+                "Recibe reservas directas",
+                "Establece tus propias tarifas y horarios",
+                "Genera viajes recurrentes y referidos",
+                "Crea un negocio que tú controlas",
               ].map((item, i) => (
                 <li
                   key={i}
@@ -221,7 +217,7 @@ function HeroBanner() {
             </ul>
             <button className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-4 px-6 rounded-xl transition-colors flex items-center justify-between group w-full sm:w-auto text-[clamp(1rem,1.2vw,1.1rem)]">
               <span className="text-left pr-4">
-                Construye Tu Negocio de Transporte Hoy™ - $495
+                Empieza Tu Negocio Privado de Transporte — $495
               </span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform shrink-0" />
             </button>
@@ -293,22 +289,26 @@ const features = [
   {
     icon: CalendarDays,
     title: "Sistema Rápido de Reservas™",
-    description: "Recibe y gestiona reservas directas rápidamente.",
+    description:
+      "Crea un sistema profesional para que tus clientes soliciten transporte privado al aeropuerto directamente contigo.",
   },
   {
     icon: Users,
     title: "Centro de Adquisición de Clientes™",
-    description: "Atrae clientes idealmente que te buscan a ti",
+    description:
+      "Utiliza tarjetas QR, herramientas de referidos, plantillas de contacto y estrategias prácticas para atraer nuevos clientes.",
   },
   {
     icon: Monitor,
     title: "Página de Venta Personalizada™",
-    description: "Tu marca. Tu historia. Convierte visitantes en reservas.",
+    description:
+      "Muestra quién eres, explica tus servicios y brinda a los viajeros un lugar profesional para conocerte y solicitar un viaje.",
   },
   {
     icon: RefreshCcw,
     title: "Motor de Clientes Recurrentes™",
-    description: "Convierte cada cliente en viajes recurrentes.",
+    description:
+      "Da seguimiento, solicita reseñas, fomenta referidos y convierte cada buen viaje en futuras reservas.",
   },
 ];
 
@@ -318,7 +318,7 @@ function FeaturesSection() {
       <PageContainer size="full">
         <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6">
           <h2 className="text-center text-[#1a1f71] font-extrabold text-xl sm:text-2xl tracking-wide uppercase mb-10">
-            TODO LO QUE NECESITAS PARA EMPEZAR
+            TODO LO QUE NECESITAS PARA CREAR TU PROPIA BASE DE CLIENTES
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-10 relative mb-12">
@@ -361,8 +361,9 @@ function FeaturesSection() {
               <strong className="text-[#1a1f71] font-bold">
                 También Incluye:
               </strong>{" "}
-              Panel de Lanzamiento, hosting, recursos de entrenamiento,
-              actualizaciones y apoyo humano.
+              También incluye acceso al Panel de Lanzamiento™, herramientas del
+              Panel del Operador™, recursos de capacitación, actualizaciones
+              permanentes del sistema y soporte humano real.
             </p>
           </div>
         </div>
@@ -373,19 +374,19 @@ function FeaturesSection() {
 
 function ComparisonSection() {
   const badList = [
-    "Controlan tus precios",
-    "Cobran altas comisiones",
-    "Controlan tus clientes",
-    "Te pueden desactivar sin aviso",
-    "Trabajas, pero no construyes un negocio",
+    "La plataforma controla la relación con el cliente",
+    "Los precios se determinan dentro de la app",
+    "No eres dueño de tu lista de clientes",
+    "No tienes un sistema propio para reservas recurrentes",
+    "Tu acceso a los viajes de la app puede cambiar",
   ];
 
   const goodList = [
-    "Tú decides tus tarifas",
-    "Tú controlas tus horarios",
-    "Tus clientes son tuyos",
+    "Tú construyes tu propia lista de clientes",
+    "Tú estableces tus propias tarifas",
     "Recibes reservas directas",
-    "Construyes un negocio que es tuyo",
+    "Creas clientes recurrentes y referidos",
+    "Construyes un negocio que tú controlas",
   ];
 
   return (
@@ -443,29 +444,28 @@ function ComparisonSection() {
 function WhyWinSection() {
   const reasons = [
     {
-      icon: DollarSign,
-      title: "Lower pay.\nHigher fees.",
-      description: "You earn less every year.",
+      icon: ShieldCheck,
+      title: "Experiencia que genera confianza",
+      description:
+        "La comunicación profesional, la puntualidad y el conocimiento local ayudan a que los viajeros se sientan seguros al reservar contigo.",
     },
     {
-      icon: Smartphone,
-      title: "Unfair deactivations\nwith no warning.",
-      description: "One issue can take away your only income.",
+      icon: Users,
+      title: "Mejores relaciones con los clientes",
+      description:
+        "Los viajeros valoran el servicio personalizado, la confiabilidad y la comunicación clara.",
     },
     {
       icon: Clock,
-      title: "Long hours.\nNo freedom.",
-      description: "You're always on their schedule, not your own.",
+      title: "Horario flexible",
+      description:
+        "Elige los días, horarios, rutas y áreas de servicio que se ajusten a tus metas.",
     },
     {
-      icon: BarChart3,
-      title: "Apps grow.\nYou stay stuck.",
-      description: "They take billions. You get a fraction.",
-    },
-    {
-      icon: Headset,
-      title: "No customer\nownership.",
-      description: "You're just a driver number.",
+      icon: Lock,
+      title: "Un negocio que tú controlas",
+      description:
+        "Construye una lista de clientes, una reputación y un sistema de reservas para tu negocio.",
     },
   ];
 
@@ -474,7 +474,7 @@ function WhyWinSection() {
       <PageContainer size="full">
         <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6">
           <h2 className="text-center text-[#1a1f71] font-extrabold text-[1.1rem] sm:text-xl uppercase tracking-wide mb-10">
-            WHY COUPLES ARE BUILDING THEIR OWN BUSINESSES
+            POR QUÉ LOS CONDUCTORES INDEPENDIENTES PUEDEN TENER ÉXITO
           </h2>
 
           <div className="flex flex-col lg:flex-row items-start justify-between gap-6 lg:gap-4 divide-y lg:divide-y-0 lg:divide-x divide-slate-100">
@@ -511,20 +511,23 @@ function HowItWorksSection() {
     {
       number: 1,
       icon: Lock,
-      title: "Obtén Acceso",
-      description: "Compra hoy y obtén acceso inmediato a tu sistema.",
+      title: "Paso 1: Obtén Acceso",
+      description:
+        "Compra el sistema DIY de $495 y recibe acceso inmediato a los recursos de lanzamiento.",
     },
     {
       number: 2,
       icon: ClipboardList,
-      title: "Envia Tu Información",
-      description: "Nos envías lo necesario para configurar tu negocio.",
+      title: "Paso 2: Agrega Tu Información",
+      description:
+        "Ingresa los datos de tu negocio, área de servicio, rutas, tarifas y marca.",
     },
     {
       number: 3,
       icon: Rocket,
-      title: "Construimos Tu Sistema",
-      description: "Lanzamos tu sistema y empiezas a recibir reservas.",
+      title: "Paso 3: Construye y Lanza",
+      description:
+        "Sigue las instrucciones paso a paso para crear tu sistema de reservas y página personalizada. Si prefieres ayuda, agrega la mejora opcional “Lo Hacemos Por Ti” por $199.",
     },
   ];
 
@@ -589,18 +592,21 @@ function ReviewsSection() {
         "Quit TheApp me dio todo lo que necesitaba para dejar las apps y construir mi negocio propio.",
       name: "Alex F.",
       location: "Phoenix, AZ",
+      image: reviewImage,
     },
     {
       quote:
         "En menos de dos semanas ya tenía reservas directas. Lo mejor que he invertido en mi negocio.",
       name: "Brenda T.",
       location: "Dallas, TX",
+      image: standardImage,
     },
     {
       quote:
         "Ahora mis clientes me eligen a mi no a una app. Estoy construyendo algo real y duradero.",
       name: "Carlos M.",
       location: "Naples, FL, USA",
+      image: reviewCoupleImage,
     },
   ];
 
@@ -621,7 +627,7 @@ function ReviewsSection() {
                 {/* Image */}
                 <div className="shrink-0 w-full sm:w-[130px] lg:w-[140px] flex">
                   <img
-                    src={reviewImage}
+                    src={review.image}
                     alt={review.name}
                     className="w-full h-40 sm:h-full rounded-2xl object-cover shadow-sm"
                   />
@@ -670,22 +676,22 @@ function FaqSection() {
     {
       question: "¿Es un pago mensual?",
       answer:
-        "No. $495 es un pago único. Sin mensualidades. Sin comisiones. Tuyo para siempre.",
+        "No. El sistema DIY de QuitTheApp cuesta $495 como pago único y no incluye una cuota mensual de plataforma de QuitTheApp. También está disponible la mejora opcional “Lo Hacemos Por Ti” por $199. Los gastos normales del negocio, como programación, alojamiento, procesamiento de pagos, seguro comercial, licencias y operación, pueden aplicarse.",
     },
     {
       question: "¿Cómo consigo mis primeros clientes?",
       answer:
-        "Tu sistema incluye tarjetas QR, plantillas para hoteles, y herramientas de adquisición de clientes listas para usar",
+        "Utiliza el Centro de Adquisición de Clientes™ con tarjetas QR, herramientas de referidos, plantillas de contacto y estrategias prácticas para atraer posibles clientes y generar reservas directas.",
     },
     {
       question: "¿Necesito experiencia técnica?",
       answer:
-        "No. Ofrecemos tres opciones de configuración-hazlo tú mismo, con guía, o nosotros lo hacemos por ti en 48-72 horas.",
+        "No. El sistema de $495 incluye instrucciones paso a paso para que puedas completar la configuración. Si prefieres que nuestro equipo lo haga por ti, puedes agregar la mejora opcional “Lo Hacemos Por Ti” por $199.",
     },
     {
-      question: "¿Qué pasa si no funciona para mi?",
+      question: "¿Qué pasa si no funciona para mí?",
       answer:
-        "Somos personas reales. Si el sistema no es para ti contáctanos en support@quittheapp.com y lo resolvemos.",
+        "QuitTheApp fue creado a partir de experiencia real operando un negocio privado de transporte al aeropuerto desde 2016. Los resultados dependen de tu mercado, tarifas, esfuerzo, gastos y capacidad para atraer clientes. Nuestro equipo brinda soporte para ayudarte a entender y utilizar el sistema.",
     },
     {
       question: "¿Funciona en mi ciudad?",
@@ -733,7 +739,7 @@ function FaqSection() {
 function FooterCTASection() {
   const benefits = [
     "Sin cuota mensual de la plataforma",
-    "Diseñado específicamente para conductores mayores de 50 años",
+    "Diseñado para operadores independientes de transporte al aeropuerto",
     "Soporte humano real",
     "Acceso de por vida al panel de control",
     "Recursos gratuitos de capacitación y configuración",
@@ -758,16 +764,17 @@ function FooterCTASection() {
           {/* Column 1: Intro */}
           <div className="lg:w-1/3 flex flex-col pr-0 lg:pr-8 lg:border-r border-slate-800">
             <h3 className="text-2xl sm:text-3xl font-extrabold text-white leading-tight mb-6">
-              EMPIEZA TU
+              EMPIEZA HOY TU
               <br />
               NEGOCIO PRIVADO
               <br />
-              DE AEROPUERTO <span className="text-[#22c55e]">HOY</span>
+              DE TRANSPORTE{" "}
+              <span className="text-[#22c55e]">AL AEROPUERTO</span>
             </h3>
             <div className="flex items-start gap-4">
               <p className="text-slate-300 text-sm leading-relaxed max-w-[90%]">
-                Build a trusted, professional airport transportation business
-                that puts you in control of your customers, income, and future.
+                Construye un negocio profesional y confiable que te permita
+                controlar tus clientes, tus tarifas y tu crecimiento.
               </p>
             </div>
           </div>
@@ -779,8 +786,11 @@ function FooterCTASection() {
                 $495
               </span>
               <span className="text-white font-bold text-sm leading-snug">
-                Pago único. Sin mensualidades. Diseñado para operadores que
-                quieren clientes propios.
+                Pago único.
+                <br />
+                Incluye el sistema completo DIY de QuitTheApp.
+                <br />
+                Mejora opcional “Lo Hacemos Por Ti” disponible por $199.
               </span>
             </div>
             <ul className="space-y-3">
@@ -800,9 +810,9 @@ function FooterCTASection() {
           <div className="lg:w-1/3 flex flex-col justify-center items-center lg:items-end">
             <button className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-4 px-6 rounded-lg transition-colors shadow-lg shadow-[#16a34a]/20 flex items-center justify-between group w-full text-sm sm:text-base mb-4">
               <span className="text-center w-full pr-4">
-                Construye Tu Negocio de
+                Empieza Tu Negocio Privado
                 <br className="hidden sm:block" />
-                Transporte HoyTM- $495
+                de Transporte — $495
               </span>
               <ArrowRight className="w-5 h-5 shrink-0 group-hover:translate-x-1 transition-transform" />
             </button>

@@ -17,6 +17,15 @@ import ProfilePage from "../pages/ProfilePage";
 import BillingPage from "../pages/BillingPage";
 import DashboardPage from "../pages/DashboardPage";
 import { DashboardLayout } from "../components/layout/DashboardLayout";
+import { AdminDashboardLayout } from "../components/layout/AdminDashboardLayout";
+import AdminDashboardPage from "../pages/AdminDashboardPage";
+import AdminDriversPage from "../pages/AdminDriversPage";
+import AdminDriverDetailsPage from "../pages/AdminDriverDetailsPage";
+import AdminResourcesPage from "../pages/AdminResourcesPage";
+import AdminAddResourcePage from "../pages/AdminAddResourcePage";
+import AdminBillingsPage from "../pages/AdminBillingsPage";
+import AdminSupportPage from "../pages/AdminSupportPage";
+import AdminSettingsPage from "../pages/AdminSettingsPage";
 
 export function AppRouter() {
   return (
@@ -36,9 +45,20 @@ export function AppRouter() {
       <Route path="/resources" element={<DashboardLayout title="Resources & Guides"><ResourcesAndGuidesPage /></DashboardLayout>} />
       <Route path="/profile" element={<DashboardLayout title="My Profile"><ProfilePage /></DashboardLayout>} />
       <Route path="/billing" element={<DashboardLayout title="Billing & Orders"><BillingPage /></DashboardLayout>} />
-      {/* Add new routes here */}      <Route path="/spanish" element={<SpanishPage />} />      <Route path="/" element={<HomePage />} />
+      
+      {/* Admin Routes */}
+      <Route path="/admin" element={<AdminDashboardLayout><AdminDashboardPage /></AdminDashboardLayout>} />
+      <Route path="/admin/drivers" element={<AdminDashboardLayout title="Drivers Management"><AdminDriversPage /></AdminDashboardLayout>} />
+      <Route path="/admin/drivers/:id" element={<AdminDashboardLayout title="Drivers Management"><AdminDriverDetailsPage /></AdminDashboardLayout>} />
+      <Route path="/admin/resources" element={<AdminDashboardLayout title="Resources Upload"><AdminResourcesPage /></AdminDashboardLayout>} />
+      <Route path="/admin/resources/add" element={<AdminDashboardLayout title="Resources Upload"><AdminAddResourcePage /></AdminDashboardLayout>} />
+      <Route path="/admin/billings" element={<AdminDashboardLayout title="Billings"><AdminBillingsPage /></AdminDashboardLayout>} />
+      <Route path="/admin/support" element={<AdminDashboardLayout title="Support"><AdminSupportPage /></AdminDashboardLayout>} />
+      <Route path="/admin/settings" element={<AdminDashboardLayout title="Settings"><AdminSettingsPage /></AdminDashboardLayout>} />
 
-
+      {/* Add new routes here */}
+      <Route path="/spanish" element={<SpanishPage />} />
+      <Route path="/" element={<HomePage />} />
     </Routes>
   );
 }

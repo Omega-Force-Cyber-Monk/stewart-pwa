@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Headset, Check, TrendingUp } from "lucide-react";
+import { Headset, Check, TrendingUp, Menu, X } from "lucide-react";
 import { cn } from "../lib/cn";
 import standardLogo from "../assets/standardLogo.png";
 import {
@@ -46,6 +46,8 @@ export default function HomePage() {
 
 function SeniorNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
@@ -53,55 +55,104 @@ function SeniorNavbar() {
   }, []);
 
   return (
-    <header
-      className={cn(
-        "left-0 right-0 z-50 transition-all duration-300",
-        isScrolled ? "fixed top-0 bg-[#040a23] shadow-md py-3" : "absolute top-0 bg-transparent py-4",
-      )}
-    >
-      <PageContainer size="full">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col">
-            <Link to="/" className="flex items-center gap-2 z-50">
-              <img
-                src={standardLogo}
-                alt="QuitTheApp Logo"
-                className="h-8 lg:h-10 object-contain"
-              />
-            </Link>
-          </div>
-          <nav className="hidden lg:flex items-center gap-8">
-            <a
-              href="#how-it-works"
-              className="text-white font-medium hover:text-[#39b54a] transition-colors text-sm"
+    <>
+      <header
+        className={cn(
+          "left-0 right-0 z-50 transition-all duration-300",
+          isScrolled ? "fixed top-0 bg-[#040a23] shadow-md py-3" : "absolute top-0 bg-transparent py-4",
+        )}
+      >
+        <PageContainer size="full">
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col">
+              <Link to="/" className="flex items-center gap-2 z-50">
+                <img
+                  src={standardLogo}
+                  alt="QuitTheApp Logo"
+                  className="h-8 lg:h-10 object-contain"
+                />
+              </Link>
+            </div>
+            <nav className="hidden lg:flex items-center gap-8">
+              <a
+                href="#how-it-works"
+                className="text-white font-medium hover:text-[#39b54a] transition-colors text-sm"
+              >
+                How It Works
+              </a>
+              <a
+                href="#how-it-works-steps"
+                className="text-white font-medium hover:text-[#39b54a] transition-colors text-sm"
+              >
+                What's Included
+              </a>
+              <a
+                href="#reviews"
+                className="text-white font-medium hover:text-[#39b54a] transition-colors text-sm"
+              >
+                Success Stories
+              </a>
+              <a
+                href="#faq"
+                className="text-white font-medium hover:text-[#39b54a] transition-colors text-sm"
+              >
+                FAQ
+              </a>
+              <button className="cursor-pointer bg-[#15803d] hover:bg-[#166534] text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg">
+                Start My Business — $495
+              </button>
+            </nav>
+
+            {/* Mobile Menu Toggle */}
+            <button
+              className="cursor-pointer lg:hidden text-white z-50 p-2 -mr-2"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
             >
-              How It Works
-            </a>
-            <a
-              href="#how-it-works-steps"
-              className="text-white font-medium hover:text-[#39b54a] transition-colors text-sm"
-            >
-              What's Included
-            </a>
-            <a
-              href="#reviews"
-              className="text-white font-medium hover:text-[#39b54a] transition-colors text-sm"
-            >
-              Success Stories
-            </a>
-            <a
-              href="#faq"
-              className="text-white font-medium hover:text-[#39b54a] transition-colors text-sm"
-            >
-              FAQ
-            </a>
-            <button className="cursor-pointer bg-[#15803d] hover:bg-[#166534] text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg">
-              Start My Business — $495
+              {mobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
-          </nav>
+          </div>
+        </PageContainer>
+      </header>
+
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-40 bg-[#040a23] pt-24 px-6 flex flex-col lg:hidden">
+          <a
+            href="#how-it-works"
+            onClick={() => setMobileMenuOpen(false)}
+            className="text-white hover:text-[#39b54a] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
+          >
+            How It Works
+          </a>
+          <a
+            href="#how-it-works-steps"
+            onClick={() => setMobileMenuOpen(false)}
+            className="text-white hover:text-[#39b54a] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
+          >
+            What's Included
+          </a>
+          <a
+            href="#reviews"
+            onClick={() => setMobileMenuOpen(false)}
+            className="text-white hover:text-[#39b54a] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
+          >
+            Success Stories
+          </a>
+          <a
+            href="#faq"
+            onClick={() => setMobileMenuOpen(false)}
+            className="text-white hover:text-[#39b54a] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
+          >
+            FAQ
+          </a>
         </div>
-      </PageContainer>
-    </header>
+      )}
+    </>
   );
 }
 

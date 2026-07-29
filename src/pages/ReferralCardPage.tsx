@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  Play,
   QrCode,
   Download,
   ChevronRight,
@@ -73,13 +72,6 @@ export default function ReferralCardPage() {
             every ride.
           </p>
         </div>
-
-        <button className="flex items-center gap-2 bg-green-50 text-green-600 hover:bg-green-100 px-5 py-2.5 rounded-full font-bold text-[13px] transition-colors shrink-0">
-          <div className="w-6 h-6 rounded-full bg-green-200 flex items-center justify-center">
-            <Play className="w-3 h-3 fill-current" />
-          </div>
-          Watch Guide
-        </button>
       </div>
 
       <div className="flex flex-col gap-6">

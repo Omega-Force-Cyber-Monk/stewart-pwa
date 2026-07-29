@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Play, FolderSearch, FileText, Mail, Printer, Headset, CheckCircle2, FileSpreadsheet, FileOutput } from "lucide-react";
+import { FolderSearch, FileText, Mail, Printer, Headset, CheckCircle2, FileSpreadsheet, FileOutput } from "lucide-react";
 import ContactSupportModal from "../components/dashboard/ContactSupportModal";
 
 export default function CustomerAcquisitionPage() {
@@ -107,15 +107,6 @@ export default function CustomerAcquisitionPage() {
           </p>
         </div>
         
-        <div className="flex items-center gap-4 shrink-0">
-          <span className="text-[14px] font-bold text-slate-700 hidden sm:block">Learn Proven Outreach Strategies</span>
-          <button className="flex items-center gap-2 bg-green-50 text-green-600 hover:bg-green-100 px-5 py-2.5 rounded-full font-bold text-[13px] transition-colors">
-            <div className="w-6 h-6 rounded-full bg-green-200 flex items-center justify-center">
-              <Play className="w-3 h-3 fill-current" />
-            </div>
-            Watch Guide
-          </button>
-        </div>
       </div>
 
       {/* Resource Cards Grid */}
