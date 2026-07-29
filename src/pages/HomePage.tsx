@@ -25,6 +25,8 @@ import seniorBanner from "../assets/standardBanner.png";
 import coupleComparisonLeft from "../assets/coupleComparisonSectionLeft.png";
 import coupleComparisonRight from "../assets/coupleComparisonSectionRight.png";
 import reviewImage from "../assets/review.jpg";
+import standardImage from "../assets/standard.png";
+import reviewCoupleImage from "../assets/reviewCouple.png";
 
 export default function HomePage() {
   return (
@@ -130,15 +132,13 @@ function HeroBanner() {
                 </span>
               </h1>
               <p className="text-[clamp(1rem,1.1vw,1.15rem)] text-white font-medium mb-8 max-w-[650px] leading-relaxed tracking-wide">
-                QuitTheApp gives drivers the tools to launch a direct-booking
-                private airport transportation business, get booked directly,
-                keep 100% of every fare, and build repeat riders you own.
+                QuitTheApp gives drivers the tools to launch their own private airport transportation business, get direct bookings, build repeat clients, and create a business they control.
               </p>
               <ul className="space-y-3 max-w-[500px]">
                 {[
-                  "Own your customer list",
-                  "Take direct bookings",
-                  "Keep 100% of every fare",
+                  "Own your client list",
+                  "Accept direct booking requests",
+                  "Set your own rates",
                   "Build repeat riders and referrals",
                   "Create a business asset you control",
                 ].map((item, i) => (
@@ -231,9 +231,9 @@ function HeroBanner() {
               strokeWidth={1.5}
             />
             <div className="text-[12px] xl:text-[13px] font-bold text-white leading-tight">
-              Quick Launch Booking Flow
+              Step-by-Step
               <br />
-              <span className="font-medium text-slate-300">in 48–72 hours</span>
+              <span className="font-medium text-slate-300">Launch System</span>
             </div>
           </div>
           <div className="flex items-center gap-3 xl:gap-4 md:w-1/3 md:pl-4 md:border-l md:border-slate-700/80">
@@ -242,7 +242,7 @@ function HeroBanner() {
               strokeWidth={1.5}
             />
             <div className="text-[12px] xl:text-[13px] font-bold text-white leading-tight">
-              Built for drivers 50+
+              Built for Independent Drivers
               <br />
               <span className="font-medium text-slate-300">
                 Your business. Your future.
@@ -259,25 +259,25 @@ const features = [
     icon: CalendarDays,
     title: "Quick Launch Booking System™",
     description:
-      "Take direct airport ride requests with your own professional booking flow.",
+      "Create a professional booking flow that allows clients to request private airport transportation directly from your business.",
   },
   {
     icon: Users,
-    title: "Customer Acquisition Center™",
+    title: "Client Acquisition Center™",
     description:
-      "Get QR cards, referral tools, outreach templates, and customer-building resources.",
+      "Use QR cards, referral tools, outreach templates, and practical strategies to attract new clients and generate direct bookings.",
   },
   {
     icon: Monitor,
     title: "Personalized Selling Page™",
     description:
-      "Show travelers who you are, where you drive, and why they should trust and book with you.",
+      "Show travelers who you are, explain your services, and give prospective clients a professional place to learn more and request a ride.",
   },
   {
     icon: RefreshCcw,
     title: "Repeat Rider Engine™",
     description:
-      "Follow up, get reviews, encourage referrals, and bring riders back for more repeat rides.",
+      "Follow up, request reviews, encourage referrals, and turn successful airport rides into repeat bookings.",
   },
 ];
 
@@ -289,7 +289,7 @@ function FeaturesSection() {
           <h2 className="text-center text-[#1a1f71] font-extrabold text-xl sm:text-2xl tracking-wide uppercase mb-10">
             EVERYTHING YOU NEED TO{" "}
             <span className="text-[#15803d]">
-              START BUILDING YOUR OWN CUSTOMERS
+              CREATE YOUR OWN SUCCESSFUL CLIENT BASE
             </span>
           </h2>
 
@@ -333,9 +333,7 @@ function FeaturesSection() {
               <strong className="text-[#1a1f71] font-bold">
                 Also includes:
               </strong>{" "}
-              Launch Dashboard™ access, Operator Dashboard™ tools, hosting
-              setup, training resources, lifetime updates, and real human
-              support.
+              Launch Dashboard™ access, Operator Dashboard™ tools, training resources, lifetime system updates, and real human support.
             </p>
           </div>
         </div>
@@ -346,17 +344,17 @@ function FeaturesSection() {
 
 function ComparisonSection() {
   const badList = [
-    "Apps control the price",
-    "Apps keep the customer relationship",
-    "Apps can deactivate you without warning",
-    "You build their business",
+    "The platform controls the client relationship",
+    "Pricing is determined through the app",
+    "You do not own the client list",
+    "Your access to the platform can be restricted or ended",
   ];
 
   const goodList = [
-    "You set your rates",
-    "You own your customer list",
-    "You build repeat riders and referrals",
-    "You create a business asset you control",
+    "You build your own client list",
+    "You set your own rates",
+    "You create repeat riders and referrals",
+    "You build a business asset you control",
   ];
 
   return (
@@ -522,26 +520,26 @@ function WhyWinSection() {
   const reasons = [
     {
       icon: CalendarDays,
-      title: "More Freedom",
-      description: "You choose your work.\nTake time off when\nyou need.",
+      title: "Experience Builds Trust",
+      description: "Professional communication,\ndependable service, and\nlocal knowledge can help\ntravelers feel confident\nbooking directly with you.",
     },
     {
       icon: Users,
-      title: "Better Clients",
+      title: "Better Client Relationships",
       description:
-        "Airport travelers, business\nprofessionals, families,\nand more.",
+        "Private airport clients\noften value reliability,\npersonal service, and\nclear communication.",
     },
     {
       icon: Clock,
-      title: "Flexible Schedule",
+      title: "Flexible Scheduling",
       description:
-        "Work when you want.\nFull days or part time —\nyour choice.",
+        "Choose the days, times,\nservice areas, and routes\nthat fit your availability\nand business goals.",
     },
     {
       icon: TrendingUp,
-      title: "Real Income Potential",
+      title: "Build Something You Control",
       description:
-        "Keep 100% of what\nyou earn and build a\nbusiness that grows.",
+        "Keep the fares paid directly\nto your business while\ncreating repeat clients, referrals,\nand long-term business value.",
     },
   ];
 
@@ -550,7 +548,7 @@ function WhyWinSection() {
       <PageContainer size="full">
         <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6">
           <h2 className="text-center text-[#1a1f71] font-extrabold text-[1.1rem] sm:text-xl uppercase tracking-wide mb-10">
-            WHY 50+ DRIVERS CAN WIN
+            WHY INDEPENDENT DRIVERS CAN WIN
           </h2>
 
           <div className="flex flex-col lg:flex-row items-start justify-between gap-6 lg:gap-4">
@@ -595,19 +593,19 @@ function HowItWorksSection() {
       number: 1,
       icon: Lock,
       title: "Get Access",
-      description: "Secure your spot\nand get instant\naccess.",
+      description: "Purchase the $495 DIY system\nand receive immediate access\nto the launch resources.",
     },
     {
       number: 2,
       icon: ClipboardList,
       title: "Submit Your Details",
-      description: "Send us your business\ninformation, routes,\nand pricing.",
+      description: "Provide your business information,\nservice area, routes,\npricing, and branding details.",
     },
     {
       number: 3,
       icon: Rocket,
-      title: "We Build Your System",
-      description: "Your booking flow\nand selling page\ngo live fast.",
+      title: "Build and Launch",
+      description: "Follow the step-by-step guidance\nto create your booking flow\nand personalized selling page.\nPrefer assistance? Add the\noptional $199 We Do It for You\nupgrade.",
     },
   ];
 
@@ -674,18 +672,21 @@ function ReviewsSection() {
         "We launched in 3 weeks and booked our first airport ride in 7 days. I finally have freedom and extra income on my own terms.",
       name: "Tim G.",
       location: "Knoxville, TN",
+      image: reviewImage,
     },
     {
       quote:
         "The system is simple, professional, and it works. I set my schedule and now I'm meeting great people every day.",
       name: "Tom R.",
       location: "Tampa, FL",
+      image: standardImage,
     },
     {
       quote:
         "We started part time and now we're fully booked most weeks. This business has given us the life we wanted.",
       name: "William B.",
       location: "Houston, TX",
+      image: reviewCoupleImage,
     },
   ];
 
@@ -694,7 +695,7 @@ function ReviewsSection() {
       <PageContainer size="full">
         <div className="w-full rounded-[2rem] border border-slate-200 shadow-sm p-6 bg-white">
           <h2 className="text-[1.1rem] sm:text-xl lg:text-[1.35rem] font-extrabold text-[#1a1f71] text-center mb-8 uppercase tracking-wide">
-            DRIVERS 50+ ACROSS THE COUNTRY ARE BUILDING REAL BUSINESSES
+            INDEPENDENT DRIVERS ARE BUILDING THEIR OWN TRANSPORTATION BUSINESSES
           </h2>
 
           <div className="flex flex-col lg:flex-row items-stretch justify-between gap-8 lg:gap-0 lg:divide-x divide-slate-100 w-full">
@@ -706,7 +707,7 @@ function ReviewsSection() {
                 {/* Image */}
                 <div className="shrink-0 w-full sm:w-[130px] lg:w-[140px] flex">
                   <img
-                    src={reviewImage}
+                    src={review.image}
                     alt={review.name}
                     className="w-full h-40 sm:h-full rounded-2xl object-cover shadow-sm"
                   />
@@ -754,19 +755,19 @@ function FaqSection() {
   const faqs = [
     // Row 1
     {
-      question: "Do I need experience with websites or tech?",
+      question: "Do I need experience with websites or technology?",
       answer:
-        "No. Everything is done for you. We build your system and walk you through how to use it.",
+        "No. The $495 QuitTheApp system includes step-by-step guidance so you can complete the setup yourself. Prefer to have everything handled for you? Add the optional $199 We Do It for You upgrade, and our team will complete the setup.",
     },
     {
       question: "How quickly can I get my system?",
       answer:
-        "Most drivers are live and ready to accept bookings within 48 to 72 hours.",
+        "Launch timing depends on how quickly you complete the setup steps and provide the required business information. Customers who purchase the optional $199 We Do It for You upgrade will receive a separate setup timeline after all required information is submitted.",
     },
     {
       question: "Is the $495 really a one-time payment?",
       answer:
-        "Yes! $495 is a one-time payment—no monthly fees, commissions, or subscriptions. You own everything.",
+        "Yes. The $495 QuitTheApp DIY system is a one-time payment with no monthly QuitTheApp platform fee. An optional $199 We Do It for You upgrade is available. Normal business expenses such as scheduling software, hosting, payment processing, commercial insurance, licensing, and operating costs may still apply.",
     },
     // Row 2
     {
@@ -775,14 +776,14 @@ function FaqSection() {
         "This works in any city with an airport and travelers. Smaller markets often have less competition.",
     },
     {
-      question: "How do I get my first customers?",
+      question: "How do I get my first clients?",
       answer:
-        "Use the tools we provide—QR cards, outreach templates, and your network—to get your first bookings fast.",
+        "Use the Client Acquisition Center™ with QR cards, referral tools, outreach templates, and practical strategies designed to help you attract prospective clients and generate direct booking opportunities.",
     },
     {
-      question: "What if it doesn't work for me?",
+      question: "What if it does not work for me?",
       answer:
-        "We're real people who care about your success. Contact us and we'll help you every step of the way.",
+        "QuitTheApp was created from real experience building and operating a private airport transportation business since 2016. Results depend on your market, pricing, effort, expenses, and ability to attract clients. Our team provides support to help you understand and use the system.",
     },
   ];
 
@@ -824,7 +825,7 @@ function FaqSection() {
 function FooterCTASection() {
   const checkmarks = [
     "No monthly platform fees",
-    "Built specifically for 50+ drivers",
+    "Built for independent drivers",
     "Real human support",
     "Secure checkout",
   ];
@@ -832,8 +833,8 @@ function FooterCTASection() {
   const trustBadges = [
     {
       icon: Users,
-      title: "Trusted by Drivers",
-      subtitle: "50+ Across the U.S.",
+      title: "Built for Independent",
+      subtitle: "Drivers Across the U.S.",
     },
     {
       icon: Lock,
@@ -852,8 +853,8 @@ function FooterCTASection() {
     },
     {
       icon: ShieldCheck,
-      title: "Satisfaction Guaranteed",
-      subtitle: "Real Human Support",
+      title: "Built From Real",
+      subtitle: "Transportation Experience",
     },
   ];
 
@@ -878,9 +879,9 @@ function FooterCTASection() {
 
             <div className="flex flex-col">
               <h3 className="text-white font-bold text-base sm:text-xl lg:text-[15px] xl:text-[20px] 2xl:text-[22px] tracking-wide leading-snug whitespace-nowrap">
-                ONE GREAT AIRPORT CUSTOMER
+                ONE GREAT AIRPORT CLIENT
                 <br />
-                CAN TURN INTO <span className="text-[#39b54a]">YEARS OF</span>
+                CAN LEAD TO <span className="text-[#39b54a]">YEARS OF</span>
                 <br />
                 <span className="text-[#39b54a]">REPEAT RIDES.™</span>
               </h3>
@@ -894,6 +895,10 @@ function FooterCTASection() {
             </span>
             <span className="text-white text-xs sm:text-sm lg:text-[10px] xl:text-sm font-bold tracking-widest uppercase whitespace-nowrap">
               ONE-TIME PAYMENT
+            </span>
+            <span className="text-white/80 text-[10px] lg:text-[9px] xl:text-[11px] font-medium tracking-wide text-center mt-1">
+              Includes the complete QuitTheApp DIY launch system.<br/>
+              Optional $199 We Do It for You upgrade available.
             </span>
           </div>
 
