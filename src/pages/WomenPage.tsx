@@ -28,6 +28,8 @@ import womenBannerImage from "../assets/womenBannerImage.png";
 import womenMiddleSection from "../assets/womenMiddleSection.png";
 import womenLogo from "../assets/womenLogo.png";
 import reviewImage from "../assets/review.jpg";
+import standardImage from "../assets/standard.png";
+import reviewCoupleImage from "../assets/reviewCouple.png";
 
 export default function WomenPage() {
   return (
@@ -66,16 +68,14 @@ function HeroBanner() {
             {/* Left Side Content */}
             <div className="w-full max-w-[clamp(280px,40vw,672px)] text-left z-10 self-center">
               <h1 className="text-[clamp(2rem,3.5vw,3.75rem)] font-bold text-white leading-tight mb-[clamp(1rem,1vw,1rem)] tracking-tight">
-                Launch a <br />
-                <span className="text-[#f42661]">Women-Focused</span> <br />
+                Build Your Own <br />
+                <span className="text-[#f42661]">Women Focused</span> <br />
                 Private Airport <br />
-                Business Built on Trust.
+                Transportation Business
               </h1>
 
               <p className="text-[clamp(1rem,1.2vw,1.125rem)] text-slate-200 mb-[clamp(1.5rem,2vw,2rem)] max-w-[clamp(280px,35vw,576px)] leading-relaxed">
-                QuitTheApp helps women operators start a direct-booking airport
-                transportation business with the tools to get booked, build
-                trust, and create repeat riders.
+                QuitTheApp gives women operators the tools to attract direct clients, accept private airport ride requests, build trust, and create repeat business.
               </p>
 
               <ul className="space-y-[clamp(0.5rem,0.8vw,0.5rem)] mb-[clamp(1.5rem,2vw,2rem)]">
@@ -100,7 +100,7 @@ function HeroBanner() {
 
               <button className="cursor-pointer bg-[#f42661] hover:bg-[#d91950] text-white font-bold py-[clamp(0.75rem,1vw,1rem)] px-[clamp(1rem,2vw,2rem)] rounded-[clamp(0.25rem,0.5vw,0.375rem)] transition-colors shadow-lg shadow-[#f42661]/30 flex items-center justify-between group w-full sm:w-auto text-[clamp(0.875rem,1.1vw,1.125rem)]">
                 <span className="text-left leading-snug">
-                  Start My Women-Focused <br className="hidden sm:block" />
+                  Start My Women Focused <br className="hidden sm:block" />
                   Private Airport Business™ — $495
                 </span>
                 <div className="bg-white rounded-full p-[clamp(0.15rem,0.3vw,0.25rem)] ml-[clamp(0.5rem,1vw,1rem)] group-hover:translate-x-1 transition-transform shrink-0">
@@ -184,7 +184,7 @@ function FeaturesSection() {
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#0b0f19] tracking-tight">
             Everything You Need to{" "}
             <span className="text-[#f42661]">
-              Start Building Your Own Customers
+              Create Your Own Successful Client Base
             </span>
           </h2>
         </div>
@@ -259,19 +259,19 @@ function ComparisonSection() {
                 ))}
               </ul>
               <h3 className="mb-3 text-xl font-bold text-[#16a34a] text-center">
-                Your Women-Focused Business
+                Your Women Focused Business
               </h3>
               <ul className="space-y-2">
                 {[
-                  "You own your customers",
-                  "Repeat riders and referrals",
-                  "Set your rates and keep 100%",
-                  "Professional trust-based experience",
-                  "Real assets that grow",
+                  "You own your client relationships",
+                  "Build repeat riders and referrals",
+                  "Set your own rates and keep the fares paid directly to your business",
+                  "Create a professional, trust-based experience",
+                  "Build business assets you control",
                 ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3">
-                    <CheckCircle2 className="h-5 w-5 shrink-0 fill-[#16a34a] text-white" />
-                    <span className="text-[14px] font-semibold text-slate-800">
+                  <li key={i} className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 shrink-0 mt-0.5 fill-[#16a34a] text-white" />
+                    <span className="text-[14px] font-semibold text-slate-800 leading-snug">
                       {item}
                     </span>
                   </li>
@@ -316,18 +316,18 @@ function ComparisonSection() {
             {/* Right */}
             <div className="w-[32%] shrink-0 bg-white px-8 py-0 flex flex-col justify-center">
               <h3 className="mb-4 text-[22px] font-bold text-[#16a34a] leading-tight">
-                Your Women-Focused Business
+                Your Women Focused Business
               </h3>
               <ul className="space-y-3">
                 {[
-                  "You own your customers",
-                  "Repeat riders and referrals",
-                  "Set your rates and keep 100%",
-                  "Professional trust-based experience",
-                  "Real assets that grow",
+                  "You own your client relationships",
+                  "Build repeat riders and referrals",
+                  "Set your own rates and keep the fares paid directly to your business",
+                  "Create a professional, trust-based experience",
+                  "Build business assets you control",
                 ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3">
-                    <CheckCircle2 className="h-5 w-5 shrink-0 fill-[#16a34a] text-white" />
+                  <li key={i} className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 shrink-0 mt-0.5 fill-[#16a34a] text-white" />
                     <span className="text-[14px] font-semibold text-slate-800 leading-snug">
                       {item}
                     </span>
@@ -346,42 +346,54 @@ function WhyWinSection() {
   const reasons = [
     {
       icon: ShieldCheck,
-      title: "Trust and safety",
+      title: "Greater Comfort and Trust",
+      description: "Many women may feel more comfortable riding with another woman, especially for early morning, late night, or unfamiliar airport trips.",
     },
     {
       icon: Star,
-      title: "Professional reliability",
+      title: "A More Personal Experience",
+      description: "Women operators can build lasting client relationships through dependable service, communication, and personal attention.",
     },
     {
       icon: Users,
-      title: "Family and senior referrals",
+      title: "Family and Senior Referrals",
+      description: "Satisfied travelers may refer daughters, mothers, friends, seniors, and family members who value a trusted woman driver.",
     },
     {
       icon: Plane,
-      title: "Airport travel made personal",
+      title: "Repeat Airport Clients",
+      description: "A safe, professional experience can turn one airport ride into repeat bookings and referrals.",
     },
   ];
 
   return (
     <section className="bg-white py-3 border-b border-slate-100">
       <PageContainer size="full">
-        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#0b0f19] text-center mb-6">
-          Why Women Operators Can Win
+        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#0b0f19] text-center mb-10">
+          Why Women Travelers Choose Women Drivers
         </h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-4 md:divide-x divide-slate-200 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 w-full">
           {reasons.map((reason, idx) => (
             <div
               key={idx}
-              className="flex flex-col items-center text-center px-4"
+              className="flex flex-col items-center text-center px-4 relative"
             >
               <reason.icon
-                className="w-8 h-8 text-[#f42661] mb-3"
+                className="w-10 h-10 text-[#f42661] mb-4 shrink-0"
                 strokeWidth={1.5}
               />
-              <h4 className="font-bold text-[#0b0f19] text-sm sm:text-base leading-snug max-w-[140px]">
+              <h4 className="font-bold text-[#0b0f19] text-base leading-snug mb-2">
                 {reason.title}
               </h4>
+              <p className="text-slate-600 text-sm leading-relaxed max-w-[240px]">
+                {reason.description}
+              </p>
+              
+              {/* Vertical Divider for Desktop */}
+              {idx < reasons.length - 1 && (
+                <div className="hidden lg:block absolute right-[-12px] top-[10%] bottom-[10%] w-px bg-slate-200"></div>
+              )}
             </div>
           ))}
         </div>
@@ -471,18 +483,21 @@ function ReviewsSection() {
         "I launched in 2 weeks and my repeat bookings and referrals keep growing.",
       name: "Jessica M.",
       location: "Austin, TX",
+      image: reviewImage,
     },
     {
       quote:
         "My clients love the touch of trust and care I bring to every ride.",
       name: "Maria R.",
       location: "Scottsdale, AZ",
+      image: standardImage,
     },
     {
       quote:
         "This system gave me the freedom to build a business I'm proud of.",
       name: "Lisa T.",
       location: "Charlotte, NC",
+      image: reviewCoupleImage,
     },
   ];
 
@@ -503,7 +518,7 @@ function ReviewsSection() {
                 {/* Image */}
                 <div className="shrink-0 w-full sm:w-[150px] lg:w-[140px] xl:w-[160px] flex">
                   <img
-                    src={reviewImage}
+                    src={review.image}
                     alt={review.name}
                     className="w-full h-32 sm:h-full rounded-2xl object-cover shadow-sm"
                   />
@@ -555,38 +570,27 @@ function FaqSection() {
     {
       question: "How is this different from Uber or Lyft?",
       answer:
-        "Uber and Lyft control the customer, set the prices, and take 50-60% of your earnings. With QuitTheApp, you own your customer list, set your rates, keep 100% of your fares, and build a valuable business asset.",
+        "With rideshare apps, the platform controls the client relationship, pricing structure, and access to future ride opportunities. With QuitTheApp, you build your own client list, set your own rates, and keep the fares paid directly to your business, subject to normal operating expenses and payment processing costs.",
     },
     {
       question: "Is the $495 really a one-time payment?",
       answer:
-        "Yes! $495 is a one-time payment—no monthly fees, commissions, or subscriptions. Most operators recover their investment with just two or three airport rides. After that, all earnings are yours.",
+        "Yes. The $495 DIY system is a one-time payment with no monthly QuitTheApp platform fee. An optional $199 We Do It for You upgrade is available if you would like our team to complete the setup. Normal business expenses, scheduling software, hosting, payment processing, insurance, licensing, and other operating costs may still apply. Because QuitTheApp is a one-time purchase, each direct booking can help you recover your initial investment while building a business asset you control. Results depend on your pricing, market, expenses, and effort.",
     },
     {
-      question: "I'm not tech-savvy. Can I still do this?",
+      question: "I'm not tech savvy. Can I still do this?",
       answer:
-        "Absolutely! Choose DIY with step-by-step guidance, Guided Setup for $129, or Done For You for $249. No tech skills needed—we take care of it all.",
+        "Absolutely. The $495 QuitTheApp system includes step-by-step guidance so you can complete the setup yourself. Prefer to have it handled for you? Add the optional $199 We Do It for You upgrade, and our team will complete the setup.",
     },
     {
-      question: "How do I get my first customers?",
+      question: "How do I get my first clients?",
       answer:
-        "Use the Customer Acquisition Center with QR cards, outreach templates, and customer-building tools. Start with your network, local hotels, and referrals—one customer becomes many.",
+        "Use the Client Acquisition Center™ with QR cards, outreach templates, and client-building tools. Start with your network, local hotels, and referrals—one client becomes many.",
     },
     {
       question: "What if it doesn't work for me?",
-      answer: (
-        <>
-          We've been running a real business since 2026 and stand behind this
-          system. If it's not the right fit during setup, contact us at{" "}
-          <a
-            href="mailto:support@quittheapp.com"
-            className="text-blue-600 hover:underline"
-          >
-            support@quittheapp.com
-          </a>{" "}
-          and our team will help.
-        </>
-      ),
+      answer:
+        "QuitTheApp was created from real experience building and operating a private airport transportation business since 2016. Results depend on your market, pricing, effort, expenses, and ability to attract clients. If you need help deciding whether the system fits your goals, contact support@quittheapp.com.",
     },
   ];
 
@@ -646,7 +650,7 @@ function FooterCTASection() {
           {/* Column 1: Intro */}
           <div className="lg:w-1/3 flex flex-col pr-0 lg:pr-8 lg:border-r border-slate-800">
             <h3 className="text-2xl sm:text-3xl font-bold text-white leading-tight mb-6">
-              Start My <span className="text-[#f42661]">Women-Focused</span>
+              Start My <span className="text-[#f42661]">Women Focused</span>
               <br />
               Private Airport Business™
             </h3>
@@ -661,13 +665,19 @@ function FooterCTASection() {
 
           {/* Column 2: Pricing & Checklist */}
           <div className="lg:w-1/3 flex flex-col justify-center">
-            <div className="flex items-baseline gap-3 mb-4">
-              <span className="text-4xl font-bold text-[#f42661]">$495</span>
-              <span className="text-white font-bold text-lg">
-                One-time payment
+            <div className="flex flex-col mb-4">
+              <div className="flex items-baseline gap-3">
+                <span className="text-4xl font-bold text-[#f42661]">$495</span>
+                <span className="text-white font-bold text-lg">
+                  One-time payment
+                </span>
+              </div>
+              <span className="text-slate-300 text-sm mt-2 leading-snug max-w-[280px]">
+                Includes the complete QuitTheApp DIY launch system and personalized driver selling page.<br/>
+                <span className="mt-2 block font-medium">Optional $199 We Do It for You upgrade available.</span>
               </span>
             </div>
-            <ul className="space-y-2">
+            <ul className="space-y-2 mt-2">
               {benefits.map((benefit, i) => (
                 <li
                   key={i}
@@ -684,7 +694,7 @@ function FooterCTASection() {
           <div className="lg:w-1/3 flex flex-col justify-center items-center lg:items-end">
             <button className="cursor-pointer bg-[#f42661] hover:bg-[#d91950] text-white font-bold py-4 px-6 rounded-lg transition-colors shadow-lg shadow-[#f42661]/20 flex items-center justify-between group w-full text-base sm:text-lg mb-4">
               <span className="text-center w-full">
-                Start My Women-Focused <br className="hidden xl:block" />
+                Start My Women Focused <br className="hidden xl:block" />
                 Private Airport Business™ — $495
               </span>
               <div className="bg-white rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
