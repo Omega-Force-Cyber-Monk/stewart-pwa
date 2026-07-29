@@ -26,7 +26,7 @@ export function PageContainer({
 }: PageContainerProps) {
   return (
     <div
-      className={cn("mx-auto w-full px-[50px]", sizeClasses[size], className)}
+      className={cn("mx-auto w-full px-[20px] md:px-[50px]", sizeClasses[size], className)}
       {...props}
     >
       {children}

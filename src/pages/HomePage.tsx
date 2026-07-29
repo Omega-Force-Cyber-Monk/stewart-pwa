@@ -105,7 +105,7 @@ function SeniorNavbar() {
 
 function HeroBanner() {
   return (
-    <div className="relative w-full h-[100svh] flex flex-col justify-between overflow-hidden bg-[#040a23] pt-[80px]">
+    <div className="relative w-full min-h-[100svh] flex flex-col justify-between overflow-hidden bg-[#040a23] pt-[80px]">
       {/* Background Image */}
       <img
         src={seniorBanner}
@@ -210,9 +210,9 @@ function HeroBanner() {
       </div>
 
       {/* Bottom Curve & Trust Badges */}
-      <div className="relative z-20 w-full lg:w-[70%] xl:w-[60%] bg-[#040a23] lg:rounded-tr-[5rem] mt-auto pb-6 pt-6 lg:pb-8 lg:pt-8 pl-4 lg:pl-8 xl:pl-16 pr-4 lg:pr-12">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-4 xl:gap-6">
-          <div className="flex items-center gap-3 xl:gap-4">
+      <div className="relative z-20 w-full lg:w-[70%] xl:w-[60%] bg-[#040a23] lg:rounded-tr-[5rem] mt-auto px-4 py-6 lg:px-8 lg:py-8 xl:pl-16 xl:pr-12">
+        <div className="flex flex-col md:flex-row md:flex-wrap items-start md:items-stretch gap-4 md:gap-0">
+          <div className="flex items-center gap-3 xl:gap-4 md:w-1/3 md:pr-4">
             <CreditCard
               className="w-8 h-8 xl:w-10 xl:h-10 text-white shrink-0"
               strokeWidth={1.5}
@@ -225,8 +225,7 @@ function HeroBanner() {
               </span>
             </div>
           </div>
-          <div className="hidden md:block w-px h-8 bg-slate-700/80 shrink-0"></div>
-          <div className="flex items-center gap-3 xl:gap-4">
+          <div className="flex items-center gap-3 xl:gap-4 md:w-1/3 md:px-4 md:border-l md:border-slate-700/80">
             <Clock
               className="w-8 h-8 xl:w-10 xl:h-10 text-white shrink-0"
               strokeWidth={1.5}
@@ -237,8 +236,7 @@ function HeroBanner() {
               <span className="font-medium text-slate-300">in 48–72 hours</span>
             </div>
           </div>
-          <div className="hidden md:block w-px h-8 bg-slate-700/80 shrink-0"></div>
-          <div className="flex items-center gap-3 xl:gap-4">
+          <div className="flex items-center gap-3 xl:gap-4 md:w-1/3 md:pl-4 md:border-l md:border-slate-700/80">
             <ShieldCheck
               className="w-8 h-8 xl:w-10 xl:h-10 text-white shrink-0"
               strokeWidth={1.5}
@@ -555,11 +553,11 @@ function WhyWinSection() {
             WHY 50+ DRIVERS CAN WIN
           </h2>
 
-          <div className="flex flex-col lg:flex-row items-start justify-between gap-6 lg:gap-4 divide-y lg:divide-y-0 lg:divide-x divide-slate-100">
+          <div className="flex flex-col lg:flex-row items-start justify-between gap-6 lg:gap-4">
             {reasons.map((reason, idx) => (
               <div
                 key={idx}
-                className="flex flex-row items-center lg:items-start lg:flex-col gap-4 flex-1 pt-6 lg:pt-0 lg:px-4 first:pt-0 first:pl-0 last:pr-0"
+                className="relative flex w-full flex-col items-center gap-4 text-center lg:w-auto lg:flex-1 lg:items-start lg:px-4 lg:text-left first:pl-0 last:pr-0"
               >
                 <div className="w-14 h-14 rounded-full bg-[#f0fdf4] flex items-center justify-center shrink-0">
                   <reason.icon
@@ -567,7 +565,7 @@ function WhyWinSection() {
                     strokeWidth={2}
                   />
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col items-center lg:items-start">
                   <h4 className="font-bold text-[#1a1f71] text-[13px] sm:text-sm leading-snug whitespace-pre-line mb-1">
                     {reason.title}
                   </h4>
@@ -575,6 +573,13 @@ function WhyWinSection() {
                     {reason.description}
                   </p>
                 </div>
+
+                {idx < reasons.length - 1 && (
+                  <div className="absolute bottom-[-0.75rem] left-0 right-0 h-px bg-slate-100 lg:hidden"></div>
+                )}
+                {idx < reasons.length - 1 && (
+                  <div className="hidden lg:block absolute right-0 top-2 bottom-2 w-px bg-slate-100"></div>
+                )}
               </div>
             ))}
           </div>
@@ -614,28 +619,30 @@ function HowItWorksSection() {
             HOW IT WORKS
           </h2>
 
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-4 w-full">
+          <div className="flex flex-col lg:flex-row items-stretch justify-between gap-4 lg:gap-4 w-full">
             {steps.map((step, idx) => (
               <div
                 key={idx}
                 className="flex items-center w-full lg:w-auto flex-1 justify-center"
               >
-                <div className="flex flex-row items-center gap-4 w-full justify-center">
-                  {/* Number Circle */}
-                  <div className="w-8 h-8 rounded-full bg-[#15803d] text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
-                    {step.number}
-                  </div>
+                <div className="flex w-full items-center justify-center gap-4 rounded-xl bg-slate-50/70 p-4 lg:bg-transparent lg:p-0">
+                  <div className="flex shrink-0 items-center gap-3 lg:gap-4">
+                    {/* Number Circle */}
+                    <div className="w-8 h-8 rounded-full bg-[#15803d] text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
+                      {step.number}
+                    </div>
 
-                  {/* Dark Blue Icon */}
-                  <div className="shrink-0">
-                    <step.icon
-                      className="w-9 h-9 text-[#1a1f71]"
-                      strokeWidth={1.5}
-                    />
+                    {/* Dark Blue Icon */}
+                    <div className="shrink-0">
+                      <step.icon
+                        className="w-9 h-9 text-[#1a1f71]"
+                        strokeWidth={1.5}
+                      />
+                    </div>
                   </div>
 
                   {/* Text Content */}
-                  <div className="flex flex-col justify-center max-w-[200px]">
+                  <div className="flex flex-col justify-center text-center lg:max-w-[200px] lg:text-left">
                     <h4 className="font-bold text-[#1a1f71] text-sm sm:text-base leading-snug">
                       {step.title}
                     </h4>
