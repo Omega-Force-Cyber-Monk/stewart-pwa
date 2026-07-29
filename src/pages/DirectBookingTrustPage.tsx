@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Play, ChevronRight, ChevronDown, FileText, UserCheck, ShieldCheck, PlaneTakeoff, DollarSign, Copy, HelpCircle, Tag, Monitor, Headset } from "lucide-react";
+import { ChevronRight, ChevronDown, FileText, UserCheck, ShieldCheck, PlaneTakeoff, DollarSign, Copy, HelpCircle, Tag, Monitor, Headset } from "lucide-react";
 import ContactSupportModal from "../components/dashboard/ContactSupportModal";
 
 export default function DirectBookingTrustPage() {
@@ -67,19 +67,6 @@ export default function DirectBookingTrustPage() {
           <p className="text-sm text-slate-500">
             Answer the four customer fears. Build trust. Get more direct bookings.
           </p>
-        </div>
-        
-        <div className="flex items-center gap-4 shrink-0">
-          <div className="hidden sm:flex flex-col items-end">
-            <span className="text-[14px] font-bold text-slate-700 leading-tight">Learn Proven Outreach</span>
-            <span className="text-[14px] font-bold text-slate-700 leading-tight">Strategies</span>
-          </div>
-          <button className="flex items-center gap-2 bg-blue-50 text-blue-600 hover:bg-blue-100 px-5 py-2.5 rounded-full font-bold text-[13px] transition-colors">
-            <div className="w-6 h-6 rounded-full bg-blue-200 flex items-center justify-center">
-              <Play className="w-3 h-3 fill-current" />
-            </div>
-            Watch Guide
-          </button>
         </div>
       </div>
 

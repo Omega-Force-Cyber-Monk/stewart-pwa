@@ -44,7 +44,7 @@ export default function CouplePage() {
 
 function HeroBanner() {
   return (
-    <div className="relative w-full bg-[#f8fafc] border-b border-gray-100 min-h-[100svh] lg:max-h-[100svh] lg:h-[100svh] lg:overflow-hidden flex flex-col justify-between pt-4 pb-12 lg:pb-0">
+    <div className="relative w-full bg-[#f8fafc] border-b border-gray-100 min-h-[100svh] h-auto flex flex-col justify-between pt-[clamp(1rem,2vw,2rem)] pb-[clamp(3rem,4vw,4rem)] lg:pb-0 overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
@@ -62,12 +62,12 @@ function HeroBanner() {
           <div className="flex flex-col lg:flex-row w-full justify-between items-start lg:items-center gap-10 xl:gap-16">
             {/* Left Side Content */}
             <div className="w-full lg:w-1/2 text-left z-10 relative">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl font-extrabold text-[#060D64] leading-[1.1] sm:leading-[1.15] mb-4 sm:mb-6 tracking-tight uppercase">
+              <h1 className="text-[clamp(2rem,3.5vw,3rem)] font-extrabold text-[#060D64] leading-[1.1] mb-[clamp(1rem,1.5vw,1.5rem)] tracking-tight uppercase">
                 Build An Airport
                 <br />
                 Transportation Business
                 <br />
-                <span className="text-[#2563eb] text-4xl sm:text-5xl md:text-6xl xl:text-[70px] relative inline-block mt-2 font-extrabold">
+                <span className="text-[#2563eb] text-[clamp(2.75rem,5.5vw,4.5rem)] relative inline-block mt-2 font-extrabold">
                   Together.
                   <svg
                     className="absolute -bottom-2 sm:-bottom-3 left-0 w-full h-2 sm:h-3 text-[#eab308]"
@@ -85,7 +85,7 @@ function HeroBanner() {
                 </span>
               </h1>
 
-              <p className="text-lg sm:text-xl lg:text-[22px] text-[#060D64] font-semibold mb-6 sm:mb-8 max-w-xl leading-relaxed">
+              <p className="text-[clamp(1.125rem,1.5vw,1.375rem)] text-[#060D64] font-semibold mb-[clamp(1.5rem,2vw,2rem)] max-w-xl leading-relaxed">
                 Build your own business, your schedule, and the life you
                 want—while helping travelers every day.
               </p>
@@ -100,7 +100,7 @@ function HeroBanner() {
                 ].map((item, i) => (
                   <li
                     key={i}
-                    className="flex items-center text-[#060D64] font-bold text-base sm:text-lg"
+                    className="flex items-center text-[#060D64] font-bold text-[clamp(1rem,1.1vw,1.125rem)]"
                   >
                     <CheckCircle2 className="text-white mr-3 w-5 h-5 sm:w-6 sm:h-6 fill-[#2563eb] shrink-0" />
                     <span>{item}</span>
@@ -108,8 +108,8 @@ function HeroBanner() {
                 ))}
               </ul>
 
-              <button className="cursor-pointer bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-4 px-6 sm:py-5 sm:px-8 rounded-xl transition-all shadow-xl shadow-[#eab308]/30 flex items-center justify-between group w-full sm:w-auto mb-8 sm:mb-12 lg:mb-16">
-                <span className="text-left leading-snug pr-4 text-lg sm:text-xl md:text-2xl font-extrabold">
+              <button className="cursor-pointer bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(1rem,1.25vw,1.25rem)] px-[clamp(1.5rem,2vw,2rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/30 flex items-center justify-between group w-full sm:w-auto mb-[clamp(2rem,3vw,4rem)]">
+                <span className="text-left leading-snug pr-4 text-[clamp(1.125rem,1.5vw,1.5rem)] font-extrabold">
                   Build Our Airport Transportation Business Today™
                 </span>
                 <ArrowRight className="w-6 h-6 sm:w-7 sm:h-7 shrink-0 group-hover:translate-x-1.5 transition-transform stroke-[2.5]" />
@@ -118,8 +118,8 @@ function HeroBanner() {
 
             {/* Right Side Card */}
             <div className="w-full lg:w-auto xl:w-[45%] flex justify-center xl:justify-end z-10 mt-6 lg:mt-0">
-              <div className="bg-[#0b0f19] rounded-[2rem] p-6 sm:p-8 xl:p-12 xl:px-14 shadow-2xl w-fit xl:w-full xl:max-w-[480px] border-t-[6px] border-[#eab308]">
-                <h3 className="text-[#eab308] font-bold text-base sm:text-lg mb-6 uppercase tracking-wider">
+              <div className="bg-[#0b0f19] rounded-[2rem] p-[clamp(1.5rem,3vw,3.5rem)] shadow-2xl w-fit xl:w-full xl:max-w-[480px] border-t-[6px] border-[#eab308]">
+                <h3 className="text-[#eab308] font-bold text-[clamp(1rem,1.2vw,1.125rem)] mb-[clamp(1rem,1.5vw,1.5rem)] uppercase tracking-wider">
                   YOUR BUSINESS GROWS WHEN:
                 </h3>
 
@@ -133,7 +133,7 @@ function HeroBanner() {
                   ].map((item, i) => (
                     <li
                       key={i}
-                      className="flex items-center text-white text-sm sm:text-base font-semibold"
+                      className="flex items-center text-white text-[clamp(0.875rem,1vw,1rem)] font-semibold"
                     >
                       <CheckCircle2 className="w-5 h-5 mr-3 fill-[#2563eb] text-white shrink-0" />
                       <span>{item}</span>
@@ -144,7 +144,7 @@ function HeroBanner() {
                 <div className="w-full h-px bg-slate-800 mb-8"></div>
 
                 <div>
-                  <h4 className="text-white font-extrabold text-xl sm:text-2xl xl:text-3xl leading-tight mb-4">
+                  <h4 className="text-white font-extrabold text-[clamp(1.25rem,2vw,1.875rem)] leading-tight mb-[clamp(0.75rem,1vw,1rem)]">
                     Real Business.
                     <br />
                     Real Customers.
@@ -172,14 +172,14 @@ function HeroBanner() {
       </div>
 
       {/* Bottom Curve & Trust Badges */}
-      <div className="relative z-20 w-full lg:w-[70%] xl:w-[60%] bg-white lg:rounded-tr-[5rem] mt-auto py-6 sm:py-8 pl-4 sm:pl-8 xl:pl-16 pr-4 sm:pr-12 shadow-sm">
+      <div className="relative z-20 w-full lg:w-[70%] xl:w-[60%] bg-white lg:rounded-tr-[5rem] mt-auto py-[clamp(1.5rem,2vw,2rem)] px-[clamp(1rem,4vw,4rem)] shadow-sm">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-4 xl:gap-6">
           <div className="flex items-center gap-3 xl:gap-4">
             <CreditCard
               className="w-8 h-8 xl:w-10 xl:h-10 text-[#040a23] shrink-0"
               strokeWidth={1.5}
             />
-            <div className="text-xs sm:text-sm xl:text-[15px] font-bold text-[#040a23] leading-tight">
+            <div className="text-[clamp(0.75rem,1vw,0.95rem)] font-bold text-[#040a23] leading-tight">
               One-time payment
               <br />
               <span className="font-medium text-slate-600">
@@ -193,7 +193,7 @@ function HeroBanner() {
               className="w-8 h-8 xl:w-10 xl:h-10 text-[#040a23] shrink-0"
               strokeWidth={1.5}
             />
-            <div className="text-xs sm:text-sm xl:text-[15px] font-bold text-[#040a23] leading-tight">
+            <div className="text-[clamp(0.75rem,1vw,0.95rem)] font-bold text-[#040a23] leading-tight">
               Quick Launch Booking Flow
               <br />
               <span className="font-medium text-slate-600">in 48–72 hours</span>
@@ -205,7 +205,7 @@ function HeroBanner() {
               className="w-8 h-8 xl:w-10 xl:h-10 text-[#040a23] shrink-0"
               strokeWidth={1.5}
             />
-            <div className="text-xs sm:text-sm xl:text-[15px] font-bold text-[#040a23] leading-tight">
+            <div className="text-[clamp(0.75rem,1vw,0.95rem)] font-bold text-[#040a23] leading-tight">
               Built for couples
               <br />
               <span className="font-medium text-slate-600">
@@ -247,29 +247,29 @@ const features = [
 
 function FeaturesSection() {
   return (
-    <section className="bg-white py-4 sm:py-6" id="how-it-works">
+    <section className="bg-white py-[clamp(1.5rem,3vw,3rem)]" id="how-it-works">
       <PageContainer size="full">
-        <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 sm:p-8 md:p-10 lg:p-12">
-          <h2 className="text-center text-[#1a1f71] font-extrabold text-xl sm:text-2xl lg:text-3xl tracking-wide uppercase mb-10 sm:mb-14">
+        <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-[clamp(1.5rem,4vw,3.5rem)]">
+          <h2 className="text-center text-[#1a1f71] font-extrabold text-[clamp(1.25rem,2.5vw,1.875rem)] tracking-wide uppercase mb-[clamp(2.5rem,4vw,4rem)]">
             YOUR CORE SYSTEMS™ FOR BUILDING YOUR BUSINESS
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-12 gap-x-6 relative mb-12 sm:mb-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-[clamp(2.5rem,4vw,3.5rem)] gap-x-[clamp(1.5rem,2vw,2rem)] relative mb-[clamp(3rem,4.5vw,4.5rem)]">
             {features.map((feature, idx) => (
               <div
                 key={idx}
                 className="flex flex-col items-center text-center px-4 sm:px-6 relative"
               >
-                <div className="mb-4 sm:mb-6">
+                <div className="mb-[clamp(1rem,1.5vw,1.5rem)]">
                   <feature.icon
-                    className="w-12 h-12 sm:w-14 sm:h-14 text-[#2563eb]"
+                    className="w-[clamp(3rem,4vw,4rem)] h-[clamp(3rem,4vw,4rem)] text-[#2563eb]"
                     strokeWidth={1.5}
                   />
                 </div>
-                <h3 className="font-extrabold text-[#0b0f19] mb-2 sm:mb-3 text-base sm:text-lg leading-snug">
+                <h3 className="font-extrabold text-[#0b0f19] mb-[clamp(0.5rem,1vw,1rem)] text-[clamp(1rem,1.25vw,1.125rem)] leading-snug">
                   {feature.title}
                 </h3>
-                <p className="text-slate-700 font-medium text-sm sm:text-[15px] leading-relaxed max-w-[260px]">
+                <p className="text-slate-700 font-medium text-[clamp(0.875rem,1vw,1rem)] leading-relaxed max-w-[260px]">
                   {feature.description}
                 </p>
 
@@ -285,12 +285,12 @@ function FeaturesSection() {
             ))}
           </div>
 
-          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 sm:p-6 md:p-8 flex flex-col sm:flex-row items-center justify-center gap-4 max-w-4xl mx-auto mt-4 sm:mt-6 shadow-xs">
+          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-[clamp(1.25rem,2vw,2rem)] flex flex-col sm:flex-row items-center justify-center gap-4 max-w-4xl mx-auto mt-[clamp(1rem,2vw,2rem)] shadow-xs">
             <Gift
-              className="w-8 h-8 sm:w-10 sm:h-10 text-[#eab308] shrink-0"
+              className="w-[clamp(2rem,3vw,3rem)] h-[clamp(2rem,3vw,3rem)] text-[#eab308] shrink-0"
               strokeWidth={1.5}
             />
-            <p className="text-[#0b0f19] text-sm sm:text-base text-center sm:text-left leading-relaxed font-medium">
+            <p className="text-[#0b0f19] text-[clamp(0.875rem,1.1vw,1rem)] text-center sm:text-left leading-relaxed font-medium">
               <strong className="text-[#1a1f71] font-bold">
                 Also includes:
               </strong>{" "}
@@ -324,7 +324,7 @@ function ComparisonSection() {
   ];
 
   return (
-    <section className="bg-white py-4 sm:py-6" id="comparison">
+    <section className="bg-white py-[clamp(1.5rem,3vw,3rem)]" id="comparison">
       <PageContainer size="full">
         {/* WIDESCREEN DESKTOP LAYOUT (Strict Grid matching screenshot at xl and above) */}
         <div className="hidden xl:grid grid-cols-[1.1fr_1fr_auto_1.15fr_1.1fr] bg-white border border-slate-200 rounded-[2rem] overflow-hidden shadow-sm items-stretch">
@@ -345,7 +345,7 @@ function ComparisonSection() {
 
           {/* 2. Left Text */}
           <div className="flex flex-col justify-center py-8 px-4 2xl:px-6 z-10 bg-white">
-            <h3 className="text-lg 2xl:text-xl font-extrabold text-[#b91c1c] mb-5 uppercase tracking-wide leading-snug">
+            <h3 className="text-[clamp(1.125rem,1.5vw,1.5rem)] font-extrabold text-[#b91c1c] mb-[clamp(1rem,1.5vw,1.25rem)] uppercase tracking-wide leading-snug">
               RIDESHARING APPS
               <br />
               CONTROL EVERYTHING
@@ -354,7 +354,7 @@ function ComparisonSection() {
               {badList.map((item, i) => (
                 <li
                   key={i}
-                  className="flex items-start text-[#1a1f71] text-sm 2xl:text-base font-bold"
+                  className="flex items-start text-[#1a1f71] text-[clamp(0.875rem,1.1vw,1.125rem)] font-bold"
                 >
                   <XCircle className="w-5 h-5 mr-3 mt-[2px] fill-[#b91c1c] text-white shrink-0" />
                   <span className="leading-snug">{item}</span>
@@ -365,14 +365,14 @@ function ComparisonSection() {
 
           {/* 3. Center VS */}
           <div className="flex items-center justify-center px-6 2xl:px-8 bg-white z-20">
-            <div className="w-20 h-20 2xl:w-24 2xl:h-24 bg-[#081363] rounded-full flex items-center justify-center text-white font-extrabold text-2xl 2xl:text-3xl shadow-md">
+            <div className="w-[clamp(4rem,6vw,6rem)] h-[clamp(4rem,6vw,6rem)] bg-[#081363] rounded-full flex items-center justify-center text-white font-extrabold text-[clamp(1.5rem,2vw,2rem)] shadow-md">
               VS.
             </div>
           </div>
 
           {/* 4. Right Text */}
           <div className="flex flex-col justify-center py-8 pl-4 pr-4 2xl:pr-6 z-10 bg-white">
-            <h3 className="text-lg 2xl:text-xl font-extrabold text-[#1a1f71] mb-5 uppercase tracking-wide leading-snug">
+            <h3 className="text-[clamp(1.125rem,1.5vw,1.5rem)] font-extrabold text-[#1a1f71] mb-[clamp(1rem,1.5vw,1.25rem)] uppercase tracking-wide leading-snug">
               YOUR AIRPORT TRANSPORTATION
               <br />
               BUSINESS™
@@ -381,7 +381,7 @@ function ComparisonSection() {
               {goodList.map((item, i) => (
                 <li
                   key={i}
-                  className="flex items-start text-[#1a1f71] text-sm 2xl:text-base font-bold"
+                  className="flex items-start text-[#1a1f71] text-[clamp(0.875rem,1.1vw,1.125rem)] font-bold"
                 >
                   <CheckCircle2 className="w-5 h-5 mr-3 mt-[2px] fill-[#2563eb] text-white shrink-0" />
                   <span className="leading-snug">{item}</span>
@@ -424,7 +424,7 @@ function ComparisonSection() {
               />
             </div>
             <div className="w-full sm:w-[55%] lg:w-[50%] py-8 px-6 md:p-10 relative z-10 flex flex-col justify-center bg-white sm:bg-transparent">
-              <h3 className="text-lg sm:text-xl md:text-2xl font-extrabold text-[#b91c1c] mb-5 uppercase tracking-wide leading-snug">
+              <h3 className="text-[clamp(1.125rem,2vw,1.5rem)] font-extrabold text-[#b91c1c] mb-5 uppercase tracking-wide leading-snug">
                 RIDESHARING APPS
                 <br />
                 CONTROL EVERYTHING
@@ -433,7 +433,7 @@ function ComparisonSection() {
                 {badList.map((item, i) => (
                   <li
                     key={i}
-                    className="flex items-start text-[#1a1f71] text-sm sm:text-base md:text-lg font-bold"
+                    className="flex items-start text-[#1a1f71] text-[clamp(0.875rem,1.5vw,1.125rem)] font-bold"
                   >
                     <XCircle className="w-5 h-5 md:w-6 md:h-6 mr-3 mt-[1px] fill-[#b91c1c] text-white shrink-0" />
                     <span className="leading-snug">{item}</span>
@@ -445,7 +445,7 @@ function ComparisonSection() {
 
           {/* Mobile VS */}
           <div className="w-full bg-slate-50 py-5 flex items-center justify-center relative z-20 border-y border-slate-200">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#081363] rounded-full flex items-center justify-center text-white font-extrabold text-2xl shadow-md">
+            <div className="w-[clamp(4rem,5vw,5rem)] h-[clamp(4rem,5vw,5rem)] bg-[#081363] rounded-full flex items-center justify-center text-white font-extrabold text-[clamp(1.25rem,2vw,1.5rem)] shadow-md">
               VS.
             </div>
           </div>
@@ -453,14 +453,14 @@ function ComparisonSection() {
           {/* Right Side (Good) */}
           <div className="relative flex flex-col-reverse sm:flex-row items-stretch">
             <div className="w-full sm:w-[55%] lg:w-[50%] py-8 px-6 md:p-10 relative z-10 flex flex-col justify-center bg-white sm:bg-transparent">
-              <h3 className="text-lg sm:text-xl md:text-2xl font-extrabold text-[#1a1f71] mb-5 uppercase tracking-wide leading-snug">
+              <h3 className="text-[clamp(1.125rem,2vw,1.5rem)] font-extrabold text-[#1a1f71] mb-5 uppercase tracking-wide leading-snug">
                 YOUR AIRPORT TRANSPORTATION BUSINESS™
               </h3>
               <ul className="space-y-3 sm:space-y-4">
                 {goodList.map((item, i) => (
                   <li
                     key={i}
-                    className="flex items-start text-[#1a1f71] text-sm sm:text-base md:text-lg font-bold"
+                    className="flex items-start text-[#1a1f71] text-[clamp(0.875rem,1.5vw,1.125rem)] font-bold"
                   >
                     <CheckCircle2 className="w-5 h-5 md:w-6 md:h-6 mr-3 mt-[1px] fill-[#2563eb] text-white shrink-0" />
                     <span className="leading-snug">{item}</span>
@@ -602,10 +602,10 @@ function WhyWinSection() {
   ];
 
   return (
-    <section className="bg-white py-4 sm:py-6" id="why-win">
+    <section className="bg-white py-[clamp(1.5rem,3vw,3rem)]" id="why-win">
       <PageContainer size="full">
-        <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 sm:p-8 md:p-10 lg:p-12">
-          <h2 className="text-center text-[#0a1154] font-extrabold text-xl sm:text-2xl lg:text-3xl uppercase tracking-wide mb-8 sm:mb-12">
+        <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-[clamp(1.5rem,4vw,3.5rem)]">
+          <h2 className="text-center text-[#0a1154] font-extrabold text-[clamp(1.25rem,2.5vw,1.875rem)] uppercase tracking-wide mb-[clamp(2rem,4vw,3rem)]">
             WHY COUPLES ARE BUILDING THEIR OWN BUSINESSES
           </h2>
 
@@ -615,14 +615,14 @@ function WhyWinSection() {
                 key={idx}
                 className="flex flex-row items-center gap-4 sm:gap-6 xl:gap-4 flex-1 py-6 xl:py-0 xl:px-4 2xl:px-6 first:pt-0 xl:first:pt-0 xl:first:pl-0 last:pb-0 xl:last:pb-0 xl:last:pr-0"
               >
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#ebf0fc] flex items-center justify-center shrink-0 shadow-xs">
+                <div className="w-[clamp(3.5rem,4vw,4rem)] h-[clamp(3.5rem,4vw,4rem)] rounded-full bg-[#ebf0fc] flex items-center justify-center shrink-0 shadow-xs">
                   <reason.icon />
                 </div>
                 <div className="flex flex-col text-left">
-                  <h4 className="font-extrabold text-[#0a1154] text-base xl:text-[15px] 2xl:text-base leading-snug whitespace-pre-line mb-1">
+                  <h4 className="font-extrabold text-[#0a1154] text-[clamp(1rem,1.1vw,1.125rem)] leading-snug whitespace-pre-line mb-1">
                     {reason.title}
                   </h4>
-                  <p className="text-[#0a1154]/80 text-sm xl:text-[13px] 2xl:text-sm leading-relaxed font-medium whitespace-pre-line">
+                  <p className="text-[#0a1154]/80 text-[clamp(0.875rem,1vw,1rem)] leading-relaxed font-medium whitespace-pre-line">
                     {reason.description}
                   </p>
                 </div>
@@ -660,10 +660,10 @@ function HowItWorksSection() {
   ];
 
   return (
-    <section className="bg-white py-4 sm:py-6" id="how-it-works-steps">
+    <section className="bg-white py-[clamp(1.5rem,3vw,3rem)]" id="how-it-works-steps">
       <PageContainer size="full">
-        <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 sm:p-8 md:p-10 lg:p-12">
-          <h2 className="text-center text-[#1a1f71] font-extrabold text-xl sm:text-2xl lg:text-3xl uppercase tracking-wide mb-10 sm:mb-14">
+        <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-[clamp(1.5rem,4vw,3.5rem)]">
+          <h2 className="text-center text-[#1a1f71] font-extrabold text-[clamp(1.25rem,2.5vw,1.875rem)] uppercase tracking-wide mb-[clamp(2.5rem,4vw,4rem)]">
             HOW IT WORKS: LAUNCH YOUR BUSINESS IN 3 SIMPLE STEPS
           </h2>
 
@@ -674,32 +674,29 @@ function HowItWorksSection() {
                 className="flex flex-row items-center gap-4 sm:gap-6 lg:gap-4 justify-start sm:justify-center relative"
               >
                 {/* Number Circle */}
-                <div className="w-10 h-10 rounded-full bg-[#2563eb] text-white flex items-center justify-center font-extrabold text-base shrink-0 shadow-sm">
+                <div className="w-[clamp(2.5rem,3vw,3rem)] h-[clamp(2.5rem,3vw,3rem)] rounded-full bg-[#2563eb] text-white flex items-center justify-center font-extrabold text-[clamp(1rem,1.2vw,1.125rem)] shrink-0 shadow-sm">
                   {step.number}
                 </div>
 
-                {/* Dark Blue Icon */}
                 <div className="shrink-0">
                   <step.icon
-                    className="w-10 h-10 text-[#1a1f71]"
+                    className="w-[clamp(2.5rem,3vw,3rem)] h-[clamp(2.5rem,3vw,3rem)] text-[#1a1f71]"
                     strokeWidth={1.5}
                   />
                 </div>
 
-                {/* Text Content */}
                 <div className="flex flex-col justify-center max-w-xs">
-                  <h4 className="font-extrabold text-[#1a1f71] text-base sm:text-lg leading-snug">
+                  <h4 className="font-extrabold text-[#1a1f71] text-[clamp(1rem,1.25vw,1.125rem)] leading-snug">
                     {step.title}
                   </h4>
-                  <p className="text-slate-700 text-sm sm:text-base leading-snug font-medium mt-1">
+                  <p className="text-slate-700 text-[clamp(0.875rem,1.1vw,1rem)] leading-snug font-medium mt-1">
                     {step.description}
                   </p>
                 </div>
 
-                {/* Arrow separator for desktop */}
                 {idx < steps.length - 1 && (
                   <div className="hidden lg:flex absolute -right-4 top-1/2 -translate-y-1/2 text-[#1a1f71] z-10">
-                    <ArrowRight className="w-6 h-6 stroke-[2.5]" />
+                    <ArrowRight className="w-[clamp(1.5rem,2vw,2rem)] h-[clamp(1.5rem,2vw,2rem)] stroke-[2.5]" />
                   </div>
                 )}
               </div>
@@ -734,10 +731,10 @@ function ReviewsSection() {
   ];
 
   return (
-    <section className="bg-white py-4 sm:py-6" id="reviews">
+    <section className="bg-white py-[clamp(1.5rem,3vw,3rem)]" id="reviews">
       <PageContainer size="full">
-        <div className="w-full rounded-[2rem] border border-slate-200 shadow-sm p-6 sm:p-8 md:p-10 lg:p-12 bg-white">
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#1a1f71] text-center mb-10 sm:mb-14 uppercase tracking-wide">
+        <div className="w-full rounded-[2rem] border border-slate-200 shadow-sm p-[clamp(1.5rem,4vw,3.5rem)] bg-white">
+          <h2 className="text-[clamp(1.25rem,2.5vw,1.875rem)] font-extrabold text-[#1a1f71] text-center mb-[clamp(2.5rem,4vw,4rem)] uppercase tracking-wide">
             COUPLES ACROSS THE COUNTRY ARE BUILDING REAL BUSINESSES TOGETHER
           </h2>
 
@@ -759,7 +756,7 @@ function ReviewsSection() {
                 {/* Review Content */}
                 <div className="flex flex-col justify-start py-1 text-left flex-1">
                   {/* Quote */}
-                  <p className="text-slate-800 font-medium text-sm sm:text-base leading-relaxed mb-6">
+                  <p className="text-slate-800 font-medium text-[clamp(0.875rem,1.1vw,1rem)] leading-relaxed mb-[clamp(1.5rem,2vw,2rem)]">
                     "{review.quote}"
                   </p>
 
@@ -776,10 +773,10 @@ function ReviewsSection() {
 
                     {/* Author */}
                     <div>
-                      <h5 className="font-extrabold text-[#1a1f71] text-base leading-tight">
+                      <h5 className="font-extrabold text-[#1a1f71] text-[clamp(1rem,1.2vw,1.125rem)] leading-tight">
                         {review.name}
                       </h5>
-                      <span className="text-slate-600 font-medium text-sm">
+                      <span className="text-slate-600 font-medium text-[clamp(0.875rem,1vw,0.875rem)]">
                         {review.location}
                       </span>
                     </div>
@@ -831,14 +828,14 @@ function FaqSection() {
   ];
 
   return (
-    <section className="bg-white py-4 sm:py-6" id="faq">
+    <section className="bg-white py-[clamp(1.5rem,3vw,3rem)]" id="faq">
       <PageContainer size="full">
-        <div className="w-full rounded-[2rem] border border-slate-200 shadow-sm p-6 sm:p-8 md:p-10 lg:p-12 bg-white">
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#1a1f71] text-center mb-10 sm:mb-14 uppercase tracking-wide">
+        <div className="w-full rounded-[2rem] border border-slate-200 shadow-sm p-[clamp(1.5rem,4vw,3.5rem)] bg-white">
+          <h2 className="text-[clamp(1.25rem,2.5vw,1.875rem)] font-extrabold text-[#1a1f71] text-center mb-[clamp(2.5rem,4vw,4rem)] uppercase tracking-wide">
             FREQUENTLY ASKED QUESTIONS
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-12 gap-y-10 w-full relative">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-[clamp(2rem,3vw,3rem)] gap-y-[clamp(2rem,3vw,2.5rem)] w-full relative">
             {/* Desktop Vertical Dividers for 3-col Widescreen */}
             <div className="hidden xl:block absolute left-[33.33%] top-0 bottom-0 w-px bg-slate-100 -translate-x-1/2"></div>
             <div className="hidden xl:block absolute left-[66.66%] top-0 bottom-0 w-px bg-slate-100 -translate-x-1/2"></div>
@@ -849,10 +846,10 @@ function FaqSection() {
                   Q
                 </div>
                 <div className="flex flex-col">
-                  <h4 className="font-extrabold text-[#1a1f71] text-base sm:text-lg leading-snug mb-2">
+                  <h4 className="font-extrabold text-[#1a1f71] text-[clamp(1rem,1.25vw,1.125rem)] leading-snug mb-2">
                     {faq.question}
                   </h4>
-                  <p className="text-slate-700 text-sm sm:text-base font-medium leading-relaxed">
+                  <p className="text-slate-700 text-[clamp(0.875rem,1.1vw,1rem)] font-medium leading-relaxed">
                     {faq.answer}
                   </p>
                 </div>
@@ -902,26 +899,26 @@ function FooterCTASection() {
   ];
 
   return (
-    <section className="bg-white py-4 sm:py-6 pb-12 sm:pb-16" id="footer-cta">
+    <section className="bg-white py-[clamp(1.5rem,3vw,3rem)] pb-[clamp(3rem,4vw,4rem)]" id="footer-cta">
       <PageContainer size="full">
         {/* Dark Blue Banner Card - horizontal layout triggered at xl (1240px) to ensure no squeezed typography on tablets or small laptops */}
-        <div className="w-full bg-[#0b0f19] rounded-[2rem] shadow-2xl flex flex-col xl:flex-row items-center justify-between p-8 sm:p-10 xl:p-10 2xl:p-12 gap-10 xl:gap-6 border-b-[6px] border-[#eab308]">
+        <div className="w-full bg-[#0b0f19] rounded-[2rem] shadow-2xl flex flex-col xl:flex-row items-center justify-between p-[clamp(2rem,4vw,3.5rem)] gap-[clamp(1.5rem,3vw,3rem)] border-b-[6px] border-[#eab308]">
           {/* Left: Icon and Title */}
           <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 shrink-0 text-center sm:text-left">
             {/* Custom Icon Group */}
-            <div className="relative flex items-center justify-center shrink-0 w-20 h-20 sm:w-24 sm:h-24 xl:w-20 xl:h-20">
+            <div className="relative flex items-center justify-center shrink-0 w-[clamp(5rem,6vw,6rem)] h-[clamp(5rem,6vw,6rem)]">
               <RefreshCcw
                 className="w-full h-full text-[#eab308] absolute inset-0"
                 strokeWidth={1.5}
               />
               <Users
-                className="w-10 h-10 sm:w-12 sm:h-12 xl:w-10 xl:h-10 text-[#eab308] relative z-10"
+                className="w-[clamp(2.5rem,3vw,3rem)] h-[clamp(2.5rem,3vw,3rem)] text-[#eab308] relative z-10"
                 strokeWidth={1.5}
               />
             </div>
 
             <div className="flex flex-col">
-              <h3 className="text-white font-extrabold text-xl sm:text-2xl xl:text-[22px] 2xl:text-2xl tracking-wide leading-snug">
+              <h3 className="text-white font-extrabold text-[clamp(1.25rem,2vw,1.5rem)] tracking-wide leading-snug">
                 ONE GREAT AIRPORT CUSTOMER
                 <br />
                 CAN TURN INTO <span className="text-[#eab308]">YEARS OF</span>
@@ -933,10 +930,10 @@ function FooterCTASection() {
 
           {/* Pricing */}
           <div className="flex flex-col items-center justify-center shrink-0 xl:px-4">
-            <span className="text-[#eab308] text-5xl sm:text-6xl font-extrabold leading-none tracking-tight mb-2">
+            <span className="text-[#eab308] text-[clamp(3rem,5vw,4rem)] font-extrabold leading-none tracking-tight mb-2">
               $495
             </span>
-            <span className="text-white text-xs sm:text-sm font-bold tracking-widest uppercase">
+            <span className="text-white text-[clamp(0.75rem,1vw,0.875rem)] font-bold tracking-widest uppercase">
               ONE-TIME PAYMENT
             </span>
           </div>
@@ -949,7 +946,7 @@ function FooterCTASection() {
             {checkmarks.map((item, idx) => (
               <div key={idx} className="flex items-center gap-3">
                 <CheckCircle2 className="w-5 h-5 fill-[#2563eb] text-white shrink-0" />
-                <span className="text-white text-sm sm:text-base xl:text-sm 2xl:text-base font-semibold tracking-wide">
+                <span className="text-white text-[clamp(0.875rem,1vw,1rem)] font-semibold tracking-wide">
                   {item}
                 </span>
               </div>
@@ -958,7 +955,7 @@ function FooterCTASection() {
 
           {/* CTA Button */}
           <div className="shrink-0 w-full xl:w-auto">
-            <button className="cursor-pointer w-full xl:w-auto bg-gradient-to-b from-[#fde047] to-[#eab308] hover:from-[#fef08a] hover:to-[#ca8a04] text-[#0b0f19] font-extrabold py-5 px-8 xl:py-4 xl:px-8 2xl:py-5 2xl:px-10 rounded-xl transition-all shadow-xl shadow-[#eab308]/20 flex items-center justify-center gap-4 group text-base sm:text-lg xl:text-base 2xl:text-lg">
+            <button className="cursor-pointer w-full xl:w-auto bg-gradient-to-b from-[#fde047] to-[#eab308] hover:from-[#fef08a] hover:to-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(1.25rem,1.5vw,1.5rem)] px-[clamp(2rem,2.5vw,2.5rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/20 flex items-center justify-center gap-4 group text-[clamp(1rem,1.25vw,1.125rem)]">
               <span className="text-center">
                 Build Our Airport Transportation
                 <br className="hidden sm:block" />
@@ -970,18 +967,18 @@ function FooterCTASection() {
         </div>
 
         {/* Trust Badges */}
-        <div className="mt-8 sm:mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8 w-full px-2 sm:px-4">
+        <div className="mt-8 sm:mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-[clamp(1.5rem,2vw,2rem)] w-full px-2 sm:px-4">
           {trustBadges.map((badge, idx) => (
             <div
               key={idx}
               className="flex items-center gap-3 sm:gap-4"
             >
-              <badge.icon className="w-9 h-9 sm:w-10 sm:h-10 text-[#1a1f71] shrink-0 stroke-[1.5]" />
+              <badge.icon className="w-[clamp(2.25rem,3vw,3rem)] h-[clamp(2.25rem,3vw,3rem)] text-[#1a1f71] shrink-0 stroke-[1.5]" />
               <div className="flex flex-col">
-                <span className="text-[#1a1f71] font-extrabold text-xs sm:text-sm leading-tight">
+                <span className="text-[#1a1f71] font-extrabold text-[clamp(0.75rem,1vw,0.875rem)] leading-tight">
                   {badge.title}
                 </span>
-                <span className="text-slate-600 font-medium text-[11px] sm:text-xs leading-tight">
+                <span className="text-slate-600 font-medium text-[clamp(0.6875rem,0.9vw,0.75rem)] leading-tight">
                   {badge.subtitle}
                 </span>
               </div>
