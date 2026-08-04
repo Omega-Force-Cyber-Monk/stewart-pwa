@@ -62,7 +62,7 @@ export default function DirectBookingTrustPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-[24px] font-bold text-slate-900 mb-2">
-            Direct Booking Trust Framework™
+            Direct Booking Trust Center™
           </h1>
           <p className="text-sm text-slate-500">
             Answer the four customer fears. Build trust. Get more direct bookings.

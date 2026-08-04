@@ -3,19 +3,19 @@ import { Link } from "react-router-dom";
 
 export default function AdminAddResourcePage() {
   return (
-    <div className="flex flex-col h-full space-y-6">
+    <div className="flex flex-col space-y-6 flex-1">
       {/* Top Header Bar */}
       <div className="bg-white px-6 py-4 rounded-xl border border-slate-100 shadow-sm flex-shrink-0">
         <h2 className="text-lg font-bold text-slate-800">Add New Resources</h2>
       </div>
 
       {/* Main Form Card */}
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm max-w-4xl flex-1 flex flex-col min-h-0">
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm max-w-4xl flex flex-col min-h-0">
         <div className="p-6 md:p-8 border-b border-slate-100">
           <h3 className="text-xl font-bold text-slate-800">Upload Resources</h3>
         </div>
 
-        <div className="p-6 md:p-8 flex-1 overflow-y-auto space-y-6">
+        <div className="p-6 md:p-8 space-y-6">
           {/* Resource Name */}
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-slate-700">Resources Name</label>

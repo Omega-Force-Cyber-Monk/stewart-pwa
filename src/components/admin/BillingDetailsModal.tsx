@@ -14,7 +14,7 @@ export function BillingDetailsModal({ isOpen, onClose, data }: BillingDetailsMod
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-6 pb-4 border-b border-slate-100">
-          <h3 className="text-xl font-bold text-slate-800">Billings Details</h3>
+          <h3 className="text-xl font-bold text-slate-800">Billing Details</h3>
           <button 
             onClick={onClose}
             className="text-slate-400 hover:text-slate-600 transition-colors"
@@ -54,7 +54,7 @@ export function BillingDetailsModal({ isOpen, onClose, data }: BillingDetailsMod
             <span className="text-sm font-medium text-slate-800">{data.category}</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm text-slate-500">Purchased Type</span>
+            <span className="text-sm text-slate-500">Purchased Product</span>
             <span className="text-sm font-medium text-slate-800">{data.type}</span>
           </div>
           <div className="flex justify-between items-center">
@@ -66,11 +66,11 @@ export function BillingDetailsModal({ isOpen, onClose, data }: BillingDetailsMod
             <span className="text-sm font-medium text-slate-800">{data.method}</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm text-slate-500">Date</span>
+            <span className="text-sm text-slate-500">Purchase Date</span>
             <span className="text-sm font-medium text-slate-800">{data.date}</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm text-slate-500">Status</span>
+            <span className="text-sm text-slate-500">Payment Status</span>
             <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-green-50 text-green-600 border border-green-100">
               {data.status}
             </span>

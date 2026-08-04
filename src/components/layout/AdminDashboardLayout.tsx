@@ -18,10 +18,10 @@ import { LogoutModal } from "../admin/LogoutModal";
 
 const sidebarNavItems = [
   { name: "Dashboard", icon: LayoutDashboard, path: "/admin" },
-  { name: "Drivers Management", icon: Users, path: "/admin/drivers" },
+  { name: "Driver Management", icon: Users, path: "/admin/drivers" },
   // { name: "Bookings Management", icon: CalendarDays, path: "/admin/bookings" },
-  { name: "Resources Upload", icon: Upload, path: "/admin/resources" },
-  { name: "Billings", icon: Receipt, path: "/admin/billings" },
+  { name: "Resource Management", icon: Upload, path: "/admin/resources" },
+  { name: "Billing", icon: Receipt, path: "/admin/billings" },
   { name: "Support", icon: LifeBuoy, path: "/admin/support" },
   { name: "Settings", icon: Settings, path: "/admin/settings" },
 ];
@@ -40,7 +40,7 @@ export function AdminDashboardLayout({
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
   return (
-    <div className="flex h-screen bg-[#f8fafc] font-sans">
+    <div className="flex h-[100dvh] w-full bg-[#f8fafc] font-sans overflow-hidden">
       {/* ---------------- Mobile Overlay ---------------- */}
       {isMobileMenuOpen && (
         <div 
@@ -127,11 +127,11 @@ export function AdminDashboardLayout({
             
             <div className="flex items-center gap-3 border-l border-slate-700 pl-6">
               <div className="flex flex-col items-end hidden sm:flex">
-                <span className="text-sm font-semibold text-white">Stewart</span>
+                <span className="text-sm font-semibold text-white">Mark</span>
                 <span className="text-xs text-slate-400 font-medium">Admin</span>
               </div>
               <div className="h-10 w-10 rounded-full bg-[#1a56ff] text-white flex items-center justify-center font-bold shadow-sm border border-slate-800">
-                SW
+                MK
               </div>
             </div>
           </div>
@@ -139,7 +139,7 @@ export function AdminDashboardLayout({
 
         {/* Scrollable Content Area */}
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-[#f8fafc]">
-          <div className="container mx-auto px-4 sm:px-6 py-6 h-full">
+          <div className="container mx-auto px-4 sm:px-6 py-6 min-h-full flex flex-col">
             {children}
           </div>
         </main>

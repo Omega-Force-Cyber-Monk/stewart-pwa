@@ -22,7 +22,7 @@ export default function AdminSettingsPage() {
   ];
 
   return (
-    <div className="flex flex-col h-full space-y-6">
+    <div className="flex flex-col space-y-6 flex-1">
       <div>
         <h2 className="text-2xl font-bold text-slate-800">Settings</h2>
         <p className="text-slate-500 text-sm mt-1">
@@ -31,13 +31,13 @@ export default function AdminSettingsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-6 border-b border-slate-200">
+      <div className="flex items-center gap-6 border-b border-slate-200 overflow-x-auto scrollbar-hide">
         {tabs.map((tab) => (
           <button
             key={tab.name}
             onClick={() => setActiveTab(tab.name)}
             className={cn(
-              "flex items-center gap-2 pb-4 text-sm font-medium transition-colors relative",
+              "flex items-center gap-2 pb-4 text-sm font-medium transition-colors relative whitespace-nowrap",
               activeTab === tab.name 
                 ? "text-[#1a56ff]" 
                 : "text-slate-500 hover:text-slate-700"
@@ -53,7 +53,7 @@ export default function AdminSettingsPage() {
       </div>
 
       {/* Tab Content Area */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="">
         {activeTab === "Account Settings" && <AccountSettingsTab />}
         {activeTab === "Platform Settings" && <PlatformSettingsTab />}
         {activeTab === "Notifications" && <NotificationsTab />}
@@ -103,6 +103,14 @@ function AccountSettingsTab() {
                 className="flex-1 px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors text-slate-800"
               />
             </div>
+            <div className="flex items-center gap-4">
+              <label className="w-32 text-sm font-medium text-slate-500 flex-shrink-0">Role</label>
+              <input 
+                type="text" 
+                defaultValue="Administrator"
+                className="flex-1 px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors text-slate-800"
+              />
+            </div>
           </div>
         </div>
         
@@ -132,7 +140,7 @@ function AccountSettingsTab() {
             <label className="block text-sm font-medium text-slate-500 mb-2">Current Password</label>
             <input 
               type="password" 
-              defaultValue="******"
+              placeholder="Enter Current Password"
               className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors text-slate-800"
             />
           </div>
@@ -141,18 +149,24 @@ function AccountSettingsTab() {
               <label className="block text-sm font-medium text-slate-500 mb-2">New Password</label>
               <input 
                 type="password" 
-                defaultValue="******"
+                placeholder="Enter New Password"
                 className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors text-slate-800"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-500 mb-2">Confirm Password</label>
+              <label className="block text-sm font-medium text-slate-500 mb-2">Confirm New Password</label>
               <input 
                 type="password" 
-                defaultValue="******"
+                placeholder="Confirm New Password"
                 className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors text-slate-800"
               />
             </div>
+          </div>
+          <p className="text-xs text-slate-500">Minimum length. Uppercase and lowercase letters.</p>
+          <div className="flex justify-end">
+            <button className="px-4 py-2 rounded-lg bg-[#1a56ff] text-white font-medium hover:bg-blue-700 transition-colors text-sm">
+              Save Password
+            </button>
           </div>
         </div>
       </div>
@@ -191,6 +205,46 @@ function PlatformSettingsTab() {
             className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors text-slate-800"
           />
         </div>
+        <div>
+          <label className="block text-sm font-medium text-slate-500 mb-2">Platform Logo</label>
+          <input 
+            type="text" 
+            defaultValue="QuitTheApp logo"
+            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors text-slate-800"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-slate-500 mb-2">Default Notifications</label>
+          <input 
+            type="text" 
+            defaultValue="Enabled"
+            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors text-slate-800"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-slate-500 mb-2">Driver Categories</label>
+          <input 
+            type="text" 
+            defaultValue="Women Focused, Couples, Drivers 50+, Main, Spanish"
+            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors text-slate-800"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-slate-500 mb-2">Payment Settings</label>
+          <input 
+            type="text" 
+            defaultValue="Stripe"
+            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors text-slate-800"
+          />
+        </div>
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium text-slate-500 mb-2">System Maintenance Messaging</label>
+          <input 
+            type="text" 
+            defaultValue="No active maintenance message"
+            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors text-slate-800"
+          />
+        </div>
       </div>
     </div>
   );
@@ -198,14 +252,13 @@ function PlatformSettingsTab() {
 
 function NotificationsTab() {
   const notifications = [
-    { title: "You have received a new airport transfer request.", time: "1 minutes ago", unread: true },
-    { title: "Your next pickup is scheduled in 30 minutes.", time: "50 minutes ago", unread: false },
-    { title: "You have 3 rides scheduled today.", time: "8 hours ago", unread: false },
-    { title: "Don't forget to check your upcoming bookings.", time: "17 hours ago", unread: false },
-    { title: "You received a 5-star review from your latest passenger.", time: "1day ago", unread: true },
-    { title: "A previous customer booked another ride with you.", time: "2day ago", unread: true },
-    { title: "Your driver profile has been verified.", time: "3day ago", unread: true },
-    { title: "Your account is fully verified.", time: "5day ago", unread: false },
+    { title: "New driver registration", time: "Enabled", unread: true },
+    { title: "New payment", time: "Enabled", unread: false },
+    { title: "Failed payment", time: "Enabled", unread: false },
+    { title: "New support ticket", time: "Enabled", unread: false },
+    { title: "Driver ready for review", time: "Enabled", unread: true },
+    { title: "We Do It for You upgrade purchased", time: "Enabled", unread: true },
+    { title: "New resource request", time: "Enabled", unread: true },
   ];
 
   return (
@@ -260,12 +313,29 @@ function LegalComplianceTab() {
         <div className="flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:bg-slate-50 transition-colors">
           <div className="flex items-center gap-3">
             <FileText className="w-5 h-5 text-slate-400" />
-            <span className="font-medium text-slate-700">Terms & Conditions</span>
+            <span className="font-medium text-slate-700">Terms of Service</span>
           </div>
           <button className="text-[#1a56ff] font-bold text-sm hover:underline">
             View
           </button>
         </div>
+        {[
+          "Refund Policy",
+          "Business disclaimer",
+          "Earnings disclaimer",
+          "Transportation and insurance requirements",
+          "Cookie notice",
+        ].map((item) => (
+          <div key={item} className="flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:bg-slate-50 transition-colors">
+            <div className="flex items-center gap-3">
+              <FileText className="w-5 h-5 text-slate-400" />
+              <span className="font-medium text-slate-700">{item}</span>
+            </div>
+            <button className="text-[#1a56ff] font-bold text-sm hover:underline">
+              View
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );

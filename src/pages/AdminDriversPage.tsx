@@ -9,6 +9,8 @@ const driversList = [
     area: "Orlando, FL",
     date: "Jul 14, 2026",
     time: "10:30AM",
+    status: "Pending",
+    launchProgress: "25% Complete",
     avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&q=80",
   },
   {
@@ -18,6 +20,8 @@ const driversList = [
     area: "Orlando, FL",
     date: "Jul 14, 2026",
     time: "10:30AM",
+    status: "Approved",
+    launchProgress: "75% Complete",
     avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&q=80",
   },
   {
@@ -27,6 +31,8 @@ const driversList = [
     area: "Orlando, FL",
     date: "Jul 14, 2026",
     time: "10:30AM",
+    status: "Under Review",
+    launchProgress: "Launch Ready",
     avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&q=80",
   },
   {
@@ -36,6 +42,8 @@ const driversList = [
     area: "Orlando, FL",
     date: "Jul 14, 2026",
     time: "10:30AM",
+    status: "Pending",
+    launchProgress: "Setup Not Started",
     avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&q=80",
   },
   {
@@ -45,6 +53,8 @@ const driversList = [
     area: "Orlando, FL",
     date: "Jul 14, 2026",
     time: "10:30AM",
+    status: "Under Review",
+    launchProgress: "25% Complete",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&q=80",
   },
   {
@@ -54,6 +64,8 @@ const driversList = [
     area: "Orlando, FL",
     date: "Jul 14, 2026",
     time: "10:30AM",
+    status: "Approved",
+    launchProgress: "75% Complete",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&q=80",
   },
   {
@@ -63,6 +75,8 @@ const driversList = [
     area: "Orlando, FL",
     date: "Jul 14, 2026",
     time: "10:30AM",
+    status: "Pending",
+    launchProgress: "Setup Not Started",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&q=80",
   },
   {
@@ -72,6 +86,8 @@ const driversList = [
     area: "Orlando, FL",
     date: "Jul 14, 2026",
     time: "10:30AM",
+    status: "Approved",
+    launchProgress: "Launch Ready",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&q=80",
   },
   {
@@ -81,6 +97,8 @@ const driversList = [
     area: "Orlando, FL",
     date: "Jul 14, 2026",
     time: "10:30AM",
+    status: "Under Review",
+    launchProgress: "25% Complete",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&q=80",
   },
   {
@@ -90,6 +108,8 @@ const driversList = [
     area: "Orlando, FL",
     date: "Jul 14, 2026",
     time: "10:30AM",
+    status: "Pending",
+    launchProgress: "75% Complete",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&q=80",
   },
   {
@@ -99,24 +119,26 @@ const driversList = [
     area: "Orlando, FL",
     date: "Jul 14, 2026",
     time: "10:30AM",
+    status: "Approved",
+    launchProgress: "Launch Ready",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&q=80",
   },
 ];
 
 export default function AdminDriversPage() {
   return (
-    <div className="flex flex-col h-full space-y-6">
+    <div className="flex flex-col space-y-6 flex-1">
       <div>
         <h2 className="text-2xl font-bold text-slate-800">Driver Management</h2>
         <p className="text-slate-500 text-sm mt-1">
-          Monitor driver registrations, verification status, availability, performance, and activity from one place.
+          Monitor driver registrations, account status, service areas, launch progress, and platform activity from one place.
         </p>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm flex flex-col flex-1 overflow-hidden">
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm flex flex-col">
         {/* Table Header Controls */}
-        <div className="flex justify-between items-center p-6 border-b border-slate-50">
-          <h3 className="text-lg font-bold text-slate-800">All user</h3>
+        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 p-6 border-b border-slate-50">
+          <h3 className="text-lg font-bold text-slate-800">All Drivers</h3>
           <button className="flex items-center gap-2 px-4 py-2 bg-[#f0f4ff] text-[#1a56ff] font-medium rounded-lg hover:bg-blue-100 transition-colors text-sm">
             <Filter className="w-4 h-4" />
             Filter
@@ -133,6 +155,8 @@ export default function AdminDriversPage() {
                 <th className="px-6 py-4">Email Address</th>
                 <th className="px-6 py-4">Service Area</th>
                 <th className="px-6 py-4">Registration Date</th>
+                <th className="px-6 py-4">Status</th>
+                <th className="px-6 py-4">Launch Progress</th>
                 <th className="px-6 py-4 text-center rounded-tr-lg">Action</th>
               </tr>
             </thead>
@@ -154,15 +178,21 @@ export default function AdminDriversPage() {
                       <span className="text-slate-500 text-xs">{driver.time}</span>
                     </div>
                   </td>
+                  <td className="px-6 py-4 text-slate-600">{driver.status}</td>
+                  <td className="px-6 py-4 text-slate-600">{driver.launchProgress}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-center gap-3">
-                      <Link to={`/admin/drivers/${driver.id.replace('#', '')}`} className="text-green-500 hover:text-green-600 transition-colors block">
+                      <Link to={`/admin/drivers/${driver.id.replace('#', '')}`} title="View Driver" className="text-green-500 hover:text-green-600 transition-colors block">
                         <Eye className="w-4 h-4" />
                       </Link>
-                      <button className="text-red-400 hover:text-red-500 transition-colors">
+                      <button
+                        title="Delete Driver"
+                        onClick={() => window.confirm("Are you sure you want to permanently delete this driver account?")}
+                        className="text-red-400 hover:text-red-500 transition-colors"
+                      >
                         <Trash2 className="w-4 h-4" />
                       </button>
-                      <button className="text-slate-400 hover:text-slate-600 transition-colors">
+                      <button title="Change Status" className="text-slate-400 hover:text-slate-600 transition-colors">
                         <MoreVertical className="w-4 h-4" />
                       </button>
                     </div>
@@ -174,7 +204,7 @@ export default function AdminDriversPage() {
         </div>
 
         {/* Table Footer / Pagination */}
-        <div className="flex items-center justify-between p-6 border-t border-slate-50 bg-white">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 border-t border-slate-50 bg-white">
           <span className="text-sm text-slate-500">Showing 11 of 50 drivers</span>
           <div className="flex items-center gap-2">
             <button className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 bg-slate-50 hover:bg-slate-100 transition-colors">

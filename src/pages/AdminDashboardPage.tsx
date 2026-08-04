@@ -11,13 +11,13 @@ import {
 import { cn } from "../lib/cn";
 
 const revenueData = [
-  { name: "Mon", value: 180 },
-  { name: "Tue", value: 310 },
-  { name: "Wed", value: 240 },
-  { name: "Thu", value: 80 },
-  { name: "Fri", value: 210 },
-  { name: "Sat", value: 215 },
-  { name: "Sun", value: 190 },
+  { name: "Mon", value: 0 },
+  { name: "Tue", value: 0 },
+  { name: "Wed", value: 0 },
+  { name: "Thu", value: 0 },
+  { name: "Fri", value: 0 },
+  { name: "Sat", value: 0 },
+  { name: "Sun", value: 0 },
 ];
 
 const recentDrivers = [
@@ -53,56 +53,16 @@ const recentDrivers = [
   },
 ];
 
-const activities = [
-  {
-    id: 1,
-    user: "Sarah Johnson",
-    action: "completed her driver registration.",
-    time: "09:45 AM",
-    initials: "SA",
-    color: "bg-pink-100 text-pink-600",
-  },
-  {
-    id: 2,
-    user: "Michael Brown",
-    action: "accepted a new booking request.",
-    time: "09:45 AM",
-    initials: "MB",
-    color: "bg-green-100 text-green-600",
-  },
-  {
-    id: 3,
-    user: "Emily Davis",
-    action: "received a new 5-star review.",
-    time: "09:45 AM",
-    initials: "ED",
-    color: "bg-yellow-100 text-yellow-600",
-  },
-  {
-    id: 4,
-    user: "Sarah Johnson",
-    action: "completed her driver registration.",
-    time: "09:45 AM",
-    initials: "SA",
-    color: "bg-pink-100 text-pink-600",
-  },
-  {
-    id: 5,
-    user: "Michael Brown",
-    action: "accepted a new booking request.",
-    time: "09:45 AM",
-    initials: "MB",
-    color: "bg-green-100 text-green-600",
-  },
-  {
-    id: 6,
-    user: "Emily Davis",
-    action: "received a new 5-star review.",
-    time: "09:45 AM",
-    initials: "ED",
-    color: "bg-yellow-100 text-yellow-600",
-  },
-];
+type Activity = {
+  id: number;
+  user: string;
+  action: string;
+  time: string;
+  initials: string;
+  color: string;
+};
+
+const activities: Activity[] = [];
 
 const StatusBadge = ({ status }: { status: string }) => {
   const styles: Record<string, string> = {
@@ -146,7 +106,7 @@ export default function AdminDashboardPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="bg-[#ffe4f1] rounded-2xl p-6 flex flex-col justify-between border border-pink-100 shadow-sm relative overflow-hidden">
             <div className="flex justify-between items-start mb-4">
-              <h3 className="text-3xl font-bold text-slate-800">1,248</h3>
+              <h3 className="text-3xl font-bold text-slate-800">0</h3>
               <div className="h-8 w-8 rounded-full bg-pink-200/50 flex items-center justify-center">
                 <User className="h-4 w-4 text-pink-500" />
               </div>
@@ -156,7 +116,7 @@ export default function AdminDashboardPage() {
 
           <div className="bg-[#f3e8ff] rounded-2xl p-6 flex flex-col justify-between border border-purple-100 shadow-sm relative overflow-hidden">
             <div className="flex justify-between items-start mb-4">
-              <h3 className="text-3xl font-bold text-slate-800">$245,680</h3>
+              <h3 className="text-3xl font-bold text-slate-800">$0</h3>
               <div className="h-8 w-8 rounded-full bg-purple-200/50 flex items-center justify-center">
                 <Wallet className="h-4 w-4 text-purple-500" />
               </div>
@@ -169,7 +129,7 @@ export default function AdminDashboardPage() {
         <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-lg font-bold text-slate-800">Monthly Revenue</h3>
-            <span className="text-xl font-bold text-[#1a56ff]">$18,450</span>
+            <span className="text-xl font-bold text-[#1a56ff]">$0</span>
           </div>
           <div className="h-[250px] w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -204,8 +164,8 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Recent Driver Registrations */}
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-          <div className="flex justify-between items-center p-6 border-b border-slate-50">
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+          <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 p-6 border-b border-slate-50">
             <h3 className="text-lg font-bold text-slate-800">Recent Driver Registrations</h3>
             <button className="text-sm font-medium text-[#1a56ff] hover:underline">
               View All
@@ -274,22 +234,26 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="flex-1 overflow-y-auto pr-2 space-y-6">
-            {activities.map((activity, index) => (
-              <div key={index} className="flex gap-4 group">
-                <div className={cn(
-                  "w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-sm transition-transform group-hover:scale-105",
-                  activity.color
-                )}>
-                  {activity.initials}
+            {activities.length === 0 ? (
+              <p className="text-sm text-slate-500">No recent platform activity</p>
+            ) : (
+              activities.map((activity, index) => (
+                <div key={index} className="flex gap-4 group">
+                  <div className={cn(
+                    "w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-sm transition-transform group-hover:scale-105",
+                    activity.color
+                  )}>
+                    {activity.initials}
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm text-slate-700 leading-snug">
+                      <span className="font-semibold text-slate-900">{activity.user}</span> {activity.action}
+                    </p>
+                    <p className="text-xs text-slate-400 mt-1">{activity.time}</p>
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <p className="text-sm text-slate-700 leading-snug">
-                    <span className="font-semibold text-slate-900">{activity.user}</span> {activity.action}
-                  </p>
-                  <p className="text-xs text-slate-400 mt-1">{activity.time}</p>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </div>

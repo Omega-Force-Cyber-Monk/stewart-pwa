@@ -53,7 +53,7 @@ export default function AdminDriverDetailsPage() {
               </div>
               <div className="flex justify-between items-start border-b border-slate-50 pb-3">
                 <span className="text-sm text-slate-500">Driver Category</span>
-                <span className="text-sm font-medium text-slate-800 text-right">Women</span>
+                <span className="text-sm font-medium text-slate-800 text-right">Women Focused</span>
               </div>
               <div className="flex justify-between items-start">
                 <span className="text-sm text-slate-500">Joined Date</span>

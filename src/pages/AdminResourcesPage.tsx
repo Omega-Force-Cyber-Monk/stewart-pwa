@@ -13,17 +13,17 @@ import { cn } from "../lib/cn";
 import { Link } from "react-router-dom";
 
 const topTabs = [
-  { name: "Customer Acquisition", active: true },
+  { name: "Client Acquisition Center™", active: true },
   { name: "Referral Card System™", active: false },
   { name: "Repeat Rider Engine™", active: false },
-  { name: "Direct Booking Trust", active: false },
-  { name: "Launch Essentials", active: false },
+  { name: "Direct Booking Trust Center™", active: false },
+  { name: "Launch Essentials™", active: false },
   { name: "Resources & Guides", active: false },
 ];
 
 const sideTabs = [
-  { name: "Resources Cards", active: true },
-  { name: "Launch Checklist Guide", active: false },
+  { name: "Resource Cards", active: true },
+  { name: "Launch Checklist", active: false },
 ];
 
 const resourceCards = [
@@ -93,16 +93,18 @@ const getColorStyles = (color: string) => {
 
 export default function AdminResourcesPage() {
   return (
-    <div className="flex flex-col h-full space-y-6 overflow-hidden">
+    <div className="flex flex-col space-y-6">
       
       {/* Top Filter Bar */}
-      <div className="flex items-center gap-4 overflow-x-auto pb-2 scrollbar-hide flex-shrink-0">
-        <button className="flex items-center gap-2 whitespace-nowrap px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-800 shadow-sm">
-          Drivers Category <span className="text-slate-500 font-normal">(Women)</span>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 flex-shrink-0">
+        <button className="flex items-center justify-between sm:justify-start w-full sm:w-auto gap-2 whitespace-nowrap sm:pr-4 py-2 text-sm font-bold text-slate-800 flex-shrink-0 hover:text-slate-600 transition-colors">
+          <span className="flex items-center gap-1">
+            Driver Category <span className="text-slate-500 font-normal">(Women Focused)</span>
+          </span>
           <ChevronDown className="w-4 h-4 text-slate-400 ml-1" />
         </button>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 flex-1 min-w-0 scrollbar-hide">
           {topTabs.map((tab, idx) => (
             <button
               key={idx}
@@ -121,12 +123,12 @@ export default function AdminResourcesPage() {
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6 flex-1 min-h-0">
+      <div className="flex flex-col lg:flex-row gap-6">
         {/* Left Sidebar Panel */}
         <div className="w-full lg:w-72 flex-shrink-0 flex flex-col bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
           <div className="mb-6">
-            <h3 className="text-lg font-bold text-slate-800">Page Information</h3>
-            <p className="text-sm text-slate-500 mt-1">Manage all information of this page</p>
+            <h3 className="text-lg font-bold text-slate-800">Resource Section</h3>
+            <p className="text-sm text-slate-500 mt-1">Manage the resources and content available in this section.</p>
           </div>
           
           <div className="space-y-3 flex-1">
@@ -152,22 +154,21 @@ export default function AdminResourcesPage() {
         </div>
 
         {/* Right Content Panel */}
-        <div className="flex-1 flex flex-col bg-white rounded-2xl border border-slate-100 shadow-sm p-6 overflow-hidden">
-          <div className="flex-1 overflow-y-auto pr-2">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-              {resourceCards.map((card, idx) => {
-                const styles = getColorStyles(card.color);
-                const Icon = card.icon;
-                return (
-                  <div 
-                    key={idx} 
-                    className={cn(
-                      "flex flex-col items-center text-center p-6 rounded-2xl border transition-transform hover:-translate-y-1 hover:shadow-md cursor-pointer",
-                      styles.bg,
-                      styles.border
-                    )}
-                  >
-                    <Icon className={cn("w-8 h-8 mb-4", styles.icon)} />
+        <div className="flex-1 flex flex-col bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            {resourceCards.map((card, idx) => {
+              const styles = getColorStyles(card.color);
+              const Icon = card.icon;
+              return (
+                <div 
+                  key={idx} 
+                  className={cn(
+                    "flex flex-col items-center text-center p-6 rounded-2xl border transition-transform hover:-translate-y-1 hover:shadow-md cursor-pointer",
+                    styles.bg,
+                    styles.border
+                  )}
+                >
+                  <Icon className={cn("w-8 h-8 mb-4", styles.icon)} />
                     <h4 className="font-bold text-slate-800 text-sm mb-2">{card.title}</h4>
                     <p className="text-xs text-slate-500 leading-relaxed">
                       {card.description}
@@ -176,14 +177,13 @@ export default function AdminResourcesPage() {
                 );
               })}
             </div>
-          </div>
           
           {/* Action Buttons */}
-          <div className="flex justify-end items-center gap-4 mt-6 pt-6 border-t border-slate-100 flex-shrink-0">
-            <button className="px-6 py-2.5 rounded-full border border-[#1a56ff] text-[#1a56ff] font-semibold hover:bg-blue-50 transition-colors text-sm">
+          <div className="flex w-full justify-between sm:justify-end items-center gap-3 sm:gap-4 mt-6 pt-6 border-t border-slate-100 flex-shrink-0">
+            <button className="flex-1 sm:flex-none justify-center px-4 py-2 sm:px-6 sm:py-2.5 rounded-full border border-[#1a56ff] text-[#1a56ff] font-semibold hover:bg-blue-50 transition-colors text-xs sm:text-sm whitespace-nowrap">
               Edit Resources
             </button>
-            <button className="px-6 py-2.5 rounded-full bg-[#1a56ff] hover:bg-blue-700 text-white font-semibold shadow-sm transition-colors text-sm flex items-center gap-2">
+            <button className="flex-1 sm:flex-none justify-center px-4 py-2 sm:px-6 sm:py-2.5 rounded-full bg-[#1a56ff] hover:bg-blue-700 text-white font-semibold shadow-sm transition-colors text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
               Save & Upload
               <span className="font-bold">»</span>
             </button>

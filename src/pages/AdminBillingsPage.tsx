@@ -4,10 +4,10 @@ import { cn } from "../lib/cn";
 import { BillingDetailsModal } from "../components/admin/BillingDetailsModal";
 
 const topTabs = [
-  { name: "Women", active: true },
-  { name: "Couple", active: false },
-  { name: "50+ Old", active: false },
-  { name: "Standard", active: false },
+  { name: "Women Focused", active: true },
+  { name: "Couples", active: false },
+  { name: "Drivers 50+", active: false },
+  { name: "Main", active: false },
   { name: "Spanish", active: false },
 ];
 
@@ -15,9 +15,9 @@ const billingsData = [
   {
     id: "TX-1001",
     name: "Sarah Johnson",
-    category: "Women driver",
-    type: "Setup Payment",
-    amount: "$48",
+    category: "Women Focused",
+    type: "DIY System",
+    amount: "$495",
     method: "Stripe",
     date: "Jul 14, 2026",
     time: "10:30AM",
@@ -25,11 +25,11 @@ const billingsData = [
     avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&q=80",
   },
   {
-    id: "TX-1001",
+    id: "TX-1002",
     name: "Wanda Maximoff",
-    category: "Women driver",
-    type: "Add-ons",
-    amount: "$48",
+    category: "Women Focused",
+    type: "We Do It for You Upgrade",
+    amount: "$199",
     method: "Stripe",
     date: "Jul 14, 2026",
     time: "10:30AM",
@@ -37,11 +37,11 @@ const billingsData = [
     avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&q=80",
   },
   {
-    id: "TX-1001",
+    id: "TX-1003",
     name: "Karen Starr",
-    category: "Women driver",
-    type: "Setup Payment",
-    amount: "$48",
+    category: "Women Focused",
+    type: "DIY System",
+    amount: "$495",
     method: "Stripe",
     date: "Jul 14, 2026",
     time: "10:30AM",
@@ -49,11 +49,11 @@ const billingsData = [
     avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&q=80",
   },
   {
-    id: "TX-1001",
+    id: "TX-1004",
     name: "Diana Prince",
-    category: "Women driver",
-    type: "Setup Payment",
-    amount: "$48",
+    category: "Women Focused",
+    type: "DIY System",
+    amount: "$495",
     method: "Stripe",
     date: "Jul 14, 2026",
     time: "10:30AM",
@@ -61,11 +61,11 @@ const billingsData = [
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&q=80",
   },
   {
-    id: "TX-1001",
+    id: "TX-1005",
     name: "Natasha Romanoff",
-    category: "Women driver",
-    type: "Setup Payment",
-    amount: "$48",
+    category: "Women Focused",
+    type: "DIY System",
+    amount: "$495",
     method: "Stripe",
     date: "Jul 14, 2026",
     time: "10:30AM",
@@ -73,11 +73,11 @@ const billingsData = [
     avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=150&h=150&fit=crop&q=80",
   },
   {
-    id: "TX-1001",
+    id: "TX-1006",
     name: "Barbara Gordon",
-    category: "Women driver",
-    type: "Setup Payment",
-    amount: "$48",
+    category: "Women Focused",
+    type: "DIY System",
+    amount: "$495",
     method: "Stripe",
     date: "Jul 14, 2026",
     time: "10:30AM",
@@ -85,11 +85,11 @@ const billingsData = [
     avatar: "https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=150&h=150&fit=crop&q=80",
   },
   {
-    id: "TX-1001",
+    id: "TX-1007",
     name: "Paula Irving",
-    category: "Women driver",
-    type: "Setup Payment",
-    amount: "$48",
+    category: "Women Focused",
+    type: "DIY System",
+    amount: "$495",
     method: "Stripe",
     date: "Jul 14, 2026",
     time: "10:30AM",
@@ -97,11 +97,11 @@ const billingsData = [
     avatar: "https://images.unsplash.com/photo-1508214751196-bfd1434259a4?w=150&h=150&fit=crop&q=80",
   },
   {
-    id: "TX-1001",
+    id: "TX-1008",
     name: "Harleen Quinzel",
-    category: "Women driver",
-    type: "Setup Payment",
-    amount: "$48",
+    category: "Women Focused",
+    type: "DIY System",
+    amount: "$495",
     method: "Stripe",
     date: "Jul 14, 2026",
     time: "10:30AM",
@@ -109,11 +109,11 @@ const billingsData = [
     avatar: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=150&h=150&fit=crop&q=80",
   },
   {
-    id: "TX-1001",
+    id: "TX-1009",
     name: "Carol Danvers",
-    category: "Women driver",
-    type: "Add-ons",
-    amount: "$48",
+    category: "Women Focused",
+    type: "We Do It for You Upgrade",
+    amount: "$199",
     method: "Stripe",
     date: "Jul 14, 2026",
     time: "10:30AM",
@@ -121,11 +121,11 @@ const billingsData = [
     avatar: "https://images.unsplash.com/photo-1509839862600-309617c037f4?w=150&h=150&fit=crop&q=80",
   },
   {
-    id: "TX-1001",
+    id: "TX-1010",
     name: "Lois Lane",
-    category: "Women driver",
-    type: "Add-ons",
-    amount: "$48",
+    category: "Women Focused",
+    type: "We Do It for You Upgrade",
+    amount: "$199",
     method: "Stripe",
     date: "Jul 14, 2026",
     time: "10:30AM",
@@ -133,11 +133,11 @@ const billingsData = [
     avatar: "https://images.unsplash.com/photo-1517365830460-955ce3ccd263?w=150&h=150&fit=crop&q=80",
   },
   {
-    id: "TX-1001",
+    id: "TX-1011",
     name: "Pepper Potts",
-    category: "Women driver",
-    type: "Add-ons",
-    amount: "$48",
+    category: "Women Focused",
+    type: "We Do It for You Upgrade",
+    amount: "$199",
     method: "Stripe",
     date: "Jul 14, 2026",
     time: "10:30AM",
@@ -151,23 +151,23 @@ export default function AdminBillingsPage() {
 
   return (
     <>
-      <div className="flex flex-col h-full space-y-6">
+      <div className="flex flex-col space-y-6 flex-1">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-slate-800">Billings Overview</h2>
+            <h2 className="text-2xl font-bold text-slate-800">Billing Overview</h2>
             <p className="text-slate-500 text-sm mt-1">
               Track all one-time payments and add-on purchases made by drivers.
             </p>
           </div>
           <div className="text-right">
-            <h2 className="text-2xl font-bold text-slate-800">$245,680</h2>
+            <h2 className="text-2xl font-bold text-slate-800">$0</h2>
             <p className="text-slate-500 text-sm">Total Revenue</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm flex flex-col flex-1 overflow-hidden">
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm flex flex-col">
           {/* Table Header Controls */}
-          <div className="flex flex-wrap items-center justify-between p-6 gap-4 border-b border-slate-50">
+          <div className="flex flex-col sm:flex-row flex-wrap sm:items-center justify-between p-6 gap-4 border-b border-slate-50">
             <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide">
               {topTabs.map((tab, idx) => (
                 <button
@@ -197,11 +197,11 @@ export default function AdminBillingsPage() {
                   <th className="px-6 py-4 rounded-tl-lg">Transaction ID</th>
                   <th className="px-6 py-4">Driver Name</th>
                   <th className="px-6 py-4">Driver Category</th>
-                  <th className="px-6 py-4">Purchased Type</th>
+                  <th className="px-6 py-4">Purchased Product</th>
                   <th className="px-6 py-4">Amount</th>
                   <th className="px-6 py-4">Payment Method</th>
-                  <th className="px-6 py-4">Date</th>
-                  <th className="px-6 py-4">Status</th>
+                  <th className="px-6 py-4">Purchase Date</th>
+                  <th className="px-6 py-4">Payment Status</th>
                   <th className="px-6 py-4 text-center rounded-tr-lg">Action</th>
                 </tr>
               </thead>
@@ -245,7 +245,7 @@ export default function AdminBillingsPage() {
           </div>
 
           {/* Table Footer / Pagination */}
-          <div className="flex items-center justify-between p-6 border-t border-slate-50 bg-white">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 border-t border-slate-50 bg-white">
             <span className="text-sm text-slate-500">Showing 11 of 50 drivers</span>
             <div className="flex items-center gap-2">
               <button className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 bg-slate-50 hover:bg-slate-100 transition-colors">
@@ -276,4 +276,3 @@ export default function AdminBillingsPage() {
     </>
   );
 }
-

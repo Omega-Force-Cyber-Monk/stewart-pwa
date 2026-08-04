@@ -38,8 +38,8 @@ export function AppRouter() {
       <Route path="/booking-system" element={<DashboardLayout title="Booking System™"><BookingSystemPage /></DashboardLayout>} />
       <Route path="/referral-card" element={<DashboardLayout title="Referral Card System™"><ReferralCardPage /></DashboardLayout>} />
       <Route path="/repeat-rider" element={<DashboardLayout title="Repeat Rider Follow Up System™"><RepeatRiderPage /></DashboardLayout>} />
-      <Route path="/acquisition" element={<DashboardLayout title="Customer Acquisition™"><CustomerAcquisitionPage /></DashboardLayout>} />
-      <Route path="/trust" element={<DashboardLayout title="Direct Booking Trust Framework™"><DirectBookingTrustPage /></DashboardLayout>} />
+      <Route path="/acquisition" element={<DashboardLayout title="Client Acquisition Center™"><CustomerAcquisitionPage /></DashboardLayout>} />
+      <Route path="/trust" element={<DashboardLayout title="Direct Booking Trust Center™"><DirectBookingTrustPage /></DashboardLayout>} />
       <Route path="/essentials" element={<DashboardLayout title="Launch Essentials™"><LaunchEssentialsPage /></DashboardLayout>} />
       <Route path="/selling-page" element={<DashboardLayout title="Personalized Selling Page™"><SellingPage /></DashboardLayout>} />
       <Route path="/resources" element={<DashboardLayout title="Resources & Guides"><ResourcesAndGuidesPage /></DashboardLayout>} />
@@ -48,11 +48,11 @@ export function AppRouter() {
       
       {/* Admin Routes */}
       <Route path="/admin" element={<AdminDashboardLayout><AdminDashboardPage /></AdminDashboardLayout>} />
-      <Route path="/admin/drivers" element={<AdminDashboardLayout title="Drivers Management"><AdminDriversPage /></AdminDashboardLayout>} />
-      <Route path="/admin/drivers/:id" element={<AdminDashboardLayout title="Drivers Management"><AdminDriverDetailsPage /></AdminDashboardLayout>} />
-      <Route path="/admin/resources" element={<AdminDashboardLayout title="Resources Upload"><AdminResourcesPage /></AdminDashboardLayout>} />
-      <Route path="/admin/resources/add" element={<AdminDashboardLayout title="Resources Upload"><AdminAddResourcePage /></AdminDashboardLayout>} />
-      <Route path="/admin/billings" element={<AdminDashboardLayout title="Billings"><AdminBillingsPage /></AdminDashboardLayout>} />
+      <Route path="/admin/drivers" element={<AdminDashboardLayout title="Driver Management"><AdminDriversPage /></AdminDashboardLayout>} />
+      <Route path="/admin/drivers/:id" element={<AdminDashboardLayout title="Driver Management"><AdminDriverDetailsPage /></AdminDashboardLayout>} />
+      <Route path="/admin/resources" element={<AdminDashboardLayout title="Resource Management"><AdminResourcesPage /></AdminDashboardLayout>} />
+      <Route path="/admin/resources/add" element={<AdminDashboardLayout title="Resource Management"><AdminAddResourcePage /></AdminDashboardLayout>} />
+      <Route path="/admin/billings" element={<AdminDashboardLayout title="Billing"><AdminBillingsPage /></AdminDashboardLayout>} />
       <Route path="/admin/support" element={<AdminDashboardLayout title="Support"><AdminSupportPage /></AdminDashboardLayout>} />
       <Route path="/admin/settings" element={<AdminDashboardLayout title="Settings"><AdminSettingsPage /></AdminDashboardLayout>} />
 
