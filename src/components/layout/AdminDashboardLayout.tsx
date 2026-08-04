@@ -139,7 +139,7 @@ export function AdminDashboardLayout({
 
         {/* Scrollable Content Area */}
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-[#f8fafc]">
-          <div className="container mx-auto px-4 sm:px-6 py-6 min-h-full flex flex-col">
+          <div className="container mx-auto px-4 sm:px-6 py-6 h-full">
             {children}
           </div>
         </main>
