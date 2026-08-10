@@ -1,6 +1,15 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@theme {
+  --color-brand-page: #0B0D2C;
+  --color-brand-card: #12143A;
+  --color-brand-input: #020617;
+  --color-brand-border: #00E5FF33;
+  --color-brand-btn: #04B5A3;
+  --color-brand-btn-hover: #039384;
+}
+
 * {
   box-sizing: border-box;
 }

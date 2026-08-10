@@ -26,6 +26,10 @@ import AdminAddResourcePage from "../pages/AdminAddResourcePage";
 import AdminBillingsPage from "../pages/AdminBillingsPage";
 import AdminSupportPage from "../pages/AdminSupportPage";
 import AdminSettingsPage from "../pages/AdminSettingsPage";
+import LoginPage from "../pages/Auth/LoginPage";
+import SignupPage from "../pages/Auth/SignupPage";
+import ForgotPasswordPage from "../pages/Auth/ForgotPasswordPage";
+import ResetPasswordPage from "../pages/Auth/ResetPasswordPage";
 
 export function AppRouter() {
   return (
@@ -57,6 +61,10 @@ export function AppRouter() {
       <Route path="/admin/settings" element={<AdminDashboardLayout title="Settings"><AdminSettingsPage /></AdminDashboardLayout>} />
 
       {/* Add new routes here */}
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/spanish" element={<SpanishPage />} />
       <Route path="/" element={<HomePage />} />
     </Routes>
