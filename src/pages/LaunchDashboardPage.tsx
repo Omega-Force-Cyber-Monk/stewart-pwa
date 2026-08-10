@@ -1,36 +1,204 @@
-import { useState, useRef } from "react";
-import { Edit, Image as ImageIcon, ChevronDown, Plane, X, Scan, Car, Download, ShieldCheck, Phone, Globe, QrCode, FolderSearch, FileText, Printer, MailOpen, Mail, FileSpreadsheet, FileUp, CheckCircle2, User, LayoutTemplate, MessageCircleQuestion, Smartphone, Lightbulb, Building2, IdCard, Users, Shield, Calendar, XCircle, MapPin, BookOpen, CreditCard } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import {
+  Edit,
+  Image as ImageIcon,
+  ChevronDown,
+  Plane,
+  X,
+  Scan,
+  Car,
+  Download,
+  ShieldCheck,
+  Phone,
+  Globe,
+  QrCode,
+  FolderSearch,
+  FileText,
+  Printer,
+  MailOpen,
+  Mail,
+  FileSpreadsheet,
+  FileUp,
+  CheckCircle2,
+  LayoutTemplate,
+  Building2,
+  IdCard,
+  Users,
+  Shield,
+  Calendar,
+  XCircle,
+  MapPin,
+  BookOpen,
+  CreditCard,
+  Loader2,
+  AlertCircle
+} from "lucide-react";
+import { cn } from "../lib/cn";
 import { LaunchProgressStepper } from "../components/dashboard/LaunchProgressStepper";
+import { AlertModal } from "../components/ui/AlertModal";
+import {
+  useInitializeSetupMutation,
+  useGetSetupStateQuery,
+  useUpdateSetupStateMutation,
+  useUploadBusinessLogoMutation,
+  useLazyGetAirportSuggestionsQuery,
+  useGetReferralCardQuery,
+  useGenerateReferralCardMutation,
+  useGetBusinessResourcesQuery,
+  useGetChecklistItemsQuery,
+  useUpdateChecklistItemMutation,
+  useGetLaunchReadinessQuery,
+  useGetFinalReviewQuery,
+  useCompleteLaunchMutation
+} from "../store/api/Business/business.api";
 import referralCardBg from "../assets/referralCardBg.png";
 import autocarLogo from "../assets/autocarLogo.png";
 
+function ResourceIcon({ iconKey }: { iconKey: string }) {
+  switch (iconKey) {
+    case "folder-search":
+      return <FolderSearch className="w-10 h-10 text-blue-500 mb-4" strokeWidth={1.5} />;
+    case "file-text":
+      return <FileText className="w-10 h-10 text-green-500 mb-4" strokeWidth={1.5} />;
+    case "printer":
+      return <Printer className="w-10 h-10 text-purple-600 mb-4" strokeWidth={1.5} />;
+    case "mail-open":
+      return <MailOpen className="w-10 h-10 text-yellow-500 mb-4" strokeWidth={1.5} />;
+    case "mail":
+      return <Mail className="w-10 h-10 text-teal-500 mb-4" strokeWidth={1.5} />;
+    case "file-spreadsheet":
+      return <FileSpreadsheet className="w-10 h-10 text-cyan-500 mb-4" strokeWidth={1.5} />;
+    case "file-up":
+      return <FileUp className="w-10 h-10 text-slate-600 mb-4" strokeWidth={1.5} />;
+    default:
+      return <FileText className="w-10 h-10 text-slate-500 mb-4" strokeWidth={1.5} />;
+  }
+}
+
 export default function LaunchDashboardPage() {
   const [currentStep, setCurrentStep] = useState(1);
-  
-  // Step 1 State
-  const [buyerData, setBuyerData] = useState({
-    fullName: "Eleanor Pena",
-    email: "eleanorpena@gmail.com",
-    phone: "0000 123 1923",
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [showQrModal, setShowQrModal] = useState(false);
+  const [alertModal, setAlertModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    type: "success" | "error" | "info" | "confirm";
+    onConfirm?: () => void;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    type: "info",
   });
 
-  // Step 2 State
+  const showAlert = (
+    title: string,
+    message: string,
+    type: "success" | "error" | "info" | "confirm" = "info",
+    onConfirm?: () => void
+  ) => {
+    setAlertModal({ isOpen: true, title, message, type, onConfirm });
+  };
+
+  // API Queries & Mutations
+  const { data: setupResponse, isLoading: isLoadingSetup, refetch: refetchSetup } = useGetSetupStateQuery();
+  const [initializeSetup] = useInitializeSetupMutation();
+  const [updateSetup, { isLoading: isUpdatingSetup }] = useUpdateSetupStateMutation();
+  const [uploadLogo, { isLoading: isUploadingLogo }] = useUploadBusinessLogoMutation();
+
+  const { data: referralCardResponse, refetch: refetchReferral } = useGetReferralCardQuery();
+  const [generateReferral, { isLoading: isGeneratingReferral }] = useGenerateReferralCardMutation();
+
+  const { data: launchReadyResponse, refetch: refetchLaunchReady } = useGetLaunchReadinessQuery();
+  const { data: finalReviewResponse } = useGetFinalReviewQuery(undefined, {
+    skip: currentStep !== 8
+  });
+  const [completeLaunch, { isLoading: isCompletingLaunch }] = useCompleteLaunchMutation();
+
+  // Checklist Items & Resources Queries
+  const { data: checklistAcq, refetch: refetchChecklistAcq } = useGetChecklistItemsQuery({ step: "CUSTOMER_ACQUISITION" });
+  const { data: checklistBrand, refetch: refetchChecklistBrand } = useGetChecklistItemsQuery({ step: "BRAND_AND_TRUST" });
+  const [updateChecklistItem] = useUpdateChecklistItemMutation();
+
+  const { data: resourcesAcq } = useGetBusinessResourcesQuery({ step: "CUSTOMER_ACQUISITION" });
+  const { data: resourcesBrand } = useGetBusinessResourcesQuery({ step: "BRAND_AND_TRUST" });
+
+  // Airport suggestions query
+  const [triggerGetSuggestions, { data: suggestionsResponse }] = useLazyGetAirportSuggestionsQuery();
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  // Form States
+  const [buyerData, setBuyerData] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+  });
+
   const [businessData, setBusinessData] = useState({
     businessName: "",
     email: "",
     phone: "",
     businessInfo: "",
+    logoUrl: "",
   });
-  
+
+  const [acuityData, setAcuityData] = useState({
+    connected: false,
+    bookingUrl: "",
+  });
+
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Step 3 State
   const [serviceData, setServiceData] = useState({
     cityArea: "",
   });
   const [airportInput, setAirportInput] = useState("");
-  const [airports, setAirports] = useState<string[]>(["Serving Miami", "FL"]);
+  const [airports, setAirports] = useState<string[]>([]);
+
+  // Initialize draft on mount
+  useEffect(() => {
+    initializeSetup();
+  }, [initializeSetup]);
+
+  // Synchronize setup state from API
+  useEffect(() => {
+    if (setupResponse?.data) {
+      const data = setupResponse.data;
+      if (data.buyer) {
+        setBuyerData({
+          fullName: data.buyer.fullName || "",
+          email: data.buyer.email || "",
+          phone: data.buyer.phone || "",
+        });
+      }
+      if (data.business) {
+        setBusinessData({
+          businessName: data.business.businessName || "",
+          email: data.business.email || "",
+          phone: data.business.phone || "",
+          businessInfo: data.business.businessInfo || "",
+          logoUrl: data.business.logoUrl || "",
+        });
+      }
+      if (data.acuity) {
+        setAcuityData({
+          connected: data.acuity.connected || false,
+          bookingUrl: data.acuity.bookingUrl || "",
+        });
+      }
+      if (data.serviceArea) {
+        setServiceData({
+          cityArea: data.serviceArea.cityArea || "",
+        });
+        setAirports(data.serviceArea.airports || []);
+      }
+      if (data.progress?.currentStep) {
+        setCurrentStep(data.progress.currentStep);
+      }
+    }
+  }, [setupResponse]);
 
   // Handlers for Step 1
   const handleBuyerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,10 +206,24 @@ export default function LaunchDashboardPage() {
     setBuyerData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleStep1Submit = (e: React.FormEvent) => {
+  const handleStep1Submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Saving Buyer Data:", buyerData);
-    setCurrentStep(2);
+    setApiError(null);
+    try {
+      const res = await updateSetup({
+        buyer: {
+          fullName: buyerData.fullName,
+          email: buyerData.email,
+          phone: buyerData.phone,
+        }
+      }).unwrap();
+      if (res.success) {
+        setCurrentStep(res.data.progress.currentStep);
+      }
+    } catch (err: any) {
+      console.error(err);
+      setApiError(err?.data?.message || "Failed to update buyer info. Please try again.");
+    }
   };
 
   // Handlers for Step 2
@@ -50,33 +232,92 @@ export default function LaunchDashboardPage() {
     setBusinessData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleAcuityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setAcuityData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setLogoFile(e.target.files[0]);
     }
   };
 
-  const handleStep2Submit = (e: React.FormEvent) => {
+  const handleStep2Submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Saving Business Data:", businessData);
-    if (logoFile) {
-      console.log("With Logo File:", logoFile.name);
+    setApiError(null);
+    try {
+      let finalLogoUrl = businessData.logoUrl;
+
+      // Upload file first if selected
+      if (logoFile) {
+        const formData = new FormData();
+        formData.append("file", logoFile);
+        const uploadRes = await uploadLogo(formData).unwrap();
+        if (uploadRes.success) {
+          finalLogoUrl = uploadRes.logoUrl;
+        }
+      }
+
+      const res = await updateSetup({
+        business: {
+          businessName: businessData.businessName,
+          email: businessData.email,
+          phone: businessData.phone,
+          businessInfo: businessData.businessInfo,
+          logoUrl: finalLogoUrl,
+        },
+        acuity: {
+          connected: acuityData.connected,
+          bookingUrl: acuityData.connected ? acuityData.bookingUrl : null,
+        }
+      }).unwrap();
+
+      if (res.success) {
+        setCurrentStep(res.data.progress.currentStep);
+      }
+    } catch (err: any) {
+      console.error(err);
+      setApiError(err?.data?.message || "Failed to update business details.");
     }
-    // Proceed to Step 3
-    setCurrentStep(3);
   };
 
   // Handlers for Step 3
   const handleServiceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setServiceData((prev) => ({ ...prev, [name]: value }));
+    const val = e.target.value;
+    setServiceData({ cityArea: val });
+    if (val.trim().length > 2) {
+      triggerGetSuggestions({ cityArea: val });
+      setShowSuggestions(true);
+    } else {
+      setShowSuggestions(false);
+    }
+  };
+
+  const selectSuggestion = (suggestion: any) => {
+    setServiceData({ cityArea: suggestion.cityArea });
+    setShowSuggestions(false);
+    // Auto-add suggested airports if not already added
+    const newAirports = [...airports];
+    suggestion.airportOptions.forEach((opt: any) => {
+      if (!newAirports.includes(opt.code)) {
+        newAirports.push(opt.code);
+      }
+    });
+    setAirports(newAirports);
   };
 
   const handleAirportKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
       if (airportInput.trim() !== "") {
-        setAirports([...airports, airportInput.trim()]);
+        const code = airportInput.trim().toUpperCase();
+        if (!airports.includes(code)) {
+          setAirports([...airports, code]);
+        }
         setAirportInput("");
       }
     }
@@ -86,58 +327,125 @@ export default function LaunchDashboardPage() {
     setAirports(airports.filter((_, index) => index !== indexToRemove));
   };
 
-  const handleStep3Submit = (e: React.FormEvent) => {
+  const handleStep3Submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Saving Service Data:", { ...serviceData, airports });
-    // Proceed to Step 4
-    setCurrentStep(4);
+    setApiError(null);
+    if (airports.length === 0) {
+      setApiError("Please serve at least one airport.");
+      return;
+    }
+    try {
+      const res = await updateSetup({
+        serviceArea: {
+          cityArea: serviceData.cityArea,
+          airports: airports,
+        }
+      }).unwrap();
+
+      if (res.success) {
+        setCurrentStep(res.data.progress.currentStep);
+      }
+    } catch (err: any) {
+      console.error(err);
+      setApiError(err?.data?.message || "Failed to save service area.");
+    }
   };
 
   // Handlers for Step 4
+  const handleGenerateReferral = async () => {
+    setApiError(null);
+    try {
+      await generateReferral().unwrap();
+      refetchReferral();
+      refetchSetup();
+    } catch (err: any) {
+      console.error(err);
+      setApiError(err?.data?.message?.message || err?.data?.message || "Failed to generate referral card.");
+    }
+  };
+
   const handleStep4Submit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Proceeding from Referral Card step");
-    // Proceed to Step 5
+    refetchSetup();
     setCurrentStep(5);
   };
 
-  // Handlers for Step 5
+  // Handlers for Step 5 & 6
+  const handleToggleChecklist = async (id: string, currentStatus: boolean) => {
+    try {
+      await updateChecklistItem({ id, completed: !currentStatus }).unwrap();
+      refetchChecklistAcq();
+      refetchChecklistBrand();
+      refetchSetup();
+      refetchLaunchReady();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleStep5Submit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Proceeding from Customer Acquisition step");
-    // Proceed to Step 6
+    refetchSetup();
     setCurrentStep(6);
   };
 
-  // Handlers for Step 6
   const handleStep6Submit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Proceeding from Brand & Trust step");
-    // Proceed to Step 7
+    refetchSetup();
     setCurrentStep(7);
   };
 
   // Handlers for Step 7
   const handleStep7Submit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Proceeding to Final Confirm step");
-    // Proceed to Step 8
     setCurrentStep(8);
   };
 
   // Handlers for Step 8
-  const handleStep8Submit = (e: React.FormEvent) => {
+  const handleStep8Submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Launch Completed!");
-    // Navigate away or show success state
-    alert("Launch Complete! Redirecting to Dashboard...");
+    setApiError(null);
+    try {
+      const res = await completeLaunch().unwrap();
+      if (res.success) {
+        showAlert(
+          "Launch Complete! 🚀",
+          "Your direct booking website and business assets are successfully published. Redirecting to your dashboard...",
+          "success",
+          () => {
+            window.location.href = "/dashboard";
+          }
+        );
+      }
+    } catch (err: any) {
+      console.error(err);
+      if (err?.data?.message?.message) {
+        setApiError(err.data.message.message);
+      } else if (err?.data?.message) {
+        setApiError(err.data.message);
+      } else {
+        setApiError("Launch failed. Please complete all checklist items and connection details.");
+      }
+    }
   };
 
-  // Progress Ring Calculation (dynamic)
-  const progressPercentage = 98;
+  // Progress Ring Calculation
+  const progressPercentage = launchReadyResponse?.percentage ?? setupResponse?.data?.progress?.percentage ?? 0;
   const radius = 90;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (progressPercentage / 100) * circumference;
+
+  // Active items checklist calculation
+  const completedSteps = launchReadyResponse?.completedSteps || setupResponse?.data?.progress?.completedSteps || [];
+  const acuityConnected = acuityData.connected || setupResponse?.data?.acuity?.connected || false;
+
+  if (isLoadingSetup) {
+    return (
+      <div className="flex h-[60svh] items-center justify-center">
+        <Loader2 className="w-8 h-8 text-green-500 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto w-full">
@@ -150,12 +458,18 @@ export default function LaunchDashboardPage() {
         </p>
       </div>
 
+      {apiError && (
+        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+          <div className="text-sm font-medium">{apiError}</div>
+        </div>
+      )}
+
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200">
-        {/* Pass the dynamic currentStep to the stepper */}
         <LaunchProgressStepper showFooter={false} currentStep={currentStep} />
 
         <div className="px-4 md:px-8 pb-8 pt-4">
-          
+
           {/* ================= STEP 1 ================= */}
           {currentStep === 1 && (
             <>
@@ -221,7 +535,12 @@ export default function LaunchDashboardPage() {
                   />
                 </div>
                 <div className="mt-4 flex justify-end">
-                  <button type="submit" className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-8 py-3 rounded-lg font-bold transition-colors">
+                  <button
+                    type="submit"
+                    disabled={isUpdatingSetup}
+                    className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-8 py-3 rounded-lg font-bold transition-colors flex items-center gap-2"
+                  >
+                    {isUpdatingSetup && <Loader2 className="w-4 h-4 animate-spin" />}
                     Save & Continue
                   </button>
                 </div>
@@ -242,7 +561,6 @@ export default function LaunchDashboardPage() {
               </div>
 
               <form onSubmit={handleStep2Submit} className="border border-slate-200 rounded-2xl p-6 md:p-8 flex flex-col gap-8">
-                
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   {/* Left Column */}
                   <div className="flex flex-col gap-6">
@@ -261,7 +579,7 @@ export default function LaunchDashboardPage() {
                         required
                       />
                     </div>
-                    
+
                     <div className="flex flex-col gap-2">
                       <label htmlFor="businessEmail" className="text-sm font-semibold text-slate-700">
                         Email Address<span className="text-red-500">*</span>
@@ -312,27 +630,72 @@ export default function LaunchDashboardPage() {
                       />
                     </div>
 
+                    <div className="flex flex-col gap-4 p-5 bg-slate-50 border border-slate-200 rounded-xl">
+                      <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-green-600" />
+                        Booking System Connection
+                      </h4>
+                      <label className="flex items-center gap-3 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          name="connected"
+                          checked={acuityData.connected}
+                          onChange={handleAcuityChange}
+                          className="w-5 h-5 accent-green-600 cursor-pointer rounded border-slate-300"
+                        />
+                        <span className="text-sm text-slate-700 font-medium select-none">
+                          Connect Acuity Scheduling
+                        </span>
+                      </label>
+
+                      {acuityData.connected && (
+                        <div className="flex flex-col gap-2 mt-2 animate-fade-in">
+                          <label htmlFor="bookingUrl" className="text-xs font-semibold text-slate-600">
+                            Acuity Booking URL<span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="url"
+                            id="bookingUrl"
+                            name="bookingUrl"
+                            placeholder="https://acuityscheduling.com/schedule.php?owner=..."
+                            value={acuityData.bookingUrl}
+                            onChange={handleAcuityChange}
+                            required={acuityData.connected}
+                            className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                          />
+                        </div>
+                      )}
+                    </div>
+
                     <div className="flex flex-col gap-2 flex-1">
                       <label className="text-sm font-semibold text-slate-700">
                         Upload Business Logo <span className="text-slate-400 font-normal">(optional)</span>
                       </label>
-                      
+
                       <div className="flex-1 min-h-[140px] flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-xl bg-[#fafafa] relative hover:bg-slate-50 transition-colors">
-                        <input 
-                          type="file" 
+                        <input
+                          type="file"
                           ref={fileInputRef}
                           onChange={handleFileSelect}
-                          accept="image/png, image/jpeg, image/svg+xml"
-                          className="hidden" 
+                          accept="image/png, image/jpeg, image/webp"
+                          className="hidden"
                         />
-                        
-                        {logoFile ? (
+
+                        {logoFile || businessData.logoUrl ? (
                           <div className="flex flex-col items-center gap-2 p-4 text-center">
                             <ImageIcon className="w-8 h-8 text-green-500" />
-                            <span className="text-sm font-semibold text-slate-700 truncate max-w-full px-4">{logoFile.name}</span>
-                            <button 
-                              type="button" 
-                              onClick={() => setLogoFile(null)}
+                            <span className="text-sm font-semibold text-slate-700 truncate max-w-full px-4">
+                              {logoFile ? logoFile.name : "Logo current image"}
+                            </span>
+                            {businessData.logoUrl && !logoFile && (
+                              <img src={businessData.logoUrl} alt="Logo" className="h-10 object-contain my-1" />
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setLogoFile(null);
+                                setBusinessData(prev => ({ ...prev, logoUrl: "" }));
+                              }}
                               className="text-xs text-red-500 font-medium hover:underline mt-1"
                             >
                               Remove file
@@ -343,7 +706,7 @@ export default function LaunchDashboardPage() {
                             <div className="bg-green-100 p-3 rounded-xl">
                               <ImageIcon className="w-6 h-6 text-green-600" />
                             </div>
-                            <span className="text-[11px] font-semibold text-slate-400">Accepted file types: PNG, JPG, SVG</span>
+                            <span className="text-[11px] font-semibold text-slate-400">Accepted file types: PNG, JPG, WEBP</span>
                             <button
                               type="button"
                               onClick={() => fileInputRef.current?.click()}
@@ -360,17 +723,19 @@ export default function LaunchDashboardPage() {
 
                 {/* Bottom Actions */}
                 <div className="mt-4 pt-6 border-t border-slate-100 flex items-center justify-between">
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={() => setCurrentStep(1)}
                     className="bg-white border border-slate-200 text-slate-500 hover:text-slate-700 hover:border-slate-300 px-8 py-3 rounded-lg font-bold transition-all"
                   >
                     Back
                   </button>
-                  <button 
-                    type="submit" 
-                    className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-8 py-3 rounded-lg font-bold transition-colors"
+                  <button
+                    type="submit"
+                    disabled={isUpdatingSetup || isUploadingLogo}
+                    className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-8 py-3 rounded-lg font-bold transition-colors flex items-center gap-2"
                   >
+                    {(isUpdatingSetup || isUploadingLogo) && <Loader2 className="w-4 h-4 animate-spin" />}
                     Save & Continue
                   </button>
                 </div>
@@ -391,7 +756,7 @@ export default function LaunchDashboardPage() {
               </div>
 
               <form onSubmit={handleStep3Submit} className="border border-slate-200 rounded-2xl p-6 md:p-8 flex flex-col gap-8">
-                <div className="flex flex-col gap-6 max-w-3xl">
+                <div className="flex flex-col gap-6 max-w-3xl relative">
                   <div className="flex flex-col gap-2">
                     <label htmlFor="cityArea" className="text-sm font-semibold text-slate-700">
                       City or Metro Area<span className="text-red-500">*</span>
@@ -400,12 +765,29 @@ export default function LaunchDashboardPage() {
                       type="text"
                       id="cityArea"
                       name="cityArea"
+                      autoComplete="off"
                       placeholder="Enter the city or metro area you serve"
                       value={serviceData.cityArea}
                       onChange={handleServiceChange}
                       className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                       required
                     />
+
+                    {/* Suggestions dropdown */}
+                    {showSuggestions && suggestionsResponse?.suggestions && suggestionsResponse.suggestions.length > 0 && (
+                      <div className="absolute left-0 right-0 top-[82px] z-50 bg-white border border-slate-200 rounded-xl shadow-lg mt-1 overflow-hidden">
+                        {suggestionsResponse.suggestions.map((sug, i) => (
+                          <button
+                            key={i}
+                            type="button"
+                            onClick={() => selectSuggestion(sug)}
+                            className="w-full text-left px-4 py-3 hover:bg-slate-50 transition text-sm text-slate-800 font-semibold border-b border-slate-100 last:border-0"
+                          >
+                            {sug.cityArea} ({sug.airports.join(", ")})
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex flex-col gap-2">
@@ -416,7 +798,7 @@ export default function LaunchDashboardPage() {
                       <input
                         type="text"
                         id="airports"
-                        placeholder="Select or enter the airport(s) you serve"
+                        placeholder="Select or enter airport codes (e.g. MCO, MIA) and press Enter"
                         value={airportInput}
                         onChange={(e) => setAirportInput(e.target.value)}
                         onKeyDown={handleAirportKeyDown}
@@ -429,14 +811,14 @@ export default function LaunchDashboardPage() {
                     {airports.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-2">
                         {airports.map((airport, index) => (
-                          <div 
+                          <div
                             key={index}
                             className="flex items-center gap-2 bg-[#f8f9fa] border border-slate-200 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium"
                           >
                             <Plane className="w-4 h-4 text-slate-500" />
                             {airport}
-                            <button 
-                              type="button" 
+                            <button
+                              type="button"
                               onClick={() => removeAirport(index)}
                               className="text-slate-400 hover:text-slate-600 transition-colors ml-1"
                               aria-label={`Remove ${airport}`}
@@ -452,17 +834,19 @@ export default function LaunchDashboardPage() {
 
                 {/* Bottom Actions */}
                 <div className="mt-4 pt-6 border-t border-slate-100 flex items-center justify-between">
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={() => setCurrentStep(2)}
                     className="bg-white border border-slate-200 text-slate-500 hover:text-slate-700 hover:border-slate-300 px-8 py-3 rounded-lg font-bold transition-all"
                   >
                     Back
                   </button>
-                  <button 
-                    type="submit" 
-                    className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-8 py-3 rounded-lg font-bold transition-colors"
+                  <button
+                    type="submit"
+                    disabled={isUpdatingSetup}
+                    className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-8 py-3 rounded-lg font-bold transition-colors flex items-center gap-2"
                   >
+                    {isUpdatingSetup && <Loader2 className="w-4 h-4 animate-spin" />}
                     Save & Continue
                   </button>
                 </div>
@@ -483,20 +867,20 @@ export default function LaunchDashboardPage() {
               </div>
 
               <div className="flex flex-col lg:flex-row gap-8">
-                
+
                 {/* Left Column: Card Mockup & Action Buttons */}
                 <div className="flex-[2] flex flex-col gap-6">
                   {/* Card UI Wrapper */}
                   <div className="border border-slate-200 rounded-3xl p-4 sm:p-6 lg:p-8 bg-white shadow-sm flex items-center justify-center min-h-[480px]">
-                    
+
                     {/* The Referral Card */}
                     <div className="relative w-full max-w-[600px] h-[320px] rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between bg-white">
-                      
+
                       {/* Background Image Area (Right Side) */}
                       <div className="absolute top-0 right-0 w-1/2 h-full">
-                        <img 
-                          src={referralCardBg} 
-                          alt="Car driving" 
+                        <img
+                          src={referralCardBg}
+                          alt="Car driving"
                           className="w-full h-full object-cover"
                         />
                         <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent"></div>
@@ -512,7 +896,7 @@ export default function LaunchDashboardPage() {
                             Private airport transportation you can actually afford.
                           </p>
                         </div>
-                        
+
                         <div className="flex items-center gap-3">
                           <div className="bg-slate-900 rounded-full p-2.5 flex items-center justify-center">
                             <Scan className="w-5 h-5 text-white" />
@@ -522,17 +906,25 @@ export default function LaunchDashboardPage() {
                           </span>
                         </div>
                       </div>
-                      
+
                       {/* Black Footer Banner */}
                       <div className="relative z-10 bg-[#111] text-white py-3 px-6 rounded-tr-3xl flex items-center gap-3 w-[70%]">
                         <Car className="w-5 h-5" />
                         <span className="font-bold text-sm tracking-wide">Your Driver. Your Best Price</span>
                       </div>
 
-                      {/* Mock QR Code Overlay */}
+                      {/* QR Code Overlay */}
                       <div className="absolute top-1/2 right-12 -translate-y-1/2 z-20 bg-white p-2.5 rounded-xl shadow-lg border border-slate-100">
                         <div className="border border-slate-200 rounded-lg p-2 bg-slate-50">
-                           <QrCode className="w-20 h-20 text-slate-900" />
+                          {referralCardResponse?.data?.qrCodeUrl ? (
+                            <img
+                              src={referralCardResponse.data.qrCodeUrl}
+                              alt="QR Code"
+                              className="w-20 h-20 object-contain"
+                            />
+                          ) : (
+                            <QrCode className="w-20 h-20 text-slate-900" />
+                          )}
                         </div>
                       </div>
                     </div>
@@ -541,21 +933,58 @@ export default function LaunchDashboardPage() {
 
                   {/* Action Buttons Row */}
                   <div className="flex flex-col sm:flex-row items-center gap-4">
-                    <button type="button" className="flex items-center justify-center gap-2 flex-1 w-full bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 px-4 py-3 rounded-xl font-bold transition-all text-sm">
-                      <Scan className="w-4 h-4" />
-                      View QR Code
-                    </button>
-                    <button type="button" className="flex items-center justify-center gap-2 flex-1 w-full bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 px-4 py-3 rounded-xl font-bold transition-all text-sm">
-                      <Download className="w-4 h-4" />
-                      <span className="flex flex-col items-start leading-tight">
-                        Download QR Code
-                        <span className="text-[10px] text-slate-400 font-normal">PNG format</span>
-                      </span>
-                    </button>
-                    <button type="button" className="flex items-center justify-center gap-2 flex-1 w-full bg-[#22c55e] hover:bg-[#1ea951] text-white px-4 py-3 rounded-xl font-bold transition-all text-sm">
-                      <Download className="w-4 h-4" />
-                      Download Print-Ready Card
-                    </button>
+                    {(!referralCardResponse?.data?.ready) ? (
+                      <button
+                        type="button"
+                        onClick={handleGenerateReferral}
+                        disabled={isGeneratingReferral}
+                        className="flex items-center justify-center gap-2 w-full bg-[#22c55e] hover:bg-[#1ea951] text-white px-4 py-3 rounded-xl font-bold transition-all text-sm disabled:opacity-50"
+                      >
+                        {isGeneratingReferral ? <Loader2 className="w-4 h-4 animate-spin" /> : <QrCode className="w-4 h-4" />}
+                        Generate Referral Assets
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => setShowQrModal(true)}
+                          className="flex items-center justify-center gap-2 flex-1 w-full bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 px-4 py-3 rounded-xl font-bold transition-all text-sm"
+                        >
+                          <Scan className="w-4 h-4" />
+                          View QR Code
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (referralCardResponse?.data?.qrCodeUrl) {
+                              const link = document.createElement("a");
+                              link.href = referralCardResponse.data.qrCodeUrl;
+                              link.download = "qrcode.png";
+                              link.click();
+                            }
+                          }}
+                          className="flex items-center justify-center gap-2 flex-1 w-full bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 px-4 py-3 rounded-xl font-bold transition-all text-sm"
+                        >
+                          <Download className="w-4 h-4" />
+                          <span className="flex flex-col items-start leading-tight">
+                            Download QR Code
+                            <span className="text-[10px] text-slate-400 font-normal">PNG format</span>
+                          </span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const url = referralCardResponse?.data?.printCardUrl || referralCardResponse?.data?.digitalCardUrl;
+                            if (url) window.open(url, "_blank");
+                          }}
+                          disabled={!referralCardResponse?.data?.printCardUrl && !referralCardResponse?.data?.digitalCardUrl}
+                          className="flex items-center justify-center gap-2 flex-1 w-full bg-[#22c55e] hover:bg-[#1ea951] text-white px-4 py-3 rounded-xl font-bold transition-all text-sm disabled:opacity-50"
+                        >
+                          <Download className="w-4 h-4" />
+                          Download Print-Ready Card
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -629,16 +1058,17 @@ export default function LaunchDashboardPage() {
 
               {/* Bottom Actions */}
               <form onSubmit={handleStep4Submit} className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setCurrentStep(3)}
                   className="bg-white border border-slate-200 text-slate-500 hover:text-slate-700 hover:border-slate-300 px-8 py-3 rounded-lg font-bold transition-all"
                 >
                   Back
                 </button>
-                <button 
-                  type="submit" 
-                  className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-8 py-3 rounded-lg font-bold transition-colors"
+                <button
+                  type="submit"
+                  disabled={!referralCardResponse?.data?.ready}
+                  className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-8 py-3 rounded-lg font-bold transition-colors disabled:opacity-50"
                 >
                   Save & Continue
                 </button>
@@ -659,130 +1089,72 @@ export default function LaunchDashboardPage() {
               </div>
 
               <div className="flex flex-col lg:flex-row gap-8">
-                
+
                 {/* Left Column: Resource Cards */}
-                <div className="flex-[2] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-6 bg-slate-50 rounded-3xl border border-slate-200">
-                  
-                  {/* Card 1: Hotel Kit */}
-                  <div className="bg-white border-2 border-blue-100 rounded-2xl p-5 text-center flex flex-col items-center shadow-sm">
-                    <FolderSearch className="w-10 h-10 text-blue-500 mb-4" strokeWidth={1.5} />
-                    <h3 className="text-[15px] font-bold text-slate-900 mb-3 leading-tight">Hotel & Local Partner<br />Outreach Kit</h3>
-                    <p className="text-[11px] text-slate-500 leading-relaxed px-1">
-                      Everything you need to confidently approach hotels, medical offices, and local businesses for referral partnerships.
-                    </p>
-                  </div>
-
-                  {/* Card 2: Partner List Worksheet */}
-                  <div className="bg-white border-2 border-green-100 rounded-2xl p-5 text-center flex flex-col items-center shadow-sm">
-                    <FileText className="w-10 h-10 text-green-500 mb-4" strokeWidth={1.5} />
-                    <h3 className="text-[15px] font-bold text-slate-900 mb-3 leading-tight">Partner List<br />Worksheet</h3>
-                    <p className="text-[11px] text-slate-500 leading-relaxed px-1">
-                      Organize and track potential referral partners in your area with an easy-to-use planning worksheet.
-                    </p>
-                  </div>
-
-                  {/* Card 3: Front Desk Script */}
-                  <div className="bg-[#faf5ff] border-2 border-purple-200 rounded-2xl p-5 text-center flex flex-col items-center shadow-sm">
-                    <Printer className="w-10 h-10 text-purple-600 mb-4" strokeWidth={1.5} />
-                    <h3 className="text-[15px] font-bold text-slate-900 mb-3 leading-tight">Front Desk<br />Script</h3>
-                    <p className="text-[11px] text-slate-500 leading-relaxed px-1">
-                      Use this ready-made conversation script to confidently introduce your services to hotel front desk staff.
-                    </p>
-                  </div>
-
-                  {/* Card 4: Hotel Manager Email */}
-                  <div className="bg-[#fffdf0] border-2 border-yellow-200 rounded-2xl p-5 text-center flex flex-col items-center shadow-sm">
-                    <MailOpen className="w-10 h-10 text-yellow-500 mb-4" strokeWidth={1.5} />
-                    <h3 className="text-[15px] font-bold text-slate-900 mb-3 leading-tight">Hotel Manager<br />Email</h3>
-                    <p className="text-[11px] text-slate-500 leading-relaxed px-1">
-                      A professional email template for introducing your transportation services to hotel managers.
-                    </p>
-                  </div>
-
-                  {/* Card 5: Local Partner Email */}
-                  <div className="bg-[#f0fdfa] border-2 border-teal-200 rounded-2xl p-5 text-center flex flex-col items-center shadow-sm">
-                    <Mail className="w-10 h-10 text-teal-500 mb-4" strokeWidth={1.5} />
-                    <h3 className="text-[15px] font-bold text-slate-900 mb-3 leading-tight">Local Partner<br />Email</h3>
-                    <p className="text-[11px] text-slate-500 leading-relaxed px-1">
-                      Reach out to local businesses with a ready-to-use partnership email template.
-                    </p>
-                  </div>
-
-                  {/* Card 6: One-Page Partner Flyer */}
-                  <div className="bg-[#f5f3ff] border-2 border-indigo-200 rounded-2xl p-5 text-center flex flex-col items-center shadow-sm">
-                    <FileText className="w-10 h-10 text-indigo-500 mb-4" strokeWidth={1.5} />
-                    <h3 className="text-[15px] font-bold text-slate-900 mb-3 leading-tight">One-Page Partner<br />Flyer</h3>
-                    <p className="text-[11px] text-slate-500 leading-relaxed px-1">
-                      A printable one-page flyer that highlights your services and encourages referral partnerships.
-                    </p>
-                  </div>
-
-                  {/* Card 7: Partner Tracking Sheet */}
-                  <div className="bg-white border-2 border-cyan-100 rounded-2xl p-5 text-center flex flex-col items-center shadow-sm">
-                    <FileSpreadsheet className="w-10 h-10 text-cyan-500 mb-4" strokeWidth={1.5} />
-                    <h3 className="text-[15px] font-bold text-slate-900 mb-3 leading-tight">Partner Tracking<br />Sheet</h3>
-                    <p className="text-[11px] text-slate-500 leading-relaxed px-1">
-                      Track visits, follow-ups, referrals, and partner relationships in one organized place.
-                    </p>
-                  </div>
-
-                  {/* Card 8: Referral Thank-You */}
-                  <div className="bg-white border-2 border-slate-200 rounded-2xl p-5 text-center flex flex-col items-center shadow-sm">
-                    <FileUp className="w-10 h-10 text-slate-600 mb-4" strokeWidth={1.5} />
-                    <h3 className="text-[15px] font-bold text-slate-900 mb-3 leading-tight">Referral Thank-You<br />System</h3>
-                    <p className="text-[11px] text-slate-500 leading-relaxed px-1">
-                      Send personalized thank-you messages to strengthen relationships and encourage more referrals.
-                    </p>
-                  </div>
-
+                <div className="flex-[2] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-6 bg-slate-50 rounded-3xl border border-slate-200">
+                  {resourcesAcq?.resources && resourcesAcq.resources.length > 0 ? (
+                    resourcesAcq.resources.map((res) => (
+                      <div
+                        key={res.id}
+                        className="bg-white border-2 rounded-2xl p-5 text-center flex flex-col items-center justify-between shadow-sm min-h-[220px]"
+                        style={{ borderColor: res.cardColor || "#e2e8f0" }}
+                      >
+                        <div className="flex flex-col items-center">
+                          <ResourceIcon iconKey={res.iconKey} />
+                          <h3 className="text-[14px] font-bold text-slate-900 mb-2 leading-tight">{res.title}</h3>
+                          <p className="text-[11px] text-slate-500 leading-relaxed px-1 mb-4">
+                            {res.description}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => window.open(res.fileUrl, "_blank")}
+                          className="w-full py-2 border border-slate-200 text-xs font-semibold text-slate-700 rounded-lg hover:bg-slate-50 transition"
+                        >
+                          View Resource
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="col-span-full py-8 text-center text-slate-500 text-sm">
+                      No active resources found for Customer Acquisition.
+                    </div>
+                  )}
                 </div>
 
                 {/* Right Column: Launch Checklist Guide */}
                 <div className="flex-1 flex flex-col gap-6">
                   <div className="bg-white border border-slate-200 rounded-2xl p-6 h-full">
                     <h3 className="text-[17px] font-bold text-slate-900 mb-8">Launch Checklist Guide</h3>
-                    <div className="flex flex-col gap-8">
-                      
-                      <div className="flex items-start gap-4">
-                        <CheckCircle2 className="w-6 h-6 text-[#22c55e] fill-green-100 shrink-0" strokeWidth={2} />
-                        <div>
-                          <div className="text-sm font-bold text-slate-900 mb-1 leading-tight">Build your partner list</div>
-                          <div className="text-xs text-slate-500 leading-snug">Create a list of hotels, medical offices, and local businesses you want to connect with.</div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-4">
-                        <CheckCircle2 className="w-6 h-6 text-[#22c55e] fill-green-100 shrink-0" strokeWidth={2} />
-                        <div>
-                          <div className="text-sm font-bold text-slate-900 mb-1 leading-tight">Print Your Referral Cards</div>
-                          <div className="text-xs text-slate-500 leading-snug">Print plenty of referral cards and keep them with you for every ride.</div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-4">
-                        <CheckCircle2 className="w-6 h-6 text-[#22c55e] fill-green-100 shrink-0" strokeWidth={2} />
-                        <div>
-                          <div className="text-sm font-bold text-slate-900 mb-1 leading-tight">Visit 5 Hotels or Local Businesses</div>
-                          <div className="text-xs text-slate-500 leading-snug">Introduce yourself, leave your referral cards, and explain your services.</div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-4">
-                        <CheckCircle2 className="w-6 h-6 text-[#22c55e] fill-green-100 shrink-0" strokeWidth={2} />
-                        <div>
-                          <div className="text-sm font-bold text-slate-900 mb-1 leading-tight">Send Follow-Up Emails</div>
-                          <div className="text-xs text-slate-500 leading-snug">Follow up within 24-48 hours to stay top of mind and build relationships.</div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-4">
-                        <CheckCircle2 className="w-6 h-6 text-[#22c55e] fill-green-100 shrink-0" strokeWidth={2} />
-                        <div>
-                          <div className="text-sm font-bold text-slate-900 mb-1 leading-tight">Track Every Contact</div>
-                          <div className="text-xs text-slate-500 leading-snug">Record every visit, email, and conversation to monitor your partnership progress.</div>
-                        </div>
-                      </div>
-
+                    <div className="flex flex-col gap-6">
+                      {checklistAcq?.checklistItems && checklistAcq.checklistItems.length > 0 ? (
+                        checklistAcq.checklistItems.map((item) => (
+                          <div
+                            key={item.id}
+                            onClick={() => handleToggleChecklist(item.id, item.completed)}
+                            className="flex items-start gap-4 cursor-pointer group"
+                          >
+                            <CheckCircle2
+                              className={cn(
+                                "w-6 h-6 shrink-0 transition-colors",
+                                item.completed ? "text-[#22c55e] fill-green-100" : "text-slate-300 group-hover:text-green-500"
+                              )}
+                              strokeWidth={2}
+                            />
+                            <div>
+                              <div className={cn(
+                                "text-sm font-bold text-slate-900 mb-1 leading-tight",
+                                item.completed && "line-through text-slate-400"
+                              )}>
+                                {item.title}
+                              </div>
+                              <div className="text-xs text-slate-500 leading-snug">{item.description}</div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center text-slate-500 text-sm py-4">No checklist items.</div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -791,15 +1163,15 @@ export default function LaunchDashboardPage() {
 
               {/* Bottom Actions */}
               <form onSubmit={handleStep5Submit} className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setCurrentStep(4)}
                   className="bg-white border border-slate-200 text-slate-500 hover:text-slate-700 hover:border-slate-300 px-8 py-3 rounded-lg font-bold transition-all"
                 >
                   Back
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-8 py-3 rounded-lg font-bold transition-colors"
                 >
                   Save & Continue
@@ -821,142 +1193,72 @@ export default function LaunchDashboardPage() {
               </div>
 
               <div className="flex flex-col lg:flex-row gap-8">
-                
+
                 {/* Left Column: Resource Cards */}
                 <div className="flex-[2] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-8 bg-slate-50 rounded-3xl border border-slate-200">
-                  
-                  {/* Card 1: Four Customer Fears */}
-                  <div className="bg-white border-2 border-blue-100 rounded-2xl p-6 text-center flex flex-col items-center justify-between shadow-sm min-h-[260px]">
-                    <div className="flex flex-col items-center">
-                      <User className="w-10 h-10 text-blue-500 mb-5" strokeWidth={1.5} />
-                      <h3 className="text-[16px] font-bold text-slate-900 mb-3 leading-tight">Four Customer Fears</h3>
-                      <p className="text-[12px] text-slate-500 leading-relaxed mb-6">
-                        Understand what stops customers from booking—and learn how to overcome each concern with trust-focused messaging.
-                      </p>
+                  {resourcesBrand?.resources && resourcesBrand.resources.length > 0 ? (
+                    resourcesBrand.resources.map((res) => (
+                      <div
+                        key={res.id}
+                        className="bg-white border-2 rounded-2xl p-6 text-center flex flex-col items-center justify-between shadow-sm min-h-[260px]"
+                        style={{ borderColor: res.cardColor || "#e2e8f0" }}
+                      >
+                        <div className="flex flex-col items-center">
+                          <ResourceIcon iconKey={res.iconKey} />
+                          <h3 className="text-[16px] font-bold text-slate-900 mb-3 leading-tight">{res.title}</h3>
+                          <p className="text-[12px] text-slate-500 leading-relaxed mb-6">
+                            {res.description}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => window.open(res.fileUrl, "_blank")}
+                          className="w-full py-2.5 rounded-lg font-bold text-[13px] transition-all bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
+                        >
+                          View Resource
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="col-span-full py-8 text-center text-slate-500 text-sm">
+                      No active resources found for Brand & Trust.
                     </div>
-                    <button type="button" className="w-full py-2.5 rounded-lg font-bold text-[13px] transition-all bg-white border border-blue-100 text-slate-700 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-700">
-                      View Guide
-                    </button>
-                  </div>
-
-                  {/* Card 2: Website Copy Blocks */}
-                  <div className="bg-white border-2 border-green-100 rounded-2xl p-6 text-center flex flex-col items-center justify-between shadow-sm min-h-[260px]">
-                    <div className="flex flex-col items-center">
-                      <LayoutTemplate className="w-10 h-10 text-green-500 mb-5" strokeWidth={1.5} />
-                      <h3 className="text-[16px] font-bold text-slate-900 mb-3 leading-tight">Website Copy Blocks</h3>
-                      <p className="text-[12px] text-slate-500 leading-relaxed mb-6">
-                        Ready-to-use website copy that helps communicate professionalism, reliability, and trust across your business website.
-                      </p>
-                    </div>
-                    <button type="button" className="w-full py-2.5 rounded-lg font-bold text-[13px] transition-all bg-[#f0fdf4] border border-green-100 text-slate-700 hover:bg-green-100 hover:text-green-800">
-                      Open Resource
-                    </button>
-                  </div>
-
-                  {/* Card 3: FAQ Section */}
-                  <div className="bg-white border-2 border-pink-100 rounded-2xl p-6 text-center flex flex-col items-center justify-between shadow-sm min-h-[260px]">
-                    <div className="flex flex-col items-center">
-                      <MessageCircleQuestion className="w-10 h-10 text-pink-500 mb-5" strokeWidth={1.5} />
-                      <h3 className="text-[16px] font-bold text-slate-900 mb-3 leading-tight">FAQ Section</h3>
-                      <p className="text-[12px] text-slate-500 leading-relaxed mb-6">
-                        Pre-written answers to the questions customers ask most before booking your services.
-                      </p>
-                    </div>
-                    <button type="button" className="w-full py-2.5 rounded-lg font-bold text-[13px] transition-all bg-[#fdf2f8] border border-pink-100 text-slate-700 hover:bg-pink-100 hover:text-pink-800">
-                      Preview FAQs
-                    </button>
-                  </div>
-
-                  {/* Card 4: Trust Badge Library */}
-                  <div className="bg-white border-2 border-teal-100 rounded-2xl p-6 text-center flex flex-col items-center justify-between shadow-sm min-h-[260px]">
-                    <div className="flex flex-col items-center">
-                      <ShieldCheck className="w-10 h-10 text-teal-400 mb-5" strokeWidth={1.5} />
-                      <h3 className="text-[16px] font-bold text-slate-900 mb-3 leading-tight">Trust Badge Library</h3>
-                      <p className="text-[12px] text-slate-500 leading-relaxed mb-6">
-                        Professionally designed trust badges to strengthen credibility and reassure visitors throughout your website.
-                      </p>
-                    </div>
-                    <button type="button" className="w-full py-2.5 rounded-lg font-bold text-[13px] transition-all bg-[#f0fdfa] border border-teal-100 text-slate-700 hover:bg-teal-100 hover:text-teal-800">
-                      View Badges
-                    </button>
-                  </div>
-
-                  {/* Card 5: Social Media Captions */}
-                  <div className="bg-white border-2 border-purple-100 rounded-2xl p-6 text-center flex flex-col items-center justify-between shadow-sm min-h-[260px]">
-                    <div className="flex flex-col items-center">
-                      <Smartphone className="w-10 h-10 text-purple-500 mb-5" strokeWidth={1.5} />
-                      <h3 className="text-[16px] font-bold text-slate-900 mb-3 leading-tight">Social Media Captions</h3>
-                      <p className="text-[12px] text-slate-500 leading-relaxed mb-6">
-                        Ready-made captions that help promote your services while reinforcing trust and professionalism.
-                      </p>
-                    </div>
-                    <button type="button" className="w-full py-2.5 rounded-lg font-bold text-[13px] transition-all bg-white border border-purple-100 text-slate-700 hover:bg-purple-50 hover:border-purple-200 hover:text-purple-700">
-                      Open Library
-                    </button>
-                  </div>
-
-                  {/* Card 6: Putting It All Together */}
-                  <div className="bg-white border-2 border-slate-100 rounded-2xl p-6 text-center flex flex-col items-center justify-between shadow-sm min-h-[260px]">
-                    <div className="flex flex-col items-center">
-                      <Lightbulb className="w-10 h-10 text-slate-400 mb-5" strokeWidth={1.5} />
-                      <h3 className="text-[16px] font-bold text-slate-900 mb-3 leading-tight">Putting It All Together</h3>
-                      <p className="text-[12px] text-slate-500 leading-relaxed mb-6">
-                        Follow a simple step-by-step guide to combine every trust element into a complete, high-converting customer experience.
-                      </p>
-                    </div>
-                    <button type="button" className="w-full py-2.5 rounded-lg font-bold text-[13px] transition-all bg-[#f8f9fa] border border-slate-200 text-slate-700 hover:bg-slate-100 hover:text-slate-900">
-                      View Guide
-                    </button>
-                  </div>
-
+                  )}
                 </div>
 
                 {/* Right Column: Trust Checklist */}
                 <div className="flex-1 flex flex-col gap-6">
                   <div className="bg-white border border-slate-200 rounded-2xl p-6 h-full">
                     <h3 className="text-[17px] font-bold text-slate-900 mb-8">Trust Checklist</h3>
-                    <div className="flex flex-col gap-8">
-                      
-                      <div className="flex items-start gap-4">
-                        <CheckCircle2 className="w-6 h-6 text-[#22c55e] fill-green-100 shrink-0" strokeWidth={2} />
-                        <div>
-                          <div className="text-sm font-bold text-slate-900 mb-1 leading-tight">Website Copy Added</div>
-                          <div className="text-xs text-slate-500 leading-snug">Your website clearly communicates professionalism and builds customer confidence.</div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-4">
-                        <CheckCircle2 className="w-6 h-6 text-[#22c55e] fill-green-100 shrink-0" strokeWidth={2} />
-                        <div>
-                          <div className="text-sm font-bold text-slate-900 mb-1 leading-tight">FAQ Ready</div>
-                          <div className="text-xs text-slate-500 leading-snug">Common customer questions are answered before they need to ask.</div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-4">
-                        <CheckCircle2 className="w-6 h-6 text-[#22c55e] fill-green-100 shrink-0" strokeWidth={2} />
-                        <div>
-                          <div className="text-sm font-bold text-slate-900 mb-1 leading-tight">Trust Badges Ready</div>
-                          <div className="text-xs text-slate-500 leading-snug">Trust indicators are displayed across your website.</div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-4">
-                        <CheckCircle2 className="w-6 h-6 text-[#22c55e] fill-green-100 shrink-0" strokeWidth={2} />
-                        <div>
-                          <div className="text-sm font-bold text-slate-900 mb-1 leading-tight">Social Captions Ready</div>
-                          <div className="text-xs text-slate-500 leading-snug">Your promotional content is prepared for launch.</div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-4">
-                        <CheckCircle2 className="w-6 h-6 text-[#22c55e] fill-green-100 shrink-0" strokeWidth={2} />
-                        <div>
-                          <div className="text-sm font-bold text-slate-900 mb-1 leading-tight">Review Everything</div>
-                          <div className="text-xs text-slate-500 leading-snug">Complete a final review to ensure all trust assets are published before launch.</div>
-                        </div>
-                      </div>
-
+                    <div className="flex flex-col gap-6">
+                      {checklistBrand?.checklistItems && checklistBrand.checklistItems.length > 0 ? (
+                        checklistBrand.checklistItems.map((item) => (
+                          <div
+                            key={item.id}
+                            onClick={() => handleToggleChecklist(item.id, item.completed)}
+                            className="flex items-start gap-4 cursor-pointer group"
+                          >
+                            <CheckCircle2
+                              className={cn(
+                                "w-6 h-6 shrink-0 transition-colors",
+                                item.completed ? "text-[#22c55e] fill-green-100" : "text-slate-300 group-hover:text-green-500"
+                              )}
+                              strokeWidth={2}
+                            />
+                            <div>
+                              <div className={cn(
+                                "text-sm font-bold text-slate-900 mb-1 leading-tight",
+                                item.completed && "line-through text-slate-400"
+                              )}>
+                                {item.title}
+                              </div>
+                              <div className="text-xs text-slate-500 leading-snug">{item.description}</div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center text-slate-500 text-sm py-4">No checklist items.</div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -965,15 +1267,15 @@ export default function LaunchDashboardPage() {
 
               {/* Bottom Actions */}
               <form onSubmit={handleStep6Submit} className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setCurrentStep(5)}
                   className="bg-white border border-slate-200 text-slate-500 hover:text-slate-700 hover:border-slate-300 px-8 py-3 rounded-lg font-bold transition-all"
                 >
                   Back
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-8 py-3 rounded-lg font-bold transition-colors"
                 >
                   Save & Continue
@@ -995,10 +1297,10 @@ export default function LaunchDashboardPage() {
               </div>
 
               <div className="flex flex-col lg:flex-row gap-8">
-                
+
                 {/* Left Column: Final Checklist */}
                 <div className="flex-[2] bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 flex flex-col gap-0 shadow-sm">
-                  
+
                   {/* Item 1 */}
                   <div className="flex items-center justify-between py-5 border-b border-slate-100 last:border-0">
                     <div className="flex items-center gap-5">
@@ -1010,10 +1312,17 @@ export default function LaunchDashboardPage() {
                         <p className="text-[12px] text-slate-500 mt-0.5">Business information has been completed and verified.</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-green-600">Complete</span>
-                      <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-100" />
-                    </div>
+                    {completedSteps.includes(1) && completedSteps.includes(2) ? (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-green-600">Complete</span>
+                        <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-100" />
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-orange-500">Incomplete</span>
+                        <XCircle className="w-5 h-5 text-orange-500" />
+                      </div>
+                    )}
                   </div>
 
                   {/* Item 2 */}
@@ -1023,14 +1332,21 @@ export default function LaunchDashboardPage() {
                         <Globe className="w-6 h-6 text-green-500" />
                       </div>
                       <div>
-                        <h4 className="text-[15px] font-bold text-slate-900">Website</h4>
-                        <p className="text-[12px] text-slate-500 mt-0.5">Your website pages are published and ready for visitors.</p>
+                        <h4 className="text-[15px] font-bold text-slate-900">Service Area</h4>
+                        <p className="text-[12px] text-slate-500 mt-0.5">Your service city and metro coverage are verified.</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-green-600">Complete</span>
-                      <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-100" />
-                    </div>
+                    {completedSteps.includes(3) ? (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-green-600">Complete</span>
+                        <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-100" />
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-orange-500">Incomplete</span>
+                        <XCircle className="w-5 h-5 text-orange-500" />
+                      </div>
+                    )}
                   </div>
 
                   {/* Item 3 */}
@@ -1044,10 +1360,17 @@ export default function LaunchDashboardPage() {
                         <p className="text-[12px] text-slate-500 mt-0.5">Your referral card has been generated and is ready to share with customers.</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-green-600">Complete</span>
-                      <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-100" />
-                    </div>
+                    {completedSteps.includes(4) ? (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-green-600">Complete</span>
+                        <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-100" />
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-orange-500">Incomplete</span>
+                        <XCircle className="w-5 h-5 text-orange-500" />
+                      </div>
+                    )}
                   </div>
 
                   {/* Item 4 */}
@@ -1061,10 +1384,17 @@ export default function LaunchDashboardPage() {
                         <p className="text-[12px] text-slate-500 mt-0.5">Your branded QR code has been created and is ready to use online and offline.</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-green-600">Complete</span>
-                      <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-100" />
-                    </div>
+                    {completedSteps.includes(4) ? (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-green-600">Complete</span>
+                        <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-100" />
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-orange-500">Incomplete</span>
+                        <XCircle className="w-5 h-5 text-orange-500" />
+                      </div>
+                    )}
                   </div>
 
                   {/* Item 5 */}
@@ -1078,10 +1408,17 @@ export default function LaunchDashboardPage() {
                         <p className="text-[12px] text-slate-500 mt-0.5">Your marketing materials and customer acquisition resources are prepared.</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-green-600">Complete</span>
-                      <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-100" />
-                    </div>
+                    {completedSteps.includes(5) ? (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-green-600">Complete</span>
+                        <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-100" />
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-orange-500">Incomplete</span>
+                        <XCircle className="w-5 h-5 text-orange-500" />
+                      </div>
+                    )}
                   </div>
 
                   {/* Item 6 */}
@@ -1095,27 +1432,44 @@ export default function LaunchDashboardPage() {
                         <p className="text-[12px] text-slate-500 mt-0.5">Your trust-building assets are ready to help convert visitors into customers.</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-green-600">Complete</span>
-                      <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-100" />
-                    </div>
+                    {completedSteps.includes(6) ? (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-green-600">Complete</span>
+                        <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-100" />
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-orange-500">Incomplete</span>
+                        <XCircle className="w-5 h-5 text-orange-500" />
+                      </div>
+                    )}
                   </div>
 
                   {/* Item 7 */}
                   <div className="flex items-center justify-between py-5 border-b border-slate-100 last:border-0">
                     <div className="flex items-center gap-5">
-                      <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
-                        <Calendar className="w-6 h-6 text-orange-500" />
+                      <div className={cn(
+                        "w-12 h-12 rounded-full flex items-center justify-center shrink-0",
+                        acuityConnected ? "bg-green-50" : "bg-orange-100"
+                      )}>
+                        <Calendar className={cn("w-6 h-6", acuityConnected ? "text-green-500" : "text-orange-500")} />
                       </div>
                       <div>
-                        <h4 className="text-[15px] font-bold text-orange-500">Booking System</h4>
-                        <p className="text-[12px] text-orange-400 mt-0.5">Connect your preferred booking platform so customers can book your services online.</p>
+                        <h4 className={cn("text-[15px] font-bold", acuityConnected ? "text-slate-900" : "text-orange-500")}>Booking System</h4>
+                        <p className="text-[12px] text-slate-500 mt-0.5">Connect your preferred booking platform so customers can book your services online.</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-orange-500">Not Connected</span>
-                      <XCircle className="w-5 h-5 text-orange-500" />
-                    </div>
+                    {acuityConnected ? (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-green-600">Connected</span>
+                        <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-100" />
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-orange-500">Not Connected</span>
+                        <XCircle className="w-5 h-5 text-orange-500" />
+                      </div>
+                    )}
                   </div>
 
                 </div>
@@ -1124,7 +1478,7 @@ export default function LaunchDashboardPage() {
                 <div className="flex-1">
                   <div className="bg-white border border-slate-200 rounded-3xl p-8 flex flex-col items-center justify-center shadow-sm h-full text-center">
                     <h3 className="text-[18px] font-bold text-slate-900 mb-8">Your Launch Progress</h3>
-                    
+
                     {/* SVG Progress Ring */}
                     <div className="relative w-56 h-56 mb-8 flex items-center justify-center">
                       <svg
@@ -1163,9 +1517,14 @@ export default function LaunchDashboardPage() {
                     </div>
 
                     <div className="flex flex-col items-center max-w-[260px]">
-                      <h4 className="text-[16px] font-bold text-slate-900 mb-2">Almost Ready! 🚀</h4>
+                      <h4 className="text-[16px] font-bold text-slate-900 mb-2">
+                        {progressPercentage === 100 ? "Ready to Launch! 🚀" : "Almost Ready! 🚀"}
+                      </h4>
                       <p className="text-[12px] text-slate-500 leading-relaxed">
-                        You're just one final step away from launching your business. Connect your booking system now, or launch without it and add it later.
+                        {progressPercentage === 100
+                          ? "All steps completed! Continue to the final review and launch your private direct booking airport business."
+                          : "You're just a few steps away from launching your business. Connect your booking system now, or launch without it and add it later."
+                        }
                       </p>
                     </div>
 
@@ -1176,15 +1535,15 @@ export default function LaunchDashboardPage() {
 
               {/* Bottom Actions */}
               <form onSubmit={handleStep7Submit} className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setCurrentStep(6)}
                   className="bg-white border border-slate-200 text-slate-500 hover:text-slate-700 hover:border-slate-300 px-8 py-3 rounded-lg font-bold transition-all"
                 >
                   Back
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-8 py-3 rounded-lg font-bold transition-colors"
                 >
                   Continue to final review
@@ -1206,53 +1565,62 @@ export default function LaunchDashboardPage() {
               </div>
 
               <div className="flex flex-col lg:flex-row gap-8">
-                
+
                 {/* Left Column: Business Information */}
                 <div className="flex-[1] bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 flex flex-col shadow-sm relative">
-                  
+
                   {/* Edit Button */}
-                  <button className="absolute top-6 right-6 w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-600 hover:bg-green-100 transition-colors">
+                  <button
+                    onClick={() => setCurrentStep(2)}
+                    className="absolute top-6 right-6 w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-600 hover:bg-green-100 transition-colors"
+                  >
                     <Edit className="w-5 h-5" />
                   </button>
 
                   <h3 className="text-[17px] font-bold text-slate-900 mb-8">Business Information</h3>
-                  
+
                   <div className="flex flex-col gap-6">
                     <div className="flex items-center gap-4">
                       <Building2 className="w-5 h-5 text-slate-400 shrink-0" />
                       <div className="w-[120px] text-[13px] text-slate-500 font-medium">Business Name</div>
-                      <div className="text-[14px] text-slate-900 font-semibold">Autocar</div>
+                      <div className="text-[14px] text-slate-900 font-semibold">{businessData.businessName || "Not set"}</div>
                     </div>
-                    
+
                     <div className="flex items-center gap-4">
                       <Phone className="w-5 h-5 text-slate-400 shrink-0" />
                       <div className="w-[120px] text-[13px] text-slate-500 font-medium">Business Phone</div>
-                      <div className="text-[14px] text-slate-900 font-semibold">(305) 555-1234</div>
+                      <div className="text-[14px] text-slate-900 font-semibold">{businessData.phone || "Not set"}</div>
                     </div>
-                    
+
                     <div className="flex items-center gap-4">
                       <Mail className="w-5 h-5 text-slate-400 shrink-0" />
                       <div className="w-[120px] text-[13px] text-slate-500 font-medium">Business Email</div>
-                      <div className="text-[14px] text-slate-900 font-semibold">autocar@gmail.com</div>
+                      <div className="text-[14px] text-slate-900 font-semibold">{businessData.email || "Not set"}</div>
                     </div>
-                    
+
                     <div className="flex items-start gap-4">
                       <MapPin className="w-5 h-5 text-slate-400 shrink-0 mt-0.5" />
                       <div className="w-[120px] text-[13px] text-slate-500 font-medium pt-0.5">Service Area</div>
-                      <div className="text-[14px] text-slate-900 font-semibold leading-snug">Serving Miami, FL and Surrounding areas</div>
+                      <div className="text-[14px] text-slate-900 font-semibold leading-snug">{serviceData.cityArea || "Not set"}</div>
                     </div>
-                    
+
                     <div className="flex items-start gap-4">
                       <Plane className="w-5 h-5 text-slate-400 shrink-0 mt-0.5" />
-                      <div className="w-[120px] text-[13px] text-slate-500 font-medium pt-0.5">Airport Served</div>
-                      <div className="text-[14px] text-slate-900 font-semibold leading-snug">Serving Miami, FL and Surrounding areas</div>
+                      <div className="w-[120px] text-[13px] text-slate-500 font-medium pt-0.5">Airports Served</div>
+                      <div className="text-[14px] text-slate-900 font-semibold leading-snug">
+                        {airports.length > 0 ? airports.join(", ") : "None"}
+                      </div>
                     </div>
-                    
+
                     <div className="flex items-start gap-4 mt-2">
                       <ImageIcon className="w-5 h-5 text-slate-400 shrink-0 mt-1" />
                       <div className="w-[120px] text-[13px] text-slate-500 font-medium pt-1">Business Logo</div>
                       <div className="overflow-hidden rounded-xl border border-slate-200">
-                        <img src={autocarLogo} alt="Autocar Logo" className="w-[160px] h-[80px] object-cover" />
+                        {businessData.logoUrl ? (
+                          <img src={businessData.logoUrl} alt="Logo" className="w-[160px] h-[80px] object-cover" />
+                        ) : (
+                          <img src={autocarLogo} alt="Placeholder Logo" className="w-[160px] h-[80px] object-cover opacity-50" />
+                        )}
                       </div>
                     </div>
                   </div>
@@ -1261,7 +1629,7 @@ export default function LaunchDashboardPage() {
                 {/* Right Column: Generated Assets */}
                 <div className="flex-[1] bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
                   <h3 className="text-[17px] font-bold text-slate-900 mb-8">Generated Assets</h3>
-                  
+
                   <div className="flex flex-col lg:flex-row gap-8">
                     {/* List of Assets */}
                     <div className="flex-1 flex flex-col gap-6">
@@ -1271,7 +1639,17 @@ export default function LaunchDashboardPage() {
                         </div>
                         <div>
                           <div className="text-[14px] font-bold text-slate-900 mb-0.5">Driver Website</div>
-                          <div className="text-[12px] text-slate-500 leading-snug">Your direct booking website is ready to receive customers.</div>
+                          <div className="text-[12px] text-slate-500 leading-snug">
+                            Your direct booking website is ready:{" "}
+                            <a
+                              href={finalReviewResponse?.data?.assets?.websiteUrl || "#"}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-green-600 hover:underline"
+                            >
+                              {finalReviewResponse?.data?.assets?.websiteUrl || "Loading..."}
+                            </a>
+                          </div>
                         </div>
                       </div>
 
@@ -1323,13 +1701,22 @@ export default function LaunchDashboardPage() {
                       </div>
                       <h4 className="text-[15px] font-bold text-slate-900 mb-1">Booking System</h4>
                       <p className="text-[11px] text-slate-500 mb-4">Direct Booking system</p>
-                      
-                      <div className="px-3 py-1 rounded-full bg-orange-100 text-orange-600 text-[11px] font-bold mb-4">
-                        Not Included
-                      </div>
-                      
+
+                      {acuityConnected ? (
+                        <div className="px-3 py-1 rounded-full bg-green-100 text-green-600 text-[11px] font-bold mb-4">
+                          Connected
+                        </div>
+                      ) : (
+                        <div className="px-3 py-1 rounded-full bg-orange-100 text-orange-600 text-[11px] font-bold mb-4">
+                          Not Connected
+                        </div>
+                      )}
+
                       <p className="text-[11px] text-slate-500 leading-relaxed px-2">
-                        To enable, purchase the booking system
+                        {acuityConnected
+                          ? "Acuity Connection is connected and working."
+                          : "To enable, connect Acuity Scheduling in Step 2."
+                        }
                       </p>
                     </div>
                   </div>
@@ -1340,17 +1727,19 @@ export default function LaunchDashboardPage() {
 
               {/* Bottom Actions */}
               <form onSubmit={handleStep8Submit} className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setCurrentStep(7)}
                   className="bg-white border border-slate-200 text-slate-500 hover:text-slate-700 hover:border-slate-300 px-8 py-3 rounded-lg font-bold transition-all"
                 >
                   Back
                 </button>
-                <button 
-                  type="submit" 
-                  className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-8 py-3 rounded-lg font-bold transition-colors shadow-sm"
+                <button
+                  type="submit"
+                  disabled={isCompletingLaunch}
+                  className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-8 py-3 rounded-lg font-bold transition-colors shadow-sm flex items-center gap-2"
                 >
+                  {isCompletingLaunch && <Loader2 className="w-4 h-4 animate-spin" />}
                   Complete Launch
                 </button>
               </form>
@@ -1359,6 +1748,66 @@ export default function LaunchDashboardPage() {
 
         </div>
       </div>
+
+      {/* QR Code Viewer Modal */}
+      {showQrModal && referralCardResponse?.data?.qrCodeUrl && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 animate-fade-in">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl relative text-center flex flex-col items-center">
+            <button
+              onClick={() => setShowQrModal(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition"
+              aria-label="Close modal"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <h3 className="text-[17px] font-bold text-slate-900 mb-1">
+              Your Branded QR Code
+            </h3>
+            <p className="text-xs text-slate-500 mb-6 leading-relaxed">
+              Scan this code with your phone to preview your direct booking page.
+            </p>
+            <div className="border border-slate-200 rounded-2xl p-4 bg-slate-50 mb-6 shadow-sm">
+              <img
+                src={referralCardResponse.data.qrCodeUrl}
+                alt="Branded QR Code"
+                className="w-56 h-56 object-contain"
+              />
+            </div>
+            <button
+              onClick={() => {
+                if (referralCardResponse?.data?.qrCodeUrl) {
+                  const link = document.createElement("a");
+                  link.href = referralCardResponse.data.qrCodeUrl;
+                  link.download = "qrcode.png";
+                  link.click();
+                }
+              }}
+              className="w-full bg-[#22c55e] hover:bg-[#1ea951] text-white py-2.5 rounded-lg text-sm font-bold transition flex items-center justify-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              Download QR Code
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Reusable Alert Modal */}
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        onClose={() => {
+          setAlertModal((prev) => ({ ...prev, isOpen: false }));
+          if (alertModal.type === "success" && alertModal.onConfirm) {
+            alertModal.onConfirm();
+          }
+        }}
+        title={alertModal.title}
+        message={alertModal.message}
+        type={alertModal.type}
+        onConfirm={() => {
+          setAlertModal((prev) => ({ ...prev, isOpen: false }));
+          if (alertModal.onConfirm) alertModal.onConfirm();
+        }}
+      />
     </div>
   );
 }

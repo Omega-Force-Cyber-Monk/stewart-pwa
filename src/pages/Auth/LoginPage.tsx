@@ -36,12 +36,18 @@ export default function LoginPage() {
             user: result.user,
           })
         );
-        navigate("/dashboard");
+        // Redirect to dashboard if already paid (status active), otherwise show pricing modal
+        if (result.user?.status === "active") {
+          navigate("/dashboard");
+        } else {
+          navigate("/?showPricing=true");
+        }
       }
     } catch (err) {
       console.error("Login failed:", err);
     }
   };
+
 
   // Safe cast for RTK Query error message
   const getErrorMessage = () => {

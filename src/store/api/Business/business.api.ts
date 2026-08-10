@@ -2,6 +2,16 @@ import { baseApi } from "../baseApi";
 import type {
   BusinessDashboardResponse,
   PublicBusinessResponse,
+  SetupStateResponse,
+  UpdateSetupRequest,
+  UploadLogoResponse,
+  AirportSuggestionsResponse,
+  ReferralCardResponse,
+  BusinessResourcesResponse,
+  ChecklistItemsResponse,
+  LaunchReadinessResponse,
+  FinalReviewResponse,
+  CompleteLaunchResponse,
 } from "./business.type";
 
 export const businessApi = baseApi.injectEndpoints({
@@ -15,6 +25,83 @@ export const businessApi = baseApi.injectEndpoints({
     getPublicBusinessBySlug: builder.query<PublicBusinessResponse, string>({
       query: (slug) => `/public/business/${slug}`,
     }),
+    initializeSetup: builder.mutation<SetupStateResponse, void>({
+      query: () => ({
+        url: "/business/setup",
+        method: "POST",
+      }),
+    }),
+    getSetupState: builder.query<SetupStateResponse, void>({
+      query: () => "/business/setup",
+    }),
+    updateSetupState: builder.mutation<SetupStateResponse, UpdateSetupRequest>({
+      query: (body) => ({
+        url: "/business/setup",
+        method: "PATCH",
+        body,
+      }),
+    }),
+    uploadBusinessLogo: builder.mutation<UploadLogoResponse, FormData>({
+      query: (formData) => ({
+        url: "/business/logo",
+        method: "POST",
+        body: formData,
+      }),
+    }),
+    getAirportSuggestions: builder.query<AirportSuggestionsResponse, { cityArea: string; limit?: number }>({
+      query: ({ cityArea, limit = 5 }) => `/business/service-area/airports?cityArea=${encodeURIComponent(cityArea)}&limit=${limit}`,
+    }),
+    getReferralCard: builder.query<ReferralCardResponse, void>({
+      query: () => "/business/referral-card",
+    }),
+    generateReferralCard: builder.mutation<ReferralCardResponse, void>({
+      query: () => ({
+        url: "/business/referral-card/generate",
+        method: "POST",
+      }),
+    }),
+    getBusinessResources: builder.query<BusinessResourcesResponse, { step?: string; type?: string; categoryId?: string } | void>({
+      query: (params) => {
+        let url = "/business/resources";
+        if (params) {
+          const queryParams = new URLSearchParams();
+          if (params.step) queryParams.append("step", params.step);
+          if (params.type) queryParams.append("type", params.type);
+          if (params.categoryId) queryParams.append("categoryId", params.categoryId);
+          const queryString = queryParams.toString();
+          if (queryString) url += `?${queryString}`;
+        }
+        return url;
+      },
+    }),
+    getChecklistItems: builder.query<ChecklistItemsResponse, { step?: string } | void>({
+      query: (params) => {
+        let url = "/business/checklist";
+        if (params && params.step) {
+          url += `?step=${encodeURIComponent(params.step)}`;
+        }
+        return url;
+      },
+    }),
+    updateChecklistItem: builder.mutation<ChecklistItemsResponse, { id: string; completed: boolean }>({
+      query: ({ id, completed }) => ({
+        url: `/business/checklist/${id}`,
+        method: "PATCH",
+        body: { completed },
+      }),
+    }),
+    getLaunchReadiness: builder.query<LaunchReadinessResponse, void>({
+      query: () => "/business/launch-ready",
+    }),
+    getFinalReview: builder.query<FinalReviewResponse, void>({
+      query: () => "/business/final-review",
+    }),
+    completeLaunch: builder.mutation<CompleteLaunchResponse, void>({
+      query: () => ({
+        url: "/business/complete-launch",
+        method: "POST",
+      }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -23,4 +110,17 @@ export const {
   useGetRiderDashboardQuery,
   useGetPublicBusinessFromHostQuery,
   useGetPublicBusinessBySlugQuery,
+  useInitializeSetupMutation,
+  useGetSetupStateQuery,
+  useUpdateSetupStateMutation,
+  useUploadBusinessLogoMutation,
+  useLazyGetAirportSuggestionsQuery,
+  useGetReferralCardQuery,
+  useGenerateReferralCardMutation,
+  useGetBusinessResourcesQuery,
+  useGetChecklistItemsQuery,
+  useUpdateChecklistItemMutation,
+  useGetLaunchReadinessQuery,
+  useGetFinalReviewQuery,
+  useCompleteLaunchMutation,
 } = businessApi;

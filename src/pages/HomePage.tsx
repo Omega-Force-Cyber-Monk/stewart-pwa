@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../hooks/storeHooks";
+import { updateUser, logOut } from "../store/features/auth/authSlice";
+import { useGetRiderProfileQuery, useLogoutUserMutation } from "../store/api/Auth/auth.api";
+import { PricingModal } from "../components/PricingModal";
+import { ProfileDropdown } from "../components/ProfileDropdown";
 import { Headset, Check, TrendingUp, Menu, X } from "lucide-react";
 import { cn } from "../lib/cn";
 import standardLogo from "../assets/standardLogo.png";
@@ -29,9 +34,50 @@ import standardImage from "../assets/standard.png";
 import reviewCoupleImage from "../assets/reviewCouple.png";
 
 export default function HomePage() {
+  const [showPricingModal, setShowPricingModal] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const dispatch = useAppDispatch();
+  const { accessToken, user } = useAppSelector((state) => state.auth);
+
+  // Fetch the latest user profile details (status, verification, etc.) on landing
+  const { data: profileData } = useGetRiderProfileQuery(undefined, {
+    skip: !accessToken,
+  });
+
+  // Sync profile details into Redux store
+  useEffect(() => {
+    if (profileData?.user) {
+      dispatch(updateUser(profileData.user));
+    }
+  }, [profileData, dispatch]);
+
+  // Auto-open pricing modal if redirected from login with ?showPricing=true
+  useEffect(() => {
+    if (
+      searchParams.get("showPricing") === "true" &&
+      accessToken &&
+      user?.status !== "active"
+    ) {
+      setShowPricingModal(true);
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, accessToken, user?.status, setSearchParams]);
+
+  // Auto-close pricing modal if user status becomes active
+  useEffect(() => {
+    if (user?.status === "active") {
+      setShowPricingModal(false);
+    }
+  }, [user?.status]);
+
+  const openPricingModal = () => setShowPricingModal(true);
+
   return (
     <>
-      <SeniorNavbar />
+      {showPricingModal && (
+        <PricingModal onClose={() => setShowPricingModal(false)} />
+      )}
+      <SeniorNavbar openPricingModal={openPricingModal} />
       <HeroBanner />
       <FeaturesSection />
       <ComparisonSection />
@@ -39,20 +85,32 @@ export default function HomePage() {
       <HowItWorksSection />
       <ReviewsSection />
       <FaqSection />
-      <FooterCTASection />
+      <FooterCTASection openPricingModal={openPricingModal} />
     </>
   );
 }
 
-function SeniorNavbar() {
+function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { accessToken, user } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+  const [logoutUser] = useLogoutUserMutation();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser().unwrap();
+    } catch (e) {
+      console.error("Logout failed:", e);
+    }
+    dispatch(logOut());
+  };
 
   return (
     <>
@@ -98,9 +156,16 @@ function SeniorNavbar() {
               >
                 FAQ
               </a>
-              <button className="cursor-pointer bg-[#15803d] hover:bg-[#166534] text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg">
-                Start My Business — $495
-              </button>
+              {accessToken ? (
+                <ProfileDropdown openPricingModal={openPricingModal} />
+              ) : (
+                <Link
+                  to="/signup"
+                  className="cursor-pointer bg-[#15803d] hover:bg-[#166534] text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg inline-block"
+                >
+                  Start My Business — $495
+                </Link>
+              )}
             </nav>
 
             {/* Mobile Menu Toggle */}
@@ -150,6 +215,53 @@ function SeniorNavbar() {
           >
             FAQ
           </a>
+          {accessToken ? (
+            <>
+              {user?.status === "active" ? (
+                <Link
+                  to="/dashboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-white hover:text-[#39b54a] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
+                >
+                  Dashboard
+                </Link>
+              ) : (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    openPricingModal();
+                  }}
+                  className="text-left text-white hover:text-[#39b54a] text-lg font-semibold py-4 border-b border-white/10 transition-colors w-full"
+                >
+                  Complete Checkout
+                </button>
+              )}
+              <Link
+                to="/profile"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-white hover:text-[#39b54a] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
+              >
+                Profile & Settings
+              </Link>
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  handleLogout();
+                }}
+                className="text-left text-red-400 hover:text-red-300 text-lg font-semibold py-4 border-b border-white/10 transition-colors w-full"
+              >
+                Sign Out
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/signup"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-white hover:text-[#39b54a] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
+            >
+              Start My Business — $495
+            </Link>
+          )}
         </div>
       )}
     </>
@@ -873,7 +985,8 @@ function FaqSection() {
   );
 }
 
-function FooterCTASection() {
+function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }) {
+  const { accessToken, user } = useAppSelector((state) => state.auth);
   const checkmarks = [
     "No monthly platform fees",
     "Built for independent drivers",
@@ -973,16 +1086,47 @@ function FooterCTASection() {
 
           {/* CTA Button */}
           <div className="shrink-0 w-full lg:w-auto mt-4 lg:mt-0">
-            <button className="cursor-pointer w-full lg:w-auto bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-4 px-6 lg:py-3 lg:px-4 xl:py-4 xl:px-6 rounded-xl transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-center gap-4 lg:gap-3 xl:gap-4 group text-sm sm:text-base lg:text-[14px] xl:text-[18px]">
-              <span className="text-center whitespace-nowrap drop-shadow-sm">
-                Start My Private Airport
-                <br />
-                Business™ — $495
-              </span>
-              <div className="w-7 h-7 xl:w-8 xl:h-8 bg-white rounded-full flex items-center justify-center shrink-0">
-                <ArrowRight className="w-4 h-4 xl:w-5 xl:h-5 stroke-[3] text-[#16a34a] transition-transform group-hover:translate-x-0.5" />
-              </div>
-            </button>
+            {user?.status === "active" ? (
+              <Link
+                to="/dashboard"
+                className="cursor-pointer w-full lg:w-auto bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-4 px-6 lg:py-3 lg:px-4 xl:py-4 xl:px-6 rounded-xl transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-center gap-4 lg:gap-3 xl:gap-4 group text-sm sm:text-base lg:text-[14px] xl:text-[18px]"
+              >
+                <span className="text-center whitespace-nowrap drop-shadow-sm">
+                  Go to Dashboard
+                </span>
+                <div className="w-7 h-7 xl:w-8 xl:h-8 bg-white rounded-full flex items-center justify-center shrink-0">
+                  <ArrowRight className="w-4 h-4 xl:w-5 xl:h-5 stroke-[3] text-[#16a34a] transition-transform group-hover:translate-x-0.5" />
+                </div>
+              </Link>
+            ) : accessToken ? (
+              <button
+                onClick={openPricingModal}
+                className="cursor-pointer w-full lg:w-auto bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-4 px-6 lg:py-3 lg:px-4 xl:py-4 xl:px-6 rounded-xl transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-center gap-4 lg:gap-3 xl:gap-4 group text-sm sm:text-base lg:text-[14px] xl:text-[18px]"
+              >
+                <span className="text-center whitespace-nowrap drop-shadow-sm">
+                  Start My Private Airport
+                  <br />
+                  Business™ — $495
+                </span>
+                <div className="w-7 h-7 xl:w-8 xl:h-8 bg-white rounded-full flex items-center justify-center shrink-0">
+                  <ArrowRight className="w-4 h-4 xl:w-5 xl:h-5 stroke-[3] text-[#16a34a] transition-transform group-hover:translate-x-0.5" />
+                </div>
+              </button>
+            ) : (
+              <Link
+                to="/signup"
+                className="cursor-pointer w-full lg:w-auto bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-4 px-6 lg:py-3 lg:px-4 xl:py-4 xl:px-6 rounded-xl transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-center gap-4 lg:gap-3 xl:gap-4 group text-sm sm:text-base lg:text-[14px] xl:text-[18px]"
+              >
+                <span className="text-center whitespace-nowrap drop-shadow-sm">
+                  Start My Private Airport
+                  <br />
+                  Business™ — $495
+                </span>
+                <div className="w-7 h-7 xl:w-8 xl:h-8 bg-white rounded-full flex items-center justify-center shrink-0">
+                  <ArrowRight className="w-4 h-4 xl:w-5 xl:h-5 stroke-[3] text-[#16a34a] transition-transform group-hover:translate-x-0.5" />
+                </div>
+              </Link>
+            )}
           </div>
         </div>
 

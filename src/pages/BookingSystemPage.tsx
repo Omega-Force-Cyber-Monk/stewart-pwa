@@ -11,6 +11,7 @@ import {
   QrCode,
 } from "lucide-react";
 import bookingPreview from "../assets/bookingPreview.png";
+import { AlertModal } from "../components/ui/AlertModal";
 
 export default function BookingSystemPage() {
   const [preferences, setPreferences] = useState({
@@ -23,6 +24,28 @@ export default function BookingSystemPage() {
     smsNotifications: true,
   });
 
+  const [alertModal, setAlertModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    type: "success" | "error" | "info" | "confirm";
+    onConfirm?: () => void;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    type: "info",
+  });
+
+  const showAlert = (
+    title: string,
+    message: string,
+    type: "success" | "error" | "info" | "confirm" = "info",
+    onConfirm?: () => void
+  ) => {
+    setAlertModal({ isOpen: true, title, message, type, onConfirm });
+  };
+
   const handleToggle = (key: keyof typeof preferences) => {
     setPreferences((prev) => ({
       ...prev,
@@ -32,7 +55,7 @@ export default function BookingSystemPage() {
 
   const handleSavePreferences = () => {
     console.log("Saving preferences:", preferences);
-    alert("Preferences saved successfully!");
+    showAlert("Success", "Preferences saved successfully!", "success");
   };
 
   return (
@@ -311,6 +334,24 @@ export default function BookingSystemPage() {
           </div>
         </div>
       </div>
+
+      {/* Custom Reusable Alert Modal */}
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        onClose={() => {
+          setAlertModal((prev) => ({ ...prev, isOpen: false }));
+          if (alertModal.type === "success" && alertModal.onConfirm) {
+            alertModal.onConfirm();
+          }
+        }}
+        title={alertModal.title}
+        message={alertModal.message}
+        type={alertModal.type}
+        onConfirm={() => {
+          setAlertModal((prev) => ({ ...prev, isOpen: false }));
+          if (alertModal.onConfirm) alertModal.onConfirm();
+        }}
+      />
     </div>
   );
 }

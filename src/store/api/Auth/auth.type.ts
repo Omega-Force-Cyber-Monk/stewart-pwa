@@ -122,3 +122,20 @@ export interface ConfirmEmailChangeResponse {
     refreshToken: string;
     user: User;
 }
+
+export interface UploadAvatarResponse {
+    success: boolean;
+    avatarUrl: string;
+}
+
+export interface ChangePasswordRequest {
+    currentPassword?: string;
+    password?: string;
+    confirmPassword?: string;
+}
+
+export interface ChangePasswordResponse {
+    success: boolean;
+    message: string;
+}
+

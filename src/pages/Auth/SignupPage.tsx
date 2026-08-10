@@ -12,7 +12,7 @@ type SignupStep = "register" | "verify-otp" | "success";
 
 export default function SignupPage() {
   const [step, setStep] = useState<SignupStep>("register");
-  
+
   // Registration form state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -93,10 +93,10 @@ export default function SignupPage() {
   // Safe cast for RTK Query error messages
   const getErrorMessage = () => {
     if (validationError) return validationError;
-    
+
     const activeError = step === "register" ? registerError : (verifyError || resendError);
     if (!activeError) return "";
-    
+
     if ("data" in activeError) {
       const data = activeError.data as { message?: string | string[] };
       if (Array.isArray(data.message)) {

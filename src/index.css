@@ -10,6 +10,13 @@
   --color-brand-btn-hover: #039384;
 }
 
+.container {
+  width: 100%;
+  max-width: 87.5rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 * {
   box-sizing: border-box;
 }

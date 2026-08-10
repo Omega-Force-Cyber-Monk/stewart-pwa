@@ -21,6 +21,9 @@ import type {
   ChangeEmailResponse,
   ConfirmEmailChangeRequest,
   ConfirmEmailChangeResponse,
+  UploadAvatarResponse,
+  ChangePasswordRequest,
+  ChangePasswordResponse,
 } from "./auth.type";
 
 export const authApi = baseApi.injectEndpoints({
@@ -104,6 +107,20 @@ export const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+    uploadAvatar: builder.mutation<UploadAvatarResponse, FormData>({
+      query: (body) => ({
+        url: "/auth/me/avatar",
+        method: "POST",
+        body,
+      }),
+    }),
+    changeRiderPassword: builder.mutation<ChangePasswordResponse, ChangePasswordRequest>({
+      query: (body) => ({
+        url: "/auth/me/password",
+        method: "PATCH",
+        body,
+      }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -122,4 +139,6 @@ export const {
   useUpdateRiderProfileMutation,
   useRequestRiderEmailChangeMutation,
   useConfirmRiderEmailChangeMutation,
+  useUploadAvatarMutation,
+  useChangeRiderPasswordMutation,
 } = authApi;
