@@ -26,6 +26,12 @@ import AdminAddResourcePage from "../pages/AdminAddResourcePage";
 import AdminBillingsPage from "../pages/AdminBillingsPage";
 import AdminSupportPage from "../pages/AdminSupportPage";
 import AdminSettingsPage from "../pages/AdminSettingsPage";
+import LoginPage from "../pages/Auth/LoginPage";
+import SignupPage from "../pages/Auth/SignupPage";
+import ForgotPasswordPage from "../pages/Auth/ForgotPasswordPage";
+import ResetPasswordPage from "../pages/Auth/ResetPasswordPage";
+import PaymentSuccessPage from "../pages/PaymentSuccessPage";
+import RiderWebsitePage from "../pages/PersonalizeWebsite/RiderWebsitePage";
 
 export function AppRouter() {
   return (
@@ -45,7 +51,7 @@ export function AppRouter() {
       <Route path="/resources" element={<DashboardLayout title="Resources & Guides"><ResourcesAndGuidesPage /></DashboardLayout>} />
       <Route path="/profile" element={<DashboardLayout title="My Profile"><ProfilePage /></DashboardLayout>} />
       <Route path="/billing" element={<DashboardLayout title="Billing & Orders"><BillingPage /></DashboardLayout>} />
-      
+
       {/* Admin Routes */}
       <Route path="/admin" element={<AdminDashboardLayout><AdminDashboardPage /></AdminDashboardLayout>} />
       <Route path="/admin/drivers" element={<AdminDashboardLayout title="Driver Management"><AdminDriversPage /></AdminDashboardLayout>} />
@@ -57,6 +63,12 @@ export function AppRouter() {
       <Route path="/admin/settings" element={<AdminDashboardLayout title="Settings"><AdminSettingsPage /></AdminDashboardLayout>} />
 
       {/* Add new routes here */}
+      <Route path="/book/:slug" element={<RiderWebsitePage />} />
+      <Route path="/payment/success" element={<PaymentSuccessPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/spanish" element={<SpanishPage />} />
       <Route path="/" element={<HomePage />} />
     </Routes>

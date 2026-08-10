@@ -10,6 +10,7 @@ export interface User {
   status?: string;
   createdAt?: string;
   updatedAt?: string;
+  avatarUrl?: string;
 }
 
 interface AuthState {

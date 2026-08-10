@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Rocket,
@@ -17,8 +17,14 @@ import {
   Menu,
   X,
   Bell,
+  Loader2,
 } from "lucide-react";
 import { cn } from "../../lib/cn";
+import { useAppDispatch } from "../../hooks/storeHooks";
+import { logOut } from "../../store/features/auth/authSlice";
+import { useLogoutUserMutation } from "../../store/api/Auth/auth.api";
+import { useGetRiderDashboardQuery } from "../../store/api/Business/business.api";
+import { ProfileDropdown } from "../ProfileDropdown";
 
 const sidebarNavItems = [
   {
@@ -55,8 +61,46 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children, title = "Dashboard Overview" }: DashboardLayoutProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const [logoutUser] = useLogoutUserMutation();
+  const { data: dashboardData, isLoading, error } = useGetRiderDashboardQuery();
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    // 1. If unauthorized/unpaid, redirect to home page to complete payment
+    if (error || !dashboardData || dashboardData.purchase?.status !== "paid") {
+      navigate("/?showPricing=true", { replace: true });
+      return;
+    }
+
+    // 2. Guard navigation between /dashboard and /launch-dashboard based on business status
+    if (location.pathname === "/dashboard" && dashboardData.business?.status !== "ACTIVE") {
+      navigate("/launch-dashboard", { replace: true });
+    } else if (location.pathname === "/launch-dashboard" && dashboardData.business?.status === "ACTIVE") {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [dashboardData, isLoading, error, location.pathname, navigate]);
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser().unwrap();
+    } catch (e) {
+      console.error("Logout failed:", e);
+    }
+    dispatch(logOut());
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-[#f8fafc]">
+        <Loader2 className="w-8 h-8 text-green-500 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-[#f8fafc] overflow-hidden">
@@ -143,7 +187,10 @@ export function DashboardLayout({ children, title = "Dashboard Overview" }: Dash
           ))}
 
           <div className="pt-6 pb-8">
-            <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-[#f42661] bg-[#f42661]/10 hover:bg-[#f42661]/20 transition-colors">
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-[#f42661] bg-[#f42661]/10 hover:bg-[#f42661]/20 transition-colors"
+            >
               <LogOut className="h-[18px] w-[18px]" />
               Log Out
             </button>
@@ -172,20 +219,8 @@ export function DashboardLayout({ children, title = "Dashboard Overview" }: Dash
               </span>
             </button>
 
-            <div className="flex items-center gap-3">
-              <div className="hidden sm:block text-right">
-                <div className="text-sm font-medium text-white lg:text-slate-900">
-                  Eleanor Pena
-                </div>
-                <div className="text-xs text-slate-300 lg:text-slate-500">
-                  Women Driver
-                </div>
-              </div>
-              <img
-                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                alt="User avatar"
-                className="h-8 w-8 sm:h-10 sm:w-10 rounded-full object-cover border border-slate-200"
-              />
+            <div className="flex items-center">
+              <ProfileDropdown />
             </div>
           </div>
         </header>
