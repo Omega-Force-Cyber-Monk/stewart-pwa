@@ -948,7 +948,7 @@ function FooterCTASection() {
               ONE-TIME PAYMENT
             </span>
             <span className="text-white/80 text-[10px] lg:text-[9px] xl:text-[11px] font-medium tracking-wide text-center mt-1">
-              Includes the complete QuitTheApp DIY launch system.<br/>
+              Includes the complete QuitTheApp DIY launch system.<br />
               Optional $199 We Do It for You upgrade available.
             </span>
           </div>
