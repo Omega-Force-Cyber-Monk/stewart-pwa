@@ -9,15 +9,16 @@ import personalizeBanner from "../assets/personalizeBanner.png";
 export default function DashboardPage() {
   const { data: profileResponse } = useGetRiderProfileQuery();
   const { data: setupResponse } = useGetSetupStateQuery();
-  
-  const userName = profileResponse?.user?.name || "Eleanor Pena";
-  const slug = setupResponse?.data?.business?.slug || "default-business";
+
+  // Real data only — never render placeholder/mock values.
+  const userName = profileResponse?.user?.name ?? profileResponse?.user?.email;
+  const slug = setupResponse?.data?.business?.slug;
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto w-full flex flex-col gap-8 animate-fade-in">
       <div>
         <h1 className="text-2xl sm:text-[28px] font-bold text-slate-900 tracking-tight mb-2">
-          Welcome back, {userName}!
+          {userName ? `Welcome back, ${userName}!` : "Welcome back!"}
         </h1>
         <p className="text-slate-500 text-[15px]">
           Everything you need to launch and grow your direct booking business.
@@ -37,13 +38,19 @@ export default function DashboardPage() {
               Preview your direct booking landing page, tailored to your service area and business brand.
             </p>
           </div>
-          <Link
-            to={`/book/${slug}`}
-            target="_blank"
-            className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-5 py-2.5 rounded-lg font-bold text-sm transition-colors text-center shrink-0"
-          >
-            Open Website
-          </Link>
+          {slug ? (
+            <Link
+              to={`/book/${slug}`}
+              target="_blank"
+              className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-5 py-2.5 rounded-lg font-bold text-sm transition-colors text-center shrink-0"
+            >
+              Open Website
+            </Link>
+          ) : (
+            <span className="bg-slate-100 text-slate-400 px-5 py-2.5 rounded-lg font-bold text-sm text-center shrink-0">
+              Website not published yet
+            </span>
+          )}
         </div>
         <div className="overflow-hidden rounded-xl border border-slate-200 shadow-sm bg-slate-50">
           <img 

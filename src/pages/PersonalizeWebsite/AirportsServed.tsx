@@ -1,12 +1,18 @@
 import { Plane } from "lucide-react";
 
-export function AirportsServed() {
-  const airportsList = [
-    { code: "RSW", name: "Southwest Florida", desc: "International" },
-    { code: "PGD", name: "Punta Gorda", desc: "Airport" },
-    { code: "FLL", name: "Fort Lauderdale", desc: "International" },
-    { code: "MIA", name: "Miami", desc: "International" }
-  ];
+interface AirportsServedProps {
+  airports?: string[];
+}
+
+export function AirportsServed({ airports = [] }: AirportsServedProps) {
+  // Real airports from the business service area only — no fabricated defaults.
+  const airportList = airports
+    .filter(Boolean)
+    .map((name, index) => ({
+      code: name.match(/^([A-Z]{3})\s*-\s*/)?.[1] ?? String(index + 1).padStart(3, "0"),
+      name,
+      desc: "",
+    }));
 
   return (
     <section className="bg-white text-slate-900 py-16 px-6 border-t border-slate-100">
@@ -20,11 +26,16 @@ export function AirportsServed() {
           <div className="w-8 h-0.5 bg-green-500 rounded-full"></div>
         </div>
 
-        {/* Grid of Airport Cards */}
+        {airportList.length === 0 ? (
+          <p className="text-center text-sm text-slate-400">
+            Airport list coming soon.
+          </p>
+        ) : (
+        /* Grid of Airport Cards */
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {airportsList.map((ap) => (
+          {airportList.map((ap) => (
             <div 
-              key={ap.code}
+              key={`${ap.code}-${ap.name}`}
               className="bg-white border border-slate-200/60 rounded-2xl p-6 flex flex-col items-center text-center shadow-sm hover:shadow-md transition-all duration-300"
             >
               <div className="flex items-center gap-3.5 mb-4">
@@ -39,6 +50,7 @@ export function AirportsServed() {
             </div>
           ))}
         </div>
+        )}
       </div>
     </section>
   );

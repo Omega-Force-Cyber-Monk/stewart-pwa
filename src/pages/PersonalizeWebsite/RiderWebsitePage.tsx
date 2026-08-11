@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import { CheckCircle2, X } from "lucide-react";
-import { useGetSetupStateQuery } from "../../store/api/Business/business.api";
+import { useGetPublicBusinessBySlugQuery } from "../../store/api/Business/business.api";
 import { WebsiteNavbar } from "./WebsiteNavbar";
 import { BookingForm } from "./BookingForm";
 import { HeroSection } from "./HeroSection";
@@ -14,21 +15,22 @@ import { ReserveRideBanner } from "./ReserveRideBanner";
 import { WebsiteFooter } from "./WebsiteFooter";
 
 export default function RiderWebsitePage() {
-  const { data: setupResponse, isLoading } = useGetSetupStateQuery();
+  const { slug } = useParams<{ slug: string }>();
+  const { data: publicResponse, isLoading, isError } = useGetPublicBusinessBySlugQuery(slug ?? "");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-  const business = setupResponse?.data?.business;
-  const serviceArea = setupResponse?.data?.serviceArea;
+  const data = publicResponse?.data;
+  const business = data?.business;
+  const serviceArea = data?.serviceArea;
 
-  const businessName = business?.businessName || "Naples Airport Transportation";
-  const businessPhone = business?.phone || "(239) 555-1234";
-  const businessEmail = business?.email || "info@naplesairporttransport.com";
-  const cityArea = serviceArea?.cityArea || "Naples";
-  const airports = serviceArea?.airports || [];
+  // Real data only — no fabricated placeholders.
+  const businessName = business?.name ?? "";
+  const businessPhone = business?.phone ?? "";
+  const businessEmail = business?.email ?? "";
+  const cityArea = serviceArea?.cityArea ?? null;
+  const airports = serviceArea?.airports ?? [];
 
-  const servingAreas = serviceArea?.cityArea
-    ? [cityArea].concat(airports)
-    : ["Naples", "Marco Island", "Bonita Springs", "Estero"];
+  const servingAreas = cityArea ? [cityArea].concat(airports) : [];
 
   const handleBookingSubmit = () => {
     setShowSuccessModal(true);
@@ -38,6 +40,20 @@ export default function RiderWebsitePage() {
     return (
       <div className="flex h-screen items-center justify-center bg-slate-950 text-white">
         <div className="animate-pulse text-lg font-bold">Loading website...</div>
+      </div>
+    );
+  }
+
+  if (isError || !publicResponse) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-slate-950 text-white">
+        <div className="text-center">
+          <div className="text-4xl mb-4">😕</div>
+          <p className="text-lg font-bold mb-2">Website not found</p>
+          <p className="text-sm text-slate-400">
+            This business page is unavailable or the business is not yet live.
+          </p>
+        </div>
       </div>
     );
   }
@@ -56,7 +72,7 @@ export default function RiderWebsitePage() {
       <HeroSection
         businessName={businessName}
         businessPhone={businessPhone}
-        businessInfo="Reliable private rides for travelers who want reliability, professional drivers, and easy booking."
+        businessInfo={business?.businessInfo || ""}
         servingAreas={servingAreas}
         bookingFormChild={<BookingForm onSubmit={handleBookingSubmit} />}
       />
@@ -65,7 +81,7 @@ export default function RiderWebsitePage() {
       <TrustBadges />
 
       {/* 4. Airports List Section */}
-      <AirportsServed />
+      <AirportsServed airports={airports} />
 
       {/* 5. Our Services Section */}
       <OurServices />
@@ -77,7 +93,7 @@ export default function RiderWebsitePage() {
       <ServiceAreaSection servingAreas={servingAreas} />
 
       {/* 8. Reserve My Ride CTA Banner */}
-      <ReserveRideBanner businessPhone={businessPhone} businessEmail={businessEmail} />
+      <ReserveRideBanner businessPhone={businessPhone} businessEmail={businessEmail} bookingUrl={data?.booking?.bookingUrl ?? null} />
 
       {/* 9. FAQ Section */}
       <FAQSection />
@@ -88,6 +104,8 @@ export default function RiderWebsitePage() {
         businessPhone={businessPhone}
         businessEmail={businessEmail}
         logoUrl={business?.logoUrl}
+        serviceAreas={servingAreas}
+        airports={airports}
       />
 
       {/* 7. Booking Success Modal */}

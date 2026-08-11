@@ -91,6 +91,17 @@ export interface ResetPasswordResponse {
 export interface MeResponse {
     success: boolean;
     user: User;
+    purchase?: {
+        baseVariant: boolean;
+        addon: boolean;
+        status: string | null;
+    };
+    business?: {
+        id: string;
+        businessName: string;
+        slug: string;
+        status: string;
+    } | null;
 }
 
 export interface UpdateProfileRequest {

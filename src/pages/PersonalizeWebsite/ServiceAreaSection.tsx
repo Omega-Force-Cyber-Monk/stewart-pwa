@@ -18,17 +18,9 @@ const fixes = [
   "Airport specialists",
 ];
 
-const defaultAreas = [
-  "Naples",
-  "Marco Island",
-  "Bonita Springs",
-  "Estero",
-  "North Naples",
-  "South Naples",
-];
-
 export function ServiceAreaSection({ servingAreas }: ServiceAreaSectionProps) {
-  const areas = servingAreas && servingAreas.length > 0 ? servingAreas : defaultAreas;
+  // Real service-area data only; never render fabricated default locations.
+  const areas = servingAreas ?? [];
 
   return (
     <section className="w-full bg-white border-t border-slate-100 py-20">
@@ -49,29 +41,35 @@ export function ServiceAreaSection({ servingAreas }: ServiceAreaSectionProps) {
 
             <div className="flex flex-col sm:flex-row gap-6 items-start">
 
-              {/* Cities list */}
+              {/* Cities list — real data only */}
               <ul className="flex flex-col gap-3.5 shrink-0 min-w-40">
-                {areas.map((area, idx) => (
-                  <li key={idx} className="flex items-center gap-2.5">
-                    <MapPin className="w-5 h-5 text-green-500 shrink-0" />
-                    <span className="text-base font-semibold text-slate-700">{area}</span>
-                  </li>
-                ))}
+                {areas.length === 0 ? (
+                  <li className="text-sm text-slate-400">Service area not published yet.</li>
+                ) : (
+                  areas.map((area, idx) => (
+                    <li key={idx} className="flex items-center gap-2.5">
+                      <MapPin className="w-5 h-5 text-green-500 shrink-0" />
+                      <span className="text-base font-semibold text-slate-700">{area}</span>
+                    </li>
+                  ))
+                )}
               </ul>
 
-              {/* Embedded map */}
-              <div className="flex-1 w-full rounded-xl overflow-hidden border border-slate-200 shadow-sm min-h-52">
-                <iframe
-                  title="Service Area Map"
-                  src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d112065.41869374624!2d-81.7953!3d26.142!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sus!4v1691234567890!5m2!1sen!2sus"
-                  width="100%"
-                  height="100%"
-                  className="min-h-52 w-full border-0"
-                  allowFullScreen={false}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-              </div>
+              {/* Embedded map — rendered only when the business has a real service area */}
+              {areas.length > 0 && (
+                <div className="flex-1 w-full rounded-xl overflow-hidden border border-slate-200 shadow-sm min-h-52">
+                  <iframe
+                    title="Service Area Map"
+                    src={`https://maps.google.com/maps?q=${encodeURIComponent(areas[0])}&z=9&output=embed`}
+                    width="100%"
+                    height="100%"
+                    className="min-h-52 w-full border-0"
+                    allowFullScreen={false}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                </div>
+              )}
 
             </div>
           </div>

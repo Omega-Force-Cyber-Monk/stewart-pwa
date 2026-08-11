@@ -1,6 +1,9 @@
 import { baseApi } from "../baseApi";
 import type {
   BusinessDashboardResponse,
+  BusinessProfileResponse,
+  CreateBusinessRequest,
+  UpdateBusinessRequest,
   PublicBusinessResponse,
   SetupStateResponse,
   UpdateSetupRequest,
@@ -16,8 +19,29 @@ import type {
 
 export const businessApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    getMyBusiness: builder.query<BusinessProfileResponse, void>({
+      query: () => "/business",
+      providesTags: ["Business"],
+    }),
+    createBusiness: builder.mutation<BusinessProfileResponse, CreateBusinessRequest>({
+      query: (body) => ({
+        url: "/business",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Business"],
+    }),
+    updateBusiness: builder.mutation<BusinessProfileResponse, UpdateBusinessRequest>({
+      query: (body) => ({
+        url: "/business",
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["Business"],
+    }),
     getRiderDashboard: builder.query<BusinessDashboardResponse, void>({
       query: () => "/business/dashboard",
+      providesTags: ["Business"],
     }),
     getPublicBusinessFromHost: builder.query<PublicBusinessResponse, void>({
       query: () => "/public/business-from-host",
@@ -74,6 +98,12 @@ export const businessApi = baseApi.injectEndpoints({
         return url;
       },
     }),
+    downloadBusinessResource: builder.query<Blob, string>({
+      query: (id) => ({
+        url: `/business/resources/${id}/file`,
+        responseHandler: (response) => response.blob(),
+      }),
+    }),
     getChecklistItems: builder.query<ChecklistItemsResponse, { step?: string } | void>({
       query: (params) => {
         let url = "/business/checklist";
@@ -107,6 +137,9 @@ export const businessApi = baseApi.injectEndpoints({
 });
 
 export const {
+  useGetMyBusinessQuery,
+  useCreateBusinessMutation,
+  useUpdateBusinessMutation,
   useGetRiderDashboardQuery,
   useGetPublicBusinessFromHostQuery,
   useGetPublicBusinessBySlugQuery,
@@ -118,6 +151,7 @@ export const {
   useGetReferralCardQuery,
   useGenerateReferralCardMutation,
   useGetBusinessResourcesQuery,
+  useLazyDownloadBusinessResourceQuery,
   useGetChecklistItemsQuery,
   useUpdateChecklistItemMutation,
   useGetLaunchReadinessQuery,

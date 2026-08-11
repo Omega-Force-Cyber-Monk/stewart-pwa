@@ -6,13 +6,15 @@ interface WebsiteFooterProps {
   businessPhone: string;
   businessEmail: string;
   logoUrl?: string | null;
+  serviceAreas?: string[];
+  airports?: string[];
 }
 
-export function WebsiteFooter({ businessName, businessPhone, businessEmail, logoUrl }: WebsiteFooterProps) {
-  // Split businessName into first word and remainder for logo styling if no logoUrl
+export function WebsiteFooter({ businessName, businessPhone, businessEmail, logoUrl, serviceAreas = [], airports = [] }: WebsiteFooterProps) {
+  // Real data only — never render fabricated brand/location text.
   const nameParts = businessName.split(" ");
-  const firstWord = nameParts[0] || "NAPLES";
-  const restOfName = nameParts.slice(1).join(" ") || "AIRPORT TRANSPORTATION";
+  const firstWord = nameParts[0] ?? "";
+  const restOfName = nameParts.slice(1).join(" ");
 
   const handleScrollToBooking = () => {
     const formElement = document.getElementById("booking-card");
@@ -45,8 +47,14 @@ export function WebsiteFooter({ businessName, businessPhone, businessEmail, logo
                 <div className="flex items-center gap-2">
                   <Car className="w-10 h-10 text-white shrink-0" />
                   <div className="leading-tight text-left">
-                    <span className="text-xl font-bold tracking-wider text-white block uppercase">{firstWord}</span>
-                    <span className="text-xs text-slate-400 tracking-wide block uppercase">{restOfName}</span>
+                    {firstWord ? (
+                      <>
+                        <span className="text-xl font-bold tracking-wider text-white block uppercase">{firstWord}</span>
+                        <span className="text-xs text-slate-400 tracking-wide block uppercase">{restOfName}</span>
+                      </>
+                    ) : (
+                      <span className="text-xl font-bold tracking-wider text-white block uppercase">My Business</span>
+                    )}
                   </div>
                 </div>
               )}
@@ -88,12 +96,13 @@ export function WebsiteFooter({ businessName, businessPhone, businessEmail, logo
               Service Areas
             </span>
             <ul className="flex flex-col gap-2.5 text-sm">
-              <li><a href="#" className="hover:text-white transition-colors">Naples</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Marco Island</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Bonita Springs</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Estero</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">North Naples</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">South Naples</a></li>
+              {serviceAreas.length === 0 ? (
+                <li className="text-slate-600">—</li>
+              ) : (
+                serviceAreas.map((area) => (
+                  <li key={area} className="hover:text-white transition-colors">{area}</li>
+                ))
+              )}
             </ul>
           </div>
 
@@ -103,10 +112,13 @@ export function WebsiteFooter({ businessName, businessPhone, businessEmail, logo
               Airports
             </span>
             <ul className="flex flex-col gap-2.5 text-sm">
-              <li><a href="#" className="hover:text-white transition-colors">RSW</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">PGD</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">FLL</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">MIA</a></li>
+              {airports.length === 0 ? (
+                <li className="text-slate-600">—</li>
+              ) : (
+                airports.map((airport) => (
+                  <li key={airport} className="hover:text-white transition-colors">{airport}</li>
+                ))
+              )}
             </ul>
           </div>
 

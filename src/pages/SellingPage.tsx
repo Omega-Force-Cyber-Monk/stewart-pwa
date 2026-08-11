@@ -8,8 +8,8 @@ export default function SellingPage() {
   const { data: setupResponse } = useGetSetupStateQuery();
   const { data: referralResponse } = useGetReferralCardQuery();
 
-  const businessSlug = setupResponse?.data?.business?.slug || "default-business";
-  const personalizedUrl = referralResponse?.data?.digitalCardUrl || `${window.location.origin}/book/${businessSlug}`;
+  const businessSlug = setupResponse?.data?.business?.slug;
+  const personalizedUrl = referralResponse?.data?.digitalCardUrl || (businessSlug ? `${window.location.origin}/book/${businessSlug}` : "");
 
   const handleCopyLink = async () => {
     try {

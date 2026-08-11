@@ -96,14 +96,21 @@ export function LaunchProgressStepper({ showFooter = true, currentStep }: Launch
               <div className="text-sm font-bold text-slate-900">Launch Progress</div>
               <div className="text-sm font-bold text-[#22c55e]">{percentage}% Complete</div>
             </div>
-            <Link
-              to={`/book/${setupData?.data?.business?.slug || "default-business"}`}
-              target="_blank"
-              className="mt-1 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
-            >
-              <Globe className="w-3.5 h-3.5 text-slate-500" />
-              View Personalize Website
-            </Link>
+            {setupData?.data?.business?.slug ? (
+              <Link
+                to={`/book/${setupData.data.business.slug}`}
+                target="_blank"
+                className="mt-1 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+              >
+                <Globe className="w-3.5 h-3.5 text-slate-500" />
+                View Personalize Website
+              </Link>
+            ) : (
+              <span className="mt-1 bg-white border border-slate-200 text-slate-400 px-4 py-2 rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5">
+                <Globe className="w-3.5 h-3.5 text-slate-400" />
+                Website not published yet
+              </span>
+            )}
           </div>
         </div>
       )}

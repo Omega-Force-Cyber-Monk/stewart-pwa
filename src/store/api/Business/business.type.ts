@@ -19,9 +19,75 @@ export interface BusinessDashboardResponse {
   missingRequirements?: string[];
 }
 
+export interface BusinessProfile {
+  id: string;
+  userId: string;
+  businessName: string;
+  email: string | null;
+  phone: string | null;
+  businessInfo: string | null;
+  logoUrl: string | null;
+  slug: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BusinessProfileResponse {
+  success: boolean;
+  business: BusinessProfile | null;
+}
+
+export interface CreateBusinessRequest {
+  businessName: string;
+  email?: string;
+  phone?: string;
+  businessInfo?: string;
+  logoUrl?: string;
+  slug?: string;
+}
+
+export interface UpdateBusinessRequest {
+  businessName?: string;
+  email?: string;
+  phone?: string;
+  businessInfo?: string;
+  logoUrl?: string;
+  slug?: string;
+}
+
+export interface PublicBusinessProfile {
+  name: string;
+  slug: string;
+  businessInfo: string | null;
+  email: string | null;
+  phone: string | null;
+  logoUrl: string | null;
+  websiteUrl: string;
+}
+
+export interface PublicServiceArea {
+  cityArea: string | null;
+  airports: string[];
+}
+
+export interface PublicBusinessData {
+  business: PublicBusinessProfile;
+  serviceArea: PublicServiceArea;
+  booking: {
+    bookingUrl: string | null;
+  };
+  referralCard: {
+    websiteUrl: string;
+    qrCodeUrl: string | null;
+    digitalCardUrl: string | null;
+    printCardUrl: string | null;
+  };
+}
+
 export interface PublicBusinessResponse {
   success: boolean;
-  [key: string]: unknown;
+  data: PublicBusinessData;
 }
 
 export interface BuyerInfo {

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   QrCode,
-  Download,
   ChevronRight,
   ChevronDown,
   HandHeart,
@@ -15,14 +14,45 @@ import {
   Users,
   MessageSquare,
   CheckCircle2,
+  ExternalLink,
+  Check,
 } from "lucide-react";
-import referralCardImage from "../assets/referralCard.png";
+import { useGetReferralCardQuery } from "../store/api/Business/business.api";
 
 export default function ReferralCardPage() {
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
+  const [showQrModal, setShowQrModal] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const { data: referralResponse, isLoading } = useGetReferralCardQuery();
+  const referral = referralResponse?.data;
+
+  const websiteUrl = referral?.websiteUrl ?? "";
+  const qrCodeUrl = referral?.qrCodeUrl ?? "";
+  const businessName = referral?.businessName ?? "My Business";
+  const bookingUrl = referral?.bookingUrl ?? "";
 
   const toggleAccordion = (index: number) => {
     setOpenAccordion(openAccordion === index ? null : index);
+  };
+
+  const handleCopyLink = async () => {
+    if (!websiteUrl) return;
+    try {
+      await navigator.clipboard.writeText(websiteUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // fallback for older browsers
+      const input = document.createElement("input");
+      input.value = websiteUrl;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      input.remove();
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   const scripts = [
@@ -68,8 +98,11 @@ export default function ReferralCardPage() {
             Referral Card System™
           </h1>
           <p className="text-sm text-slate-500">
-            Your referral card is ready. Print it, carry it, and hand it out on
-            every ride.
+            {isLoading
+              ? "Loading your referral card…"
+              : referral?.ready
+                ? "Your referral card is ready. Print it, carry it, and hand it out on every ride."
+                : "Generate your referral card to get a QR code and shareable link."}
           </p>
         </div>
       </div>
@@ -77,13 +110,28 @@ export default function ReferralCardPage() {
       <div className="flex flex-col gap-6">
         {/* Hero Card Area */}
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 flex flex-col xl:flex-row gap-8 shadow-sm">
-          {/* Left: Card Preview */}
-          <div className="flex-1 rounded-2xl overflow-hidden shadow-md relative min-h-[300px] xl:min-h-[400px]">
-            <img
-              src={referralCardImage}
-              alt="Referral Card Mockup"
-              className="absolute inset-0 w-full h-full object-cover"
-            />
+          {/* Left: Card Preview (real QR when ready, otherwise placeholder) */}
+          <div className="flex-1 rounded-2xl overflow-hidden shadow-md relative min-h-[300px] xl:min-h-[400px] bg-slate-50 flex flex-col items-center justify-center p-8">
+            {qrCodeUrl ? (
+              <div className="flex flex-col items-center gap-4">
+                <img
+                  src={qrCodeUrl}
+                  alt={`${businessName} QR code`}
+                  className="w-56 h-56 object-contain bg-white p-2 rounded-xl border border-slate-200"
+                />
+                <p className="text-[13px] text-slate-500 text-center max-w-xs">
+                  Scan to open your direct booking page
+                </p>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center gap-4 text-center">
+                <QrCode className="w-16 h-16 text-slate-300" />
+                <p className="text-[13px] text-slate-500 max-w-xs">
+                  Your QR code will appear here once your referral card is
+                  generated during business setup.
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Right: Features List */}
@@ -136,23 +184,34 @@ export default function ReferralCardPage() {
 
         {/* Action Buttons Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button className="bg-white border border-slate-200 hover:border-green-400 hover:text-green-600 text-slate-700 px-6 py-4 rounded-xl font-bold text-[14px] transition-all flex items-center justify-center gap-2 shadow-sm">
+          <button
+            onClick={() => qrCodeUrl && setShowQrModal(true)}
+            disabled={!qrCodeUrl}
+            className="bg-white border border-slate-200 hover:border-green-400 hover:text-green-600 text-slate-700 px-6 py-4 rounded-xl font-bold text-[14px] transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             <QrCode className="w-5 h-5 text-green-500" />
             View QR Code
           </button>
-          <button className="bg-white border border-slate-200 hover:border-green-400 hover:text-green-600 text-slate-700 px-6 py-4 rounded-xl font-bold text-[14px] transition-all flex items-center justify-center gap-2 shadow-sm">
-            <Download className="w-5 h-5 text-green-500" />
-            <div className="flex flex-col items-center">
-              <span>Download Referral Card System Guide</span>
-              <span className="text-[10px] font-normal text-slate-400 uppercase tracking-wide mt-0.5">
-                PNG format
-              </span>
-            </div>
+          <button
+            onClick={handleCopyLink}
+            disabled={!websiteUrl}
+            className="bg-white border border-slate-200 hover:border-green-400 hover:text-green-600 text-slate-700 px-6 py-4 rounded-xl font-bold text-[14px] transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Link2 className="w-5 h-5 text-green-500" />
+            Copy Booking Link
           </button>
-          <button className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-6 py-4 rounded-xl font-bold text-[14px] transition-colors flex items-center justify-center gap-2 shadow-sm">
-            <Download className="w-5 h-5" />
-            Download Print-Ready Card
-          </button>
+          <a
+            href={bookingUrl || websiteUrl || "#"}
+            target={bookingUrl || websiteUrl ? "_blank" : undefined}
+            rel="noopener noreferrer"
+            onClick={(e) => {
+              if (!bookingUrl && !websiteUrl) e.preventDefault();
+            }}
+            className={`bg-[#22c55e] hover:bg-[#1ea951] text-white px-6 py-4 rounded-xl font-bold text-[14px] transition-colors flex items-center justify-center gap-2 shadow-sm ${!bookingUrl && !websiteUrl ? "opacity-50 pointer-events-none" : ""}`}
+          >
+            <ExternalLink className="w-5 h-5" />
+            {bookingUrl ? "Open Booking Page" : "Open Website"}
+          </a>
         </div>
 
         {/* Handoff Scripts Area */}
@@ -296,12 +355,16 @@ export default function ReferralCardPage() {
             </p>
 
             <div className="flex items-center gap-2 mb-8">
-              <div className="flex-1 bg-white border border-slate-200 rounded-lg p-2.5 text-[13px] text-slate-600 font-medium">
-                eleanorpena.com/book
+              <div className="flex-1 bg-white border border-slate-200 rounded-lg p-2.5 text-[13px] text-slate-600 font-medium truncate">
+                {websiteUrl || "Not available yet"}
               </div>
-              <button className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-4 py-2.5 rounded-lg font-bold text-[13px] transition-colors flex items-center gap-2 shrink-0">
-                <Copy className="w-4 h-4" />
-                Copy link
+              <button
+                onClick={handleCopyLink}
+                disabled={!websiteUrl}
+                className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-4 py-2.5 rounded-lg font-bold text-[13px] transition-colors flex items-center gap-2 shrink-0 disabled:opacity-50"
+              >
+                {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                {copied ? "Copied!" : "Copy link"}
               </button>
             </div>
 
@@ -309,19 +372,64 @@ export default function ReferralCardPage() {
               <span className="text-[13px] font-bold text-slate-900">
                 Share on :
               </span>
-              <button className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white hover:bg-blue-700 transition-colors font-bold text-sm">
+              <a
+                href={websiteUrl ? `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(websiteUrl)}` : "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white hover:bg-blue-700 transition-colors font-bold text-sm"
+              >
                 f
-              </button>
-              <button className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white hover:bg-blue-600 transition-colors font-bold text-sm">
+              </a>
+              <a
+                href={websiteUrl ? `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(websiteUrl)}` : "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white hover:bg-blue-600 transition-colors font-bold text-sm"
+              >
                 in
-              </button>
-              <button className="w-8 h-8 rounded-full bg-blue-400 flex items-center justify-center text-white hover:bg-blue-500 transition-colors">
+              </a>
+              <a
+                href={websiteUrl ? `mailto:?subject=${encodeURIComponent(`Book ${businessName}`)}&body=${encodeURIComponent(websiteUrl)}` : "#"}
+                className="w-8 h-8 rounded-full bg-blue-400 flex items-center justify-center text-white hover:bg-blue-500 transition-colors"
+              >
                 <Mail className="w-4 h-4" />
-              </button>
+              </a>
             </div>
           </div>
         </div>
       </div>
+
+      {/* QR Code Modal */}
+      {showQrModal && qrCodeUrl && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+          onClick={() => setShowQrModal(false)}
+        >
+          <div
+            className="bg-white rounded-2xl p-8 shadow-2xl flex flex-col items-center gap-4 max-w-sm w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={qrCodeUrl}
+              alt={`${businessName} QR code`}
+              className="w-64 h-64 object-contain"
+            />
+            <h3 className="text-[16px] font-bold text-slate-900">
+              {businessName}
+            </h3>
+            <p className="text-[13px] text-slate-500 text-center break-all">
+              {websiteUrl}
+            </p>
+            <button
+              onClick={() => setShowQrModal(false)}
+              className="w-full bg-[#22c55e] hover:bg-[#1ea951] text-white py-2.5 rounded-lg font-bold text-[14px] transition-colors"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+

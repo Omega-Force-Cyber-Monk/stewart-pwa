@@ -1,43 +1,34 @@
 import { useState } from "react";
-import { Building2, ShieldCheck, BadgeIcon as IdCard, Building, Calculator, FileText, CheckCircle2, Phone, Mail } from "lucide-react";
+import { Building2, ShieldCheck, IdCard, Building, Calculator, FileText, CheckCircle2, Phone, Mail, Loader2 } from "lucide-react";
 import insurancePromo from "../assets/insurancePromo.png";
-
-type Status = "Not Started" | "In progress" | "Complete";
-
-interface ChecklistItem {
-  id: string;
-  title: string;
-  subtitle: string;
-  status: Status;
-}
+import { useGetChecklistItemsQuery, useUpdateChecklistItemMutation } from "../store/api/Business/business.api";
 
 export default function LaunchEssentialsPage() {
-  const [checklist, setChecklist] = useState<ChecklistItem[]>([
-    { id: "1", title: "Business Structure Chosen", subtitle: "Choose LLC, Sole Proprietor, or Corporation", status: "Complete" },
-    { id: "2", title: "Business Registered", subtitle: "Register your business name and get your EIN", status: "Complete" },
-    { id: "3", title: "Transportation Insurance", subtitle: "Get appropriate commercial insurance coverage", status: "In progress" },
-    { id: "4", title: "Required Permits & Licenses", subtitle: "Check state, local, and airport requirements", status: "Not Started" },
-    { id: "5", title: "Business Bank Account", subtitle: "Open a business checking account", status: "Not Started" },
-    { id: "6", title: "Payment Processing Setup", subtitle: "Set up credit card and digital payments", status: "Not Started" },
-    { id: "7", title: "Taxes & Record Keeping", subtitle: "Set up bookkeeping and tax tracking", status: "Not Started" },
-    { id: "8", title: "Launch Your Business", subtitle: "Your website, booking system, and marketing are ready", status: "Not Started" },
-  ]);
+  const [checklistLoadingId, setChecklistLoadingId] = useState<string | null>(null);
 
-  const toggleStatus = (id: string) => {
-    setChecklist(prev => prev.map(item => {
-      if (item.id === id) {
-        let newStatus: Status = "Not Started";
-        if (item.status === "Not Started") newStatus = "In progress";
-        else if (item.status === "In progress") newStatus = "Complete";
-        return { ...item, status: newStatus };
-      }
-      return item;
-    }));
+  const { data: acqData, isLoading: isLoadingAcq } = useGetChecklistItemsQuery({ step: "CUSTOMER_ACQUISITION" });
+  const { data: brandData, isLoading: isLoadingBrand } = useGetChecklistItemsQuery({ step: "BRAND_AND_TRUST" });
+  const [updateChecklistItem] = useUpdateChecklistItemMutation();
+
+  const checklistItems = [
+    ...(acqData?.checklistItems ?? []),
+    ...(brandData?.checklistItems ?? []),
+  ];
+
+  const completedCount = checklistItems.filter((item) => item.completed).length;
+  const totalCount = checklistItems.length;
+  const progressPercentage = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
+
+  const handleToggle = async (id: string, completed: boolean) => {
+    setChecklistLoadingId(id);
+    try {
+      await updateChecklistItem({ id, completed: !completed }).unwrap();
+    } catch (err) {
+      console.error("Checklist update failed:", err);
+    } finally {
+      setChecklistLoadingId(null);
+    }
   };
-
-  const completedCount = checklist.filter(item => item.status === "Complete").length;
-  const totalCount = checklist.length;
-  const progressPercentage = (completedCount / totalCount) * 100;
 
   const topCards = [
     { title: "Business Registration", subtitle: "Choose your business structure, register your name, and get started the right way.", icon: <Building2 className="w-8 h-8 text-blue-500" />, bg: "bg-blue-50", border: "border-blue-100" },
@@ -95,21 +86,29 @@ export default function LaunchEssentialsPage() {
             />
           </div>
 
+          {(isLoadingAcq || isLoadingBrand) ? (
+            <div className="flex items-center justify-center py-10 text-slate-400">
+              <Loader2 className="w-6 h-6 animate-spin" />
+            </div>
+          ) : (
           <div className="flex flex-col gap-3">
-            {checklist.map((item) => (
+            {checklistItems.length === 0 && (
+              <p className="text-[13px] text-slate-500 text-center py-6">
+                No checklist items available yet.
+              </p>
+            )}
+            {checklistItems.map((item) => (
               <div 
                 key={item.id} 
-                onClick={() => toggleStatus(item.id)}
+                onClick={() => handleToggle(item.id, item.completed)}
                 className="flex items-center justify-between p-4 border border-slate-100 rounded-2xl hover:border-blue-200 cursor-pointer transition-colors shadow-sm bg-white group"
               >
                 <div className="flex items-center gap-4">
-                  {item.status === "Complete" ? (
+                  {checklistLoadingId === item.id ? (
+                    <Loader2 className="w-8 h-8 text-green-500 animate-spin shrink-0" />
+                  ) : item.completed ? (
                     <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white shrink-0 shadow-sm">
                       <CheckCircle2 className="w-5 h-5" />
-                    </div>
-                  ) : item.status === "In progress" ? (
-                    <div className="w-8 h-8 rounded-full border-2 border-blue-500 flex items-center justify-center shrink-0">
-                      <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
                     </div>
                   ) : (
                     <div className="w-8 h-8 rounded-full border-2 border-slate-200 flex items-center justify-center shrink-0" />
@@ -117,18 +116,14 @@ export default function LaunchEssentialsPage() {
                   
                   <div>
                     <h4 className="text-[14px] font-bold text-slate-900 mb-0.5">{item.title}</h4>
-                    <p className="text-[12px] text-slate-500">{item.subtitle}</p>
+                    <p className="text-[12px] text-slate-500">{item.description}</p>
                   </div>
                 </div>
 
                 <div className="shrink-0 ml-4">
-                  {item.status === "Complete" ? (
+                  {item.completed ? (
                     <span className="px-3 py-1 rounded-md border border-green-200 text-green-600 text-[12px] font-bold bg-green-50">
                       Complete
-                    </span>
-                  ) : item.status === "In progress" ? (
-                    <span className="px-3 py-1 rounded-md border border-blue-200 text-blue-600 text-[12px] font-bold bg-blue-50">
-                      In progress
                     </span>
                   ) : (
                     <span className="px-3 py-1 rounded-md border border-slate-200 text-slate-500 text-[12px] font-bold bg-slate-50">
@@ -139,6 +134,7 @@ export default function LaunchEssentialsPage() {
               </div>
             ))}
           </div>
+          )}
         </div>
 
         {/* Right Column */}

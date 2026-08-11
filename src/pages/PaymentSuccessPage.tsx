@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { Loader2, CheckCircle2 } from "lucide-react";
 import { useGetRiderProfileQuery } from "../store/api/Auth/auth.api";
 import { useAppDispatch, useAppSelector } from "../hooks/storeHooks";
 import { updateUser } from "../store/features/auth/authSlice";
@@ -11,9 +12,9 @@ export default function PaymentSuccessPage() {
   const accessToken = useAppSelector((state) => state.auth.accessToken);
 
   // Poll /auth/me to pick up the updated status after the Stripe webhook fires
-  const { data: profileData } = useGetRiderProfileQuery(undefined, {
+  const { data: profileData, isLoading } = useGetRiderProfileQuery(undefined, {
     skip: !accessToken,
-    pollingInterval: 3000, // poll every 3s until we navigate away
+    pollingInterval: 3000, // poll every 3s until the purchase is confirmed
   });
 
   // Sync the latest user into Redux when the profile refreshes
@@ -22,6 +23,11 @@ export default function PaymentSuccessPage() {
       dispatch(updateUser(profileData.user));
     }
   }, [profileData, dispatch]);
+
+  // The Stripe webhook marks the payment as paid asynchronously; only show
+  // the dashboard CTA once the backend confirms ownership.
+  const purchaseConfirmed = profileData?.purchase?.status === "paid";
+  const waiting = !isLoading && !purchaseConfirmed;
 
   return (
     <div className="min-h-screen w-full relative flex items-center justify-center py-12 px-6 overflow-x-hidden selection:bg-brand-btn/30">
@@ -78,13 +84,26 @@ export default function PaymentSuccessPage() {
           Your dashboard is ready. Click below to start setting up your private airport business.
         </p>
 
+        {/* Waiting state: webhook not processed yet */}
+        {waiting && (
+          <div className="flex flex-col items-center gap-3 mb-8 py-4">
+            <Loader2 className="size-8 text-[#04B5A3] animate-spin" />
+            <p className="text-sm text-slate-400">
+              Confirming your payment… this usually takes a few seconds.
+            </p>
+          </div>
+        )}
+
         {/* Primary CTA */}
-        <Link
-          to="/dashboard"
-          className="w-full flex justify-center items-center gap-2 h-11 px-6 rounded-lg text-sm font-semibold text-white bg-[#04B5A3] hover:bg-[#039384] transition shadow-lg shadow-[#04B5A3]/20 mb-4"
-        >
-          Go to My Dashboard →
-        </Link>
+        {purchaseConfirmed && (
+          <Link
+            to="/dashboard"
+            className="w-full flex justify-center items-center gap-2 h-11 px-6 rounded-lg text-sm font-semibold text-white bg-[#04B5A3] hover:bg-[#039384] transition shadow-lg shadow-[#04B5A3]/20 mb-4"
+          >
+            <CheckCircle2 className="size-5" />
+            Go to My Dashboard →
+          </Link>
+        )}
 
         {/* Secondary link */}
         <Link

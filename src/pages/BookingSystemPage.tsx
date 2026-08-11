@@ -9,11 +9,18 @@ import {
   Eye,
   CheckCircle2,
   QrCode,
+  ExternalLink,
+  Loader2,
 } from "lucide-react";
 import bookingPreview from "../assets/bookingPreview.png";
 import { AlertModal } from "../components/ui/AlertModal";
+import { useGetSetupStateQuery, useGetReferralCardQuery } from "../store/api/Business/business.api";
 
 export default function BookingSystemPage() {
+  const { data: setupResponse, isLoading: isLoadingSetup } = useGetSetupStateQuery();
+  const { data: referralResponse, isLoading: isLoadingReferral } = useGetReferralCardQuery();
+  const [copied, setCopied] = useState(false);
+
   const [preferences, setPreferences] = useState({
     airportPickup: true,
     airportDropoff: true,
@@ -46,6 +53,14 @@ export default function BookingSystemPage() {
     setAlertModal({ isOpen: true, title, message, type, onConfirm });
   };
 
+  const acuity = setupResponse?.data?.acuity;
+  const bookingUrl = acuity?.connected ? acuity.bookingUrl : null;
+  const websiteUrl = referralResponse?.data?.websiteUrl ?? setupResponse?.data?.business?.websiteUrl ?? "";
+  const qrCodeUrl = referralResponse?.data?.qrCodeUrl ?? "";
+  const addonOwned = setupResponse?.data?.business?.slug ? true : false;
+
+  const isLoading = isLoadingSetup || isLoadingReferral;
+
   const handleToggle = (key: keyof typeof preferences) => {
     setPreferences((prev) => ({
       ...prev,
@@ -54,8 +69,18 @@ export default function BookingSystemPage() {
   };
 
   const handleSavePreferences = () => {
-    console.log("Saving preferences:", preferences);
-    showAlert("Success", "Preferences saved successfully!", "success");
+    showAlert("Success", "Booking preferences saved successfully!", "success");
+  };
+
+  const handleCopyLink = async () => {
+    if (!websiteUrl) return;
+    try {
+      await navigator.clipboard.writeText(websiteUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      showAlert("Copy link", websiteUrl, "info");
+    }
   };
 
   return (
@@ -70,6 +95,11 @@ export default function BookingSystemPage() {
         </p>
       </div>
 
+      {isLoading ? (
+        <div className="flex items-center justify-center py-16 text-slate-400">
+          <Loader2 className="w-6 h-6 animate-spin" />
+        </div>
+      ) : (
       <div className="flex flex-col gap-6">
         {/* Top Row (4 Columns) */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
@@ -85,17 +115,27 @@ export default function BookingSystemPage() {
             </div>
 
             <div className="bg-slate-100 rounded-lg p-3 text-center text-slate-600 text-[13px] font-medium mb-auto overflow-hidden text-ellipsis whitespace-nowrap">
-              http://joindriver/booking.com
+              {bookingUrl || websiteUrl || "Not set up yet"}
             </div>
 
             <div className="flex items-center gap-3 mt-6">
-              <button className="flex-1 bg-[#22c55e] hover:bg-[#1ea951] text-white px-4 py-2.5 rounded-lg font-bold text-[13px] transition-colors flex items-center justify-center gap-2">
-                <Link2 className="w-4 h-4" />
+              <a
+                href={bookingUrl || websiteUrl || "#"}
+                target={bookingUrl || websiteUrl ? "_blank" : undefined}
+                rel="noopener noreferrer"
+                onClick={(e) => { if (!bookingUrl && !websiteUrl) e.preventDefault(); }}
+                className={`flex-1 bg-[#22c55e] hover:bg-[#1ea951] text-white px-4 py-2.5 rounded-lg font-bold text-[13px] transition-colors flex items-center justify-center gap-2 ${!bookingUrl && !websiteUrl ? "opacity-50 pointer-events-none" : ""}`}
+              >
+                <ExternalLink className="w-4 h-4" />
                 Open Page
-              </button>
-              <button className="flex-1 bg-white border border-green-500 text-green-600 hover:bg-green-50 px-4 py-2.5 rounded-lg font-bold text-[13px] transition-colors flex items-center justify-center gap-2">
+              </a>
+              <button
+                onClick={handleCopyLink}
+                disabled={!websiteUrl}
+                className="flex-1 bg-white border border-green-500 text-green-600 hover:bg-green-50 px-4 py-2.5 rounded-lg font-bold text-[13px] transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+              >
                 <Copy className="w-4 h-4" />
-                Copy link
+                {copied ? "Copied!" : "Copy link"}
               </button>
             </div>
           </div>
@@ -110,16 +150,28 @@ export default function BookingSystemPage() {
             </div>
 
             <div className="flex-1 flex items-center justify-center mb-6">
-              {/* Dummy QR Code */}
-              <div className="w-32 h-32 bg-white border-2 border-slate-900 rounded-xl flex items-center justify-center p-2 relative">
-                <QrCode className="w-full h-full text-slate-900" />
-              </div>
+              {qrCodeUrl ? (
+                <img
+                  src={qrCodeUrl}
+                  alt="Booking QR code"
+                  className="w-32 h-32 object-contain bg-white border-2 border-slate-200 rounded-xl p-2"
+                />
+              ) : (
+                <div className="w-32 h-32 bg-white border-2 border-slate-200 rounded-xl flex items-center justify-center p-2 relative">
+                  <QrCode className="w-full h-full text-slate-200" />
+                </div>
+              )}
             </div>
 
-            <button className="w-full bg-[#22c55e] hover:bg-[#1ea951] text-white px-4 py-2.5 rounded-lg font-bold text-[13px] transition-colors flex items-center justify-center gap-2">
+            <a
+              href={qrCodeUrl || "#"}
+              download={qrCodeUrl ? "qr-code.png" : undefined}
+              onClick={(e) => { if (!qrCodeUrl) e.preventDefault(); }}
+              className={`w-full bg-[#22c55e] hover:bg-[#1ea951] text-white px-4 py-2.5 rounded-lg font-bold text-[13px] transition-colors flex items-center justify-center gap-2 ${!qrCodeUrl ? "opacity-50 pointer-events-none" : ""}`}
+            >
               <Scan className="w-4 h-4" />
               Download QR Code
-            </button>
+            </a>
           </div>
 
           {/* Card 3: Booking Setup */}
@@ -135,28 +187,31 @@ export default function BookingSystemPage() {
 
             <div className="flex-1 flex flex-col gap-4">
               <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-100 shrink-0" />
+                <CheckCircle2 className={`w-5 h-5 shrink-0 ${bookingUrl ? "text-green-500 fill-green-100" : "text-slate-300"}`} />
                 <span className="text-[13px] text-slate-700 font-medium">
-                  Booking page created
+                  {bookingUrl ? "Acuity booking connected" : "Acuity not connected"}
                 </span>
               </div>
               <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-100 shrink-0" />
+                <CheckCircle2 className={`w-5 h-5 shrink-0 ${websiteUrl ? "text-green-500 fill-green-100" : "text-slate-300"}`} />
                 <span className="text-[13px] text-slate-700 font-medium">
-                  Contact form active
+                  {websiteUrl ? "Booking page live" : "Booking page not created"}
                 </span>
               </div>
               <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-100 shrink-0" />
+                <CheckCircle2 className={`w-5 h-5 shrink-0 ${qrCodeUrl ? "text-green-500 fill-green-100" : "text-slate-300"}`} />
                 <span className="text-[13px] text-slate-700 font-medium">
-                  Booking notifications enabled
+                  {qrCodeUrl ? "QR code ready" : "QR code not generated"}
                 </span>
               </div>
             </div>
 
-            <button className="w-full mt-6 bg-[#22c55e] hover:bg-[#1ea951] text-white px-4 py-2.5 rounded-lg font-bold text-[13px] transition-colors">
+            <a
+              href="/launch-dashboard"
+              className="w-full mt-6 bg-[#22c55e] hover:bg-[#1ea951] text-white px-4 py-2.5 rounded-lg font-bold text-[13px] transition-colors text-center"
+            >
               Manage Setup
-            </button>
+            </a>
           </div>
 
           {/* Card 4: Booking Add-on */}
@@ -175,13 +230,18 @@ export default function BookingSystemPage() {
 
             <div className="flex-1 flex items-center justify-center px-4">
               <p className="text-[14px] text-slate-900 font-medium leading-relaxed">
-                Your $199 Booking Setup Add-on has been successfully activated.
+                {addonOwned
+                  ? "Your booking setup is included with your active business."
+                  : "Complete your business setup to activate the booking system."}
               </p>
             </div>
 
-            <button className="w-full mt-6 bg-[#22c55e] hover:bg-[#1ea951] text-white px-4 py-2.5 rounded-lg font-bold text-[13px] transition-colors">
+            <a
+              href="/launch-dashboard"
+              className="w-full mt-6 bg-[#22c55e] hover:bg-[#1ea951] text-white px-4 py-2.5 rounded-lg font-bold text-[13px] transition-colors"
+            >
               View Details
-            </button>
+            </a>
           </div>
         </div>
 
@@ -328,12 +388,19 @@ export default function BookingSystemPage() {
               />
             </div>
 
-            <button className="absolute bottom-6 right-6 bg-[#22c55e] hover:bg-[#1ea951] text-white px-6 py-2.5 rounded-lg font-bold text-[14px] transition-colors">
+            <a
+              href={websiteUrl || "#"}
+              target={websiteUrl ? "_blank" : undefined}
+              rel="noopener noreferrer"
+              onClick={(e) => { if (!websiteUrl) e.preventDefault(); }}
+              className={`absolute bottom-6 right-6 bg-[#22c55e] hover:bg-[#1ea951] text-white px-6 py-2.5 rounded-lg font-bold text-[14px] transition-colors ${!websiteUrl ? "opacity-50 pointer-events-none" : ""}`}
+            >
               Preview Full Page
-            </button>
+            </a>
           </div>
         </div>
       </div>
+      )}
 
       {/* Custom Reusable Alert Modal */}
       <AlertModal

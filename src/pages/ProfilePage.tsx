@@ -205,7 +205,7 @@ export default function ProfilePage() {
               <div className="relative shrink-0">
                 <img
                   src={user?.avatarUrl || eleanorAvatar}
-                  alt={user?.name || "Eleanor Pena"}
+                  alt={user?.name ?? "Profile avatar"}
                   className="w-32 h-32 rounded-full object-cover shadow-sm border border-slate-100 bg-slate-50"
                 />
                 <button

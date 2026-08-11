@@ -36,14 +36,13 @@ export default function LoginPage() {
             user: result.user,
           })
         );
-        // Admins go to the admin dashboard; riders go to their dashboard if
-        // they've paid (status active), otherwise the pricing modal.
+        // Admins go to the admin dashboard; riders are routed by the
+        // DashboardLayout guard (purchase state comes from the backend),
+        // so send everyone to /dashboard and let the guard decide.
         if (result.user?.role === "admin") {
           navigate("/admin");
-        } else if (result.user?.status === "active") {
-          navigate("/dashboard");
         } else {
-          navigate("/?showPricing=true");
+          navigate("/dashboard");
         }
       }
     } catch (err) {
