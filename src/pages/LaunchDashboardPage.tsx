@@ -53,6 +53,22 @@ import {
 } from "../store/api/Business/business.api";
 import referralCardBg from "../assets/referralCardBg.png";
 import autocarLogo from "../assets/autocarLogo.png";
+import type { AirportSuggestion } from "../store/api/Business/business.type";
+
+interface ApiErrorPayload {
+  message?: string | { message?: string };
+}
+
+const getApiErrorMessage = (err: unknown, fallback: string): string => {
+  if (err && typeof err === "object" && "data" in err) {
+    const data = (err as { data?: ApiErrorPayload }).data;
+    if (data?.message) {
+      if (typeof data.message === "string") return data.message;
+      if (data.message.message) return data.message.message;
+    }
+  }
+  return fallback;
+};
 
 function ResourceIcon({ iconKey }: { iconKey: string }) {
   switch (iconKey) {
@@ -162,46 +178,37 @@ export default function LaunchDashboardPage() {
     initializeSetup();
   }, [initializeSetup]);
 
-  // Synchronize setup state from API
-  useEffect(() => {
-    if (setupResponse?.data) {
-      const data = setupResponse.data;
-      if (data.buyer) {
-        setBuyerData({
-          fullName: data.buyer.fullName || "",
-          email: data.buyer.email || "",
-          phone: data.buyer.phone || "",
-        });
-      }
-      if (data.business) {
-        setBusinessData({
-          businessName: data.business.businessName || "",
-          email: data.business.email || "",
-          phone: data.business.phone || "",
-          businessInfo: data.business.businessInfo || "",
-          logoUrl: data.business.logoUrl || "",
-        });
-      }
-      if (data.acuity) {
-        setAcuityData({
-          connected: data.acuity.connected || false,
-          bookingUrl: data.acuity.bookingUrl || "",
-        });
-      }
-      if (data.serviceArea) {
-        setServiceData({
-          cityArea: data.serviceArea.cityArea || "",
-        });
-        setAirports(data.serviceArea.airports || []);
-      }
-      if (data.progress?.currentStep) {
-        setCurrentStep(data.progress.currentStep);
-      }
-    }
-  }, [setupResponse]);
+  // Hydrate form state from API data on first load, without clobbering user edits later
+  const [hasEdited, setHasEdited] = useState(false);
+  const setupData = setupResponse?.data;
+  if (!hasEdited && setupData) {
+    setBuyerData({
+      fullName: setupData.buyer?.fullName || "",
+      email: setupData.buyer?.email || "",
+      phone: setupData.buyer?.phone || "",
+    });
+    setBusinessData({
+      businessName: setupData.business?.businessName || "",
+      email: setupData.business?.email || "",
+      phone: setupData.business?.phone || "",
+      businessInfo: setupData.business?.businessInfo || "",
+      logoUrl: setupData.business?.logoUrl || "",
+    });
+    setAcuityData({
+      connected: setupData.acuity?.connected || false,
+      bookingUrl: setupData.acuity?.bookingUrl || "",
+    });
+    setServiceData({
+      cityArea: setupData.serviceArea?.cityArea || "",
+    });
+    setAirports(setupData.serviceArea?.airports || []);
+    setCurrentStep(setupData.progress?.currentStep || 1);
+    setHasEdited(true);
+  }
 
   // Handlers for Step 1
   const handleBuyerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setHasEdited(true);
     const { name, value } = e.target;
     setBuyerData((prev) => ({ ...prev, [name]: value }));
   };
@@ -220,19 +227,21 @@ export default function LaunchDashboardPage() {
       if (res.success) {
         setCurrentStep(res.data.progress.currentStep);
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      setApiError(err?.data?.message || "Failed to update buyer info. Please try again.");
+      setApiError(getApiErrorMessage(err, "Failed to update buyer info. Please try again."));
     }
   };
 
   // Handlers for Step 2
   const handleBusinessChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setHasEdited(true);
     const { name, value } = e.target;
     setBusinessData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleAcuityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setHasEdited(true);
     const { name, value, type, checked } = e.target;
     setAcuityData((prev) => ({
       ...prev,
@@ -279,14 +288,15 @@ export default function LaunchDashboardPage() {
       if (res.success) {
         setCurrentStep(res.data.progress.currentStep);
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      setApiError(err?.data?.message || "Failed to update business details.");
+      setApiError(getApiErrorMessage(err, "Failed to update business details."));
     }
   };
 
   // Handlers for Step 3
   const handleServiceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setHasEdited(true);
     const val = e.target.value;
     setServiceData({ cityArea: val });
     if (val.trim().length > 2) {
@@ -297,12 +307,12 @@ export default function LaunchDashboardPage() {
     }
   };
 
-  const selectSuggestion = (suggestion: any) => {
+  const selectSuggestion = (suggestion: AirportSuggestion) => {
     setServiceData({ cityArea: suggestion.cityArea });
     setShowSuggestions(false);
     // Auto-add suggested airports if not already added
     const newAirports = [...airports];
-    suggestion.airportOptions.forEach((opt: any) => {
+    suggestion.airportOptions.forEach((opt) => {
       if (!newAirports.includes(opt.code)) {
         newAirports.push(opt.code);
       }
@@ -345,9 +355,9 @@ export default function LaunchDashboardPage() {
       if (res.success) {
         setCurrentStep(res.data.progress.currentStep);
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      setApiError(err?.data?.message || "Failed to save service area.");
+      setApiError(getApiErrorMessage(err, "Failed to save service area."));
     }
   };
 
@@ -358,9 +368,9 @@ export default function LaunchDashboardPage() {
       await generateReferral().unwrap();
       refetchReferral();
       refetchSetup();
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      setApiError(err?.data?.message?.message || err?.data?.message || "Failed to generate referral card.");
+      setApiError(getApiErrorMessage(err, "Failed to generate referral card."));
     }
   };
 
@@ -417,15 +427,9 @@ export default function LaunchDashboardPage() {
           }
         );
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      if (err?.data?.message?.message) {
-        setApiError(err.data.message.message);
-      } else if (err?.data?.message) {
-        setApiError(err.data.message);
-      } else {
-        setApiError("Launch failed. Please complete all checklist items and connection details.");
-      }
+      setApiError(getApiErrorMessage(err, "Launch failed. Please complete all checklist items and connection details."));
     }
   };
 

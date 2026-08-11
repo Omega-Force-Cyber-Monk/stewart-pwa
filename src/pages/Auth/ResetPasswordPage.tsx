@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useResetUserPasswordMutation } from "../../store/api/Auth/auth.api";
 import { AuthLayout } from "../../components/layout/AuthLayout";
@@ -6,7 +6,7 @@ import { Loader2, Mail, Lock, Eye, EyeOff, KeyRound, AlertTriangle, CheckCircle 
 
 export default function ResetPasswordPage() {
   const [searchParams] = useSearchParams();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(() => searchParams.get("email") ?? "");
   const [otp, setOtp] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -18,13 +18,6 @@ export default function ResetPasswordPage() {
 
   const navigate = useNavigate();
   const [resetPassword, { isLoading, error }] = useResetUserPasswordMutation();
-
-  useEffect(() => {
-    const emailParam = searchParams.get("email");
-    if (emailParam) {
-      setEmail(emailParam);
-    }
-  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

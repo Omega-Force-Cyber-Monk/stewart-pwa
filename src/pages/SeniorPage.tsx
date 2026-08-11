@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Headset, Check, TrendingUp, Menu, X } from "lucide-react";
 import { cn } from "../lib/cn";
 import seniorLogo from "../assets/seniorLogo.png";
@@ -21,17 +21,42 @@ import {
   Clock,
 } from "lucide-react";
 import { PageContainer } from "../components/layout/PageContainer";
+import { ProfileDropdown } from "../components/ProfileDropdown";
+import { PricingModal } from "../components/PricingModal";
+import { useAppDispatch, useAppSelector } from "../hooks/storeHooks";
+import { logOut } from "../store/features/auth/authSlice";
+import { useLogoutUserMutation } from "../store/api/Auth/auth.api";
 import seniorBanner from "../assets/seniorBanner.png";
 import coupleComparisonLeft from "../assets/coupleComparisonSectionLeft.png";
 import coupleComparisonRight from "../assets/coupleComparisonSectionRight.png";
-import reviewImage from "../assets/review.jpg";
-import standardImage from "../assets/standard.png";
-import reviewCoupleImage from "../assets/reviewCouple.png";
+import chrisImage from "../assets/50_Chris_S.jpg";
+import dougImage from "../assets/50_Doug_L.jpg";
+import naylinImage from "../assets/50_Naylin_H.jpg";
 
 export default function SeniorPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { accessToken } = useAppSelector((state) => state.auth);
+
+  // Auto-open the pricing modal when redirected here with ?showPricing=true.
+  const [showPricingModal, setShowPricingModal] = useState(
+    () => searchParams.get("showPricing") === "true" && !!accessToken
+  );
+
+  // Clear the ?showPricing=true query param once considered
+  useEffect(() => {
+    if (searchParams.get("showPricing") === "true") {
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
+
+  const openPricingModal = () => setShowPricingModal(true);
+
   return (
     <>
-      <SeniorNavbar />
+      {showPricingModal && (
+        <PricingModal onClose={() => setShowPricingModal(false)} />
+      )}
+      <SeniorNavbar openPricingModal={openPricingModal} />
       <HeroBanner />
       <FeaturesSection />
       <ComparisonSection />
@@ -39,20 +64,32 @@ export default function SeniorPage() {
       <HowItWorksSection />
       <ReviewsSection />
       <FaqSection />
-      <FooterCTASection />
+      <FooterCTASection openPricingModal={openPricingModal} />
     </>
   );
 }
 
-function SeniorNavbar() {
+function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { accessToken, user } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+  const [logoutUser] = useLogoutUserMutation();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser().unwrap();
+    } catch (e) {
+      console.error("Logout failed:", e);
+    }
+    dispatch(logOut());
+  };
 
   return (
     <>
@@ -100,9 +137,24 @@ function SeniorNavbar() {
               >
                 FAQ
               </a>
-              <button className="cursor-pointer bg-[#15803d] hover:bg-[#166534] text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg">
-                Start My Business — $495
-              </button>
+              {accessToken ? (
+                <ProfileDropdown openPricingModal={openPricingModal} />
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="text-white font-medium hover:text-[#39b54a] transition-colors text-sm"
+                  >
+                    Login
+                  </Link>
+                  <button
+                    onClick={openPricingModal}
+                    className="cursor-pointer bg-[#15803d] hover:bg-[#166534] text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg"
+                  >
+                    Start My Business — $495
+                  </button>
+                </>
+              )}
             </nav>
 
             {/* Mobile Menu Toggle */}
@@ -123,7 +175,7 @@ function SeniorNavbar() {
 
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-[#040a23] pt-24 px-6 flex flex-col lg:hidden">
+        <div className="fixed inset-0 z-40 bg-[#040a23] pt-24 px-6 flex flex-col lg:hidden overflow-y-auto">
           <a
             href="#how-it-works"
             onClick={() => setMobileMenuOpen(false)}
@@ -152,6 +204,73 @@ function SeniorNavbar() {
           >
             FAQ
           </a>
+
+          {accessToken ? (
+            <>
+              {user?.role === "admin" ? (
+                <Link
+                  to="/admin"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-white hover:text-[#39b54a] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
+                >
+                  Admin Dashboard
+                </Link>
+              ) : user?.status === "active" ? (
+                <Link
+                  to="/dashboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-white hover:text-[#39b54a] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
+                >
+                  Dashboard
+                </Link>
+              ) : (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    openPricingModal();
+                  }}
+                  className="text-left text-white hover:text-[#39b54a] text-lg font-semibold py-4 border-b border-white/10 transition-colors w-full"
+                >
+                  Complete Checkout
+                </button>
+              )}
+              <Link
+                to={user?.role === "admin" ? "/admin/settings" : "/profile"}
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-white hover:text-[#39b54a] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
+              >
+                {user?.role === "admin" ? "Admin Settings" : "Profile & Settings"}
+              </Link>
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  handleLogout();
+                }}
+                className="text-left text-red-400 hover:text-red-300 text-lg font-semibold py-4 border-b border-white/10 transition-colors w-full"
+              >
+                Sign Out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-white hover:text-[#39b54a] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
+              >
+                Login
+              </Link>
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  openPricingModal();
+                }}
+                className="cursor-pointer bg-[#15803d] hover:bg-[#166534] text-white font-bold py-3 px-6 rounded-md transition-colors w-full mt-4 min-h-[52px]"
+              >
+                Start My Business — $495
+              </button>
+            </>
+          )}
         </div>
       )}
     </>
@@ -160,7 +279,7 @@ function SeniorNavbar() {
 
 function HeroBanner() {
   return (
-    <div className="relative w-full h-[100svh] flex flex-col justify-between overflow-hidden bg-[#040a23] pt-[80px]">
+    <div className="relative w-full min-h-[100svh] flex flex-col justify-between overflow-hidden bg-[#040a23] pt-[80px]">
       {/* Background Image on the right side */}
             {/* Background Image */}
       <img
@@ -176,7 +295,7 @@ function HeroBanner() {
         <PageContainer size="full">
           <div className="flex flex-col lg:flex-row w-full justify-between items-center gap-10">
             {/* Left Content */}
-            <div className="w-full lg:w-[50%] text-left">
+            <div className="w-full lg:w-[50%] text-left text-center lg:text-left">
               <h1 className="text-[clamp(2.25rem,4vw,3.5rem)] font-extrabold text-white leading-[1.15] mb-6 tracking-tight uppercase">
                 START A PRIVATE
                 <br />
@@ -187,10 +306,10 @@ function HeroBanner() {
                 SCHEDULE.{" "}
                 <span className="text-[#39b54a]">NOT SOMEONE ELSE'S.</span>
               </h1>
-              <p className="text-[clamp(1rem,1.1vw,1.15rem)] text-white font-medium mb-8 max-w-[650px] leading-relaxed tracking-wide">
+              <p className="text-[clamp(1rem,1.1vw,1.15rem)] text-white font-medium mb-8 max-w-[650px] leading-relaxed tracking-wide mx-auto lg:mx-0">
                 QuitTheApp helps experienced drivers launch their own private airport transportation business, accept direct bookings, build trusted client relationships, and create repeat riders and referrals.
               </p>
-              <ul className="space-y-3 max-w-[500px]">
+              <ul className="space-y-3 max-w-[500px] mx-auto lg:mx-0">
                 {[
                   "Choose your own schedule",
                   "Serve airport travelers and local clients",
@@ -200,7 +319,7 @@ function HeroBanner() {
                 ].map((item, i) => (
                   <li
                     key={i}
-                    className="flex items-center text-white font-bold text-[clamp(0.95rem,1.1vw,1.1rem)]"
+                    className="flex items-center text-white font-bold text-[clamp(0.95rem,1.1vw,1.1rem)] justify-center lg:justify-start"
                   >
                     <div className="bg-[#39b54a] rounded-full p-[3px] mr-3 shrink-0">
                       <Check className="w-4 h-4 text-white stroke-[4]" />
@@ -212,9 +331,9 @@ function HeroBanner() {
             </div>
 
             {/* Right Card */}
-            <div className="w-full lg:w-[35%] flex justify-center lg:justify-end lg:translate-x-4">
+            <div className="w-full lg:w-[35%] flex justify-center lg:justify-end">
               <div className="bg-[#040a23]/70 backdrop-blur-md rounded-xl p-5 xl:p-6 shadow-2xl w-full max-w-[300px] xl:max-w-[320px] border border-slate-700/50 border-t-[3px] border-t-[#39b54a]">
-                <h3 className="text-[#39b54a] font-bold text-sm xl:text-[14px] mb-4 uppercase tracking-wider">
+                <h3 className="text-[#39b54a] font-bold text-sm xl:text-[14px] mb-4 uppercase tracking-wider text-center lg:text-left">
                   YOUR CLIENT BASE GROWS WHEN:
                 </h3>
                 <ul className="space-y-3 mb-6">
@@ -226,7 +345,7 @@ function HeroBanner() {
                   ].map((item, i) => (
                     <li
                       key={i}
-                      className="flex items-start text-white text-[13px] xl:text-[13.5px] font-medium tracking-wide"
+                      className="flex items-start text-white text-[13px] xl:text-[13.5px] font-medium tracking-wide justify-center lg:justify-start"
                     >
                       <div className="bg-[#39b54a] rounded-full p-[2px] mr-3 mt-1 shrink-0">
                         <Check className="w-3 h-3 text-white stroke-[4]" />
@@ -236,7 +355,7 @@ function HeroBanner() {
                   ))}
                 </ul>
                 <div className="w-full h-px bg-slate-700/80 mb-5"></div>
-                <div>
+                <div className="text-center lg:text-left">
                   <h4 className="text-white font-extrabold text-lg xl:text-xl leading-tight mb-2 tracking-wide">
                     Real Business.
                     <br />
@@ -266,13 +385,13 @@ function HeroBanner() {
 
       {/* Bottom Curve & Trust Badges */}
       <div className="relative z-20 w-full lg:w-[70%] xl:w-[60%] bg-[#040a23] lg:rounded-tr-[5rem] mt-auto pb-6 pt-6 lg:pb-8 lg:pt-8 pl-4 lg:pl-8 xl:pl-16 pr-4 lg:pr-12">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-4 xl:gap-6">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-4 xl:gap-6">
           <div className="flex items-center gap-3 xl:gap-4">
             <CreditCard
               className="w-8 h-8 xl:w-10 xl:h-10 text-white shrink-0"
               strokeWidth={1.5}
             />
-            <div className="text-[12px] xl:text-[13px] font-bold text-white leading-tight">
+            <div className="text-[12px] xl:text-[13px] font-bold text-white leading-tight text-center md:text-left">
               One-time payment
               <br />
               <span className="font-medium text-slate-300">
@@ -286,7 +405,7 @@ function HeroBanner() {
               className="w-8 h-8 xl:w-10 xl:h-10 text-white shrink-0"
               strokeWidth={1.5}
             />
-            <div className="text-[12px] xl:text-[13px] font-bold text-white leading-tight">
+            <div className="text-[12px] xl:text-[13px] font-bold text-white leading-tight text-center md:text-left">
               Quick Launch Booking Flow
               <br />
               <span className="font-medium text-slate-300">in 48–72 hours</span>
@@ -298,7 +417,7 @@ function HeroBanner() {
               className="w-8 h-8 xl:w-10 xl:h-10 text-white shrink-0"
               strokeWidth={1.5}
             />
-            <div className="text-[12px] xl:text-[13px] font-bold text-white leading-tight">
+            <div className="text-[12px] xl:text-[13px] font-bold text-white leading-tight text-center md:text-left">
               Built for drivers 50+
               <br />
               <span className="font-medium text-slate-300">
@@ -362,7 +481,7 @@ function FeaturesSection() {
                 <h3 className="font-bold text-[#1a1f71] mb-3 text-sm sm:text-base leading-snug">
                   {feature.title}
                 </h3>
-                <p className="text-[#1a1f71] text-xs sm:text-[13px] leading-relaxed max-w-[220px]">
+                <p className="text-[#1a1f71] text-xs sm:text-[13px] leading-relaxed max-w-[220px] min-w-0">
                   {feature.description}
                 </p>
 
@@ -383,7 +502,7 @@ function FeaturesSection() {
               className="w-7 h-7 sm:w-8 sm:h-8 text-[#15803d] shrink-0"
               strokeWidth={1.5}
             />
-            <p className="text-[#1a1f71] text-xs sm:text-[13.5px] text-center sm:text-left leading-relaxed font-medium">
+            <p className="text-[#1a1f71] text-xs sm:text-[13.5px] text-center leading-relaxed font-medium">
               <strong className="text-[#1a1f71] font-bold">
                 Also includes:
               </strong>{" "}
@@ -510,14 +629,14 @@ function ComparisonSection() {
               />
             </div>
             <div className="w-full sm:w-[60%] py-8 px-6 relative z-10 flex flex-col justify-center bg-white sm:bg-transparent">
-              <h3 className="text-base sm:text-[1.1rem] font-bold text-[#dc2626] mb-5 uppercase tracking-wide leading-snug">
+              <h3 className="text-base sm:text-[1.1rem] font-bold text-[#dc2626] mb-5 uppercase tracking-wide leading-snug text-center lg:text-left">
                 DRIVING THROUGH RIDESHARE APPS
               </h3>
               <ul className="space-y-3">
                 {badList.map((item, i) => (
                   <li
                     key={i}
-                    className="flex items-start text-[#1a1f71] text-sm font-bold"
+                    className="flex items-start text-[#1a1f71] text-sm font-bold justify-center lg:justify-start"
                   >
                     <XCircle className="w-5 h-5 mr-3 mt-[1px] fill-[#dc2626] text-white shrink-0" />
                     <span className="leading-snug">{item}</span>
@@ -537,14 +656,14 @@ function ComparisonSection() {
           {/* Right Side (Good) */}
           <div className="relative flex flex-col-reverse sm:flex-row items-stretch">
             <div className="w-full sm:w-[60%] py-8 px-6 relative z-10 flex flex-col justify-center bg-white sm:bg-transparent">
-              <h3 className="text-base sm:text-[1.1rem] font-bold text-[#15803d] mb-5 uppercase tracking-wide leading-snug">
+              <h3 className="text-base sm:text-[1.1rem] font-bold text-[#15803d] mb-5 uppercase tracking-wide leading-snug text-center lg:text-left">
                 YOUR PRIVATE AIRPORT BUSINESS™
               </h3>
               <ul className="space-y-3">
                 {goodList.map((item, i) => (
                   <li
                     key={i}
-                    className="flex items-start text-[#1a1f71] text-sm font-bold"
+                    className="flex items-start text-[#1a1f71] text-sm font-bold justify-center lg:justify-start"
                   >
                     <CheckCircle2 className="w-5 h-5 mr-3 mt-[1px] fill-[#15803d] text-white shrink-0" />
                     <span className="leading-snug">{item}</span>
@@ -608,7 +727,7 @@ function WhyWinSection() {
             {reasons.map((reason, idx) => (
               <div
                 key={idx}
-                className="flex flex-row items-center lg:items-start lg:flex-col gap-4 flex-1 pt-6 lg:pt-0 lg:px-4 first:pt-0 first:pl-0 last:pr-0"
+                className="flex flex-row items-center lg:items-start lg:flex-col gap-4 flex-1 pt-6 lg:pt-0 lg:px-4 first:pt-0 first:pl-0 last:pr-0 justify-center lg:justify-start"
               >
                 <div className="w-14 h-14 rounded-full bg-[#f0fdf4] flex items-center justify-center shrink-0">
                   <reason.icon
@@ -715,24 +834,24 @@ function ReviewsSection() {
   const reviews = [
     {
       quote:
-        "We launched in 3 weeks and booked our first airport ride in 7 days. I finally have freedom and extra income on my own terms.",
-      name: "Tim G.",
+        "I launched in 3 weeks and booked my first airport ride in 7 days. I finally have freedom and extra income on my own terms.",
+      name: "Chris S.",
       location: "Knoxville, TN",
-      image: reviewImage,
+      image: chrisImage,
     },
     {
       quote:
         "The system is simple, professional, and it works. I set my schedule and now I'm meeting great people every day.",
-      name: "Tom R.",
+      name: "Doug L.",
       location: "Tampa, FL",
-      image: standardImage,
+      image: dougImage,
     },
     {
       quote:
-        "We started part time and now we're fully booked most weeks. This business has given us the life we wanted.",
-      name: "William B.",
+        "I started part time and now I'm fully booked most weeks. This business has given me the life I wanted.",
+      name: "Naylin H.",
       location: "Houston, TX",
-      image: reviewCoupleImage,
+      image: naylinImage,
     },
   ];
 
@@ -755,12 +874,13 @@ function ReviewsSection() {
                   <img
                     src={review.image}
                     alt={review.name}
-                    className="w-full h-40 sm:h-full rounded-2xl object-cover shadow-sm"
+                    loading="lazy"
+                    className="w-full h-40 sm:h-full rounded-xl object-cover object-top shadow-sm"
                   />
                 </div>
 
                 {/* Review Content */}
-                <div className="flex flex-col justify-start py-1 text-left flex-1">
+                <div className="flex flex-col justify-start py-1 text-left text-center sm:text-left flex-1">
                   {/* Quote */}
                   <p className="text-[#1a1f71] font-bold text-xs sm:text-[13px] leading-relaxed mb-4 italic">
                     "{review.quote}"
@@ -768,7 +888,7 @@ function ReviewsSection() {
 
                   <div className="mt-auto">
                     {/* Stars */}
-                    <div className="flex items-center justify-start gap-[2px] mb-2">
+                    <div className="flex items-center justify-center sm:justify-start gap-[2px] mb-2">
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
@@ -813,7 +933,12 @@ function FaqSection() {
     {
       question: "Is the $495 really a one-time payment?",
       answer:
-        "Yes. The $495 QuitTheApp DIY system is a one-time payment with no monthly QuitTheApp platform fee. An optional $199 We Do It for You upgrade is available. Normal business expenses such as scheduling software, hosting, payment processing, commercial insurance, licensing, and operating costs may still apply.",
+        "Yes. The $495 QuitTheApp DIY system is a one-time payment with no monthly QuitTheApp platform fee. An optional $199 We Do It for You upgrade is available. Normal business expenses such as scheduling software, payment processing, commercial insurance, licensing, fuel, vehicle maintenance, and other operating costs may still apply.",
+    },
+    {
+      question: "Is webpage hosting included?",
+      answer:
+        "Yes. Hosting for your QuitTheApp personalized selling page is included. Separate costs may apply for optional third-party services such as scheduling software, payment processing, domain registration, commercial insurance, and other normal business expenses.",
     },
     // Row 2
     {
@@ -847,11 +972,11 @@ function FaqSection() {
             <div className="hidden lg:block absolute left-[66.66%] top-0 bottom-0 w-px bg-slate-100 -translate-x-1/2"></div>
 
             {faqs.map((faq, idx) => (
-              <div key={idx} className="flex items-start gap-4">
+              <div key={idx} className="flex items-start gap-4 justify-center lg:justify-start">
                 <div className="shrink-0 w-7 h-7 rounded-full bg-[#15803d] text-white flex items-center justify-center font-bold text-sm shadow-sm mt-0.5">
                   Q
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col text-center lg:text-left">
                   <h4 className="font-bold text-[#1a1f71] text-[15px] leading-snug mb-1">
                     {faq.question}
                   </h4>
@@ -868,7 +993,9 @@ function FaqSection() {
   );
 }
 
-function FooterCTASection() {
+function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }) {
+  const { accessToken, user } = useAppSelector((state) => state.auth);
+
   const checkmarks = [
     "No monthly platform fees",
     "Built specifically for 50+ drivers",
@@ -879,7 +1006,7 @@ function FooterCTASection() {
   const trustBadges = [
     {
       icon: Users,
-      title: "Trusted by Drivers",
+      title: "Built for Drivers",
       subtitle: "50+ Across the U.S.",
     },
     {
@@ -894,13 +1021,13 @@ function FooterCTASection() {
     },
     {
       icon: Headset,
-      title: "7-Day Support",
-      subtitle: "Real People Here for You",
+      title: "Real Human Support",
+      subtitle: "Help From People Who Understand the Business",
     },
     {
       icon: ShieldCheck,
-      title: "Satisfaction Guaranteed",
-      subtitle: "Real Human Support",
+      title: "Built From Real Transportation Experience",
+      subtitle: "Real Business Experience Since 2016",
     },
   ];
 
@@ -908,23 +1035,23 @@ function FooterCTASection() {
     <section className="bg-white py-3 pb-8" id="footer-cta">
       <PageContainer size="full">
         {/* Dark Blue Banner Card */}
-        <div className="w-full bg-[#040a23] rounded-2xl shadow-xl flex flex-col lg:flex-row items-center justify-between p-6 gap-8 lg:gap-2 xl:gap-4 border border-slate-800">
+        <div className="w-full bg-[#040a23] rounded-2xl shadow-xl flex flex-col lg:flex-row flex-wrap items-center justify-between p-[clamp(1rem,2.5vw,1.5rem)] gap-[clamp(1rem,2vw,1.5rem)] lg:gap-[clamp(0.5rem,1vw,1rem)] border border-slate-800">
           {/* Left: Icon and Title */}
-          <div className="flex items-center gap-4 lg:gap-3 xl:gap-6 lg:w-auto shrink-0">
+          <div className="flex items-center gap-[clamp(0.75rem,1.5vw,1.5rem)] lg:w-auto shrink-0 min-w-0 flex-1 lg:flex-none justify-center lg:justify-start">
             {/* Custom Icon Group */}
-            <div className="relative flex items-center justify-center shrink-0 w-16 h-16 sm:w-20 sm:h-20 lg:w-16 lg:h-16 xl:w-20 xl:h-20">
+            <div className="relative flex items-center justify-center shrink-0 w-[clamp(3rem,6vw,5rem)] h-[clamp(3rem,6vw,5rem)]">
               <RefreshCcw
                 className="w-full h-full text-[#39b54a] absolute inset-0"
                 strokeWidth={1.5}
               />
               <Users
-                className="w-8 h-8 sm:w-10 sm:h-10 lg:w-8 lg:h-8 xl:w-10 xl:h-10 text-white relative z-10"
+                className="w-[clamp(1.5rem,3vw,2.5rem)] h-[clamp(1.5rem,3vw,2.5rem)] text-white relative z-10"
                 strokeWidth={1.5}
               />
             </div>
 
-            <div className="flex flex-col">
-              <h3 className="text-white font-bold text-base sm:text-xl lg:text-[15px] xl:text-[20px] 2xl:text-[22px] tracking-wide leading-snug whitespace-nowrap">
+            <div className="flex flex-col min-w-0 text-center lg:text-left">
+              <h3 className="text-white font-bold text-[clamp(0.875rem,1.6vw,1.375rem)] tracking-wide leading-snug">
                 ONE GREAT AIRPORT CLIENT
                 <br />
                 CAN LEAD TO <span className="text-[#39b54a]">YEARS OF</span>
@@ -935,31 +1062,31 @@ function FooterCTASection() {
           </div>
 
           {/* Pricing */}
-          <div className="flex flex-col items-center justify-center shrink-0 lg:px-2 xl:px-4">
-            <span className="text-[#39b54a] text-5xl sm:text-6xl lg:text-4xl xl:text-6xl font-extrabold leading-none tracking-tight mb-1">
+          <div className="flex flex-col items-center justify-center shrink-0 min-w-0">
+            <span className="text-[#39b54a] text-[clamp(2.5rem,5vw,3.75rem)] font-extrabold leading-none tracking-tight mb-1">
               $495
             </span>
-            <span className="text-white text-xs sm:text-sm lg:text-[10px] xl:text-sm font-bold tracking-widest uppercase whitespace-nowrap">
+            <span className="text-white text-[clamp(0.625rem,1vw,0.875rem)] font-bold tracking-widest uppercase">
               ONE-TIME PAYMENT
             </span>
-            <span className="text-white/80 text-[10px] lg:text-[9px] xl:text-[11px] font-medium tracking-wide text-center mt-1">
+            <span className="text-white/80 text-[clamp(0.625rem,0.9vw,0.75rem)] font-medium tracking-wide text-center mt-1 max-w-[260px]">
               Includes the complete QuitTheApp DIY launch system.<br/>
               Optional $199 We Do It for You upgrade available.
             </span>
           </div>
 
           {/* Vertical Divider */}
-          <div className="hidden lg:block w-px h-24 lg:h-20 xl:h-24 bg-slate-700/80 shrink-0 mx-1 xl:mx-2"></div>
+          <div className="hidden lg:block w-px h-[clamp(4rem,8vw,6rem)] bg-slate-700/80 shrink-0"></div>
 
           {/* Checkmarks */}
-          <div className="flex flex-col gap-2 lg:gap-1 xl:gap-2 shrink-0">
+          <div className="flex flex-col gap-[clamp(0.25rem,0.6vw,0.5rem)] shrink-0">
             {checkmarks.map((item, idx) => (
               <div
                 key={idx}
-                className="flex items-center gap-3 lg:gap-2 xl:gap-3"
+                className="flex items-center gap-[clamp(0.5rem,1vw,0.75rem)] min-w-0 justify-center lg:justify-start"
               >
-                <CheckCircle2 className="w-5 h-5 lg:w-4 lg:h-4 xl:w-5 xl:h-5 fill-[#39b54a] text-white shrink-0" />
-                <span className="text-white text-[13px] sm:text-sm lg:text-[11px] xl:text-[13px] font-semibold tracking-wide whitespace-nowrap">
+                <CheckCircle2 className="w-[clamp(1rem,1.6vw,1.25rem)] h-[clamp(1rem,1.6vw,1.25rem)] fill-[#39b54a] text-white shrink-0" />
+                <span className="text-white text-[clamp(0.75rem,1.1vw,0.875rem)] font-semibold tracking-wide">
                   {item}
                 </span>
               </div>
@@ -967,33 +1094,64 @@ function FooterCTASection() {
           </div>
 
           {/* CTA Button */}
-          <div className="shrink-0 w-full lg:w-auto mt-4 lg:mt-0">
-            <button className="cursor-pointer w-full lg:w-auto bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-4 px-6 lg:py-3 lg:px-4 xl:py-4 xl:px-6 rounded-xl transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-center gap-4 lg:gap-3 xl:gap-4 group text-sm sm:text-base lg:text-[14px] xl:text-[18px]">
-              <span className="text-center whitespace-nowrap drop-shadow-sm">
-                Start My Private Airport
-                <br />
-                Business™ — $495
-              </span>
-              <div className="w-7 h-7 xl:w-8 xl:h-8 bg-white rounded-full flex items-center justify-center shrink-0">
-                <ArrowRight className="w-4 h-4 xl:w-5 xl:h-5 stroke-[3] text-[#16a34a] transition-transform group-hover:translate-x-0.5" />
-              </div>
-            </button>
+          <div className="shrink-0 w-full lg:w-auto mt-1 lg:mt-0 flex justify-center">
+            {user?.status === "active" ? (
+              <Link
+                to="/dashboard"
+                className="cursor-pointer w-full sm:w-auto bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-[clamp(0.75rem,1.2vw,1rem)] px-[clamp(1rem,1.8vw,1.5rem)] rounded-xl transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-center gap-[clamp(0.75rem,1.4vw,1rem)] group text-[clamp(0.875rem,1.2vw,1.125rem)] min-w-0"
+              >
+                <span className="text-center drop-shadow-sm leading-snug">
+                  Go to Dashboard
+                </span>
+                <div className="w-[clamp(1.5rem,2.4vw,2rem)] h-[clamp(1.5rem,2.4vw,2rem)] bg-white rounded-full flex items-center justify-center shrink-0">
+                  <ArrowRight className="w-[clamp(0.875rem,1.4vw,1.25rem)] h-[clamp(0.875rem,1.4vw,1.25rem)] stroke-[3] text-[#16a34a] transition-transform group-hover:translate-x-0.5" />
+                </div>
+              </Link>
+            ) : accessToken ? (
+              <button
+                onClick={openPricingModal}
+                className="cursor-pointer w-full sm:w-auto bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-[clamp(0.75rem,1.2vw,1rem)] px-[clamp(1rem,1.8vw,1.5rem)] rounded-xl transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-center gap-[clamp(0.75rem,1.4vw,1rem)] group text-[clamp(0.875rem,1.2vw,1.125rem)] min-w-0"
+              >
+                <span className="text-center drop-shadow-sm leading-snug">
+                  Start My Private Airport
+                  <br />
+                  Business™ — $495
+                </span>
+                <div className="w-[clamp(1.5rem,2.4vw,2rem)] h-[clamp(1.5rem,2.4vw,2rem)] bg-white rounded-full flex items-center justify-center shrink-0">
+                  <ArrowRight className="w-[clamp(0.875rem,1.4vw,1.25rem)] h-[clamp(0.875rem,1.4vw,1.25rem)] stroke-[3] text-[#16a34a] transition-transform group-hover:translate-x-0.5" />
+                </div>
+              </button>
+            ) : (
+              <Link
+                to="/signup"
+                className="cursor-pointer w-full sm:w-auto bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-[clamp(0.75rem,1.2vw,1rem)] px-[clamp(1rem,1.8vw,1.5rem)] rounded-xl transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-center gap-[clamp(0.75rem,1.4vw,1rem)] group text-[clamp(0.875rem,1.2vw,1.125rem)] min-w-0"
+              >
+                <span className="text-center drop-shadow-sm leading-snug">
+                  Start My Private Airport
+                  <br />
+                  Business™ — $495
+                </span>
+                <div className="w-[clamp(1.5rem,2.4vw,2rem)] h-[clamp(1.5rem,2.4vw,2rem)] bg-white rounded-full flex items-center justify-center shrink-0">
+                  <ArrowRight className="w-[clamp(0.875rem,1.4vw,1.25rem)] h-[clamp(0.875rem,1.4vw,1.25rem)] stroke-[3] text-[#16a34a] transition-transform group-hover:translate-x-0.5" />
+                </div>
+              </Link>
+            )}
           </div>
         </div>
 
         {/* Trust Badges */}
-        <div className="mt-6 flex flex-wrap lg:flex-nowrap items-center justify-center lg:justify-between gap-4 w-full px-2">
+        <div className="mt-[clamp(1rem,2vw,1.5rem)] flex flex-wrap items-center justify-center lg:justify-between gap-x-[clamp(0.75rem,1.5vw,1.5rem)] gap-y-[clamp(0.75rem,1.5vw,1rem)] w-full px-1">
           {trustBadges.map((badge, idx) => (
             <div
               key={idx}
-              className="flex items-center gap-2 lg:gap-3 w-[45%] sm:w-[30%] lg:w-auto"
+              className="flex items-center gap-[clamp(0.5rem,1vw,0.75rem)] w-[45%] sm:w-[30%] lg:w-auto min-w-0"
             >
-              <badge.icon className="w-6 h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8 text-[#4f46e5] shrink-0 stroke-[1.5]" />
-              <div className="flex flex-col">
-                <span className="text-[#1a1f71] font-bold text-[10px] lg:text-[11px] xl:text-xs leading-tight whitespace-nowrap">
+              <badge.icon className="w-[clamp(1.25rem,2vw,2rem)] h-[clamp(1.25rem,2vw,2rem)] text-[#4f46e5] shrink-0 stroke-[1.5]" />
+              <div className="flex flex-col min-w-0">
+                <span className="text-[#1a1f71] font-bold text-[clamp(0.625rem,0.85vw,0.75rem)] leading-tight">
                   {badge.title}
                 </span>
-                <span className="text-[#1a1f71] font-medium text-[9px] lg:text-[10px] xl:text-[11px] leading-tight whitespace-nowrap">
+                <span className="text-[#1a1f71] font-medium text-[clamp(0.5625rem,0.75vw,0.6875rem)] leading-tight">
                   {badge.subtitle}
                 </span>
               </div>
@@ -1002,10 +1160,10 @@ function FooterCTASection() {
 
           {/* Copyright */}
           <div className="w-[45%] sm:w-[30%] lg:w-auto flex flex-col items-start lg:items-end justify-center">
-            <span className="text-slate-500 font-medium text-[10px] lg:text-[11px] xl:text-xs leading-tight whitespace-nowrap">
+            <span className="text-slate-500 font-medium text-[clamp(0.625rem,0.85vw,0.75rem)] leading-tight">
               © 2026 QuitTheApp.
             </span>
-            <span className="text-slate-500 font-medium text-[10px] lg:text-[11px] xl:text-xs leading-tight whitespace-nowrap">
+            <span className="text-slate-500 font-medium text-[clamp(0.625rem,0.85vw,0.75rem)] leading-tight">
               All Rights Reserved.
             </span>
           </div>

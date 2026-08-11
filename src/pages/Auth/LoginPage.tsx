@@ -36,8 +36,11 @@ export default function LoginPage() {
             user: result.user,
           })
         );
-        // Redirect to dashboard if already paid (status active), otherwise show pricing modal
-        if (result.user?.status === "active") {
+        // Admins go to the admin dashboard; riders go to their dashboard if
+        // they've paid (status active), otherwise the pricing modal.
+        if (result.user?.role === "admin") {
+          navigate("/admin");
+        } else if (result.user?.status === "active") {
           navigate("/dashboard");
         } else {
           navigate("/?showPricing=true");

@@ -18,6 +18,7 @@ import BillingPage from "../pages/BillingPage";
 import DashboardPage from "../pages/DashboardPage";
 import { DashboardLayout } from "../components/layout/DashboardLayout";
 import { AdminDashboardLayout } from "../components/layout/AdminDashboardLayout";
+import { useRequireAdmin } from "../hooks/useRequireAdmin";
 import AdminDashboardPage from "../pages/AdminDashboardPage";
 import AdminDriversPage from "../pages/AdminDriversPage";
 import AdminDriverDetailsPage from "../pages/AdminDriverDetailsPage";
@@ -26,6 +27,8 @@ import AdminAddResourcePage from "../pages/AdminAddResourcePage";
 import AdminBillingsPage from "../pages/AdminBillingsPage";
 import AdminSupportPage from "../pages/AdminSupportPage";
 import AdminSettingsPage from "../pages/AdminSettingsPage";
+import AdminUsersPage from "../pages/AdminUsersPage";
+import AdminChecklistItemsPage from "../pages/AdminChecklistItemsPage";
 import LoginPage from "../pages/Auth/LoginPage";
 import SignupPage from "../pages/Auth/SignupPage";
 import ForgotPasswordPage from "../pages/Auth/ForgotPasswordPage";
@@ -53,14 +56,16 @@ export function AppRouter() {
       <Route path="/billing" element={<DashboardLayout title="Billing & Orders"><BillingPage /></DashboardLayout>} />
 
       {/* Admin Routes */}
-      <Route path="/admin" element={<AdminDashboardLayout><AdminDashboardPage /></AdminDashboardLayout>} />
-      <Route path="/admin/drivers" element={<AdminDashboardLayout title="Driver Management"><AdminDriversPage /></AdminDashboardLayout>} />
-      <Route path="/admin/drivers/:id" element={<AdminDashboardLayout title="Driver Management"><AdminDriverDetailsPage /></AdminDashboardLayout>} />
-      <Route path="/admin/resources" element={<AdminDashboardLayout title="Resource Management"><AdminResourcesPage /></AdminDashboardLayout>} />
-      <Route path="/admin/resources/add" element={<AdminDashboardLayout title="Resource Management"><AdminAddResourcePage /></AdminDashboardLayout>} />
-      <Route path="/admin/billings" element={<AdminDashboardLayout title="Billing"><AdminBillingsPage /></AdminDashboardLayout>} />
-      <Route path="/admin/support" element={<AdminDashboardLayout title="Support"><AdminSupportPage /></AdminDashboardLayout>} />
-      <Route path="/admin/settings" element={<AdminDashboardLayout title="Settings"><AdminSettingsPage /></AdminDashboardLayout>} />
+      <Route path="/admin" element={<AdminRoute><AdminDashboardLayout><AdminDashboardPage /></AdminDashboardLayout></AdminRoute>} />
+      <Route path="/admin/drivers" element={<AdminRoute><AdminDashboardLayout title="Driver Management"><AdminDriversPage /></AdminDashboardLayout></AdminRoute>} />
+      <Route path="/admin/drivers/:id" element={<AdminRoute><AdminDashboardLayout title="Driver Management"><AdminDriverDetailsPage /></AdminDashboardLayout></AdminRoute>} />
+      <Route path="/admin/resources" element={<AdminRoute><AdminDashboardLayout title="Resource Management"><AdminResourcesPage /></AdminDashboardLayout></AdminRoute>} />
+      <Route path="/admin/resources/add" element={<AdminRoute><AdminDashboardLayout title="Resource Management"><AdminAddResourcePage /></AdminDashboardLayout></AdminRoute>} />
+      <Route path="/admin/billings" element={<AdminRoute><AdminDashboardLayout title="Billing"><AdminBillingsPage /></AdminDashboardLayout></AdminRoute>} />
+      <Route path="/admin/support" element={<AdminRoute><AdminDashboardLayout title="Support"><AdminSupportPage /></AdminDashboardLayout></AdminRoute>} />
+      <Route path="/admin/settings" element={<AdminRoute><AdminDashboardLayout title="Settings"><AdminSettingsPage /></AdminDashboardLayout></AdminRoute>} />
+      <Route path="/admin/users" element={<AdminRoute><AdminDashboardLayout title="User Management"><AdminUsersPage /></AdminDashboardLayout></AdminRoute>} />
+      <Route path="/admin/checklist-items" element={<AdminRoute><AdminDashboardLayout title="Checklist Items"><AdminChecklistItemsPage /></AdminDashboardLayout></AdminRoute>} />
 
       {/* Add new routes here */}
       <Route path="/book/:slug" element={<RiderWebsitePage />} />
@@ -73,4 +78,10 @@ export function AppRouter() {
       <Route path="/" element={<HomePage />} />
     </Routes>
   );
+}
+
+function AdminRoute({ children }: { children: React.ReactNode }) {
+  const isAdmin = useRequireAdmin();
+  if (!isAdmin) return null;
+  return <>{children}</>;
 }

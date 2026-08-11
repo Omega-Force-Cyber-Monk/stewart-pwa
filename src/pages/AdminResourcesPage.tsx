@@ -1,125 +1,125 @@
-import { 
-  ChevronDown, 
-  Plus, 
-  FolderSearch, 
-  FileText, 
-  Printer, 
-  Mail, 
-  ClipboardCheck, 
+import { useState } from "react";
+import {
+  Plus,
+  FolderSearch,
+  FileText,
+  Printer,
+  Mail,
+  ClipboardCheck,
   FileBadge,
-  UserCheck
+  Loader2,
+  Trash2,
+  ExternalLink,
 } from "lucide-react";
 import { cn } from "../lib/cn";
 import { Link } from "react-router-dom";
+import {
+  useGetAdminResourceCategoriesQuery,
+  useGetAdminResourcesQuery,
+  useDeleteAdminResourceMutation,
+} from "../store/api/Admin/admin.api";
+import type { Resource } from "../store/api/Admin/admin.type";
+import { useConfirmDialog } from "../hooks/useConfirmDialog";
 
-const topTabs = [
-  { name: "Client Acquisition Center™", active: true },
-  { name: "Referral Card System™", active: false },
-  { name: "Repeat Rider Engine™", active: false },
-  { name: "Direct Booking Trust Center™", active: false },
-  { name: "Launch Essentials™", active: false },
-  { name: "Resources & Guides", active: false },
-];
+const iconMap: Record<string, typeof FolderSearch> = {
+  "folder-search": FolderSearch,
+  "file-text": FileText,
+  printer: Printer,
+  "mail-open": Mail,
+  mail: Mail,
+  "file-spreadsheet": FileText,
+  "file-up": FileBadge,
+  "clipboard-check": ClipboardCheck,
+  default: FileText,
+};
 
-const sideTabs = [
-  { name: "Resource Cards", active: true },
-  { name: "Launch Checklist", active: false },
-];
+const colorMap: Record<string, { bg: string; border: string; text: string }> = {
+  blue: { bg: "bg-blue-50", border: "border-blue-100", text: "text-blue-500" },
+  green: { bg: "bg-green-50", border: "border-green-100", text: "text-green-500" },
+  purple: { bg: "bg-fuchsia-50", border: "border-fuchsia-100", text: "text-fuchsia-500" },
+  yellow: { bg: "bg-amber-50", border: "border-amber-100", text: "text-amber-500" },
+  teal: { bg: "bg-teal-50", border: "border-teal-100", text: "text-teal-500" },
+  indigo: { bg: "bg-purple-50", border: "border-purple-100", text: "text-purple-500" },
+  cyan: { bg: "bg-cyan-50", border: "border-cyan-100", text: "text-cyan-500" },
+  slate: { bg: "bg-slate-50", border: "border-slate-200", text: "text-slate-500" },
+  default: { bg: "bg-gray-50", border: "border-gray-100", text: "text-gray-500" },
+};
 
-const resourceCards = [
-  {
-    title: "Hotel & Local Partner Outreach Kit™",
-    description: "Everything you need to confidently approach hotels, medical offices, and local businesses for referral partnerships.",
-    icon: FolderSearch,
-    color: "blue",
-  },
-  {
-    title: "Partner List Worksheet",
-    description: "Organize and track potential referral partners in your area with an easy-to-use planning worksheet.",
-    icon: FileText,
-    color: "green",
-  },
-  {
-    title: "Front Desk Script",
-    description: "Use this ready-made conversation script to confidently introduce your services to hotel front desk staff.",
-    icon: Printer,
-    color: "purple",
-  },
-  {
-    title: "Hotel Manager Email",
-    description: "A professional email template for introducing your transportation services to hotel managers.",
-    icon: Mail,
-    color: "yellow",
-  },
-  {
-    title: "Local Partner Email",
-    description: "Reach out to local businesses with a ready-to-use partnership email template.",
-    icon: Mail,
-    color: "teal",
-  },
-  {
-    title: "One-Page Partner Flyer",
-    description: "A printable one-page flyer that highlights your services and encourages referral partnerships.",
-    icon: FileText,
-    color: "indigo",
-  },
-  {
-    title: "Partner Tracking Sheet",
-    description: "Track visits, follow-ups, referrals, and partner relationships in one organized place.",
-    icon: ClipboardCheck,
-    color: "cyan",
-  },
-  {
-    title: "Referral Thank-You System",
-    description: "Send personalized thank-you messages to strengthen relationships and encourage more referrals.",
-    icon: FileBadge,
-    color: "slate",
-  },
-];
-
-const getColorStyles = (color: string) => {
-  switch (color) {
-    case "blue": return { bg: "bg-blue-50", border: "border-blue-100", text: "text-blue-500", icon: "text-blue-500" };
-    case "green": return { bg: "bg-green-50", border: "border-green-100", text: "text-green-500", icon: "text-green-500" };
-    case "purple": return { bg: "bg-fuchsia-50", border: "border-fuchsia-100", text: "text-fuchsia-500", icon: "text-fuchsia-500" };
-    case "yellow": return { bg: "bg-amber-50", border: "border-amber-100", text: "text-amber-500", icon: "text-amber-500" };
-    case "teal": return { bg: "bg-teal-50", border: "border-teal-100", text: "text-teal-500", icon: "text-teal-500" };
-    case "indigo": return { bg: "bg-purple-50", border: "border-purple-100", text: "text-purple-500", icon: "text-purple-500" };
-    case "cyan": return { bg: "bg-cyan-50", border: "border-cyan-100", text: "text-cyan-500", icon: "text-cyan-500" };
-    case "slate": return { bg: "bg-slate-50", border: "border-slate-200", text: "text-slate-500", icon: "text-slate-500" };
-    default: return { bg: "bg-gray-50", border: "border-gray-100", text: "text-gray-500", icon: "text-gray-500" };
-  }
+const getColorKey = (cardColor: string | null | undefined) => {
+  if (!cardColor) return "default";
+  const map: Record<string, string> = {
+    "#ECFDF5": "green",
+    "#EFF6FF": "blue",
+    "#FAF5FF": "purple",
+    "#FFFBEB": "yellow",
+    "#F0FDFA": "teal",
+    "#F5F3FF": "indigo",
+    "#ECFEFF": "cyan",
+  };
+  return map[cardColor.toUpperCase()] || "default";
 };
 
 export default function AdminResourcesPage() {
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [stepFilter, setStepFilter] = useState("");
+  const [search, setSearch] = useState("");
+
+  const { data: categoriesData, isLoading: isLoadingCategories } = useGetAdminResourceCategoriesQuery({
+    active: true,
+  });
+
+  const { data: resourcesData, isLoading: isLoadingResources, isError, refetch } = useGetAdminResourcesQuery({
+    categoryId: selectedCategory || undefined,
+    step: stepFilter || undefined,
+    search: search || undefined,
+    limit: 100,
+  });
+
+  const [deleteResource] = useDeleteAdminResourceMutation();
+  const { openConfirm, confirmDialog, showAlert, alertDialog } = useConfirmDialog();
+
+  const categories = categoriesData?.categories ?? [];
+  const resources = resourcesData?.resources ?? [];
+
+  const handleDelete = (resource: Resource) => {
+    openConfirm(
+      {
+        title: "Delete Resource",
+        message: `Delete resource "${resource.name}"?`,
+        confirmText: "Yes, delete",
+      },
+      async () => {
+        try {
+          await deleteResource(resource.id).unwrap();
+        } catch (err) {
+          console.error("Failed to delete resource:", err);
+          showAlert({ title: "Error", message: "Failed to delete resource.", type: "error" });
+        }
+      }
+    );
+  };
+
   return (
     <div className="flex flex-col space-y-6">
-      
       {/* Top Filter Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 flex-shrink-0">
-        <button className="flex items-center justify-between sm:justify-start w-full sm:w-auto gap-2 whitespace-nowrap sm:pr-4 py-2 text-sm font-bold text-slate-800 flex-shrink-0 hover:text-slate-600 transition-colors">
-          <span className="flex items-center gap-1">
-            Driver Category <span className="text-slate-500 font-normal">(Women Focused)</span>
-          </span>
-          <ChevronDown className="w-4 h-4 text-slate-400 ml-1" />
-        </button>
-        
         <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 flex-1 min-w-0 scrollbar-hide">
-          {topTabs.map((tab, idx) => (
-            <button
-              key={idx}
-              className={cn(
-                "flex items-center gap-2 whitespace-nowrap px-4 py-2 rounded-lg text-sm font-medium transition-colors",
-                tab.active 
-                  ? "bg-[#1a56ff] text-white shadow-sm" 
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-              )}
-            >
-              {tab.active && <UserCheck className="w-4 h-4" />}
-              {!tab.active && <span className="w-4 h-4 flex items-center justify-center opacity-50">✦</span>}
-              {tab.name}
-            </button>
-          ))}
+          <select
+            value={stepFilter}
+            onChange={(e) => setStepFilter(e.target.value)}
+            className="px-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm text-slate-700"
+          >
+            <option value="">All steps</option>
+            <option value="CUSTOMER_ACQUISITION">Customer Acquisition</option>
+            <option value="BRAND_AND_TRUST">Brand & Trust</option>
+          </select>
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search resources..."
+            className="px-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm w-full sm:w-64"
+          />
         </div>
       </div>
 
@@ -130,24 +130,43 @@ export default function AdminResourcesPage() {
             <h3 className="text-lg font-bold text-slate-800">Resource Section</h3>
             <p className="text-sm text-slate-500 mt-1">Manage the resources and content available in this section.</p>
           </div>
-          
+
           <div className="space-y-3 flex-1">
-            {sideTabs.map((tab, idx) => (
+            <button
+              onClick={() => setSelectedCategory("")}
+              className={cn(
+                "w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-colors text-left",
+                !selectedCategory
+                  ? "bg-[#1a56ff] text-white shadow-md shadow-blue-500/20"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              )}
+            >
+              <span>All Categories</span>
+              {isLoadingCategories && <Loader2 className="w-4 h-4 animate-spin" />}
+            </button>
+            {categories.map((cat) => (
               <button
-                key={idx}
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.id)}
                 className={cn(
-                  "w-full flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-colors text-left",
-                  tab.active 
-                    ? "bg-[#1a56ff] text-white shadow-md shadow-blue-500/20" 
+                  "w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-colors text-left",
+                  selectedCategory === cat.id
+                    ? "bg-[#1a56ff] text-white shadow-md shadow-blue-500/20"
                     : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                 )}
               >
-                {tab.name}
+                <span>{cat.name}</span>
+                <span className={cn("text-xs", selectedCategory === cat.id ? "text-blue-100" : "text-slate-400")}>
+                  {cat._count?.resources ?? 0}
+                </span>
               </button>
             ))}
           </div>
-          
-          <Link to="/admin/resources/add" className="w-full mt-6 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#111315] text-white font-medium hover:bg-black transition-colors text-sm">
+
+          <Link
+            to="/admin/resources/add"
+            className="w-full mt-6 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#111315] text-white font-medium hover:bg-black transition-colors text-sm"
+          >
             <Plus className="w-4 h-4" />
             Add More
           </Link>
@@ -155,41 +174,76 @@ export default function AdminResourcesPage() {
 
         {/* Right Content Panel */}
         <div className="flex-1 flex flex-col bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-            {resourceCards.map((card, idx) => {
-              const styles = getColorStyles(card.color);
-              const Icon = card.icon;
-              return (
-                <div 
-                  key={idx} 
-                  className={cn(
-                    "flex flex-col items-center text-center p-6 rounded-2xl border transition-transform hover:-translate-y-1 hover:shadow-md cursor-pointer",
-                    styles.bg,
-                    styles.border
-                  )}
-                >
-                  <Icon className={cn("w-8 h-8 mb-4", styles.icon)} />
-                    <h4 className="font-bold text-slate-800 text-sm mb-2">{card.title}</h4>
-                    <p className="text-xs text-slate-500 leading-relaxed">
-                      {card.description}
-                    </p>
-                  </div>
-                );
-              })}
+          {isLoadingResources ? (
+            <div className="flex items-center justify-center py-16">
+              <Loader2 className="w-8 h-8 text-[#1a56ff] animate-spin" />
             </div>
-          
-          {/* Action Buttons */}
-          <div className="flex w-full justify-between sm:justify-end items-center gap-3 sm:gap-4 mt-6 pt-6 border-t border-slate-100 flex-shrink-0">
-            <button className="flex-1 sm:flex-none justify-center px-4 py-2 sm:px-6 sm:py-2.5 rounded-full border border-[#1a56ff] text-[#1a56ff] font-semibold hover:bg-blue-50 transition-colors text-xs sm:text-sm whitespace-nowrap">
-              Edit Resources
-            </button>
-            <button className="flex-1 sm:flex-none justify-center px-4 py-2 sm:px-6 sm:py-2.5 rounded-full bg-[#1a56ff] hover:bg-blue-700 text-white font-semibold shadow-sm transition-colors text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
-              Save & Upload
-              <span className="font-bold">»</span>
-            </button>
-          </div>
+          ) : isError ? (
+            <div className="flex flex-col items-center justify-center py-16 gap-3">
+              <p className="text-sm text-slate-500">Failed to load resources.</p>
+              <button onClick={refetch} className="px-4 py-2 rounded-lg bg-[#1a56ff] text-white text-sm font-medium hover:bg-blue-700">
+                Retry
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+              {resources.length === 0 ? (
+                <div className="col-span-full flex flex-col items-center justify-center py-16 gap-3">
+                  <p className="text-sm text-slate-400">No resources found.</p>
+                  <Link to="/admin/resources/add" className="text-sm font-medium text-[#1a56ff] hover:underline">
+                    Add your first resource
+                  </Link>
+                </div>
+              ) : (
+                resources.map((resource) => {
+                  const Icon = iconMap[resource.iconKey || "default"] || FileText;
+                  const styles = colorMap[getColorKey(resource.cardColor)];
+                  return (
+                    <div
+                      key={resource.id}
+                      className={cn(
+                        "flex flex-col items-center text-center p-6 rounded-2xl border transition-transform hover:-translate-y-1 hover:shadow-md",
+                        styles.bg,
+                        styles.border
+                      )}
+                    >
+                      <Icon className={cn("w-8 h-8 mb-4", styles.text)} />
+                      <h4 className="font-bold text-slate-800 text-sm mb-2">{resource.title || resource.name}</h4>
+                      <p className="text-xs text-slate-500 leading-relaxed line-clamp-3">
+                        {resource.description}
+                      </p>
+                      <div className="flex items-center gap-2 mt-4">
+                        {resource.fileUrl && (
+                          <a
+                            href={resource.fileUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-[#1a56ff] hover:underline text-xs font-medium flex items-center gap-1"
+                          >
+                            <ExternalLink className="w-3 h-3" />
+                            View
+                          </a>
+                        )}
+                        <button
+                          onClick={() => handleDelete(resource)}
+                          className="text-red-400 hover:text-red-500 transition-colors"
+                          title="Delete Resource"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Sweet-alert style modals */}
+      {confirmDialog}
+      {alertDialog}
     </div>
   );
 }

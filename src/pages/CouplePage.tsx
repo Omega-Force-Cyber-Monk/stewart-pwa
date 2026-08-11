@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Menu, X, Headset } from "lucide-react";
 import { cn } from "../lib/cn";
 import coupleLogo from "../assets/coupleLogo.png";
@@ -21,30 +21,59 @@ import {
   Clock,
 } from "lucide-react";
 import { PageContainer } from "../components/layout/PageContainer";
+import { ProfileDropdown } from "../components/ProfileDropdown";
+import { PricingModal } from "../components/PricingModal";
+import { useAppDispatch, useAppSelector } from "../hooks/storeHooks";
+import { logOut } from "../store/features/auth/authSlice";
+import { useLogoutUserMutation } from "../store/api/Auth/auth.api";
 import coupleBanner from "../assets/coupleBanner.png";
 import coupleComparisonLeft from "../assets/coupleComparisonSectionLeft.png";
 import coupleComparisonRight from "../assets/coupleComparisonSectionRight.png";
-import reviewImage from "../assets/review.jpg";
+import markLisaImage from "../assets/Couples_Mark_Lisa.jpg";
+import tomKarenImage from "../assets/Couples_tom_Karen.jpg";
+import ryanMichelleImage from "../assets/Couple_Ryan_Michelle.jpg";
 
 export default function CouplePage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { accessToken } = useAppSelector((state) => state.auth);
+
+  // Auto-open the pricing modal when redirected here with ?showPricing=true.
+  const [showPricingModal, setShowPricingModal] = useState(
+    () => searchParams.get("showPricing") === "true" && !!accessToken
+  );
+
+  // Clear the ?showPricing=true query param once considered
+  useEffect(() => {
+    if (searchParams.get("showPricing") === "true") {
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
+
+  const openPricingModal = () => setShowPricingModal(true);
+
   return (
     <>
-      <Navbar />
-      <HeroBanner />
+      {showPricingModal && (
+        <PricingModal onClose={() => setShowPricingModal(false)} />
+      )}
+      <Navbar openPricingModal={openPricingModal} />
+      <HeroBanner openPricingModal={openPricingModal} />
       <FeaturesSection />
       <ComparisonSection />
       <WhyWinSection />
       <HowItWorksSection />
       <ReviewsSection />
       <FaqSection />
-      <FooterCTASection />
+      <FooterCTASection openPricingModal={openPricingModal} />
     </>
   );
 }
 
-function HeroBanner() {
+function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
+  const { accessToken } = useAppSelector((state) => state.auth);
+
   return (
-    <div className="relative w-full bg-[#f8fafc] border-b border-gray-100 min-h-[100svh] h-auto flex flex-col justify-between pt-[clamp(1rem,2vw,2rem)] pb-[clamp(3rem,4vw,4rem)] lg:pb-0 overflow-hidden">
+    <div className="relative w-full bg-[#f8fafc] border-b border-gray-100 min-h-[100svh] h-auto flex flex-col justify-between pt-[clamp(1rem,1.5vw,1.75rem)] pb-[clamp(2.5rem,3vw,3.5rem)] lg:pb-0 overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
@@ -62,12 +91,12 @@ function HeroBanner() {
           <div className="flex flex-col lg:flex-row w-full justify-between items-start lg:items-center gap-10 xl:gap-16">
             {/* Left Side Content */}
             <div className="w-full lg:w-1/2 text-left z-10 relative">
-              <h1 className="text-[clamp(2rem,3.5vw,3rem)] font-extrabold text-[#060D64] leading-[1.1] mb-[clamp(1rem,1.5vw,1.5rem)] tracking-tight uppercase">
+              <h1 className="text-[clamp(1.75rem,2.6vw,2.75rem)] font-extrabold text-[#060D64] leading-[1.1] mb-[clamp(0.875rem,1.1vw,1.25rem)] tracking-tight uppercase">
                 Build An Airport
                 <br />
                 Transportation Business
                 <br />
-                <span className="text-[#2563eb] text-[clamp(2.75rem,5.5vw,4.5rem)] relative inline-block mt-2 font-extrabold">
+                <span className="text-[#2563eb] text-[clamp(2.25rem,4vw,3.75rem)] relative inline-block mt-2 font-extrabold">
                   Together.
                   <svg
                     className="absolute -bottom-2 sm:-bottom-3 left-0 w-full h-2 sm:h-3 text-[#eab308]"
@@ -85,7 +114,7 @@ function HeroBanner() {
                 </span>
               </h1>
 
-              <p className="text-[clamp(1.125rem,1.5vw,1.375rem)] text-[#060D64] font-semibold mb-[clamp(1.5rem,2vw,2rem)] max-w-xl leading-relaxed">
+              <p className="text-[clamp(1.0625rem,1.25vw,1.25rem)] text-[#060D64] font-semibold mb-[clamp(1.25rem,1.5vw,1.75rem)] max-w-xl leading-relaxed">
                 Build your own business, your schedule, and the life you
                 want—while helping travelers every day.
               </p>
@@ -100,7 +129,7 @@ function HeroBanner() {
                 ].map((item, i) => (
                   <li
                     key={i}
-                    className="flex items-center text-[#060D64] font-bold text-[clamp(1rem,1.1vw,1.125rem)]"
+                    className="flex items-center text-[#060D64] font-bold text-[clamp(0.9375rem,1vw,1.0625rem)]"
                   >
                     <CheckCircle2 className="text-white mr-3 w-5 h-5 sm:w-6 sm:h-6 fill-[#2563eb] shrink-0" />
                     <span>{item}</span>
@@ -108,12 +137,27 @@ function HeroBanner() {
                 ))}
               </ul>
 
-              <button className="cursor-pointer bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(1rem,1.25vw,1.25rem)] px-[clamp(1.5rem,2vw,2rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/30 flex items-center justify-between group w-full sm:w-auto mb-[clamp(2rem,3vw,4rem)]">
-                <span className="text-left leading-snug pr-4 text-[clamp(1.125rem,1.5vw,1.5rem)] font-extrabold">
-                  Build Our Airport Transportation Business Today™
-                </span>
-                <ArrowRight className="w-6 h-6 sm:w-7 sm:h-7 shrink-0 group-hover:translate-x-1.5 transition-transform stroke-[2.5]" />
-              </button>
+              {accessToken ? (
+                <button
+                  onClick={openPricingModal}
+                  className="cursor-pointer bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(0.875rem,1vw,1.125rem)] px-[clamp(1.25rem,1.5vw,1.75rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/30 flex items-center justify-between group w-full sm:w-auto mb-[clamp(1.5rem,2vw,3rem)]"
+                >
+                  <span className="text-left leading-snug pr-4 text-[clamp(1rem,1.1vw,1.25rem)] font-extrabold">
+                    Build Our Airport Transportation Business Today™
+                  </span>
+                  <ArrowRight className="w-6 h-6 sm:w-7 sm:h-7 shrink-0 group-hover:translate-x-1.5 transition-transform stroke-[2.5]" />
+                </button>
+              ) : (
+                <Link
+                  to="/signup"
+                  className="cursor-pointer bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(0.875rem,1vw,1.125rem)] px-[clamp(1.25rem,1.5vw,1.75rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/30 flex items-center justify-between group w-full sm:w-auto mb-[clamp(1.5rem,2vw,3rem)]"
+                >
+                  <span className="text-left leading-snug pr-4 text-[clamp(1rem,1.1vw,1.25rem)] font-extrabold">
+                    Build Our Airport Transportation Business Today™
+                  </span>
+                  <ArrowRight className="w-6 h-6 sm:w-7 sm:h-7 shrink-0 group-hover:translate-x-1.5 transition-transform stroke-[2.5]" />
+                </Link>
+              )}
             </div>
 
             {/* Right Side Card */}
@@ -715,18 +759,21 @@ function ReviewsSection() {
         "We launched in 4 days and booked our first airport ride in 72 hours. It's amazing building a business and more freedom together.",
       name: "Mark & Lisa",
       location: "Phoenix, AZ",
+      image: markLisaImage,
     },
     {
       quote:
         "The system is everything we needed. We finally have control of our schedule and our income.",
       name: "Tom & Karen",
       location: "Dallas, TX",
+      image: tomKarenImage,
     },
     {
       quote:
         "We love helping travelers and building a business that's 100% ours. This business has changed our future.",
       name: "Ryan & Michelle",
       location: "Charlotte, NC",
+      image: ryanMichelleImage,
     },
   ];
 
@@ -747,9 +794,10 @@ function ReviewsSection() {
                 {/* Image */}
                 <div className="shrink-0 w-full sm:w-[150px] lg:w-full xl:w-[140px] flex">
                   <img
-                    src={reviewImage}
+                    src={review.image}
                     alt={review.name}
-                    className="w-full h-48 sm:h-auto lg:h-48 xl:h-auto rounded-2xl object-cover shadow-sm"
+                    loading="lazy"
+                    className="w-full h-48 sm:h-auto lg:h-48 xl:h-auto rounded-2xl object-cover object-top shadow-sm"
                   />
                 </div>
 
@@ -862,7 +910,9 @@ function FaqSection() {
   );
 }
 
-function FooterCTASection() {
+function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }) {
+  const { accessToken, user } = useAppSelector((state) => state.auth);
+
   const checkmarks = [
     "No monthly platform fees",
     "Built specifically for couples",
@@ -902,23 +952,23 @@ function FooterCTASection() {
     <section className="bg-white py-[clamp(1.5rem,3vw,3rem)] pb-[clamp(3rem,4vw,4rem)]" id="footer-cta">
       <PageContainer size="full">
         {/* Dark Blue Banner Card - horizontal layout triggered at xl (1240px) to ensure no squeezed typography on tablets or small laptops */}
-        <div className="w-full bg-[#0b0f19] rounded-[2rem] shadow-2xl flex flex-col xl:flex-row items-center justify-between p-[clamp(2rem,4vw,3.5rem)] gap-[clamp(1.5rem,3vw,3rem)] border-b-[6px] border-[#eab308]">
+        <div className="w-full bg-[#0b0f19] rounded-[2rem] shadow-2xl flex flex-col xl:flex-row flex-wrap items-center justify-between p-[clamp(1rem,1.5vw,1.5rem)] gap-[clamp(0.6875rem,0.75vw,1.25rem)] border-b-[6px] border-[#eab308]">
           {/* Left: Icon and Title */}
           <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 shrink-0 text-center sm:text-left">
             {/* Custom Icon Group */}
-            <div className="relative flex items-center justify-center shrink-0 w-[clamp(5rem,6vw,6rem)] h-[clamp(5rem,6vw,6rem)]">
+            <div className="relative flex items-center justify-center shrink-0 w-[clamp(3.25rem,4vw,4rem)] h-[clamp(3.25rem,4vw,4rem)]">
               <RefreshCcw
                 className="w-full h-full text-[#eab308] absolute inset-0"
                 strokeWidth={1.5}
               />
               <Users
-                className="w-[clamp(2.5rem,3vw,3rem)] h-[clamp(2.5rem,3vw,3rem)] text-[#eab308] relative z-10"
+                className="w-[clamp(1.625rem,2vw,2rem)] h-[clamp(1.625rem,2vw,2rem)] text-[#eab308] relative z-10"
                 strokeWidth={1.5}
               />
             </div>
 
             <div className="flex flex-col">
-              <h3 className="text-white font-extrabold text-[clamp(1.25rem,2vw,1.5rem)] tracking-wide leading-snug">
+              <h3 className="text-white font-extrabold text-[clamp(1.0625rem,1.375vw,1.375rem)] tracking-wide leading-snug">
                 ONE GREAT AIRPORT CUSTOMER
                 <br />
                 CAN TURN INTO <span className="text-[#eab308]">YEARS OF</span>
@@ -929,8 +979,8 @@ function FooterCTASection() {
           </div>
 
           {/* Pricing */}
-          <div className="flex flex-col items-center justify-center shrink-0 xl:px-4">
-            <span className="text-[#eab308] text-[clamp(3rem,5vw,4rem)] font-extrabold leading-none tracking-tight mb-2">
+          <div className="flex flex-col items-center justify-center shrink-0">
+            <span className="text-[#eab308] text-[clamp(2.75rem,4vw,3.75rem)] font-extrabold leading-none tracking-tight mb-2">
               $495
             </span>
             <span className="text-white text-[clamp(0.75rem,1vw,0.875rem)] font-bold tracking-widest uppercase">
@@ -939,14 +989,14 @@ function FooterCTASection() {
           </div>
 
           {/* Vertical Divider */}
-          <div className="hidden xl:block w-px h-24 bg-slate-800 shrink-0 mx-2"></div>
+          <div className="hidden xl:block w-px h-[clamp(3rem,4.5vw,4.5rem)] bg-slate-800 shrink-0 mx-2"></div>
 
           {/* Checkmarks */}
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:flex xl:flex-col gap-3 sm:gap-4 xl:gap-3 shrink-0 w-full sm:w-auto">
             {checkmarks.map((item, idx) => (
               <div key={idx} className="flex items-center gap-3">
                 <CheckCircle2 className="w-5 h-5 fill-[#2563eb] text-white shrink-0" />
-                <span className="text-white text-[clamp(0.875rem,1vw,1rem)] font-semibold tracking-wide">
+                <span className="text-white text-[clamp(0.75rem,0.875vw,0.9375rem)] font-semibold tracking-wide">
                   {item}
                 </span>
               </div>
@@ -954,15 +1004,42 @@ function FooterCTASection() {
           </div>
 
           {/* CTA Button */}
-          <div className="shrink-0 w-full xl:w-auto">
-            <button className="cursor-pointer w-full xl:w-auto bg-gradient-to-b from-[#fde047] to-[#eab308] hover:from-[#fef08a] hover:to-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(1.25rem,1.5vw,1.5rem)] px-[clamp(2rem,2.5vw,2.5rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/20 flex items-center justify-center gap-4 group text-[clamp(1rem,1.25vw,1.125rem)]">
-              <span className="text-center">
-                Build Our Airport Transportation
-                <br className="hidden sm:block" />
-                Business Today™
-              </span>
-              <ArrowRight className="w-6 h-6 sm:w-7 sm:h-7 stroke-[3] shrink-0 transition-transform group-hover:translate-x-1.5" />
-            </button>
+          <div className="shrink-0 w-full xl:w-auto flex justify-center">
+            {user?.status === "active" ? (
+              <Link
+                to="/dashboard"
+                className="cursor-pointer w-full xl:w-auto bg-gradient-to-b from-[#fde047] to-[#eab308] hover:from-[#fef08a] hover:to-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(1rem,1.25vw,1.25rem)] px-[clamp(1.25rem,1.5vw,2rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/20 flex items-center justify-center gap-4 group text-[clamp(1rem,1.125vw,1.125rem)]"
+              >
+                <span className="text-center">
+                  Go to Dashboard
+                </span>
+                <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3] shrink-0 transition-transform group-hover:translate-x-1.5" />
+              </Link>
+            ) : accessToken ? (
+              <button
+                onClick={openPricingModal}
+                className="cursor-pointer w-full xl:w-auto bg-gradient-to-b from-[#fde047] to-[#eab308] hover:from-[#fef08a] hover:to-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(1rem,1.25vw,1.25rem)] px-[clamp(1.25rem,1.5vw,2rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/20 flex items-center justify-center gap-4 group text-[clamp(1rem,1.125vw,1.125rem)]"
+              >
+                <span className="text-center">
+                  Build Our Airport Transportation
+                  <br className="hidden sm:block" />
+                  Business Today™
+                </span>
+                <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3] shrink-0 transition-transform group-hover:translate-x-1.5" />
+              </button>
+            ) : (
+              <Link
+                to="/signup"
+                className="cursor-pointer w-full xl:w-auto bg-gradient-to-b from-[#fde047] to-[#eab308] hover:from-[#fef08a] hover:to-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(1rem,1.25vw,1.25rem)] px-[clamp(1.25rem,1.5vw,2rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/20 flex items-center justify-center gap-4 group text-[clamp(1rem,1.125vw,1.125rem)]"
+              >
+                <span className="text-center">
+                  Build Our Airport Transportation
+                  <br className="hidden sm:block" />
+                  Business Today™
+                </span>
+                <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3] shrink-0 transition-transform group-hover:translate-x-1.5" />
+              </Link>
+            )}
           </div>
         </div>
 
@@ -990,9 +1067,12 @@ function FooterCTASection() {
   );
 }
 
-function Navbar() {
+function Navbar({ openPricingModal }: { openPricingModal: () => void }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { accessToken, user } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+  const [logoutUser] = useLogoutUserMutation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -1001,6 +1081,15 @@ function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser().unwrap();
+    } catch (e) {
+      console.error("Logout failed:", e);
+    }
+    dispatch(logOut());
+  };
 
   const navLinks = [
     { label: "How It Works", href: "#how-it-works" },
@@ -1044,21 +1133,38 @@ function Navbar() {
               ))}
             </nav>
 
-            <button
-              className={cn(
-                "cursor-pointer text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg",
-                btnClass,
-              )}
-            >
-              Start My Business — $495
-            </button>
+            {accessToken ? (
+              <ProfileDropdown openPricingModal={openPricingModal} />
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className={cn(
+                    "text-[#0b0f19] text-sm font-semibold tracking-wide transition-colors",
+                    hoverTextClass,
+                  )}
+                >
+                  Login
+                </Link>
+                <button
+                  onClick={openPricingModal}
+                  className={cn(
+                    "cursor-pointer text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg",
+                    btnClass,
+                  )}
+                >
+                  Start My Business — $495
+                </button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Toggle */}
           <button
-            className="cursor-pointer lg:hidden text-[#0b0f19] z-50"
+            className="cursor-pointer lg:hidden text-[#0b0f19] z-50 p-2 -mr-2"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle Menu"
+            aria-expanded={isMobileMenuOpen}
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -1068,28 +1174,93 @@ function Navbar() {
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="lg:hidden absolute top-full left-0 right-0 bg-white border-t border-slate-200 shadow-xl">
-          <nav className="flex flex-col p-6 gap-6">
+          <nav className="flex flex-col p-6 gap-4">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={cn(
-                  "text-[#0b0f19] text-lg font-semibold transition-colors",
+                  "text-[#0b0f19] text-lg font-semibold transition-colors py-1",
                   hoverTextClass,
                 )}
               >
                 {link.label}
               </a>
             ))}
-            <button
-              className={cn(
-                "cursor-pointer text-white font-bold py-3 px-6 rounded-md transition-colors w-full mt-4",
-                btnClass,
-              )}
-            >
-              Start My Business — $495
-            </button>
+
+            {accessToken ? (
+              <>
+                {user?.role === "admin" ? (
+                  <Link
+                    to="/admin"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-[#0b0f19] hover:text-[#eab308] text-lg font-semibold py-4 border-b border-slate-100 transition-colors"
+                  >
+                    Admin Dashboard
+                  </Link>
+                ) : user?.status === "active" ? (
+                  <Link
+                    to="/dashboard"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-[#0b0f19] hover:text-[#eab308] text-lg font-semibold py-4 border-b border-slate-100 transition-colors"
+                  >
+                    Dashboard
+                  </Link>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      openPricingModal();
+                    }}
+                    className="text-left text-[#0b0f19] hover:text-[#eab308] text-lg font-semibold py-4 border-b border-slate-100 transition-colors w-full"
+                  >
+                    Complete Checkout
+                  </button>
+                )}
+                <Link
+                  to={user?.role === "admin" ? "/admin/settings" : "/profile"}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-[#0b0f19] hover:text-[#eab308] text-lg font-semibold py-4 border-b border-slate-100 transition-colors"
+                >
+                  {user?.role === "admin" ? "Admin Settings" : "Profile & Settings"}
+                </Link>
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="text-left text-red-400 hover:text-red-300 text-lg font-semibold py-4 transition-colors w-full"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={cn(
+                    "text-[#0b0f19] text-lg font-semibold transition-colors py-1",
+                    hoverTextClass,
+                  )}
+                >
+                  Login
+                </Link>
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    openPricingModal();
+                  }}
+                  className={cn(
+                    "cursor-pointer text-white font-bold py-3 px-6 rounded-md transition-colors w-full mt-4 min-h-[52px]",
+                    btnClass,
+                  )}
+                >
+                  Start My Business — $495
+                </button>
+              </>
+            )}
           </nav>
         </div>
       )}

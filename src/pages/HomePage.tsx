@@ -29,15 +29,21 @@ import { PageContainer } from "../components/layout/PageContainer";
 import seniorBanner from "../assets/standardBanner.png";
 import coupleComparisonLeft from "../assets/coupleComparisonSectionLeft.png";
 import coupleComparisonRight from "../assets/coupleComparisonSectionRight.png";
-import reviewImage from "../assets/review.jpg";
-import standardImage from "../assets/standard.png";
-import reviewCoupleImage from "../assets/reviewCouple.png";
+import timGImage from "../assets/Main_selling_Page_Tim_G.jpg";
+import tomRImage from "../assets/Main_Page_Tom_R.jpg";
+import williamRImage from "../assets/Main_Page_william_R.jpg";
 
 export default function HomePage() {
-  const [showPricingModal, setShowPricingModal] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
-  const { accessToken, user } = useAppSelector((state) => state.auth);
+  const { accessToken } = useAppSelector((state) => state.auth);
+
+  // Auto-open the pricing modal when redirected here with ?showPricing=true.
+  // LoginPage only sends non-active riders here, and the modal closes on
+  // explicit user action — so no status re-check is needed at render time.
+  const [showPricingModal, setShowPricingModal] = useState(
+    () => searchParams.get("showPricing") === "true" && !!accessToken
+  );
 
   // Fetch the latest user profile details (status, verification, etc.) on landing
   const { data: profileData } = useGetRiderProfileQuery(undefined, {
@@ -51,24 +57,12 @@ export default function HomePage() {
     }
   }, [profileData, dispatch]);
 
-  // Auto-open pricing modal if redirected from login with ?showPricing=true
+  // Clear the ?showPricing=true query param once the modal has been considered
   useEffect(() => {
-    if (
-      searchParams.get("showPricing") === "true" &&
-      accessToken &&
-      user?.status !== "active"
-    ) {
-      setShowPricingModal(true);
+    if (searchParams.get("showPricing") === "true") {
       setSearchParams({}, { replace: true });
     }
-  }, [searchParams, accessToken, user?.status, setSearchParams]);
-
-  // Auto-close pricing modal if user status becomes active
-  useEffect(() => {
-    if (user?.status === "active") {
-      setShowPricingModal(false);
-    }
-  }, [user?.status]);
+  }, [searchParams, setSearchParams]);
 
   const openPricingModal = () => setShowPricingModal(true);
 
@@ -159,12 +153,20 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
               {accessToken ? (
                 <ProfileDropdown openPricingModal={openPricingModal} />
               ) : (
-                <Link
-                  to="/signup"
-                  className="cursor-pointer bg-[#15803d] hover:bg-[#166534] text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg inline-block"
-                >
-                  Start My Business — $495
-                </Link>
+                <>
+                  <Link
+                    to="/login"
+                    className="text-white font-medium hover:text-[#39b54a] transition-colors text-sm"
+                  >
+                    Login
+                  </Link>
+                  <button
+                    onClick={openPricingModal}
+                    className="cursor-pointer bg-[#15803d] hover:bg-[#166534] text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg"
+                  >
+                    Start My Business — $495
+                  </button>
+                </>
               )}
             </nav>
 
@@ -217,7 +219,15 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
           </a>
           {accessToken ? (
             <>
-              {user?.status === "active" ? (
+              {user?.role === "admin" ? (
+                <Link
+                  to="/admin"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-white hover:text-[#39b54a] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
+                >
+                  Admin Dashboard
+                </Link>
+              ) : user?.status === "active" ? (
                 <Link
                   to="/dashboard"
                   onClick={() => setMobileMenuOpen(false)}
@@ -237,11 +247,11 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
                 </button>
               )}
               <Link
-                to="/profile"
+                to={user?.role === "admin" ? "/admin/settings" : "/profile"}
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-white hover:text-[#39b54a] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
               >
-                Profile & Settings
+                {user?.role === "admin" ? "Admin Settings" : "Profile & Settings"}
               </Link>
               <button
                 onClick={() => {
@@ -254,13 +264,24 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
               </button>
             </>
           ) : (
-            <Link
-              to="/signup"
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-white hover:text-[#39b54a] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
-            >
-              Start My Business — $495
-            </Link>
+            <>
+              <Link
+                to="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-white hover:text-[#39b54a] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
+              >
+                Login
+              </Link>
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  openPricingModal();
+                }}
+                className="cursor-pointer bg-[#15803d] hover:bg-[#166534] text-white font-bold py-3 px-6 rounded-md transition-colors w-full mt-4 min-h-[52px]"
+              >
+                Start My Business — $495
+              </button>
+            </>
           )}
         </div>
       )}
@@ -768,7 +789,7 @@ function HowItWorksSection() {
       number: 3,
       icon: Rocket,
       title: "Build and Launch",
-      description: "Follow the step-by-step guidance\nto create your booking flow\nand personalized selling page.\nPrefer assistance? Add the\noptional $199 We Do It for You\nupgrade.",
+      description: "Follow the step-by-step guidance\nto provide the information, service\ndetails, pricing, and branding needed\nfor your booking flow and personalized\nselling page. Prefer additional\nassistance? Add the optional $199\nWe Do It for You upgrade.",
     },
   ];
 
@@ -835,21 +856,21 @@ function ReviewsSection() {
         "We launched in 3 weeks and booked our first airport ride in 7 days. I finally have freedom and extra income on my own terms.",
       name: "Tim G.",
       location: "Knoxville, TN",
-      image: reviewImage,
+      image: timGImage,
     },
     {
       quote:
         "The system is simple, professional, and it works. I set my schedule and now I'm meeting great people every day.",
       name: "Tom R.",
       location: "Tampa, FL",
-      image: standardImage,
+      image: tomRImage,
     },
     {
       quote:
         "We started part time and now we're fully booked most weeks. This business has given us the life we wanted.",
       name: "William B.",
       location: "Houston, TX",
-      image: reviewCoupleImage,
+      image: williamRImage,
     },
   ];
 
@@ -872,7 +893,8 @@ function ReviewsSection() {
                   <img
                     src={review.image}
                     alt={review.name}
-                    className="w-full h-40 sm:h-full rounded-2xl object-cover shadow-sm"
+                    loading="lazy"
+                    className="w-full h-40 sm:h-full rounded-xl object-cover object-top shadow-sm"
                   />
                 </div>
 
@@ -920,7 +942,7 @@ function FaqSection() {
     {
       question: "Do I need experience with websites or technology?",
       answer:
-        "No. The $495 QuitTheApp system includes step-by-step guidance so you can complete the setup yourself. Prefer to have everything handled for you? Add the optional $199 We Do It for You upgrade, and our team will complete the setup.",
+        "No. The $495 QuitTheApp DIY system includes step-by-step guidance for submitting your business information, setting up your booking preferences, and preparing the content needed for your personalized selling page. Prefer additional assistance? Add the optional $199 We Do It for You upgrade, and our team will handle the additional setup work for you.",
     },
     {
       question: "How quickly can I get my system?",
@@ -930,7 +952,12 @@ function FaqSection() {
     {
       question: "Is the $495 really a one-time payment?",
       answer:
-        "Yes. The $495 QuitTheApp DIY system is a one-time payment with no monthly QuitTheApp platform fee. An optional $199 We Do It for You upgrade is available. Normal business expenses such as scheduling software, hosting, payment processing, commercial insurance, licensing, and operating costs may still apply.",
+        "Yes. The $495 QuitTheApp DIY system is a one-time payment with no monthly QuitTheApp platform fee. An optional $199 We Do It for You upgrade is available. Normal business expenses such as scheduling software, domain registration, payment processing, commercial insurance, licensing, fuel, vehicle maintenance, and other operating costs may still apply.",
+    },
+    {
+      question: "Is my personalized webpage and hosting included?",
+      answer:
+        "Yes. QuitTheApp builds and hosts your personalized selling page. Customers using the $495 DIY system provide their business information and follow the guided setup process. Customers who purchase the optional $199 We Do It for You upgrade receive additional setup assistance from our team. Separate third-party business expenses may still apply.",
     },
     // Row 2
     {
@@ -988,7 +1015,7 @@ function FaqSection() {
 function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }) {
   const { accessToken, user } = useAppSelector((state) => state.auth);
   const checkmarks = [
-    "No monthly platform fees",
+    "No monthly QuitTheApp platform fees",
     "Built for independent drivers",
     "Real human support",
     "Secure checkout",
@@ -1008,12 +1035,12 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
     {
       icon: CreditCard,
       title: "One-Time Payment",
-      subtitle: "No Monthly Fees",
+      subtitle: "No Monthly QuitTheApp Platform Fees",
     },
     {
       icon: Headset,
-      title: "7-Day Support",
-      subtitle: "Real People Here for You",
+      title: "Real Human Support",
+      subtitle: "Help From People Who Understand the Business",
     },
     {
       icon: ShieldCheck,
@@ -1026,23 +1053,23 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
     <section className="bg-white py-3 pb-8" id="footer-cta">
       <PageContainer size="full">
         {/* Dark Blue Banner Card */}
-        <div className="w-full bg-[#040a23] rounded-2xl shadow-xl flex flex-col lg:flex-row items-center justify-between p-6 gap-8 lg:gap-2 xl:gap-4 border border-slate-800">
+        <div className="w-full bg-[#040a23] rounded-2xl shadow-xl flex flex-col lg:flex-row flex-wrap items-center justify-between p-[clamp(1rem,2.5vw,1.5rem)] gap-[clamp(1rem,2vw,1.5rem)] lg:gap-[clamp(0.5rem,1vw,1rem)] border border-slate-800">
           {/* Left: Icon and Title */}
-          <div className="flex items-center gap-4 lg:gap-3 xl:gap-6 lg:w-auto shrink-0">
+          <div className="flex items-center gap-[clamp(0.75rem,1.5vw,1.5rem)] lg:w-auto shrink-0 min-w-0 flex-1 lg:flex-none justify-center lg:justify-start">
             {/* Custom Icon Group */}
-            <div className="relative flex items-center justify-center shrink-0 w-16 h-16 sm:w-20 sm:h-20 lg:w-16 lg:h-16 xl:w-20 xl:h-20">
+            <div className="relative flex items-center justify-center shrink-0 w-[clamp(3rem,6vw,5rem)] h-[clamp(3rem,6vw,5rem)]">
               <RefreshCcw
                 className="w-full h-full text-[#39b54a] absolute inset-0"
                 strokeWidth={1.5}
               />
               <Users
-                className="w-8 h-8 sm:w-10 sm:h-10 lg:w-8 lg:h-8 xl:w-10 xl:h-10 text-white relative z-10"
+                className="w-[clamp(1.5rem,3vw,2.5rem)] h-[clamp(1.5rem,3vw,2.5rem)] text-white relative z-10"
                 strokeWidth={1.5}
               />
             </div>
 
-            <div className="flex flex-col">
-              <h3 className="text-white font-bold text-base sm:text-xl lg:text-[15px] xl:text-[20px] 2xl:text-[22px] tracking-wide leading-snug whitespace-nowrap">
+            <div className="flex flex-col min-w-0 text-center lg:text-left">
+              <h3 className="text-white font-bold text-[clamp(0.875rem,1.6vw,1.375rem)] tracking-wide leading-snug">
                 ONE GREAT AIRPORT CLIENT
                 <br />
                 CAN LEAD TO <span className="text-[#39b54a]">YEARS OF</span>
@@ -1053,31 +1080,31 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
           </div>
 
           {/* Pricing */}
-          <div className="flex flex-col items-center justify-center shrink-0 lg:px-2 xl:px-4">
-            <span className="text-[#39b54a] text-5xl sm:text-6xl lg:text-4xl xl:text-6xl font-extrabold leading-none tracking-tight mb-1">
+          <div className="flex flex-col items-center justify-center shrink-0 min-w-0">
+            <span className="text-[#39b54a] text-[clamp(2.5rem,5vw,3.75rem)] font-extrabold leading-none tracking-tight mb-1">
               $495
             </span>
-            <span className="text-white text-xs sm:text-sm lg:text-[10px] xl:text-sm font-bold tracking-widest uppercase whitespace-nowrap">
+            <span className="text-white text-[clamp(0.625rem,1vw,0.875rem)] font-bold tracking-widest uppercase">
               ONE-TIME PAYMENT
             </span>
-            <span className="text-white/80 text-[10px] lg:text-[9px] xl:text-[11px] font-medium tracking-wide text-center mt-1">
+            <span className="text-white/80 text-[clamp(0.625rem,0.9vw,0.75rem)] font-medium tracking-wide text-center mt-1 max-w-[260px]">
               Includes the complete QuitTheApp DIY launch system.<br />
               Optional $199 We Do It for You upgrade available.
             </span>
           </div>
 
           {/* Vertical Divider */}
-          <div className="hidden lg:block w-px h-24 lg:h-20 xl:h-24 bg-slate-700/80 shrink-0 mx-1 xl:mx-2"></div>
+          <div className="hidden lg:block w-px h-[clamp(4rem,8vw,6rem)] bg-slate-700/80 shrink-0"></div>
 
           {/* Checkmarks */}
-          <div className="flex flex-col gap-2 lg:gap-1 xl:gap-2 shrink-0">
+          <div className="flex flex-col gap-[clamp(0.25rem,0.6vw,0.5rem)] shrink-0">
             {checkmarks.map((item, idx) => (
               <div
                 key={idx}
-                className="flex items-center gap-3 lg:gap-2 xl:gap-3"
+                className="flex items-center gap-[clamp(0.5rem,1vw,0.75rem)] min-w-0 justify-center lg:justify-start"
               >
-                <CheckCircle2 className="w-5 h-5 lg:w-4 lg:h-4 xl:w-5 xl:h-5 fill-[#39b54a] text-white shrink-0" />
-                <span className="text-white text-[13px] sm:text-sm lg:text-[11px] xl:text-[13px] font-semibold tracking-wide whitespace-nowrap">
+                <CheckCircle2 className="w-[clamp(1rem,1.6vw,1.25rem)] h-[clamp(1rem,1.6vw,1.25rem)] fill-[#39b54a] text-white shrink-0" />
+                <span className="text-white text-[clamp(0.75rem,1.1vw,0.875rem)] font-semibold tracking-wide">
                   {item}
                 </span>
               </div>
@@ -1085,45 +1112,45 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
           </div>
 
           {/* CTA Button */}
-          <div className="shrink-0 w-full lg:w-auto mt-4 lg:mt-0">
+          <div className="shrink-0 w-full lg:w-auto mt-1 lg:mt-0 flex justify-center">
             {user?.status === "active" ? (
               <Link
                 to="/dashboard"
-                className="cursor-pointer w-full lg:w-auto bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-4 px-6 lg:py-3 lg:px-4 xl:py-4 xl:px-6 rounded-xl transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-center gap-4 lg:gap-3 xl:gap-4 group text-sm sm:text-base lg:text-[14px] xl:text-[18px]"
+                className="cursor-pointer w-full sm:w-auto bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-[clamp(0.75rem,1.2vw,1rem)] px-[clamp(1rem,1.8vw,1.5rem)] rounded-xl transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-center gap-[clamp(0.75rem,1.4vw,1rem)] group text-[clamp(0.875rem,1.2vw,1.125rem)] min-w-0"
               >
-                <span className="text-center whitespace-nowrap drop-shadow-sm">
+                <span className="text-center drop-shadow-sm leading-snug">
                   Go to Dashboard
                 </span>
-                <div className="w-7 h-7 xl:w-8 xl:h-8 bg-white rounded-full flex items-center justify-center shrink-0">
-                  <ArrowRight className="w-4 h-4 xl:w-5 xl:h-5 stroke-[3] text-[#16a34a] transition-transform group-hover:translate-x-0.5" />
+                <div className="w-[clamp(1.5rem,2.4vw,2rem)] h-[clamp(1.5rem,2.4vw,2rem)] bg-white rounded-full flex items-center justify-center shrink-0">
+                  <ArrowRight className="w-[clamp(0.875rem,1.4vw,1.25rem)] h-[clamp(0.875rem,1.4vw,1.25rem)] stroke-[3] text-[#16a34a] transition-transform group-hover:translate-x-0.5" />
                 </div>
               </Link>
             ) : accessToken ? (
               <button
                 onClick={openPricingModal}
-                className="cursor-pointer w-full lg:w-auto bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-4 px-6 lg:py-3 lg:px-4 xl:py-4 xl:px-6 rounded-xl transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-center gap-4 lg:gap-3 xl:gap-4 group text-sm sm:text-base lg:text-[14px] xl:text-[18px]"
+                className="cursor-pointer w-full sm:w-auto bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-[clamp(0.75rem,1.2vw,1rem)] px-[clamp(1rem,1.8vw,1.5rem)] rounded-xl transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-center gap-[clamp(0.75rem,1.4vw,1rem)] group text-[clamp(0.875rem,1.2vw,1.125rem)] min-w-0"
               >
-                <span className="text-center whitespace-nowrap drop-shadow-sm">
+                <span className="text-center drop-shadow-sm leading-snug">
                   Start My Private Airport
                   <br />
                   Business™ — $495
                 </span>
-                <div className="w-7 h-7 xl:w-8 xl:h-8 bg-white rounded-full flex items-center justify-center shrink-0">
-                  <ArrowRight className="w-4 h-4 xl:w-5 xl:h-5 stroke-[3] text-[#16a34a] transition-transform group-hover:translate-x-0.5" />
+                <div className="w-[clamp(1.5rem,2.4vw,2rem)] h-[clamp(1.5rem,2.4vw,2rem)] bg-white rounded-full flex items-center justify-center shrink-0">
+                  <ArrowRight className="w-[clamp(0.875rem,1.4vw,1.25rem)] h-[clamp(0.875rem,1.4vw,1.25rem)] stroke-[3] text-[#16a34a] transition-transform group-hover:translate-x-0.5" />
                 </div>
               </button>
             ) : (
               <Link
                 to="/signup"
-                className="cursor-pointer w-full lg:w-auto bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-4 px-6 lg:py-3 lg:px-4 xl:py-4 xl:px-6 rounded-xl transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-center gap-4 lg:gap-3 xl:gap-4 group text-sm sm:text-base lg:text-[14px] xl:text-[18px]"
+                className="cursor-pointer w-full sm:w-auto bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-[clamp(0.75rem,1.2vw,1rem)] px-[clamp(1rem,1.8vw,1.5rem)] rounded-xl transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-center gap-[clamp(0.75rem,1.4vw,1rem)] group text-[clamp(0.875rem,1.2vw,1.125rem)] min-w-0"
               >
-                <span className="text-center whitespace-nowrap drop-shadow-sm">
+                <span className="text-center drop-shadow-sm leading-snug">
                   Start My Private Airport
                   <br />
                   Business™ — $495
                 </span>
-                <div className="w-7 h-7 xl:w-8 xl:h-8 bg-white rounded-full flex items-center justify-center shrink-0">
-                  <ArrowRight className="w-4 h-4 xl:w-5 xl:h-5 stroke-[3] text-[#16a34a] transition-transform group-hover:translate-x-0.5" />
+                <div className="w-[clamp(1.5rem,2.4vw,2rem)] h-[clamp(1.5rem,2.4vw,2rem)] bg-white rounded-full flex items-center justify-center shrink-0">
+                  <ArrowRight className="w-[clamp(0.875rem,1.4vw,1.25rem)] h-[clamp(0.875rem,1.4vw,1.25rem)] stroke-[3] text-[#16a34a] transition-transform group-hover:translate-x-0.5" />
                 </div>
               </Link>
             )}
@@ -1131,18 +1158,18 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
         </div>
 
         {/* Trust Badges */}
-        <div className="mt-6 flex flex-wrap lg:flex-nowrap items-center justify-center lg:justify-between gap-4 w-full px-2">
+        <div className="mt-[clamp(1rem,2vw,1.5rem)] flex flex-wrap items-center justify-center lg:justify-between gap-x-[clamp(0.75rem,1.5vw,1.5rem)] gap-y-[clamp(0.75rem,1.5vw,1rem)] w-full px-1">
           {trustBadges.map((badge, idx) => (
             <div
               key={idx}
-              className="flex items-center gap-2 lg:gap-3 w-[45%] sm:w-[30%] lg:w-auto"
+              className="flex items-center gap-[clamp(0.5rem,1vw,0.75rem)] w-[45%] sm:w-[30%] lg:w-auto min-w-0"
             >
-              <badge.icon className="w-6 h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8 text-[#4f46e5] shrink-0 stroke-[1.5]" />
-              <div className="flex flex-col">
-                <span className="text-[#1a1f71] font-bold text-[10px] lg:text-[11px] xl:text-xs leading-tight whitespace-nowrap">
+              <badge.icon className="w-[clamp(1.25rem,2vw,2rem)] h-[clamp(1.25rem,2vw,2rem)] text-[#4f46e5] shrink-0 stroke-[1.5]" />
+              <div className="flex flex-col min-w-0">
+                <span className="text-[#1a1f71] font-bold text-[clamp(0.625rem,0.85vw,0.75rem)] leading-tight">
                   {badge.title}
                 </span>
-                <span className="text-[#1a1f71] font-medium text-[9px] lg:text-[10px] xl:text-[11px] leading-tight whitespace-nowrap">
+                <span className="text-[#1a1f71] font-medium text-[clamp(0.5625rem,0.75vw,0.6875rem)] leading-tight">
                   {badge.subtitle}
                 </span>
               </div>
@@ -1151,10 +1178,10 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
 
           {/* Copyright */}
           <div className="w-[45%] sm:w-[30%] lg:w-auto flex flex-col items-start lg:items-end justify-center">
-            <span className="text-slate-500 font-medium text-[10px] lg:text-[11px] xl:text-xs leading-tight whitespace-nowrap">
+            <span className="text-slate-500 font-medium text-[clamp(0.625rem,0.85vw,0.75rem)] leading-tight">
               © 2026 QuitTheApp.
             </span>
-            <span className="text-slate-500 font-medium text-[10px] lg:text-[11px] xl:text-xs leading-tight whitespace-nowrap">
+            <span className="text-slate-500 font-medium text-[clamp(0.625rem,0.85vw,0.75rem)] leading-tight">
               All Rights Reserved.
             </span>
           </div>

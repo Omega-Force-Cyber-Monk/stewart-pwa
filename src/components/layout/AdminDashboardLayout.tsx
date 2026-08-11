@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
-  // CalendarDays,
   Upload,
   Receipt,
   LifeBuoy,
@@ -12,15 +11,21 @@ import {
   Menu,
   X,
   Bell,
+  ClipboardList,
+  UserCog,
 } from "lucide-react";
 import { cn } from "../../lib/cn";
 import { LogoutModal } from "../admin/LogoutModal";
+import { useAppDispatch, useAppSelector } from "../../hooks/storeHooks";
+import { logOut } from "../../store/features/auth/authSlice";
+import { useLogoutUserMutation } from "../../store/api/Auth/auth.api";
 
 const sidebarNavItems = [
   { name: "Dashboard", icon: LayoutDashboard, path: "/admin" },
   { name: "Driver Management", icon: Users, path: "/admin/drivers" },
-  // { name: "Bookings Management", icon: CalendarDays, path: "/admin/bookings" },
+  { name: "User Management", icon: UserCog, path: "/admin/users" },
   { name: "Resource Management", icon: Upload, path: "/admin/resources" },
+  { name: "Checklist Items", icon: ClipboardList, path: "/admin/checklist-items" },
   { name: "Billing", icon: Receipt, path: "/admin/billings" },
   { name: "Support", icon: LifeBuoy, path: "/admin/support" },
   { name: "Settings", icon: Settings, path: "/admin/settings" },
@@ -36,8 +41,23 @@ export function AdminDashboardLayout({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.auth);
+  const [logoutUser] = useLogoutUserMutation();
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+
+  const handleLogout = async () => {
+    setIsLogoutModalOpen(false);
+    try {
+      await logoutUser().unwrap();
+    } catch (e) {
+      console.error("Logout failed:", e);
+    }
+    dispatch(logOut());
+    navigate("/login");
+  };
 
   return (
     <div className="flex h-[100dvh] w-full bg-[#f8fafc] font-sans overflow-hidden">
@@ -127,11 +147,11 @@ export function AdminDashboardLayout({
             
             <div className="flex items-center gap-3 border-l border-slate-700 pl-6">
               <div className="flex flex-col items-end hidden sm:flex">
-                <span className="text-sm font-semibold text-white">Mark</span>
-                <span className="text-xs text-slate-400 font-medium">Admin</span>
+                <span className="text-sm font-semibold text-white">{user?.name || "Admin"}</span>
+                <span className="text-xs text-slate-400 font-medium capitalize">{user?.role || "admin"}</span>
               </div>
               <div className="h-10 w-10 rounded-full bg-[#1a56ff] text-white flex items-center justify-center font-bold shadow-sm border border-slate-800">
-                MK
+                {(user?.name || user?.email || "A").slice(0, 2).toUpperCase()}
               </div>
             </div>
           </div>
@@ -145,13 +165,10 @@ export function AdminDashboardLayout({
         </main>
       </div>
 
-      <LogoutModal 
-        isOpen={isLogoutModalOpen} 
-        onClose={() => setIsLogoutModalOpen(false)} 
-        onConfirm={() => {
-          setIsLogoutModalOpen(false);
-          // Proceed with logout logic (e.g. redirecting)
-        }} 
+      <LogoutModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={handleLogout}
       />
     </div>
   );

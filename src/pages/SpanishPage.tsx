@@ -1,6 +1,6 @@
 import spanishLogo from "../assets/spanishLogo.png";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Menu, X, Plane, User } from "lucide-react";
 import { cn } from "../lib/cn";
 import {
@@ -21,30 +21,58 @@ import {
   Clock,
 } from "lucide-react";
 import { PageContainer } from "../components/layout/PageContainer";
+import { ProfileDropdown } from "../components/ProfileDropdown";
+import { PricingModal } from "../components/PricingModal";
+import { useAppDispatch, useAppSelector } from "../hooks/storeHooks";
+import { logOut } from "../store/features/auth/authSlice";
+import { useLogoutUserMutation } from "../store/api/Auth/auth.api";
 import spanishBanner from "../assets/spanishBanner.png";
 import reviewImage from "../assets/review.jpg";
 import standardImage from "../assets/standard.png";
 import reviewCoupleImage from "../assets/reviewCouple.png";
 
 export default function SpanishPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { accessToken } = useAppSelector((state) => state.auth);
+
+  // Auto-open the pricing modal when redirected here with ?showPricing=true.
+  const [showPricingModal, setShowPricingModal] = useState(
+    () => searchParams.get("showPricing") === "true" && !!accessToken
+  );
+
+  // Clear the ?showPricing=true query param once considered
+  useEffect(() => {
+    if (searchParams.get("showPricing") === "true") {
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
+
+  const openPricingModal = () => setShowPricingModal(true);
+
   return (
     <>
-      <SpanishNavbar />
-      <HeroBanner />
+      {showPricingModal && (
+        <PricingModal onClose={() => setShowPricingModal(false)} />
+      )}
+      <SpanishNavbar openPricingModal={openPricingModal} />
+      <HeroBanner openPricingModal={openPricingModal} />
       <FeaturesSection />
       <ComparisonSection />
       <WhyWinSection />
       <HowItWorksSection />
       <ReviewsSection />
       <FaqSection />
-      <FooterCTASection />
+      <FooterCTASection openPricingModal={openPricingModal} />
     </>
   );
 }
 
-function SpanishNavbar() {
+function SpanishNavbar({ openPricingModal }: { openPricingModal: () => void }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { accessToken, user } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+  const [logoutUser] = useLogoutUserMutation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -53,6 +81,15 @@ function SpanishNavbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser().unwrap();
+    } catch (e) {
+      console.error("Logout failed:", e);
+    }
+    dispatch(logOut());
+  };
 
   return (
     <>
@@ -104,12 +141,24 @@ function SpanishNavbar() {
                 </a>
               </nav>
 
-              <a
-                href="#pricing"
-                className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg"
-              >
-                Empezar Mi Negocio — $495
-              </a>
+              {accessToken ? (
+                <ProfileDropdown openPricingModal={openPricingModal} />
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="text-white hover:text-[#22c55e] text-sm font-semibold transition-colors"
+                  >
+                    Iniciar sesión
+                  </Link>
+                  <button
+                    onClick={openPricingModal}
+                    className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg"
+                  >
+                    Empezar mi negocio — $495
+                  </button>
+                </>
+              )}
             </div>
 
             {/* Mobile Menu Toggle */}
@@ -128,8 +177,7 @@ function SpanishNavbar() {
         </PageContainer>
       </nav>
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-[#040a23] pt-24 px-6 flex flex-col lg:hidden">
-          {/* Mobile menu logic can go here, keeping it simple for now */}
+        <div className="fixed inset-0 z-40 bg-[#040a23] pt-24 px-6 flex flex-col lg:hidden overflow-y-auto">
           <a
             href="#how-it-works"
             onClick={() => setMobileMenuOpen(false)}
@@ -158,13 +206,82 @@ function SpanishNavbar() {
           >
             FAQ
           </a>
+
+          {accessToken ? (
+            <>
+              {user?.role === "admin" ? (
+                <Link
+                  to="/admin"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-white hover:text-[#22c55e] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
+                >
+                  Panel de Administración
+                </Link>
+              ) : user?.status === "active" ? (
+                <Link
+                  to="/dashboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-white hover:text-[#22c55e] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
+                >
+                  Panel de Control
+                </Link>
+              ) : (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    openPricingModal();
+                  }}
+                  className="text-left text-white hover:text-[#22c55e] text-lg font-semibold py-4 border-b border-white/10 transition-colors w-full"
+                >
+                  Completar Compra
+                </button>
+              )}
+              <Link
+                to={user?.role === "admin" ? "/admin/settings" : "/profile"}
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-white hover:text-[#22c55e] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
+              >
+                {user?.role === "admin" ? "Configuración de Administración" : "Perfil y Configuración"}
+              </Link>
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  handleLogout();
+                }}
+                className="text-left text-red-400 hover:text-red-300 text-lg font-semibold py-4 border-b border-white/10 transition-colors w-full"
+              >
+                Cerrar sesión
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-white hover:text-[#22c55e] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
+              >
+                Iniciar sesión
+              </Link>
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  openPricingModal();
+                }}
+                className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-3 px-6 rounded-md transition-colors w-full mt-4 min-h-[52px]"
+              >
+                Empezar mi negocio — $495
+              </button>
+            </>
+          )}
         </div>
       )}
     </>
   );
 }
 
-function HeroBanner() {
+function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
+  const { accessToken } = useAppSelector((state) => state.auth);
+
   return (
     <div className="relative w-full min-h-[100svh] h-auto flex flex-col justify-between overflow-hidden bg-[#040a23] pt-[80px]">
       {/* Background Image */}
@@ -194,16 +311,16 @@ function HeroBanner() {
             </h1>
             <p className="text-white/90 text-[clamp(1rem,1.5vw,1.125rem)] font-medium mb-8 max-w-[550px] leading-relaxed">
               QuitTheApp te brinda las herramientas para lanzar tu propio
-              negocio privado de transporte al aeropuerto, recibir reservas
-              directas, crear una base de clientes recurrentes y construir un
-              negocio que controlas.
+              negocio privado de transporte al aeropuerto, aceptar solicitudes
+              de reserva directa, crear una base de clientes recurrentes y
+              construir un negocio que tú controlas.
             </p>
             <ul className="space-y-3 mb-10">
               {[
                 "Construye tu propia lista de clientes",
-                "Recibe reservas directas",
+                "Acepta solicitudes de reserva directa",
                 "Establece tus propias tarifas y horarios",
-                "Genera viajes recurrentes y referidos",
+                "Genera clientes recurrentes y recomendaciones",
                 "Crea un negocio que tú controlas",
               ].map((item, i) => (
                 <li
@@ -215,12 +332,27 @@ function HeroBanner() {
                 </li>
               ))}
             </ul>
-            <button className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-4 px-6 rounded-xl transition-colors flex items-center justify-between group w-full sm:w-auto text-[clamp(1rem,1.2vw,1.1rem)]">
-              <span className="text-left pr-4">
-                Empieza Tu Negocio Privado de Transporte — $495
-              </span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform shrink-0" />
-            </button>
+            {accessToken ? (
+              <button
+                onClick={openPricingModal}
+                className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-4 px-6 rounded-xl transition-colors flex items-center justify-between group w-full sm:w-auto text-[clamp(1rem,1.2vw,1.1rem)]"
+              >
+                <span className="text-left pr-4">
+                  Empezar mi negocio privado de transporte — $495
+                </span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform shrink-0" />
+              </button>
+            ) : (
+              <Link
+                to="/signup"
+                className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-4 px-6 rounded-xl transition-colors flex items-center justify-between group w-full sm:w-auto text-[clamp(1rem,1.2vw,1.1rem)]"
+              >
+                <span className="text-left pr-4">
+                  Empezar mi negocio privado de transporte — $495
+                </span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform shrink-0" />
+              </Link>
+            )}
           </div>
         </PageContainer>
       </div>
@@ -290,25 +422,25 @@ const features = [
     icon: CalendarDays,
     title: "Sistema Rápido de Reservas™",
     description:
-      "Crea un sistema profesional para que tus clientes soliciten transporte privado al aeropuerto directamente contigo.",
+      "Crea un flujo profesional de reservas que permita a tus clientes solicitar transporte privado al aeropuerto directamente con tu negocio.",
   },
   {
     icon: Users,
     title: "Centro de Adquisición de Clientes™",
     description:
-      "Utiliza tarjetas QR, herramientas de referidos, plantillas de contacto y estrategias prácticas para atraer nuevos clientes.",
+      "Utiliza tarjetas QR, herramientas de recomendación, plantillas de contacto y estrategias prácticas para atraer nuevos clientes y generar reservas directas.",
   },
   {
     icon: Monitor,
-    title: "Página de Venta Personalizada™",
+    title: "Página Personalizada de Ventas™",
     description:
-      "Muestra quién eres, explica tus servicios y brinda a los viajeros un lugar profesional para conocerte y solicitar un viaje.",
+      "Muestra quién eres, explica tus servicios y brinda a los viajeros un espacio profesional para conocerte y solicitar una reserva.",
   },
   {
     icon: RefreshCcw,
     title: "Motor de Clientes Recurrentes™",
     description:
-      "Da seguimiento, solicita reseñas, fomenta referidos y convierte cada buen viaje en futuras reservas.",
+      "Da seguimiento, solicita reseñas, fomenta recomendaciones y convierte cada buen viaje en futuras reservas.",
   },
 ];
 
@@ -359,11 +491,12 @@ function FeaturesSection() {
             />
             <p className="text-[#0b0f19] text-sm text-center sm:text-left leading-relaxed font-medium">
               <strong className="text-[#1a1f71] font-bold">
-                También Incluye:
+                También incluye:
               </strong>{" "}
-              También incluye acceso al Panel de Lanzamiento™, herramientas del
-              Panel del Operador™, recursos de capacitación, actualizaciones
-              permanentes del sistema y soporte humano real.
+              acceso al Panel de Lanzamiento™, herramientas del Panel del
+              Operador™, alojamiento de tu página personalizada, recursos de
+              capacitación, actualizaciones permanentes del sistema y soporte
+              humano real.
             </p>
           </div>
         </div>
@@ -375,17 +508,17 @@ function FeaturesSection() {
 function ComparisonSection() {
   const badList = [
     "La plataforma controla la relación con el cliente",
-    "Los precios se determinan dentro de la app",
+    "Las tarifas se determinan dentro de la app",
     "No eres dueño de tu lista de clientes",
     "No tienes un sistema propio para reservas recurrentes",
-    "Tu acceso a los viajes de la app puede cambiar",
+    "Tu acceso a las solicitudes de viaje de la app puede cambiar",
   ];
 
   const goodList = [
     "Tú construyes tu propia lista de clientes",
     "Tú estableces tus propias tarifas",
-    "Recibes reservas directas",
-    "Creas clientes recurrentes y referidos",
+    "Aceptas solicitudes de reserva directa",
+    "Generas clientes recurrentes y recomendaciones",
     "Construyes un negocio que tú controlas",
   ];
 
@@ -396,7 +529,7 @@ function ComparisonSection() {
           {/* Left Card */}
           <div className="bg-white rounded-2xl p-8 lg:p-12 shadow-sm w-full lg:w-1/2 flex flex-col items-start min-h-[380px]">
             <h3 className="text-[#ef4444] font-bold text-sm lg:text-[15px] uppercase tracking-wider mb-8">
-              LAS APPS CONTROLAN DEMASIADO
+              CONDUCIR MEDIANTE APPS
             </h3>
             <ul className="space-y-5 w-full">
               {badList.map((item, i) => (
@@ -421,7 +554,7 @@ function ComparisonSection() {
           {/* Right Card */}
           <div className="bg-white rounded-2xl p-8 lg:p-12 shadow-sm w-full lg:w-1/2 flex flex-col items-start min-h-[380px]">
             <h3 className="text-[#22c55e] font-bold text-sm lg:text-[15px] uppercase tracking-wider mb-8">
-              TU NEGOCIO PRIVADO TE DA CONTROL
+              TU NEGOCIO PRIVADO DE TRANSPORTE AL AEROPUERTO
             </h3>
             <ul className="space-y-5 w-full">
               {goodList.map((item, i) => (
@@ -445,9 +578,9 @@ function WhyWinSection() {
   const reasons = [
     {
       icon: ShieldCheck,
-      title: "Experiencia que genera confianza",
+      title: "La experiencia genera confianza",
       description:
-        "La comunicación profesional, la puntualidad y el conocimiento local ayudan a que los viajeros se sientan seguros al reservar contigo.",
+        "La comunicación profesional, la puntualidad y el conocimiento local pueden ayudar a que los viajeros se sientan seguros al reservar directamente contigo.",
     },
     {
       icon: Users,
@@ -459,7 +592,7 @@ function WhyWinSection() {
       icon: Clock,
       title: "Horario flexible",
       description:
-        "Elige los días, horarios, rutas y áreas de servicio que se ajusten a tus metas.",
+        "Elige los días, horarios, rutas y áreas de servicio que se adapten a tu disponibilidad y tus metas.",
     },
     {
       icon: Lock,
@@ -511,23 +644,23 @@ function HowItWorksSection() {
     {
       number: 1,
       icon: Lock,
-      title: "Paso 1: Obtén Acceso",
+      title: "Paso 1: Obtén acceso",
       description:
-        "Compra el sistema DIY de $495 y recibe acceso inmediato a los recursos de lanzamiento.",
+        "Compra el sistema DIY por $495 y recibe acceso inmediato a los recursos de lanzamiento.",
     },
     {
       number: 2,
       icon: ClipboardList,
-      title: "Paso 2: Agrega Tu Información",
+      title: "Paso 2: Ingresa tu información",
       description:
-        "Ingresa los datos de tu negocio, área de servicio, rutas, tarifas y marca.",
+        "Proporciona la información de tu negocio, tu área de servicio, tus rutas, tus tarifas, tus preferencias de reserva y tus detalles de marca.",
     },
     {
       number: 3,
       icon: Rocket,
-      title: "Paso 3: Construye y Lanza",
+      title: "Paso 3: Configura y lanza",
       description:
-        "Sigue las instrucciones paso a paso para crear tu sistema de reservas y página personalizada. Si prefieres ayuda, agrega la mejora opcional “Lo Hacemos Por Ti” por $199.",
+        "Sigue las instrucciones paso a paso para proporcionar la información necesaria para tu sistema de reservas y tu página personalizada. Si prefieres asistencia adicional, agrega la mejora opcional “Lo hacemos por ti” por $199.",
     },
   ];
 
@@ -615,7 +748,7 @@ function ReviewsSection() {
       <PageContainer size="full">
         <div className="w-full rounded-[2rem] border border-slate-200 shadow-sm p-6 bg-white">
           <h2 className="text-[1.1rem] sm:text-xl lg:text-[1.35rem] font-bold text-[#1a1f71] text-center mb-8 uppercase tracking-wide">
-            OPERADORES YA ESTÁN CONSTRUYENDO NEGOCIOS REALES
+            CONDUCTORES INDEPENDIENTES ESTÁN CONSTRUYENDO SUS PROPIOS NEGOCIOS
           </h2>
 
           <div className="flex flex-col lg:flex-row items-stretch justify-between gap-8 lg:gap-0 lg:divide-x divide-slate-100 w-full">
@@ -629,7 +762,8 @@ function ReviewsSection() {
                   <img
                     src={review.image}
                     alt={review.name}
-                    className="w-full h-40 sm:h-full rounded-2xl object-cover shadow-sm"
+                    loading="lazy"
+                    className="w-full h-40 sm:h-full rounded-xl object-cover object-top shadow-sm"
                   />
                 </div>
 
@@ -674,29 +808,34 @@ function ReviewsSection() {
 function FaqSection() {
   const faqs = [
     {
-      question: "¿Es un pago mensual?",
+      question: "¿El pago de $495 es realmente un pago único?",
       answer:
-        "No. El sistema DIY de QuitTheApp cuesta $495 como pago único y no incluye una cuota mensual de plataforma de QuitTheApp. También está disponible la mejora opcional “Lo Hacemos Por Ti” por $199. Los gastos normales del negocio, como programación, alojamiento, procesamiento de pagos, seguro comercial, licencias y operación, pueden aplicarse.",
+        "Sí. El sistema DIY de QuitTheApp cuesta $495 como pago único y no tiene una cuota mensual de plataforma de QuitTheApp. También está disponible la mejora opcional “Lo hacemos por ti” por $199. Pueden aplicarse gastos normales del negocio, como software de programación, procesamiento de pagos, seguro comercial, licencias, combustible, mantenimiento del vehículo y otros costos operativos.",
+    },
+    {
+      question: "¿Mi página personalizada y el alojamiento están incluidos?",
+      answer:
+        "Sí. QuitTheApp crea y aloja tu página personalizada de ventas. El sistema DIY de $495 te guía para proporcionar la información de tu negocio, tus servicios, tus tarifas, tus preferencias de reserva y tus detalles de marca. La mejora opcional “Lo hacemos por ti”, por $199, ofrece asistencia adicional con la configuración.",
     },
     {
       question: "¿Cómo consigo mis primeros clientes?",
       answer:
-        "Utiliza el Centro de Adquisición de Clientes™ con tarjetas QR, herramientas de referidos, plantillas de contacto y estrategias prácticas para atraer posibles clientes y generar reservas directas.",
+        "Utiliza el Centro de Adquisición de Clientes™ con tarjetas QR, herramientas de recomendación, plantillas de contacto y estrategias prácticas diseñadas para ayudarte a atraer posibles clientes y generar oportunidades de reserva directa.",
     },
     {
       question: "¿Necesito experiencia técnica?",
       answer:
-        "No. El sistema de $495 incluye instrucciones paso a paso para que puedas completar la configuración. Si prefieres que nuestro equipo lo haga por ti, puedes agregar la mejora opcional “Lo Hacemos Por Ti” por $199.",
+        "No. El sistema DIY de $495 incluye instrucciones paso a paso para proporcionar la información de tu negocio, establecer tus preferencias de reserva y preparar el contenido de tu página personalizada. Si prefieres asistencia adicional, puedes agregar la mejora opcional “Lo hacemos por ti” por $199.",
     },
     {
       question: "¿Qué pasa si no funciona para mí?",
       answer:
-        "QuitTheApp fue creado a partir de experiencia real operando un negocio privado de transporte al aeropuerto desde 2016. Los resultados dependen de tu mercado, tarifas, esfuerzo, gastos y capacidad para atraer clientes. Nuestro equipo brinda soporte para ayudarte a entender y utilizar el sistema.",
+        "QuitTheApp fue creado a partir de la experiencia real de construir y operar un negocio privado de transporte al aeropuerto desde 2016. Los resultados dependen de tu mercado, tarifas, esfuerzo, gastos y de tu capacidad para atraer clientes. Nuestro equipo brinda soporte para ayudarte a comprender y utilizar el sistema.",
     },
     {
-      question: "¿Funciona en mi ciudad?",
+      question: "¿Funcionará en mi ciudad?",
       answer:
-        "Si. Cualquier ciudad con aeropuerto y viajeros. Tu defines tu área de servicio y tus tarifas.",
+        "El sistema puede utilizarse en mercados con aeropuerto y con viajeros que necesiten transporte confiable. Tú eliges tu área de servicio, tarifas, horarios y disponibilidad. Los resultados dependen de la demanda local, la competencia, los precios, los gastos y tus esfuerzos de promoción.",
     },
   ];
 
@@ -736,22 +875,24 @@ function FaqSection() {
   );
 }
 
-function FooterCTASection() {
+function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }) {
+  const { accessToken, user } = useAppSelector((state) => state.auth);
+
   const benefits = [
-    "Sin cuota mensual de la plataforma",
+    "Sin cuota mensual de plataforma de QuitTheApp",
     "Diseñado para operadores independientes de transporte al aeropuerto",
     "Soporte humano real",
-    "Acceso de por vida al panel de control",
-    "Recursos gratuitos de capacitación y configuración",
+    "Acceso de por vida al panel del operador",
+    "Recursos de capacitación y configuración incluidos",
   ];
 
   const trustBadges = [
     { icon: Lock, text: "Pago seguro" },
-    { icon: ShieldCheck, text: "100% seguro" },
+    { icon: ShieldCheck, text: "Procesamiento protegido" },
     { icon: CreditCard, text: "Pago único" },
     {
       icon: Plane,
-      text: "Diseñado para empresas de transporte al aeropuerto™",
+      text: "Diseñado para operadores de transporte al aeropuerto",
     },
     { icon: User, text: "Personas reales. Soporte real." },
   ];
@@ -788,9 +929,10 @@ function FooterCTASection() {
               <span className="text-white font-bold text-sm leading-snug">
                 Pago único.
                 <br />
-                Incluye el sistema completo DIY de QuitTheApp.
+                Incluye el sistema completo DIY de QuitTheApp y tu página
+                personalizada de ventas.
                 <br />
-                Mejora opcional “Lo Hacemos Por Ti” disponible por $199.
+                Mejora opcional “Lo hacemos por ti” disponible por $199.
               </span>
             </div>
             <ul className="space-y-3">
@@ -808,14 +950,41 @@ function FooterCTASection() {
 
           {/* Column 3: Button & Payments */}
           <div className="lg:w-1/3 flex flex-col justify-center items-center lg:items-end">
-            <button className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-4 px-6 rounded-lg transition-colors shadow-lg shadow-[#16a34a]/20 flex items-center justify-between group w-full text-sm sm:text-base mb-4">
-              <span className="text-center w-full pr-4">
-                Empieza Tu Negocio Privado
-                <br className="hidden sm:block" />
-                de Transporte — $495
-              </span>
-              <ArrowRight className="w-5 h-5 shrink-0 group-hover:translate-x-1 transition-transform" />
-            </button>
+            {user?.status === "active" ? (
+              <Link
+                to="/dashboard"
+                className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-4 px-6 rounded-lg transition-colors shadow-lg shadow-[#16a34a]/20 flex items-center justify-between group w-full text-sm sm:text-base mb-4"
+              >
+                <span className="text-center w-full pr-4">
+                  Ir al Panel de Control
+                </span>
+                <ArrowRight className="w-5 h-5 shrink-0 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            ) : accessToken ? (
+              <button
+                onClick={openPricingModal}
+                className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-4 px-6 rounded-lg transition-colors shadow-lg shadow-[#16a34a]/20 flex items-center justify-between group w-full text-sm sm:text-base mb-4"
+              >
+                <span className="text-center w-full pr-4">
+                  Empezar mi negocio privado
+                  <br className="hidden sm:block" />
+                  de transporte — $495
+                </span>
+                <ArrowRight className="w-5 h-5 shrink-0 group-hover:translate-x-1 transition-transform" />
+              </button>
+            ) : (
+              <Link
+                to="/signup"
+                className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-4 px-6 rounded-lg transition-colors shadow-lg shadow-[#16a34a]/20 flex items-center justify-between group w-full text-sm sm:text-base mb-4"
+              >
+                <span className="text-center w-full pr-4">
+                  Empezar mi negocio privado
+                  <br className="hidden sm:block" />
+                  de transporte — $495
+                </span>
+                <ArrowRight className="w-5 h-5 shrink-0 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            )}
 
             {/* Payment Badges (CSS simulated) */}
             <div className="flex gap-2 flex-wrap justify-center lg:justify-end">

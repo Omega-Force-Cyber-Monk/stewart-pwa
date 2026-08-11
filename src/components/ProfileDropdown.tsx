@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hooks/storeHooks";
 import { logOut } from "../store/features/auth/authSlice";
 import { useLogoutUserMutation } from "../store/api/Auth/auth.api";
-import { ChevronDown, LogOut, LayoutDashboard, Settings, CreditCard } from "lucide-react";
+import { ChevronDown, LogOut, LayoutDashboard, Settings, CreditCard, ShieldCheck } from "lucide-react";
 
 interface ProfileDropdownProps {
   openPricingModal?: () => void;
@@ -65,7 +65,16 @@ export function ProfileDropdown({ openPricingModal }: ProfileDropdownProps) {
           </div>
 
           <div className="py-1">
-            {user?.status === "active" ? (
+            {user?.role === "admin" ? (
+              <Link
+                to="/admin"
+                onClick={() => setDropdownOpen(false)}
+                className="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-200 hover:bg-[#04B5A3]/10 hover:text-white transition"
+              >
+                <ShieldCheck className="size-4 text-cyan-400" />
+                Admin Dashboard
+              </Link>
+            ) : user?.status === "active" ? (
               <Link
                 to="/dashboard"
                 onClick={() => setDropdownOpen(false)}
@@ -91,12 +100,12 @@ export function ProfileDropdown({ openPricingModal }: ProfileDropdownProps) {
               </button>
             )}
             <Link
-              to="/profile"
+              to={user?.role === "admin" ? "/admin/settings" : "/profile"}
               onClick={() => setDropdownOpen(false)}
               className="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-200 hover:bg-[#04B5A3]/10 hover:text-white transition"
             >
               <Settings className="size-4 text-cyan-400" />
-              Profile & Settings
+              {user?.role === "admin" ? "Admin Settings" : "Profile & Settings"}
             </Link>
           </div>
 

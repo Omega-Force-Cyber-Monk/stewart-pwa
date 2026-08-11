@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Copy, Share2, Download, ImagePlus, X, Loader2 } from "lucide-react";
 import { useAppDispatch } from "../hooks/storeHooks";
@@ -13,6 +13,18 @@ import { useGetSetupStateQuery, useGetReferralCardQuery } from "../store/api/Bus
 import { AlertModal } from "../components/ui/AlertModal";
 import eleanorAvatar from "../assets/eleanorAvatar.png";
 import carCover from "../assets/carCover.png";
+
+interface ApiErrorPayload {
+  message?: string;
+}
+
+const getApiErrorMessage = (err: unknown, fallback: string): string => {
+  if (err && typeof err === "object" && "data" in err) {
+    const data = (err as { data?: ApiErrorPayload }).data;
+    if (data?.message) return data.message;
+  }
+  return fallback;
+};
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -56,10 +68,10 @@ export default function ProfilePage() {
   const [changePassword, { isLoading: isChangingPassword }] = useChangeRiderPasswordMutation();
 
   // Form States
-  const [profileForm, setProfileForm] = useState({
-    name: "",
-    phone: "",
-  });
+  const [profileForm, setProfileForm] = useState(() => ({
+    name: profileResponse?.user?.name || "",
+    phone: profileResponse?.user?.phone || "",
+  }));
 
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: "",
@@ -68,16 +80,6 @@ export default function ProfilePage() {
   });
 
   const [passwordError, setPasswordError] = useState<string | null>(null);
-
-  // Initialize profile form
-  useEffect(() => {
-    if (profileResponse?.user) {
-      setProfileForm({
-        name: profileResponse.user.name || "",
-        phone: profileResponse.user.phone || "",
-      });
-    }
-  }, [profileResponse]);
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -100,9 +102,9 @@ export default function ProfilePage() {
         setIsUploadModalOpen(false);
         refetchProfile();
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      showAlert("Upload Error", err?.data?.message || "Failed to upload avatar.", "error");
+      showAlert("Upload Error", getApiErrorMessage(err, "Failed to upload avatar."), "error");
     }
   };
 
@@ -117,9 +119,9 @@ export default function ProfilePage() {
         setIsEditInfoModalOpen(false);
         refetchProfile();
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      showAlert("Update Error", err?.data?.message || "Failed to update profile information.", "error");
+      showAlert("Update Error", getApiErrorMessage(err, "Failed to update profile information."), "error");
     }
   };
 
@@ -158,9 +160,9 @@ export default function ProfilePage() {
           }
         );
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      setPasswordError(err?.data?.message || "Password change failed. Current password may be incorrect.");
+      setPasswordError(getApiErrorMessage(err, "Password change failed. Current password may be incorrect."));
     }
   };
 

@@ -48,12 +48,12 @@ export function PricingModal({ onClose }: PricingModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-y-auto"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="relative w-full max-w-3xl bg-[#12143A] border border-[#00E5FF33] rounded-2xl shadow-2xl overflow-hidden">
+      <div className="relative w-full max-w-3xl bg-[#12143A] border border-[#00E5FF33] rounded-2xl shadow-2xl overflow-hidden my-auto max-h-[calc(100dvh-2rem)] flex flex-col">
         {/* Header */}
-        <div className="relative px-8 pt-8 pb-6 text-center border-b border-[#00E5FF33]">
+        <div className="relative px-8 pt-8 pb-6 text-center border-b border-[#00E5FF33] flex-shrink-0">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition"
@@ -71,14 +71,14 @@ export function PricingModal({ onClose }: PricingModalProps) {
 
         {/* Error Banner */}
         {errorMessage && (
-          <div className="mx-8 mt-6 bg-red-500/10 border border-red-500/30 rounded-lg p-4 flex items-start gap-3">
+          <div className="mx-8 mt-6 bg-red-500/10 border border-red-500/30 rounded-lg p-4 flex items-start gap-3 flex-shrink-0">
             <AlertTriangle className="size-5 text-red-400 shrink-0 mt-0.5" />
             <span className="text-sm text-red-200 leading-snug">{errorMessage}</span>
           </div>
         )}
 
         {/* Plan Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-8 overflow-y-auto min-h-0">
           {/* Plan 1: Do It Yourself */}
           <div className="relative flex flex-col bg-[#0B0D2C] border border-[#00E5FF33] rounded-xl p-6 hover:border-cyan-400/60 transition-all duration-200">
             <div className="flex items-center gap-3 mb-4">
@@ -190,7 +190,7 @@ export function PricingModal({ onClose }: PricingModalProps) {
           </div>
         </div>
 
-        <div className="px-8 pb-6 text-center">
+        <div className="px-8 pb-6 text-center flex-shrink-0">
           <p className="text-xs text-slate-500">
             Secure payment via Stripe. You won't be charged until you confirm on the next page.
           </p>
