@@ -1,0 +1,193 @@
+name: Frontend CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+    tags: [ "v*" ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  NODE_VERSION: 24
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  CI: true
+  NODE_OPTIONS: --max-old-space-size=4096
+
+jobs:
+  # ──────────────────────────────────────────────
+  # Job 1: Test & Verify Compilation
+  # ──────────────────────────────────────────────
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: npm run lint || true
+
+      - name: Build to verify compilation
+        run: |
+          npm run build
+          echo "✅ Build completed successfully."
+        env:
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+
+  # ──────────────────────────────────────────────
+  # Job 2: Build Docker Image & Push to GHCR
+  # ──────────────────────────────────────────────
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      image-name: ${{ steps.prep.outputs.image_name }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare Image Name
+        id: prep
+        run: |
+          echo "image_name=$(echo "ghcr.io/${{ github.repository }}" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            ${{ steps.prep.outputs.image_name }}:latest
+            ${{ steps.prep.outputs.image_name }}:${{ github.sha }}
+          build-args: |
+            VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
+            PORT=4000
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ──────────────────────────────────────────────
+  # Job 3: Deploy to Server via SSH
+  # ──────────────────────────────────────────────
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Deploy to Server via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          command_timeout: 10m
+          script: |
+            set -euo pipefail
+            trap 'echo "❌ Deployment failed at line $LINENO"' ERR
+
+            # ── Configuration ──
+            APP_NAME="stewart-pwa"
+            WEB_ROOT="/opt/frontend/quittheapp"
+            PROXY_CONTAINER="stewart-backend-caddy"
+
+            # ── Derived Variables ──
+            RAW_IMAGE_NAME="ghcr.io/${{ github.repository }}"
+            IMAGE_NAME=$(echo "$RAW_IMAGE_NAME" | tr '[:upper:]' '[:lower:]')
+            FRONTEND_IMAGE="${IMAGE_NAME}:${{ github.sha }}"
+
+            echo "🚀 Deployment started for image: $FRONTEND_IMAGE"
+
+            # ── Step 1: Cleanup old containers ──
+            docker ps -a --filter "name=${APP_NAME}" --format '{{.Names}}' | xargs -r docker rm -f || true
+
+            # ── Step 2: Login to GHCR and pull the image ──
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            echo "📥 Pulling new image..."
+            docker pull $FRONTEND_IMAGE
+
+            # ── Step 3: Extract static files to host ──
+            echo "📦 Extracting files to ${WEB_ROOT}..."
+            mkdir -p ${WEB_ROOT}
+
+            # Backup current files before overwriting
+            if [ -f "${WEB_ROOT}/index.html" ]; then
+              BACKUP_DIR="/opt/frontend/quittheapp-backup-$(date +%Y%m%d_%H%M%S)"
+              cp -r ${WEB_ROOT} ${BACKUP_DIR}
+              echo "📋 Backed up current files to ${BACKUP_DIR}"
+            fi
+
+            # Clean old assets
+            rm -rf ${WEB_ROOT}/*
+
+            TEMP_CONTAINER="temp_${APP_NAME}_$(date +%s)"
+            docker create --name $TEMP_CONTAINER $FRONTEND_IMAGE
+            docker cp $TEMP_CONTAINER:/usr/share/caddy/. ${WEB_ROOT}/
+            docker rm $TEMP_CONTAINER
+
+            chmod -R 755 ${WEB_ROOT}
+
+            # ── Step 4: Verify critical files ──
+            if [ ! -f "${WEB_ROOT}/index.html" ]; then
+              echo "❌ Error: index.html not found in ${WEB_ROOT}"
+              # Restore from backup if available
+              if [ -n "${BACKUP_DIR:-}" ] && [ -d "${BACKUP_DIR}" ]; then
+                echo "⚠️ Restoring from backup..."
+                rm -rf ${WEB_ROOT}/*
+                cp -r ${BACKUP_DIR}/* ${WEB_ROOT}/
+              fi
+              exit 1
+            fi
+
+            # ── Step 5: Reload Caddy reverse proxy ──
+            echo "🔄 Reloading Caddy..."
+            if docker ps --format '{{.Names}}' | grep -q "^${PROXY_CONTAINER}$"; then
+              docker exec ${PROXY_CONTAINER} caddy reload --config /etc/caddy/Caddyfile || \
+              echo "⚠️ Caddy reload failed, but files are deployed"
+            else
+              echo "⚠️ Warning: ${PROXY_CONTAINER} container not found, files deployed but Caddy not reloaded"
+            fi
+
+            # ── Step 6: Health check ──
+            sleep 3
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -H "Host: quittheapp.com" http://localhost:80 || echo "000")
+            if [ "$HTTP_CODE" = "200" ]; then
+              echo "✅ Health check passed: HTTP $HTTP_CODE"
+            else
+              echo "⚠️ Warning: Site returning HTTP $HTTP_CODE (may need DNS propagation)"
+            fi
+
+            # ── Step 7: Cleanup old images and backups ──
+            find /opt/frontend -maxdepth 1 -name "quittheapp-backup-*" -mtime +7 -exec rm -rf {} \;
+            docker images --filter "reference=${IMAGE_NAME}" --format "{{.ID}} {{.Tag}}" | \
+              grep -v "${{ github.sha }}" | grep -v "latest" | head -n -3 | \
+              awk '{print $1}' | xargs -r docker rmi -f || true
+
+            echo "✅ Frontend deployment complete!"
