@@ -12,9 +12,13 @@ A static React SPA + PWA. It talks to the backend API over HTTPS. There is **no 
 
 The same build serves **two kinds of pages**:
 - The main app: `https://app.yourdomain.com` (auth, rider dashboard, admin dashboard)
-- Every rider's personalized website: `https://<slug>.yourdomain.com` (public booking pages)
+- Every rider's personalized website: `https://<slug>.yourdomain.com/` (public booking pages)
 
-Both are the same SPA — the slug in the URL picks which business renders (via the public API).
+Both are the same SPA. The frontend reads the hostname at startup. A valid,
+single-label business subdomain renders the personalized website at `/` and
+loads `GET /public/business/<slug>`. Reserved application hosts continue to use
+the normal application routes. Personalized websites are not exposed at a
+`/book/<slug>` path.
 
 ---
 
@@ -26,6 +30,7 @@ Create `.env.production` in the repo root:
 
 ```env
 VITE_API_BASE_URL=https://api.yourdomain.com/api/v1
+VITE_PUBLIC_BUSINESS_DOMAIN=yourdomain.com
 ```
 
 > ⚠️ `VITE_*` vars are baked into the bundle at **build time**. If the URL changes you must rebuild. The default fallback is `http://localhost:3000/api/v1` — useless in prod, so this file is mandatory.
@@ -124,7 +129,7 @@ A: (1) Wildcard CNAME + wildcard ACM cert. (2) The business must be **ACTIVE** �
 A: `index.html` caching or the service worker. Ensure `index.html` is No-Cache and run the CloudFront invalidation. The service worker updates in the background on next load (Workbox `registerType: "prompt"` — users may need to refresh once).
 
 **Q: Which env vars does the frontend need?**
-A: Only `VITE_API_BASE_URL` (build-time). Everything else (Stripe, DB, etc.) lives on the backend.
+A: `VITE_API_BASE_URL` and `VITE_PUBLIC_BUSINESS_DOMAIN` (both build-time). The public domain must match backend `PUBLIC_BUSINESS_DOMAIN`. Everything else (Stripe, DB, etc.) lives on the backend.
 
 **Q: Can I host the frontend on EC2/Nginx instead?**
 A: Yes — upload `dist/` to `/var/www/html`, serve with Nginx, and add `try_files $uri /index.html;` for SPA routing + a wildcard server block with the wildcard cert. S3+CloudFront is preferred (cheaper, CDN, managed TLS).
@@ -154,7 +159,9 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 24 }
       - run: npm ci
-      - run: echo "VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}" > .env.production
+      - run: |
+          echo "VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}" > .env.production
+          echo "VITE_PUBLIC_BUSINESS_DOMAIN=${{ vars.PUBLIC_BUSINESS_DOMAIN }}" >> .env.production
       - run: npm run build
       - uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -164,6 +171,19 @@ jobs:
       - run: aws s3 sync dist/ s3://stewart-pwa-prod --delete
       - run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DIST_ID }} --paths "/*"
 ```
+
+---
+
+## 9. Routing rollout and rollback
+
+Deploy the frontend and backend CORS changes before enabling the wildcard DNS
+record. Then attach `*.yourdomain.com` to the CloudFront distribution and verify
+one ACTIVE business subdomain end to end.
+
+To roll back, remove or repoint the wildcard DNS record first so new tenant
+requests stop reaching the app, then restore the previous frontend/backend
+releases. Existing `app.yourdomain.com` traffic remains independent of the
+wildcard record.
 
 ---
 

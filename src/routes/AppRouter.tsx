@@ -1,6 +1,6 @@
 import HomePage from '../pages/HomePage';
 import SpanishPage from '../pages/SpanishPage';
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import WomenPage from "../pages/WomenPage";
 import CouplePage from "../pages/CouplePage";
 import SeniorPage from "../pages/SeniorPage";
@@ -35,8 +35,28 @@ import ForgotPasswordPage from "../pages/Auth/ForgotPasswordPage";
 import ResetPasswordPage from "../pages/Auth/ResetPasswordPage";
 import PaymentSuccessPage from "../pages/PaymentSuccessPage";
 import RiderWebsitePage from "../pages/PersonalizeWebsite/RiderWebsitePage";
+import { resolveBusinessHost } from "../lib/businessHost";
+
+const publicBusinessDomain =
+  import.meta.env.VITE_PUBLIC_BUSINESS_DOMAIN || "quittheapp.com";
 
 export function AppRouter() {
+  const businessHost = resolveBusinessHost(
+    window.location.hostname,
+    publicBusinessDomain,
+  );
+
+  if (businessHost.kind !== "main") {
+    const slug = businessHost.kind === "tenant" ? businessHost.slug : undefined;
+
+    return (
+      <Routes>
+        <Route path="/" element={<RiderWebsitePage slug={slug} />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    );
+  }
+
   return (
     <Routes>
       <Route path="/women" element={<WomenPage />} />
@@ -68,7 +88,6 @@ export function AppRouter() {
       <Route path="/admin/checklist-items" element={<AdminRoute><AdminDashboardLayout title="Checklist Items"><AdminChecklistItemsPage /></AdminDashboardLayout></AdminRoute>} />
 
       {/* Add new routes here */}
-      <Route path="/book/:slug" element={<RiderWebsitePage />} />
       <Route path="/payment/success" element={<PaymentSuccessPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />

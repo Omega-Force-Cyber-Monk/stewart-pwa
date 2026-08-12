@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { skipToken } from "@reduxjs/toolkit/query";
 import { useGetPublicBusinessBySlugQuery } from "../../store/api/Business/business.api";
 import { WebsiteNavbar } from "./WebsiteNavbar";
 
@@ -12,9 +12,13 @@ import { FAQSection } from "./FAQSection";
 import { ReserveRideBanner } from "./ReserveRideBanner";
 import { WebsiteFooter } from "./WebsiteFooter";
 
-export default function RiderWebsitePage() {
-  const { slug } = useParams<{ slug: string }>();
-  const { data: publicResponse, isLoading, isError } = useGetPublicBusinessBySlugQuery(slug ?? "");
+interface RiderWebsitePageProps {
+  slug?: string;
+}
+
+export default function RiderWebsitePage({ slug }: RiderWebsitePageProps) {
+  const { data: publicResponse, isLoading, isError } =
+    useGetPublicBusinessBySlugQuery(slug ?? skipToken);
 
   const data = publicResponse?.data;
   const business = data?.business;
@@ -28,8 +32,6 @@ export default function RiderWebsitePage() {
   const airports = serviceArea?.airports ?? [];
 
   const servingAreas = cityArea ? [cityArea].concat(airports) : [];
-
-
 
   if (isLoading) {
     return (
