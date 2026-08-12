@@ -90,6 +90,7 @@ export function DashboardLayout({ children, title = "Dashboard Overview" }: Dash
       console.error("Logout failed:", e);
     }
     dispatch(logOut());
+    navigate("/", { replace: true });
   };
 
   if (isLoading) {
