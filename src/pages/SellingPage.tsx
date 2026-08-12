@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { ExternalLink, Share2, Copy, QrCode, Download, Mail, Smartphone, Users, BadgeDollarSign, CalendarDays } from "lucide-react";
-import sellingPageHero from "../assets/sellingPageHero.png";
+import { ExternalLink, Share2, Copy, QrCode, Download, Mail, Smartphone, Users, BadgeDollarSign } from "lucide-react";
 import { useGetSetupStateQuery, useGetReferralCardQuery } from "../store/api/Business/business.api";
 import { copyToClipboard } from "../utils/clipboard";
 import { HeroSection } from "./PersonalizeWebsite/HeroSection";

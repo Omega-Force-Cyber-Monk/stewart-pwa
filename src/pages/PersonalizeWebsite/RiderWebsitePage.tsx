@@ -1,6 +1,4 @@
-import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { CheckCircle2, X } from "lucide-react";
 import { useGetPublicBusinessBySlugQuery } from "../../store/api/Business/business.api";
 import { WebsiteNavbar } from "./WebsiteNavbar";
 

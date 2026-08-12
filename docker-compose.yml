@@ -1,0 +1,23 @@
+services:
+  frontend:
+    image: ${FRONTEND_IMAGE:-stewart-pwa:latest}
+    build:
+      context: .
+      args:
+        - VITE_API_BASE_URL=${VITE_API_BASE_URL}
+        - PORT=${PORT:-4000}
+    container_name: stewart-pwa
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - PORT=${PORT:-4000}
+    ports:
+      - "${PORT:-4000}:${PORT:-4000}"
+    networks:
+      - stewart-network
+
+networks:
+  stewart-network:
+    name: stewart-network
+    external: true
