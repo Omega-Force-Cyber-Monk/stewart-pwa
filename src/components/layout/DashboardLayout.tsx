@@ -24,7 +24,6 @@ import { useAppDispatch } from "../../hooks/storeHooks";
 import { logOut } from "../../store/features/auth/authSlice";
 import { useLogoutUserMutation } from "../../store/api/Auth/auth.api";
 import { useGetRiderDashboardQuery } from "../../store/api/Business/business.api";
-import { ProfileDropdown } from "../ProfileDropdown";
 
 const sidebarNavItems = [
   {
@@ -212,10 +211,7 @@ export function DashboardLayout({ children, title = "Dashboard Overview" }: Dash
           </div>
 
           <div className="flex items-center gap-4 sm:gap-6">
-
-            <div className="flex items-center">
-              <ProfileDropdown />
-            </div>
+            {/* Nav items can go here */}
           </div>
         </header>
 
