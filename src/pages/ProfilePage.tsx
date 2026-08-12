@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Copy, Share2, Download, ImagePlus, X, Loader2 } from "lucide-react";
+import { Copy, Share2, Download, ImagePlus, X, Loader2, Pencil } from "lucide-react";
 import { useAppDispatch } from "../hooks/storeHooks";
 import { logOut } from "../store/features/auth/authSlice";
 import {
@@ -9,19 +9,25 @@ import {
   useUploadAvatarMutation,
   useChangeRiderPasswordMutation,
 } from "../store/api/Auth/auth.api";
-import { useGetSetupStateQuery, useGetReferralCardQuery } from "../store/api/Business/business.api";
+import {
+  useGetSetupStateQuery,
+  useGetReferralCardQuery,
+  useUpdateSetupStateMutation,
+  useUploadBusinessLogoMutation,
+} from "../store/api/Business/business.api";
 import { AlertModal } from "../components/ui/AlertModal";
 import eleanorAvatar from "../assets/eleanorAvatar.png";
 import carCover from "../assets/carCover.png";
 import { copyToClipboard } from "../utils/clipboard";
 
 interface ApiErrorPayload {
-  message?: string;
+  message?: string | string[];
 }
 
 const getApiErrorMessage = (err: unknown, fallback: string): string => {
   if (err && typeof err === "object" && "data" in err) {
     const data = (err as { data?: ApiErrorPayload }).data;
+    if (Array.isArray(data?.message)) return data.message[0] || fallback;
     if (data?.message) return data.message;
   }
   return fallback;
@@ -31,10 +37,12 @@ export default function ProfilePage() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const businessLogoInputRef = useRef<HTMLInputElement>(null);
 
   // Modals state
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isEditInfoModalOpen, setIsEditInfoModalOpen] = useState(false);
+  const [isEditBusinessModalOpen, setIsEditBusinessModalOpen] = useState(false);
   const [isEditPasswordModalOpen, setIsEditPasswordModalOpen] = useState(false);
 
   const [alertModal, setAlertModal] = useState<{
@@ -61,12 +69,14 @@ export default function ProfilePage() {
 
   // API Queries & Mutations
   const { data: profileResponse, isLoading: isLoadingProfile, refetch: refetchProfile } = useGetRiderProfileQuery();
-  const { data: setupResponse } = useGetSetupStateQuery();
-  const { data: referralResponse } = useGetReferralCardQuery();
+  const { data: setupResponse, refetch: refetchSetup } = useGetSetupStateQuery();
+  const { data: referralResponse, refetch: refetchReferral } = useGetReferralCardQuery();
 
   const [updateProfile, { isLoading: isUpdatingProfile }] = useUpdateRiderProfileMutation();
   const [uploadAvatar, { isLoading: isUploadingAvatar }] = useUploadAvatarMutation();
   const [changePassword, { isLoading: isChangingPassword }] = useChangeRiderPasswordMutation();
+  const [updateSetup, { isLoading: isUpdatingBusiness }] = useUpdateSetupStateMutation();
+  const [uploadBusinessLogo, { isLoading: isUploadingBusinessLogo }] = useUploadBusinessLogoMutation();
 
   // Form States
   const [profileForm, setProfileForm] = useState(() => ({
@@ -80,7 +90,106 @@ export default function ProfilePage() {
     confirmPassword: "",
   });
 
+  const [businessForm, setBusinessForm] = useState({
+    businessName: "",
+    email: "",
+    phone: "",
+    businessInfo: "",
+    logoUrl: "",
+    cityArea: "",
+  });
+  const [businessLogoFile, setBusinessLogoFile] = useState<File | null>(null);
+
   const [passwordError, setPasswordError] = useState<string | null>(null);
+
+  const openBusinessEditModal = () => {
+    const setup = setupResponse?.data;
+    setBusinessForm({
+      businessName: setup?.business?.businessName || "",
+      email: setup?.business?.email || "",
+      phone: setup?.business?.phone || "",
+      businessInfo: setup?.business?.businessInfo || "",
+      logoUrl: setup?.business?.logoUrl || "",
+      cityArea: setup?.serviceArea?.cityArea || "",
+    });
+    setBusinessLogoFile(null);
+    setIsEditBusinessModalOpen(true);
+  };
+
+  const handleBusinessLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      showAlert("File Too Large", "Business logo must be 5 MB or smaller.", "error");
+      e.target.value = "";
+      return;
+    }
+
+    if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) {
+      showAlert("Invalid File Type", "Use a PNG, JPG, or WEBP business logo.", "error");
+      e.target.value = "";
+      return;
+    }
+
+    setBusinessLogoFile(file);
+  };
+
+  const handleBusinessSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const businessName = businessForm.businessName.trim();
+    const email = businessForm.email.trim();
+    const phone = businessForm.phone.trim();
+    const businessInfo = businessForm.businessInfo.trim();
+    const cityArea = businessForm.cityArea.trim();
+
+    if (!businessName || !email || !phone || !businessInfo || !cityArea) {
+      showAlert("Missing Information", "Complete all required business fields.", "error");
+      return;
+    }
+
+    if (!/^[+\d][\d\s().-]{6,39}$/.test(phone)) {
+      showAlert("Invalid Phone Number", "Enter a valid business phone number.", "error");
+      return;
+    }
+
+    try {
+      let logoUrl = businessForm.logoUrl.trim();
+
+      if (businessLogoFile) {
+        const formData = new FormData();
+        formData.append("file", businessLogoFile);
+        const uploadResponse = await uploadBusinessLogo(formData).unwrap();
+        logoUrl = uploadResponse.logoUrl;
+      }
+
+      const response = await updateSetup({
+        business: {
+          businessName,
+          email,
+          phone,
+          businessInfo,
+          logoUrl: logoUrl || null,
+        },
+        serviceArea: {
+          cityArea,
+          airports: setupResponse?.data?.serviceArea?.airports || [],
+        },
+      }).unwrap();
+
+      if (response.success) {
+        setBusinessLogoFile(null);
+        setIsEditBusinessModalOpen(false);
+        refetchSetup();
+        refetchReferral();
+        showAlert("Business Updated", "Your business information was updated successfully.", "success");
+      }
+    } catch (err) {
+      console.error(err);
+      showAlert("Update Error", getApiErrorMessage(err, "Failed to update business information."), "error");
+    }
+  };
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -264,7 +373,19 @@ export default function ProfilePage() {
         <div className="flex-1">
           {/* Business Information */}
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm h-full relative">
-            <h3 className="text-[16px] font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Business Information</h3>
+            <div className="flex items-center justify-between gap-4 mb-6 border-b border-slate-100 pb-4">
+              <h3 className="text-[16px] font-bold text-slate-900">Business Information</h3>
+              <button
+                type="button"
+                onClick={openBusinessEditModal}
+                disabled={!setupResponse?.data}
+                className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-700 transition-colors hover:bg-green-200 disabled:cursor-not-allowed disabled:opacity-50"
+                aria-label="Edit business information"
+                title="Edit business information"
+              >
+                <Pencil className="size-4" />
+              </button>
+            </div>
 
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8">
 
@@ -422,6 +543,164 @@ export default function ProfilePage() {
       </div>
 
       {/* --- MODALS --- */}
+
+      {/* Edit Business Information Modal */}
+      {isEditBusinessModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/40 p-4 backdrop-blur-sm animate-in fade-in duration-200">
+          <form
+            onSubmit={handleBusinessSubmit}
+            className="relative my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-3xl flex-col overflow-hidden rounded-3xl bg-white shadow-xl zoom-in-95 animate-in duration-200"
+          >
+            <div className="flex shrink-0 items-center justify-between border-b border-slate-200 px-6 py-5 sm:px-8">
+              <div>
+                <h2 className="text-[18px] font-bold text-slate-900">Edit Business Information</h2>
+                <p className="mt-1 text-xs text-slate-500">These details appear on your personalized website.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsEditBusinessModalOpen(false)}
+                className="inline-flex size-9 items-center justify-center text-slate-400 transition-colors hover:text-slate-600"
+                aria-label="Close business information editor"
+              >
+                <X className="size-5" />
+              </button>
+            </div>
+
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6 sm:px-8">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="editBusinessName" className="text-[13px] font-bold text-slate-700">Business Name</label>
+                  <input
+                    type="text"
+                    id="editBusinessName"
+                    value={businessForm.businessName}
+                    onChange={(e) => setBusinessForm((prev) => ({ ...prev, businessName: e.target.value }))}
+                    maxLength={160}
+                    required
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[14px] font-medium text-slate-900 transition-colors focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="editBusinessEmail" className="text-[13px] font-bold text-slate-700">Email Address</label>
+                  <input
+                    type="email"
+                    id="editBusinessEmail"
+                    value={businessForm.email}
+                    onChange={(e) => setBusinessForm((prev) => ({ ...prev, email: e.target.value }))}
+                    required
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[14px] font-medium text-slate-900 transition-colors focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="editBusinessPhone" className="text-[13px] font-bold text-slate-700">Phone Number</label>
+                  <input
+                    type="tel"
+                    id="editBusinessPhone"
+                    value={businessForm.phone}
+                    onChange={(e) => setBusinessForm((prev) => ({ ...prev, phone: e.target.value }))}
+                    maxLength={40}
+                    required
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[14px] font-medium text-slate-900 transition-colors focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="editBusinessArea" className="text-[13px] font-bold text-slate-700">Business Area</label>
+                  <input
+                    type="text"
+                    id="editBusinessArea"
+                    value={businessForm.cityArea}
+                    onChange={(e) => setBusinessForm((prev) => ({ ...prev, cityArea: e.target.value }))}
+                    maxLength={160}
+                    required
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[14px] font-medium text-slate-900 transition-colors focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2 sm:col-span-2">
+                  <label htmlFor="editBusinessInfo" className="text-[13px] font-bold text-slate-700">Business Description</label>
+                  <textarea
+                    id="editBusinessInfo"
+                    value={businessForm.businessInfo}
+                    onChange={(e) => setBusinessForm((prev) => ({ ...prev, businessInfo: e.target.value }))}
+                    maxLength={2000}
+                    rows={4}
+                    required
+                    className="w-full resize-y rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[14px] font-medium leading-relaxed text-slate-900 transition-colors focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2 sm:col-span-2">
+                  <label htmlFor="editBusinessLogoUrl" className="text-[13px] font-bold text-slate-700">Logo URL</label>
+                  <input
+                    type="url"
+                    id="editBusinessLogoUrl"
+                    value={businessForm.logoUrl}
+                    onChange={(e) => {
+                      setBusinessLogoFile(null);
+                      setBusinessForm((prev) => ({ ...prev, logoUrl: e.target.value }));
+                    }}
+                    placeholder="https://example.com/logo.png"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[14px] font-medium text-slate-900 transition-colors focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-3 sm:col-span-2">
+                  <input
+                    type="file"
+                    ref={businessLogoInputRef}
+                    onChange={handleBusinessLogoChange}
+                    accept="image/png, image/jpeg, image/webp"
+                    className="hidden"
+                  />
+                  <div className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center">
+                    <img
+                      src={businessForm.logoUrl || setupResponse?.data?.business?.logoUrl || carCover}
+                      alt="Current business logo"
+                      className="size-16 rounded-lg border border-slate-200 bg-white object-cover"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold text-slate-800">
+                        {businessLogoFile?.name || "Current business logo"}
+                      </p>
+                      <p className="mt-1 text-xs text-slate-500">PNG, JPG, or WEBP, up to 5 MB</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => businessLogoInputRef.current?.click()}
+                      className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg bg-green-100 px-4 text-sm font-bold text-green-700 transition-colors hover:bg-green-200"
+                    >
+                      <ImagePlus className="size-4" />
+                      Choose Logo
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex shrink-0 justify-end gap-3 border-t border-slate-200 px-6 py-4 sm:px-8">
+              <button
+                type="button"
+                onClick={() => setIsEditBusinessModalOpen(false)}
+                disabled={isUpdatingBusiness || isUploadingBusinessLogo}
+                className="h-10 rounded-lg border border-slate-200 px-5 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-50 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={isUpdatingBusiness || isUploadingBusinessLogo}
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#22c55e] px-5 text-sm font-bold text-white transition-colors hover:bg-[#1ea951] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {(isUpdatingBusiness || isUploadingBusinessLogo) && <Loader2 className="size-4 animate-spin" />}
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
 
       {/* Upload Image Modal */}
       {isUploadModalOpen && (
