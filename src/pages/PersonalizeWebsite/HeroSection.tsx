@@ -16,7 +16,6 @@ export function HeroSection({
   businessInfo,
   servingAreas,
   bookingUrl,
-  logoUrl,
 }: HeroSectionProps) {
   return (
     <div 

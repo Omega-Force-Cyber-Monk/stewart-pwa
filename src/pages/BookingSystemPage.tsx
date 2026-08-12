@@ -12,7 +12,6 @@ import {
   ExternalLink,
   Loader2,
 } from "lucide-react";
-import bookingPreview from "../assets/bookingPreview.png";
 import { AlertModal } from "../components/ui/AlertModal";
 import { useGetSetupStateQuery, useGetReferralCardQuery } from "../store/api/Business/business.api";
 import { copyToClipboard } from "../utils/clipboard";

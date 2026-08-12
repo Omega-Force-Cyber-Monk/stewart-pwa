@@ -3,13 +3,13 @@ import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hooks/storeHooks";
 import { logOut } from "../store/features/auth/authSlice";
 import { useLogoutUserMutation } from "../store/api/Auth/auth.api";
-import { ChevronDown, LogOut, LayoutDashboard, Settings, CreditCard, ShieldCheck } from "lucide-react";
+import { ChevronDown, LogOut, LayoutDashboard, Settings, ShieldCheck } from "lucide-react";
 
 interface ProfileDropdownProps {
   openPricingModal?: () => void;
 }
 
-export function ProfileDropdown({ openPricingModal }: ProfileDropdownProps) {
+export function ProfileDropdown(_props: ProfileDropdownProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { accessToken, user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
