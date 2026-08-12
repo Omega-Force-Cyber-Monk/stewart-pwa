@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import standardBanner from "../../assets/standardBanner.png";
 import seniorLogo from "../../assets/seniorLogo.png";
 
@@ -26,7 +27,9 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
       <div className="relative z-10 w-full max-w-md bg-brand-card/80 lg:bg-[#12143A] backdrop-blur-xl border border-brand-border/40 rounded-xl p-8 sm:p-10 shadow-2xl transition duration-300 hover:border-brand-border/60">
         {/* Brand Logo inside the card */}
         <div className="flex justify-start mb-6">
-          <img src={seniorLogo} alt="QuitTheApp Logo" className="h-10 object-contain" />
+          <Link to="/">
+            <img src={seniorLogo} alt="QuitTheApp Logo" className="h-10 object-contain hover:opacity-80 transition-opacity cursor-pointer" />
+          </Link>
         </div>
 
         {/* Title and Subtitle */}

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useCreateRiderCheckoutSessionMutation } from "../store/api/Payment/payment.api";
 import { Loader2, X, Check, AlertTriangle, Rocket, Users } from "lucide-react";
 
@@ -10,6 +11,7 @@ const BASE_VARIANT_ID = "base_variant";
 const ADDON_ID = "addon";
 
 export function PricingModal({ onClose }: PricingModalProps) {
+  const navigate = useNavigate();
   const [selectedPlan, setSelectedPlan] = useState<"base" | "bundle" | null>(null);
   const [createCheckoutSession, { isLoading, error }] = useCreateRiderCheckoutSessionMutation();
 
@@ -28,9 +30,23 @@ export function PricingModal({ onClose }: PricingModalProps) {
       if (result.checkoutUrl) {
         window.location.href = result.checkoutUrl;
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Checkout session failed:", err);
       setSelectedPlan(null);
+      
+      const isAuthError = err?.status === 401 || 
+        (err?.data?.message && (
+          err.data.message === "Missing or invalid bearer token." || 
+          typeof err.data.message === "string" && err.data.message.toLowerCase().includes("bearer") ||
+          Array.isArray(err.data.message) && err.data.message[0]?.toLowerCase().includes("bearer")
+        ));
+        
+      if (isAuthError) {
+        setTimeout(() => {
+          onClose();
+          navigate("/login");
+        }, 1500);
+      }
     }
   };
 
@@ -38,8 +54,17 @@ export function PricingModal({ onClose }: PricingModalProps) {
     if (!error) return "";
     if ("data" in error) {
       const data = error.data as { message?: string | string[] };
-      if (Array.isArray(data.message)) return data.message[0];
-      return data.message || "Something went wrong. Please try again.";
+      const msg = Array.isArray(data.message) ? data.message[0] : data.message;
+      
+      if (
+        (error as any).status === 401 || 
+        msg === "Missing or invalid bearer token." || 
+        (typeof msg === "string" && msg.toLowerCase().includes("bearer"))
+      ) {
+        return "Login first";
+      }
+      
+      return msg || "Something went wrong. Please try again.";
     }
     return "Failed to start checkout. Please check your connection.";
   };
