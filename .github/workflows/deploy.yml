@@ -18,6 +18,7 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   CI: true
   NODE_OPTIONS: --max-old-space-size=4096
+  VITE_PUBLIC_BUSINESS_DOMAIN: quittheapp.com
 
 jobs:
   # ──────────────────────────────────────────────
@@ -89,6 +90,7 @@ jobs:
             ${{ steps.prep.outputs.image_name }}:${{ github.sha }}
           build-args: |
             VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
+            VITE_PUBLIC_BUSINESS_DOMAIN=${{ env.VITE_PUBLIC_BUSINESS_DOMAIN }}
             PORT=4000
           cache-from: type=gha
           cache-to: type=gha,mode=max

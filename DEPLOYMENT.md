@@ -161,7 +161,7 @@ jobs:
       - run: npm ci
       - run: |
           echo "VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}" > .env.production
-          echo "VITE_PUBLIC_BUSINESS_DOMAIN=${{ vars.PUBLIC_BUSINESS_DOMAIN }}" >> .env.production
+          echo "VITE_PUBLIC_BUSINESS_DOMAIN=quittheapp.com" >> .env.production
       - run: npm run build
       - uses: aws-actions/configure-aws-credentials@v4
         with:
