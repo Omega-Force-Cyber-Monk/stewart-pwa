@@ -115,7 +115,7 @@ jobs:
 
             # ── Configuration ──
             APP_NAME="stewart-pwa"
-            WEB_ROOT="/opt/frontend/quittheapp"
+            WEB_ROOT="/opt/frontend"
             PROXY_CONTAINER="stewart-backend-caddy"
 
             # ── Derived Variables ──
@@ -139,7 +139,7 @@ jobs:
 
             # Backup current files before overwriting
             if [ -f "${WEB_ROOT}/index.html" ]; then
-              BACKUP_DIR="/opt/frontend/quittheapp-backup-$(date +%Y%m%d_%H%M%S)"
+              BACKUP_DIR="/opt/frontend-backup-$(date +%Y%m%d_%H%M%S)"
               cp -r ${WEB_ROOT} ${BACKUP_DIR}
               echo "📋 Backed up current files to ${BACKUP_DIR}"
             fi
@@ -185,7 +185,7 @@ jobs:
             fi
 
             # ── Step 7: Cleanup old images and backups ──
-            find /opt/frontend -maxdepth 1 -name "quittheapp-backup-*" -mtime +7 -exec rm -rf {} \;
+            find /opt -maxdepth 1 -name "frontend-backup-*" -mtime +7 -exec rm -rf {} \;
             docker images --filter "reference=${IMAGE_NAME}" --format "{{.ID}} {{.Tag}}" | \
               grep -v "${{ github.sha }}" | grep -v "latest" | head -n -3 | \
               awk '{print $1}' | xargs -r docker rmi -f || true
