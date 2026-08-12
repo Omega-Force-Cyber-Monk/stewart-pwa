@@ -2,8 +2,8 @@ name: Frontend CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main" ]
-    tags: [ "v*" ]
+    branches: [ "deployment" ]
+
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
