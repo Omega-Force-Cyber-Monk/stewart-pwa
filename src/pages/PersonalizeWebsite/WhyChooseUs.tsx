@@ -26,12 +26,12 @@ const reasons = [
 
 export function WhyChooseUs() {
   return (
-    <section className="w-full bg-white py-20">
+    <section className="w-full bg-white py-3">
       <div className="container bg-[#121416] rounded-2xl overflow-hidden">
         <div className="flex flex-col lg:flex-row min-h-[600px]">
 
           {/* Left: Dark content panel */}
-          <div className="relative flex-1 flex flex-col justify-center pl-6 pr-8 sm:pl-20  py-20 gap-10">
+          <div className="relative flex-1 flex flex-col justify-center pl-6 pr-8 sm:pl-20 py-3 gap-10">
 
             {/* Accent left border bar */}
             <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500"></div>

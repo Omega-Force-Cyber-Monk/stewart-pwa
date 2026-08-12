@@ -8,27 +8,17 @@ interface WebsiteFooterProps {
   logoUrl?: string | null;
   serviceAreas?: string[];
   airports?: string[];
+  bookingUrl?: string | null;
 }
 
-export function WebsiteFooter({ businessName, businessPhone, businessEmail, logoUrl, serviceAreas = [], airports = [] }: WebsiteFooterProps) {
+export function WebsiteFooter({ businessName, businessPhone, businessEmail, logoUrl, serviceAreas = [], airports = [], bookingUrl }: WebsiteFooterProps) {
   // Real data only — never render fabricated brand/location text.
   const nameParts = businessName.split(" ");
   const firstWord = nameParts[0] ?? "";
   const restOfName = nameParts.slice(1).join(" ");
 
-  const handleScrollToBooking = () => {
-    const formElement = document.getElementById("booking-card");
-    if (formElement) {
-      formElement.scrollIntoView({ behavior: "smooth" });
-      const firstInput = formElement.querySelector("input");
-      if (firstInput) firstInput.focus();
-    } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  };
-
   return (
-    <footer className="bg-[#0b0c0d] border-t border-white/10 text-slate-400 pt-16">
+    <footer className="bg-[#0b0c0d] border-t border-white/10 text-slate-400 pt-3">
       <div className="container px-6">
 
         {/* Main Footer Content Grid */}
@@ -137,12 +127,14 @@ export function WebsiteFooter({ businessName, businessPhone, businessEmail, logo
 
           {/* Column 5: Call to Action (span 2) */}
           <div className="lg:col-span-2 flex flex-col gap-5 items-start">
-            <button
-              onClick={handleScrollToBooking}
-              className="bg-[#4bae4f] hover:bg-[#439e47] text-white text-xs font-bold tracking-wider uppercase px-4 py-3 rounded-lg transition-all whitespace-nowrap shadow-md"
+            <a
+              href={bookingUrl || "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full bg-[#4bae4f] hover:bg-[#439e47] text-white py-3.5 rounded-xl font-bold transition-all shadow-md mt-2 flex items-center justify-center"
             >
-              BOOK YOUR RIDE NOW
-            </button>
+              Book Your Ride
+            </a>
 
             <div className="flex flex-col gap-3">
               <a

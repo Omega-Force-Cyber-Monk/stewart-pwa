@@ -49,19 +49,25 @@ import {
   useUpdateChecklistItemMutation,
   useGetLaunchReadinessQuery,
   useGetFinalReviewQuery,
-  useCompleteLaunchMutation
+  useCompleteLaunchMutation,
+  useLazyDownloadBusinessResourceQuery
 } from "../store/api/Business/business.api";
 import referralCardBg from "../assets/referralCardBg.png";
 import autocarLogo from "../assets/autocarLogo.png";
-import type { AirportSuggestion } from "../store/api/Business/business.type";
+import type { AirportSuggestion, BusinessResource } from "../store/api/Business/business.type";
 
 interface ApiErrorPayload {
   message?: string | { message?: string };
+  missingRequirements?: string[];
 }
 
 const getApiErrorMessage = (err: unknown, fallback: string): string => {
   if (err && typeof err === "object" && "data" in err) {
     const data = (err as { data?: ApiErrorPayload }).data;
+    if (data?.missingRequirements && data.missingRequirements.length > 0) {
+      const baseMsg = typeof data.message === "string" ? data.message : "Business is not ready for launch.";
+      return `${baseMsg} Missing requirements: ${data.missingRequirements.join(", ")}`;
+    }
     if (data?.message) {
       if (typeof data.message === "string") return data.message;
       if (data.message.message) return data.message.message;
@@ -95,6 +101,7 @@ export default function LaunchDashboardPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [apiError, setApiError] = useState<string | null>(null);
   const [showQrModal, setShowQrModal] = useState(false);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [alertModal, setAlertModal] = useState<{
     isOpen: boolean;
     title: string;
@@ -139,6 +146,27 @@ export default function LaunchDashboardPage() {
 
   const { data: resourcesAcq } = useGetBusinessResourcesQuery({ step: "CUSTOMER_ACQUISITION" });
   const { data: resourcesBrand } = useGetBusinessResourcesQuery({ step: "BRAND_AND_TRUST" });
+  const [downloadResource] = useLazyDownloadBusinessResourceQuery();
+
+  const handleDownload = async (resource: BusinessResource) => {
+    setDownloadingId(resource.id);
+    try {
+      const blob = await downloadResource(resource.id).unwrap();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = resource.fileUrl.split("/").pop() || `${resource.title}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Download failed:", err);
+      showAlert("Error", "Failed to download resource. Please try again.", "error");
+    } finally {
+      setDownloadingId(null);
+    }
+  };
 
   // Airport suggestions query
   const [triggerGetSuggestions, { data: suggestionsResponse }] = useLazyGetAirportSuggestionsQuery();
@@ -258,6 +286,12 @@ export default function LaunchDashboardPage() {
   const handleStep2Submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setApiError(null);
+
+    if (acuityData.connected && (!acuityData.bookingUrl || !acuityData.bookingUrl.trim())) {
+      setApiError("Acuity booking URL is required when connected.");
+      return;
+    }
+
     try {
       let finalLogoUrl = businessData.logoUrl;
 
@@ -440,7 +474,7 @@ export default function LaunchDashboardPage() {
   const strokeDashoffset = circumference - (progressPercentage / 100) * circumference;
 
   // Active items checklist calculation
-  const completedSteps = launchReadyResponse?.completedSteps || setupResponse?.data?.progress?.completedSteps || [];
+  const completedSteps = setupResponse?.data?.progress?.completedSteps || launchReadyResponse?.completedSteps || [];
   const acuityConnected = acuityData.connected || setupResponse?.data?.acuity?.connected || false;
 
   if (isLoadingSetup) {
@@ -1112,10 +1146,16 @@ export default function LaunchDashboardPage() {
                         </div>
                         <button
                           type="button"
-                          onClick={() => window.open(res.fileUrl, "_blank")}
-                          className="w-full py-2 border border-slate-200 text-xs font-semibold text-slate-700 rounded-lg hover:bg-slate-50 transition"
+                          onClick={() => handleDownload(res)}
+                          disabled={downloadingId === res.id}
+                          className="w-full py-2 border border-slate-200 text-xs font-semibold text-slate-700 rounded-lg hover:bg-slate-50 transition flex items-center justify-center gap-2 disabled:opacity-60"
                         >
-                          View Resource
+                          {downloadingId === res.id ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <Download className="w-3.5 h-3.5" />
+                          )}
+                          {downloadingId === res.id ? "Downloading..." : "Download Resource"}
                         </button>
                       </div>
                     ))
@@ -1216,10 +1256,16 @@ export default function LaunchDashboardPage() {
                         </div>
                         <button
                           type="button"
-                          onClick={() => window.open(res.fileUrl, "_blank")}
-                          className="w-full py-2.5 rounded-lg font-bold text-[13px] transition-all bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
+                          onClick={() => handleDownload(res)}
+                          disabled={downloadingId === res.id}
+                          className="w-full py-2.5 rounded-lg font-bold text-[13px] transition-all bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 flex items-center justify-center gap-2 disabled:opacity-60"
                         >
-                          View Resource
+                          {downloadingId === res.id ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Download className="w-4 h-4" />
+                          )}
+                          {downloadingId === res.id ? "Downloading..." : "Download Resource"}
                         </button>
                       </div>
                     ))
@@ -1740,8 +1786,12 @@ export default function LaunchDashboardPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={isCompletingLaunch}
-                  className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-8 py-3 rounded-lg font-bold transition-colors shadow-sm flex items-center gap-2"
+                  disabled={isCompletingLaunch || !launchReadyResponse?.readyForFinalReview}
+                  className={`${
+                    isCompletingLaunch || !launchReadyResponse?.readyForFinalReview
+                      ? "bg-slate-300 text-slate-500 cursor-not-allowed"
+                      : "bg-[#22c55e] hover:bg-[#1ea951] text-white shadow-sm"
+                  } px-8 py-3 rounded-lg font-bold transition-colors flex items-center gap-2`}
                 >
                   {isCompletingLaunch && <Loader2 className="w-4 h-4 animate-spin" />}
                   Complete Launch

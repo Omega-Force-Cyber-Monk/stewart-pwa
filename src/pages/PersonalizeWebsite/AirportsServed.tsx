@@ -15,7 +15,7 @@ export function AirportsServed({ airports = [] }: AirportsServedProps) {
     }));
 
   return (
-    <section className="bg-white text-slate-900 py-16 px-6 border-t border-slate-100">
+    <section className="bg-white text-slate-900 py-3 px-6 border-t border-slate-100">
       <div className="container w-full">
         {/* Header Title with decorative green lines */}
         <div className="flex items-center justify-center gap-4 mb-12">

@@ -4,7 +4,7 @@ import { LaunchToolkit } from "../components/dashboard/LaunchToolkit";
 import { QuickActions } from "../components/dashboard/QuickActions";
 import { useGetRiderProfileQuery } from "../store/api/Auth/auth.api";
 import { useGetSetupStateQuery } from "../store/api/Business/business.api";
-import personalizeBanner from "../assets/personalizeBanner.png";
+import { HeroSection } from "./PersonalizeWebsite/HeroSection";
 
 export default function DashboardPage() {
   const { data: profileResponse } = useGetRiderProfileQuery();
@@ -39,25 +39,31 @@ export default function DashboardPage() {
             </p>
           </div>
           {slug ? (
-            <Link
-              to={`/book/${slug}`}
+            <a
+              href={`https://${slug}.quittheapp.com`}
               target="_blank"
-              className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-5 py-2.5 rounded-lg font-bold text-sm transition-colors text-center shrink-0"
+              rel="noopener noreferrer"
+              className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-5 py-2.5 rounded-lg font-bold text-sm transition-colors text-center shrink-0 inline-block"
             >
               Open Website
-            </Link>
+            </a>
           ) : (
             <span className="bg-slate-100 text-slate-400 px-5 py-2.5 rounded-lg font-bold text-sm text-center shrink-0">
               Website not published yet
             </span>
           )}
         </div>
-        <div className="overflow-hidden rounded-xl border border-slate-200 shadow-sm bg-slate-50">
-          <img 
-            src={personalizeBanner} 
-            alt="Personalized Booking Banner" 
-            className="w-full h-auto object-cover max-h-[480px]"
-          />
+        <div className="overflow-hidden rounded-xl border border-slate-200 shadow-sm bg-slate-50 relative flex">
+          <div className="flex-1 w-full scale-[0.85] origin-top md:scale-[0.9] lg:scale-100 h-[700px] lg:h-auto -mb-[10%] lg:mb-0">
+            <HeroSection
+              businessName={setupResponse?.data?.business?.businessName || "Your Transportation Business"}
+              businessPhone={setupResponse?.data?.business?.phone || "Phone not set"}
+              businessInfo={setupResponse?.data?.business?.businessInfo || "Reliable and professional transportation."}
+              servingAreas={setupResponse?.data?.serviceArea?.airports || ["Local Airport"]}
+              bookingUrl={setupResponse?.data?.acuity?.bookingUrl || null}
+              logoUrl={setupResponse?.data?.business?.logoUrl || null}
+            />
+          </div>
         </div>
       </div>
 

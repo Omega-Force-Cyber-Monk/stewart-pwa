@@ -23,7 +23,7 @@ export function ServiceAreaSection({ servingAreas }: ServiceAreaSectionProps) {
   const areas = servingAreas ?? [];
 
   return (
-    <section className="w-full bg-white border-t border-slate-100 py-20">
+    <section className="w-full bg-white border-t border-slate-100 py-3">
       <div className="container">
         <div className="flex flex-col lg:flex-row gap-0 divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
 

@@ -13,6 +13,7 @@ import { useGetSetupStateQuery, useGetReferralCardQuery } from "../store/api/Bus
 import { AlertModal } from "../components/ui/AlertModal";
 import eleanorAvatar from "../assets/eleanorAvatar.png";
 import carCover from "../assets/carCover.png";
+import { copyToClipboard } from "../utils/clipboard";
 
 interface ApiErrorPayload {
   message?: string;
@@ -334,19 +335,23 @@ export default function ProfilePage() {
 
             <div className="flex flex-col gap-2 flex-1 max-w-xs">
               <p className="text-[13px] font-bold text-slate-700">Referral link</p>
-              <div className="bg-slate-100 rounded-lg px-4 py-3 text-[14px] font-bold text-slate-800 border border-slate-200 truncate">
-                {referralResponse?.data?.digitalCardUrl || "joindriver.com/book"}
+              <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-600 truncate">
+                {referralResponse?.data?.digitalCardUrl || (setupResponse?.data?.business?.slug ? `https://${setupResponse.data.business.slug}.quittheapp.com` : "Not set up yet")}
               </div>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
             <button
-              onClick={() => {
-                const url = referralResponse?.data?.digitalCardUrl;
+              onClick={async () => {
+                const url = referralResponse?.data?.digitalCardUrl || (setupResponse?.data?.business?.slug ? `https://${setupResponse.data.business.slug}.quittheapp.com` : "");
                 if (url) {
-                  navigator.clipboard.writeText(url);
-                  showAlert("Success", "Referral link copied to clipboard!", "success");
+                  const success = await copyToClipboard(url);
+                  if (success) {
+                    showAlert("Success", "Referral link copied to clipboard!", "success");
+                  }
+                } else {
+                  showAlert("Error", "Referral link is not available yet.", "error");
                 }
               }}
               className="flex items-center justify-center gap-2 bg-green-100 hover:bg-green-200 text-green-700 px-5 py-2.5 rounded-lg font-bold text-[13px] transition-colors shadow-sm"
@@ -355,16 +360,20 @@ export default function ProfilePage() {
               Copy link
             </button>
             <button
-              onClick={() => {
-                const url = referralResponse?.data?.digitalCardUrl;
+              onClick={async () => {
+                const url = referralResponse?.data?.digitalCardUrl || (setupResponse?.data?.business?.slug ? `https://${setupResponse.data.business.slug}.quittheapp.com` : "");
                 if (url && navigator.share) {
                   navigator.share({
                     title: "Book Direct",
                     url: url
                   });
                 } else if (url) {
-                  navigator.clipboard.writeText(url);
-                  showAlert("Success", "Referral link copied to clipboard!", "success");
+                  const success = await copyToClipboard(url);
+                  if (success) {
+                    showAlert("Success", "Referral link copied to clipboard!", "success");
+                  }
+                } else {
+                  showAlert("Error", "Referral link is not available yet.", "error");
                 }
               }}
               className="flex items-center justify-center gap-2 bg-green-100 hover:bg-green-200 text-green-700 px-5 py-2.5 rounded-lg font-bold text-[13px] transition-colors shadow-sm"

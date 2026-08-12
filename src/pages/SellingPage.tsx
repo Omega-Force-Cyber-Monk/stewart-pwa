@@ -2,6 +2,8 @@ import { useState } from "react";
 import { ExternalLink, Share2, Copy, QrCode, Download, Mail, Smartphone, Users, BadgeDollarSign, CalendarDays } from "lucide-react";
 import sellingPageHero from "../assets/sellingPageHero.png";
 import { useGetSetupStateQuery, useGetReferralCardQuery } from "../store/api/Business/business.api";
+import { copyToClipboard } from "../utils/clipboard";
+import { HeroSection } from "./PersonalizeWebsite/HeroSection";
 
 export default function SellingPage() {
   const [copied, setCopied] = useState(false);
@@ -9,15 +11,13 @@ export default function SellingPage() {
   const { data: referralResponse } = useGetReferralCardQuery();
 
   const businessSlug = setupResponse?.data?.business?.slug;
-  const personalizedUrl = referralResponse?.data?.digitalCardUrl || (businessSlug ? `${window.location.origin}/book/${businessSlug}` : "");
+  const personalizedUrl = referralResponse?.data?.digitalCardUrl || (businessSlug ? `https://${businessSlug}.quittheapp.com` : "");
 
   const handleCopyLink = async () => {
-    try {
-      await navigator.clipboard.writeText(personalizedUrl);
+    const success = await copyToClipboard(personalizedUrl);
+    if (success) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error("Failed to copy text: ", err);
     }
   };
 
@@ -34,34 +34,15 @@ export default function SellingPage() {
       </div>
 
       {/* Landing Page Preview Card */}
-      <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm mb-8 relative group">
-        <img
-          src={sellingPageHero}
-          alt="Driver with premium SUV at airport"
-          className="w-full h-[300px] sm:h-[400px] lg:h-[500px] object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+      <div className="border border-slate-200 rounded-3xl overflow-hidden shadow-sm mb-8 flex min-h-[500px]">
+        <HeroSection
+          businessName={setupResponse?.data?.business?.businessName || "Your Transportation Business"}
+          businessPhone={setupResponse?.data?.business?.phone || "Phone not set"}
+          businessInfo={setupResponse?.data?.business?.businessInfo || "Reliable and professional transportation."}
+          servingAreas={setupResponse?.data?.serviceArea?.airports || ["Local Airport"]}
+          bookingUrl={setupResponse?.data?.acuity?.bookingUrl || null}
+          logoUrl={setupResponse?.data?.business?.logoUrl || null}
         />
-
-        {/* Overlay Content */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent flex flex-col justify-center p-8 sm:p-12 lg:p-16 w-full lg:w-2/3">
-          <h2 className="text-[32px] sm:text-[40px] lg:text-[48px] font-extrabold text-slate-900 leading-tight mb-4">
-            Reliable <span className="text-[#2ea043]">Airport<br />Transportation</span><br />
-            You Can Trust
-          </h2>
-          <p className="text-[14px] sm:text-[15px] text-slate-700 max-w-md mb-8 leading-relaxed font-medium">
-            Professional private airport transportation with on-time pickups, transparent pricing, and exceptional service. Travel comfortably with experienced drivers and premium vehicles.
-          </p>
-
-          <div className="flex items-center gap-4">
-            <button className="bg-[#2ea043] hover:bg-[#238636] text-white px-6 py-3 rounded-lg font-bold text-[15px] transition-colors shadow-sm flex items-center gap-2">
-              <CalendarDays className="w-5 h-5" />
-              Book Now
-            </button>
-            <button className="bg-white/80 backdrop-blur-sm border-2 border-[#2ea043] text-[#2ea043] hover:bg-[#2ea043] hover:text-white px-6 py-3 rounded-lg font-bold text-[15px] transition-colors flex items-center gap-2">
-              <Smartphone className="w-5 h-5" />
-              Call Now
-            </button>
-          </div>
-        </div>
       </div>
 
       {/* Share Section */}
@@ -69,7 +50,7 @@ export default function SellingPage() {
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-[18px] font-bold text-slate-900">Landing page</h3>
           <a
-            href={`/book/${businessSlug}`}
+            href={`https://${businessSlug}.quittheapp.com`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-[#2ea043] hover:text-[#238636] font-bold text-[14px] transition-colors"

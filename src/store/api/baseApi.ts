@@ -101,6 +101,8 @@ export const baseApi = createApi({
     "Setting",
     "Users",
     "User",
+    "Setup",
+    "LaunchReady",
   ],
   endpoints: () => ({}),
 });
