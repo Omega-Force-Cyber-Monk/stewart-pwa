@@ -15,6 +15,8 @@ import {
 import bookingPreview from "../assets/bookingPreview.png";
 import { AlertModal } from "../components/ui/AlertModal";
 import { useGetSetupStateQuery, useGetReferralCardQuery } from "../store/api/Business/business.api";
+import { copyToClipboard } from "../utils/clipboard";
+import { HeroSection } from "./PersonalizeWebsite/HeroSection";
 
 export default function BookingSystemPage() {
   const { data: setupResponse, isLoading: isLoadingSetup } = useGetSetupStateQuery();
@@ -74,12 +76,10 @@ export default function BookingSystemPage() {
 
   const handleCopyLink = async () => {
     if (!websiteUrl) return;
-    try {
-      await navigator.clipboard.writeText(websiteUrl);
+    const success = await copyToClipboard(websiteUrl);
+    if (success) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch {
-      showAlert("Copy link", websiteUrl, "info");
     }
   };
 
@@ -380,12 +380,17 @@ export default function BookingSystemPage() {
               </div>
             </div>
 
-            <div className="flex-1 rounded-xl overflow-hidden mb-16 border border-slate-100 bg-slate-50 relative min-h-[220px]">
-              <img
-                src={bookingPreview}
-                alt="Booking Page Preview"
-                className="absolute inset-0 w-full h-full object-cover object-center"
-              />
+            <div className="flex-1 rounded-xl overflow-hidden mb-16 border border-slate-100 bg-slate-50 relative min-h-[400px] flex">
+              <div className="flex-1 w-[200%] origin-top-left scale-[0.5] h-[800px] -mb-[50%] -mr-[100%]">
+                <HeroSection
+                  businessName={setupResponse?.data?.business?.businessName || "Your Transportation Business"}
+                  businessPhone={setupResponse?.data?.business?.phone || "Phone not set"}
+                  businessInfo={setupResponse?.data?.business?.businessInfo || "Reliable and professional transportation."}
+                  servingAreas={setupResponse?.data?.serviceArea?.airports || ["Local Airport"]}
+                  bookingUrl={setupResponse?.data?.acuity?.bookingUrl || null}
+                  logoUrl={setupResponse?.data?.business?.logoUrl || null}
+                />
+              </div>
             </div>
 
             <a

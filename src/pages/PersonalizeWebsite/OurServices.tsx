@@ -49,7 +49,7 @@ export function OurServices() {
   ];
 
   return (
-    <section className="bg-slate-50 text-slate-900 py-20 px-6 border-t border-slate-200">
+    <section className="bg-slate-50 text-slate-900 py-3 px-6 border-t border-slate-200">
       <div className="container w-full">
 
         {/* Header Title with decorative green lines */}

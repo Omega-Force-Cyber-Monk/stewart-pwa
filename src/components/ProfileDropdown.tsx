@@ -74,7 +74,7 @@ export function ProfileDropdown({ openPricingModal }: ProfileDropdownProps) {
                 <ShieldCheck className="size-4 text-cyan-400" />
                 Admin Dashboard
               </Link>
-            ) : user?.status === "active" ? (
+            ) : (
               <Link
                 to="/dashboard"
                 onClick={() => setDropdownOpen(false)}
@@ -83,21 +83,6 @@ export function ProfileDropdown({ openPricingModal }: ProfileDropdownProps) {
                 <LayoutDashboard className="size-4 text-cyan-400" />
                 Dashboard
               </Link>
-            ) : (
-              <button
-                onClick={() => {
-                  setDropdownOpen(false);
-                  if (openPricingModal) {
-                    openPricingModal();
-                  } else {
-                    window.location.href = "/?showPricing=true";
-                  }
-                }}
-                className="w-full text-left flex items-center gap-2 px-4 py-2.5 text-sm text-slate-200 hover:bg-[#04B5A3]/10 hover:text-white transition"
-              >
-                <CreditCard className="size-4 text-cyan-400" />
-                Complete Checkout
-              </button>
             )}
             <Link
               to={user?.role === "admin" ? "/admin/settings" : "/profile"}

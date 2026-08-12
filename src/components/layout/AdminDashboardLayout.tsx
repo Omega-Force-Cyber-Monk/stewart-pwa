@@ -138,12 +138,6 @@ export function AdminDashboardLayout({
           </div>
 
           <div className="flex items-center gap-6">
-            <button className="relative text-slate-300 hover:text-white transition-colors">
-              <Bell className="h-5 w-5" />
-              <span className="absolute top-0 right-0 -mt-1 -mr-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#ef4444] text-[10px] font-bold text-white border-2 border-[#111315]">
-                2
-              </span>
-            </button>
             
             <div className="flex items-center gap-3 border-l border-slate-700 pl-6">
               <div className="flex flex-col items-end hidden sm:flex">

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { CheckCircle2, X } from "lucide-react";
 import { useGetPublicBusinessBySlugQuery } from "../../store/api/Business/business.api";
 import { WebsiteNavbar } from "./WebsiteNavbar";
-import { BookingForm } from "./BookingForm";
+
 import { HeroSection } from "./HeroSection";
 import { TrustBadges } from "./TrustBadges";
 import { AirportsServed } from "./AirportsServed";
@@ -17,7 +17,6 @@ import { WebsiteFooter } from "./WebsiteFooter";
 export default function RiderWebsitePage() {
   const { slug } = useParams<{ slug: string }>();
   const { data: publicResponse, isLoading, isError } = useGetPublicBusinessBySlugQuery(slug ?? "");
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const data = publicResponse?.data;
   const business = data?.business;
@@ -32,9 +31,7 @@ export default function RiderWebsitePage() {
 
   const servingAreas = cityArea ? [cityArea].concat(airports) : [];
 
-  const handleBookingSubmit = () => {
-    setShowSuccessModal(true);
-  };
+
 
   if (isLoading) {
     return (
@@ -74,7 +71,8 @@ export default function RiderWebsitePage() {
         businessPhone={businessPhone}
         businessInfo={business?.businessInfo || ""}
         servingAreas={servingAreas}
-        bookingFormChild={<BookingForm onSubmit={handleBookingSubmit} />}
+        bookingUrl={data?.booking?.bookingUrl ?? null}
+        logoUrl={business?.logoUrl}
       />
 
       {/* 3. Horizontal Trust Badges Ribbon (Directly after Banner) */}
@@ -106,37 +104,9 @@ export default function RiderWebsitePage() {
         logoUrl={business?.logoUrl}
         serviceAreas={servingAreas}
         airports={airports}
+        bookingUrl={data?.booking?.bookingUrl ?? null}
       />
 
-      {/* 7. Booking Success Modal */}
-      {showSuccessModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-slate-900 border border-white/10 rounded-3xl w-full max-w-md shadow-2xl p-6 sm:p-8 relative zoom-in-95 animate-in duration-200 text-center flex flex-col items-center text-white">
-            <button
-              onClick={() => setShowSuccessModal(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-200 transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/30 flex items-center justify-center text-green-400 mb-5">
-              <CheckCircle2 className="w-10 h-10" />
-            </div>
-
-            <h3 className="text-xl font-bold mb-2">Booking Inquiry Sent!</h3>
-            <p className="text-sm text-slate-400 leading-relaxed mb-6">
-              Thank you for choosing {businessName}. Your request has been forwarded. We will contact you at your email or phone details shortly to confirm your booking details.
-            </p>
-
-            <button
-              onClick={() => setShowSuccessModal(false)}
-              className="w-full bg-[#22c55e] hover:bg-[#1ea951] text-white py-2.5 rounded-xl text-sm font-bold transition-all"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

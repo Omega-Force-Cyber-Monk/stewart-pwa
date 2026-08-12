@@ -15,9 +15,10 @@ import {
   MessageSquare,
   CheckCircle2,
   ExternalLink,
-  Check,
+  Check
 } from "lucide-react";
 import { useGetReferralCardQuery } from "../store/api/Business/business.api";
+import { copyToClipboard } from "../utils/clipboard";
 
 export default function ReferralCardPage() {
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
@@ -38,18 +39,8 @@ export default function ReferralCardPage() {
 
   const handleCopyLink = async () => {
     if (!websiteUrl) return;
-    try {
-      await navigator.clipboard.writeText(websiteUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // fallback for older browsers
-      const input = document.createElement("input");
-      input.value = websiteUrl;
-      document.body.appendChild(input);
-      input.select();
-      document.execCommand("copy");
-      input.remove();
+    const success = await copyToClipboard(websiteUrl);
+    if (success) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }

@@ -25,7 +25,7 @@ const faqs = [
 
 export function FAQSection() {
   return (
-    <section className="w-full bg-white border-t border-slate-100 py-14">
+    <section className="w-full bg-white border-t border-slate-100 py-3">
       <div className="container">
 
         {/* Section title with decorative green lines */}

@@ -57,6 +57,7 @@ export const businessApi = baseApi.injectEndpoints({
     }),
     getSetupState: builder.query<SetupStateResponse, void>({
       query: () => "/business/setup",
+      providesTags: ["Setup"],
     }),
     updateSetupState: builder.mutation<SetupStateResponse, UpdateSetupRequest>({
       query: (body) => ({
@@ -64,6 +65,7 @@ export const businessApi = baseApi.injectEndpoints({
         method: "PATCH",
         body,
       }),
+      invalidatesTags: ["Setup", "LaunchReady"],
     }),
     uploadBusinessLogo: builder.mutation<UploadLogoResponse, FormData>({
       query: (formData) => ({
@@ -83,6 +85,7 @@ export const businessApi = baseApi.injectEndpoints({
         url: "/business/referral-card/generate",
         method: "POST",
       }),
+      invalidatesTags: ["Setup", "LaunchReady"],
     }),
     getBusinessResources: builder.query<BusinessResourcesResponse, { step?: string; type?: string; categoryId?: string } | void>({
       query: (params) => {
@@ -119,9 +122,11 @@ export const businessApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: { completed },
       }),
+      invalidatesTags: ["Setup", "LaunchReady"],
     }),
     getLaunchReadiness: builder.query<LaunchReadinessResponse, void>({
       query: () => "/business/launch-ready",
+      providesTags: ["LaunchReady"],
     }),
     getFinalReview: builder.query<FinalReviewResponse, void>({
       query: () => "/business/final-review",

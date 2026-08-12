@@ -70,7 +70,7 @@ export function DashboardLayout({ children, title = "Dashboard Overview" }: Dash
     if (isLoading) return;
 
     // 1. If unauthorized/unpaid, redirect to home page to complete payment
-    if (error || !dashboardData || dashboardData.purchase?.status !== "paid") {
+    if (error || !dashboardData || !dashboardData.purchase?.baseVariant || dashboardData.purchase?.status !== "paid") {
       navigate("/?showPricing=true", { replace: true });
       return;
     }
@@ -212,12 +212,6 @@ export function DashboardLayout({ children, title = "Dashboard Overview" }: Dash
           </div>
 
           <div className="flex items-center gap-4 sm:gap-6">
-            <button className="relative text-white lg:text-slate-500 hover:text-slate-300 lg:hover:text-slate-700">
-              <Bell className="h-5 w-5" />
-              <span className="absolute top-0 right-0 -mt-1 -mr-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
-                2
-              </span>
-            </button>
 
             <div className="flex items-center">
               <ProfileDropdown />
