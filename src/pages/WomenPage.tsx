@@ -98,9 +98,8 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
             <div className="w-full max-w-[clamp(280px,40vw,672px)] text-left z-10 self-center">
               <h1 className="text-[clamp(1.9rem,4.5vw,3.75rem)] font-bold text-white leading-[1.15] mb-[clamp(1rem,1.5vw,1.25rem)] tracking-tight text-balance">
                 Build Your Own <br />
-                <span className="text-[#f42661]">Women-Focused</span> <br />
-                Private Airport <br />
-                Transportation Business
+                Private Airport Business. <br />
+                <span className="text-[#f42661]">Designed for Women.</span>
               </h1>
 
               <p className="text-[clamp(1rem,1.35vw,1.125rem)] text-slate-200 mb-[clamp(1.5rem,2vw,2rem)] max-w-[clamp(280px,38vw,576px)] leading-relaxed text-pretty">
@@ -133,26 +132,24 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                   className="cursor-pointer bg-[#f42661] hover:bg-[#d91950] text-white font-bold py-[clamp(0.875rem,1.2vw,1rem)] px-[clamp(1.25rem,2vw,2rem)] rounded-[clamp(0.375rem,0.5vw,0.5rem)] transition-colors shadow-lg shadow-[#f42661]/30 flex items-center justify-between group w-full sm:w-auto text-[clamp(0.875rem,1.1vw,1.125rem)] min-h-[52px]"
                 >
                   <span className="text-left leading-snug">
-                    Start My Women-Focused <br className="hidden sm:block" />
-                    Private Airport Business™ — $495
+                    Start My Private Airport Business™ — $495
                   </span>
                   <div className="bg-white rounded-full p-[clamp(0.2rem,0.3vw,0.3rem)] ml-[clamp(0.75rem,1vw,1rem)] group-hover:translate-x-1 transition-transform shrink-0">
                     <ChevronRight className="text-[#f42661] w-[clamp(1.1rem,1.2vw,1.3rem)] h-[clamp(1.1rem,1.2vw,1.3rem)]" />
                   </div>
                 </button>
               ) : (
-                <Link
-                  to="/signup"
+                <button
+                  onClick={openPricingModal}
                   className="cursor-pointer bg-[#f42661] hover:bg-[#d91950] text-white font-bold py-[clamp(0.875rem,1.2vw,1rem)] px-[clamp(1.25rem,2vw,2rem)] rounded-[clamp(0.375rem,0.5vw,0.5rem)] transition-colors shadow-lg shadow-[#f42661]/30 flex items-center justify-between group w-full sm:w-auto text-[clamp(0.875rem,1.1vw,1.125rem)] min-h-[52px]"
                 >
                   <span className="text-left leading-snug">
-                    Start My Women-Focused <br className="hidden sm:block" />
-                    Private Airport Business™ — $495
+                    Start My Private Airport Business™ — $495
                   </span>
                   <div className="bg-white rounded-full p-[clamp(0.2rem,0.3vw,0.3rem)] ml-[clamp(0.75rem,1vw,1rem)] group-hover:translate-x-1 transition-transform shrink-0">
                     <ChevronRight className="text-[#f42661] w-[clamp(1.1rem,1.2vw,1.3rem)] h-[clamp(1.1rem,1.2vw,1.3rem)]" />
                   </div>
-                </Link>
+                </button>
               )}
             </div>
 
@@ -683,7 +680,7 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
 
   const trustBadges = [
     { icon: ShieldCheck, text: "Secure Checkout" },
-    { icon: CheckCircle2, text: "100% Safe" },
+    { icon: CheckCircle2, text: "Protected Payment" },
     { icon: Lock, text: "One-time payment" },
     { icon: XCircle, text: "No monthly platform fees" },
     { icon: Plane, text: "Built for Airport Transportation Businesses™" },
@@ -698,9 +695,8 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
           {/* Column 1: Intro */}
           <div className="lg:w-1/3 flex flex-col pr-0 lg:pr-8 lg:border-r border-slate-800">
             <h3 className="text-2xl sm:text-3xl font-bold text-white leading-tight mb-6">
-              Start My <span className="text-[#f42661]">Women-Focused</span>
-              <br />
-              Private Airport Business™
+              Start My <br />
+              <span className="text-[#f42661]">Private Airport Business™</span>
             </h3>
             <div className="flex items-start gap-4">
               <Heart className="w-10 h-10 text-[#f42661] shrink-0 stroke-[1.5]" />
@@ -741,62 +737,65 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
           {/* Column 3: Button & Payments */}
           <div className="lg:w-1/3 flex flex-col justify-center items-center lg:items-end">
             {user?.status === "active" ? (
-              <Link
-                to="/dashboard"
+              <button
+                onClick={openPricingModal}
                 className="cursor-pointer bg-[#f42661] hover:bg-[#d91950] text-white font-bold py-4 px-6 rounded-lg transition-colors shadow-lg shadow-[#f42661]/20 flex items-center justify-between group w-full text-base sm:text-lg mb-4 min-h-[56px]"
               >
                 <span className="text-center w-full">
-                  Go to Dashboard
+                  Start Your Business
                 </span>
                 <div className="bg-white rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
                   <ChevronRight className="w-5 h-5 text-[#f42661] stroke-[3]" />
                 </div>
-              </Link>
+              </button>
             ) : accessToken ? (
               <button
                 onClick={openPricingModal}
                 className="cursor-pointer bg-[#f42661] hover:bg-[#d91950] text-white font-bold py-4 px-6 rounded-lg transition-colors shadow-lg shadow-[#f42661]/20 flex items-center justify-between group w-full text-base sm:text-lg mb-4 min-h-[56px]"
               >
                 <span className="text-center w-full">
-                  Start My Women-Focused <br className="hidden xl:block" />
-                  Private Airport Business™ — $495
+                  Start My Private Airport Business™ — $495
                 </span>
                 <div className="bg-white rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
                   <ChevronRight className="w-5 h-5 text-[#f42661] stroke-[3]" />
                 </div>
               </button>
             ) : (
-              <Link
-                to="/signup"
+              <button
+                onClick={openPricingModal}
                 className="cursor-pointer bg-[#f42661] hover:bg-[#d91950] text-white font-bold py-4 px-6 rounded-lg transition-colors shadow-lg shadow-[#f42661]/20 flex items-center justify-between group w-full text-base sm:text-lg mb-4 min-h-[56px]"
               >
                 <span className="text-center w-full">
-                  Start My Women-Focused <br className="hidden xl:block" />
-                  Private Airport Business™ — $495
+                  Start My Private Airport Business™ — $495
                 </span>
                 <div className="bg-white rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
                   <ChevronRight className="w-5 h-5 text-[#f42661] stroke-[3]" />
                 </div>
-              </Link>
+              </button>
             )}
 
             {/* Payment Badges (CSS simulated) */}
-            <div className="flex gap-2 flex-wrap justify-center lg:justify-end">
-              <div className="bg-white px-2 py-1 rounded text-[#1a1f71] font-bold text-xs italic tracking-tighter border border-slate-300">
-                VISA
+            <div className="flex flex-col items-center lg:items-end gap-2">
+              <div className="flex gap-2 flex-wrap justify-center lg:justify-end">
+                <div className="bg-white px-2 py-1 rounded text-[#1a1f71] font-bold text-xs italic tracking-tighter border border-slate-300">
+                  VISA
+                </div>
+                <div className="bg-white px-2 py-1 rounded flex items-center justify-center border border-slate-300">
+                  <div className="w-3 h-3 rounded-full bg-[#eb001b] -mr-1 opacity-90 mix-blend-multiply"></div>
+                  <div className="w-3 h-3 rounded-full bg-[#f79e1b] opacity-90 mix-blend-multiply"></div>
+                </div>
+                <div className="bg-[#2e77bc] px-2 py-1 rounded text-white font-bold text-xs border border-slate-300">
+                  AMEX
+                </div>
+                <div className="bg-white px-2 py-1 rounded text-[#f68121] font-bold text-xs border border-slate-300">
+                  DISCOVER
+                </div>
               </div>
-              <div className="bg-white px-2 py-1 rounded flex items-center justify-center border border-slate-300">
-                <div className="w-3 h-3 rounded-full bg-[#eb001b] -mr-1 opacity-90 mix-blend-multiply"></div>
-                <div className="w-3 h-3 rounded-full bg-[#f79e1b] opacity-90 mix-blend-multiply"></div>
-              </div>
-              <div className="bg-[#2e77bc] px-2 py-1 rounded text-white font-bold text-xs border border-slate-300">
-                AMEX
-              </div>
-              <div className="bg-white px-2 py-1 rounded text-[#f68121] font-bold text-xs border border-slate-300">
-                DISCOVER
-              </div>
-              <div className="bg-[#635bff] px-2 py-1 rounded text-white font-bold text-xs border border-slate-300">
-                stripe
+              <div className="text-slate-400 text-[11px] flex items-center gap-1.5 font-medium mt-1">
+                Secure payment processed by{" "}
+                <span className="bg-[#635bff] px-1.5 py-0.5 rounded text-white font-bold text-[10px]">
+                  stripe
+                </span>
               </div>
             </div>
           </div>

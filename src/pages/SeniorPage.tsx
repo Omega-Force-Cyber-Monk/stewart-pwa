@@ -151,7 +151,7 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
                     onClick={openPricingModal}
                     className="cursor-pointer bg-[#15803d] hover:bg-[#166534] text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg"
                   >
-                    Start My Business — $495
+                    Start My Private Airport Business™ — $495
                   </button>
                 </>
               )}
@@ -267,7 +267,7 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
                 }}
                 className="cursor-pointer bg-[#15803d] hover:bg-[#166534] text-white font-bold py-3 px-6 rounded-md transition-colors w-full mt-4 min-h-[52px]"
               >
-                Start My Business — $495
+                Start My Private Airport Business™ — $495
               </button>
             </>
           )}
@@ -406,9 +406,7 @@ function HeroBanner() {
               strokeWidth={1.5}
             />
             <div className="text-[12px] xl:text-[13px] font-bold text-white leading-tight text-center md:text-left">
-              Quick Launch Booking Flow
-              <br />
-              <span className="font-medium text-slate-300">in 48–72 hours</span>
+              Step-by-Step Quick Launch System
             </div>
           </div>
           <div className="hidden md:block w-px h-8 bg-slate-700/80 shrink-0"></div>
@@ -1096,17 +1094,19 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
           {/* CTA Button */}
           <div className="shrink-0 w-full lg:w-auto mt-1 lg:mt-0 flex justify-center">
             {user?.status === "active" ? (
-              <Link
-                to="/dashboard"
+              <button
+                onClick={openPricingModal}
                 className="cursor-pointer w-full sm:w-auto bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-[clamp(0.75rem,1.2vw,1rem)] px-[clamp(1rem,1.8vw,1.5rem)] rounded-xl transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-center gap-[clamp(0.75rem,1.4vw,1rem)] group text-[clamp(0.875rem,1.2vw,1.125rem)] min-w-0"
               >
                 <span className="text-center drop-shadow-sm leading-snug">
-                  Go to Dashboard
+                  Start My Private Airport
+                  <br />
+                  Business™ — $495
                 </span>
                 <div className="w-[clamp(1.5rem,2.4vw,2rem)] h-[clamp(1.5rem,2.4vw,2rem)] bg-white rounded-full flex items-center justify-center shrink-0">
                   <ArrowRight className="w-[clamp(0.875rem,1.4vw,1.25rem)] h-[clamp(0.875rem,1.4vw,1.25rem)] stroke-[3] text-[#16a34a] transition-transform group-hover:translate-x-0.5" />
                 </div>
-              </Link>
+              </button>
             ) : accessToken ? (
               <button
                 onClick={openPricingModal}
@@ -1122,8 +1122,8 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
                 </div>
               </button>
             ) : (
-              <Link
-                to="/signup"
+              <button
+                onClick={openPricingModal}
                 className="cursor-pointer w-full sm:w-auto bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-[clamp(0.75rem,1.2vw,1rem)] px-[clamp(1rem,1.8vw,1.5rem)] rounded-xl transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-center gap-[clamp(0.75rem,1.4vw,1rem)] group text-[clamp(0.875rem,1.2vw,1.125rem)] min-w-0"
               >
                 <span className="text-center drop-shadow-sm leading-snug">
@@ -1134,7 +1134,7 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
                 <div className="w-[clamp(1.5rem,2.4vw,2rem)] h-[clamp(1.5rem,2.4vw,2rem)] bg-white rounded-full flex items-center justify-center shrink-0">
                   <ArrowRight className="w-[clamp(0.875rem,1.4vw,1.25rem)] h-[clamp(0.875rem,1.4vw,1.25rem)] stroke-[3] text-[#16a34a] transition-transform group-hover:translate-x-0.5" />
                 </div>
-              </Link>
+              </button>
             )}
           </div>
         </div>

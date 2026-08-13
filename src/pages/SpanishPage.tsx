@@ -343,15 +343,15 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform shrink-0" />
               </button>
             ) : (
-              <Link
-                to="/signup"
+              <button
+                onClick={openPricingModal}
                 className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-4 px-6 rounded-xl transition-colors flex items-center justify-between group w-full sm:w-auto text-[clamp(1rem,1.2vw,1.1rem)]"
               >
                 <span className="text-left pr-4">
                   Empezar mi negocio privado de transporte — $495
                 </span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform shrink-0" />
-              </Link>
+              </button>
             )}
           </div>
         </PageContainer>
@@ -379,9 +379,9 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                 strokeWidth={1.5}
               />
               <div className="text-[11px] sm:text-xs lg:text-[13px] font-bold leading-tight">
-                Reservas listas en
+                Sistema de lanzamiento
                 <br />
-                <span className="text-white/60 font-medium">48-72 horas</span>
+                <span className="text-white/60 font-medium">paso a paso</span>
               </div>
             </div>
 
@@ -405,9 +405,9 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                 strokeWidth={1.5}
               />
               <div className="text-[11px] sm:text-xs lg:text-[13px] font-bold leading-tight">
-                Reservas listas en
+                Configuración
                 <br />
-                <span className="text-white/60 font-medium">48-72 horas</span>
+                <span className="text-white/60 font-medium">guiada</span>
               </div>
             </div>
           </div>
@@ -432,7 +432,7 @@ const features = [
   },
   {
     icon: Monitor,
-    title: "Página Personalizada de Ventas™",
+    title: "Página de Ventas Personalizada™",
     description:
       "Muestra quién eres, explica tus servicios y brinda a los viajeros un espacio profesional para conocerte y solicitar una reserva.",
   },
@@ -529,7 +529,7 @@ function ComparisonSection() {
           {/* Left Card */}
           <div className="bg-white rounded-2xl p-8 lg:p-12 shadow-sm w-full lg:w-1/2 flex flex-col items-start min-h-[380px]">
             <h3 className="text-[#ef4444] font-bold text-sm lg:text-[15px] uppercase tracking-wider mb-8">
-              CONDUCIR MEDIANTE APPS
+              CONDUCIR CON APPS DE RIDESHARE
             </h3>
             <ul className="space-y-5 w-full">
               {badList.map((item, i) => (
@@ -930,7 +930,7 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
                 Pago único.
                 <br />
                 Incluye el sistema completo DIY de QuitTheApp y tu página
-                personalizada de ventas.
+                de ventas personalizada.
                 <br />
                 Mejora opcional “Lo hacemos por ti” disponible por $199.
               </span>
@@ -966,43 +966,44 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
                 className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-4 px-6 rounded-lg transition-colors shadow-lg shadow-[#16a34a]/20 flex items-center justify-between group w-full text-sm sm:text-base mb-4"
               >
                 <span className="text-center w-full pr-4">
-                  Empezar mi negocio privado
-                  <br className="hidden sm:block" />
-                  de transporte — $495
+                  Empezar mi negocio privado de transporte — $495
                 </span>
                 <ArrowRight className="w-5 h-5 shrink-0 group-hover:translate-x-1 transition-transform" />
               </button>
             ) : (
-              <Link
-                to="/signup"
+              <button
+                onClick={openPricingModal}
                 className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-4 px-6 rounded-lg transition-colors shadow-lg shadow-[#16a34a]/20 flex items-center justify-between group w-full text-sm sm:text-base mb-4"
               >
                 <span className="text-center w-full pr-4">
-                  Empezar mi negocio privado
-                  <br className="hidden sm:block" />
-                  de transporte — $495
+                  Empezar mi negocio privado de transporte — $495
                 </span>
                 <ArrowRight className="w-5 h-5 shrink-0 group-hover:translate-x-1 transition-transform" />
-              </Link>
+              </button>
             )}
 
             {/* Payment Badges (CSS simulated) */}
-            <div className="flex gap-2 flex-wrap justify-center lg:justify-end">
-              <div className="bg-white px-2 py-1 rounded text-[#1a1f71] font-bold text-xs italic tracking-tighter border border-slate-300">
-                VISA
+            <div className="flex flex-col items-center lg:items-end gap-2">
+              <div className="flex gap-2 flex-wrap justify-center lg:justify-end">
+                <div className="bg-white px-2 py-1 rounded text-[#1a1f71] font-bold text-xs italic tracking-tighter border border-slate-300">
+                  VISA
+                </div>
+                <div className="bg-[#00a1e0] px-2 py-1 rounded text-white font-bold text-xs border border-[#00a1e0]">
+                  AMEX
+                </div>
+                <div className="bg-[#1c3c95] px-2 py-1 rounded text-white font-bold text-xs border border-[#1c3c95]">
+                  DISCOVER
+                </div>
+                <div className="bg-[#1c1c1c] px-2 py-1 rounded flex items-center justify-center border border-slate-800">
+                  <div className="w-3 h-3 rounded-full bg-[#eb001b] -mr-1 opacity-90 mix-blend-screen"></div>
+                  <div className="w-3 h-3 rounded-full bg-[#f79e1b] opacity-90 mix-blend-screen"></div>
+                </div>
               </div>
-              <div className="bg-[#635bff] px-2 py-1 rounded text-white font-bold text-xs border border-[#635bff]">
-                stripe
-              </div>
-              <div className="bg-[#00a1e0] px-2 py-1 rounded text-white font-bold text-xs border border-[#00a1e0]">
-                AMEX
-              </div>
-              <div className="bg-[#1c3c95] px-2 py-1 rounded text-white font-bold text-xs border border-[#1c3c95]">
-                DISCOVER
-              </div>
-              <div className="bg-[#1c1c1c] px-2 py-1 rounded flex items-center justify-center border border-slate-800">
-                <div className="w-3 h-3 rounded-full bg-[#eb001b] -mr-1 opacity-90 mix-blend-screen"></div>
-                <div className="w-3 h-3 rounded-full bg-[#f79e1b] opacity-90 mix-blend-screen"></div>
+              <div className="text-slate-400 text-[11px] flex items-center gap-1.5 font-medium mt-1">
+                Pago seguro procesado por{" "}
+                <span className="bg-[#635bff] px-1.5 py-0.5 rounded text-white font-bold text-[10px]">
+                  stripe
+                </span>
               </div>
             </div>
           </div>

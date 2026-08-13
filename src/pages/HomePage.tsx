@@ -1114,17 +1114,17 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
           {/* CTA Button */}
           <div className="shrink-0 w-full lg:w-auto mt-1 lg:mt-0 flex justify-center">
             {user?.status === "active" ? (
-              <Link
-                to="/dashboard"
+              <button
+                onClick={openPricingModal}
                 className="cursor-pointer w-full sm:w-auto bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-[clamp(0.75rem,1.2vw,1rem)] px-[clamp(1rem,1.8vw,1.5rem)] rounded-xl transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-center gap-[clamp(0.75rem,1.4vw,1rem)] group text-[clamp(0.875rem,1.2vw,1.125rem)] min-w-0"
               >
                 <span className="text-center drop-shadow-sm leading-snug">
-                  Go to Dashboard
+                  Start Your Business
                 </span>
                 <div className="w-[clamp(1.5rem,2.4vw,2rem)] h-[clamp(1.5rem,2.4vw,2rem)] bg-white rounded-full flex items-center justify-center shrink-0">
                   <ArrowRight className="w-[clamp(0.875rem,1.4vw,1.25rem)] h-[clamp(0.875rem,1.4vw,1.25rem)] stroke-[3] text-[#16a34a] transition-transform group-hover:translate-x-0.5" />
                 </div>
-              </Link>
+              </button>
             ) : accessToken ? (
               <button
                 onClick={openPricingModal}
@@ -1140,8 +1140,8 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
                 </div>
               </button>
             ) : (
-              <Link
-                to="/signup"
+              <button
+                onClick={openPricingModal}
                 className="cursor-pointer w-full sm:w-auto bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-[clamp(0.75rem,1.2vw,1rem)] px-[clamp(1rem,1.8vw,1.5rem)] rounded-xl transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-center gap-[clamp(0.75rem,1.4vw,1rem)] group text-[clamp(0.875rem,1.2vw,1.125rem)] min-w-0"
               >
                 <span className="text-center drop-shadow-sm leading-snug">
@@ -1152,7 +1152,7 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
                 <div className="w-[clamp(1.5rem,2.4vw,2rem)] h-[clamp(1.5rem,2.4vw,2rem)] bg-white rounded-full flex items-center justify-center shrink-0">
                   <ArrowRight className="w-[clamp(0.875rem,1.4vw,1.25rem)] h-[clamp(0.875rem,1.4vw,1.25rem)] stroke-[3] text-[#16a34a] transition-transform group-hover:translate-x-0.5" />
                 </div>
-              </Link>
+              </button>
             )}
           </div>
         </div>

@@ -5,10 +5,12 @@ import { logOut } from "../store/features/auth/authSlice";
 import { useLogoutUserMutation } from "../store/api/Auth/auth.api";
 import { ChevronDown, LogOut, LayoutDashboard, Settings, ShieldCheck } from "lucide-react";
 
+
 interface ProfileDropdownProps {
   openPricingModal?: () => void;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function ProfileDropdown(_props: ProfileDropdownProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { accessToken, user } = useAppSelector((state) => state.auth);

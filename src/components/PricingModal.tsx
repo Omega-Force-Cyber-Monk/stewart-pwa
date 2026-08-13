@@ -30,15 +30,15 @@ export function PricingModal({ onClose }: PricingModalProps) {
       if (result.checkoutUrl) {
         window.location.href = result.checkoutUrl;
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Checkout session failed:", err);
       setSelectedPlan(null);
       
-      const isAuthError = err?.status === 401 || 
-        (err?.data?.message && (
-          err.data.message === "Missing or invalid bearer token." || 
-          typeof err.data.message === "string" && err.data.message.toLowerCase().includes("bearer") ||
-          Array.isArray(err.data.message) && err.data.message[0]?.toLowerCase().includes("bearer")
+      const isAuthError = (err as { status?: number })?.status === 401 || 
+        ((err as { data?: { message?: string | string[] } })?.data?.message && (
+          (err as { data: { message: string | string[] } }).data.message === "Missing or invalid bearer token." || 
+          typeof (err as { data: { message: string | string[] } }).data.message === "string" && ((err as { data: { message: string } }).data.message as string).toLowerCase().includes("bearer") ||
+          Array.isArray((err as { data: { message: string[] } }).data.message) && (err as { data: { message: string[] } }).data.message[0]?.toLowerCase().includes("bearer")
         ));
         
       if (isAuthError) {
@@ -57,7 +57,7 @@ export function PricingModal({ onClose }: PricingModalProps) {
       const msg = Array.isArray(data.message) ? data.message[0] : data.message;
       
       if (
-        (error as any).status === 401 || 
+        (error as { status?: number })?.status === 401 || 
         msg === "Missing or invalid bearer token." || 
         (typeof msg === "string" && msg.toLowerCase().includes("bearer"))
       ) {

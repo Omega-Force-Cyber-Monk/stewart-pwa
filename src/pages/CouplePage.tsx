@@ -143,31 +143,31 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                   className="cursor-pointer bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(0.875rem,1vw,1.125rem)] px-[clamp(1.25rem,1.5vw,1.75rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/30 flex items-center justify-between group w-full sm:w-auto mb-[clamp(1.5rem,2vw,3rem)]"
                 >
                   <span className="text-left leading-snug pr-4 text-[clamp(1rem,1.1vw,1.25rem)] font-extrabold">
-                    Build Our Airport Transportation Business Today™
+                    Start Our Private Airport Business™ — $495
                   </span>
                   <ArrowRight className="w-6 h-6 sm:w-7 sm:h-7 shrink-0 group-hover:translate-x-1.5 transition-transform stroke-[2.5]" />
                 </button>
               ) : (
-                <Link
-                  to="/signup"
+                <button
+                  onClick={openPricingModal}
                   className="cursor-pointer bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(0.875rem,1vw,1.125rem)] px-[clamp(1.25rem,1.5vw,1.75rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/30 flex items-center justify-between group w-full sm:w-auto mb-[clamp(1.5rem,2vw,3rem)]"
                 >
                   <span className="text-left leading-snug pr-4 text-[clamp(1rem,1.1vw,1.25rem)] font-extrabold">
-                    Build Our Airport Transportation Business Today™
+                    Start Our Private Airport Business™ — $495
                   </span>
                   <ArrowRight className="w-6 h-6 sm:w-7 sm:h-7 shrink-0 group-hover:translate-x-1.5 transition-transform stroke-[2.5]" />
-                </Link>
+                </button>
               )}
             </div>
 
             {/* Right Side Card */}
-            <div className="w-full lg:w-auto xl:w-[45%] flex justify-center xl:justify-end z-10 mt-6 lg:mt-0">
-              <div className="bg-[#0b0f19] rounded-[2rem] p-[clamp(1.5rem,3vw,3.5rem)] shadow-2xl w-fit xl:w-full xl:max-w-[480px] border-t-[6px] border-[#eab308]">
-                <h3 className="text-[#eab308] font-bold text-[clamp(1rem,1.2vw,1.125rem)] mb-[clamp(1rem,1.5vw,1.5rem)] uppercase tracking-wider">
+            <div className="w-full lg:w-auto xl:w-[40%] flex justify-center xl:justify-end z-10 mt-6 lg:mt-0">
+              <div className="bg-[#0b0f19] rounded-[2rem] p-[clamp(1.25rem,2vw,2.5rem)] shadow-2xl w-fit xl:w-full xl:max-w-[400px] border-t-[6px] border-[#eab308]">
+                <h3 className="text-[#eab308] font-bold text-[clamp(0.875rem,1vw,1rem)] mb-[clamp(0.75rem,1vw,1rem)] uppercase tracking-wider">
                   YOUR BUSINESS GROWS WHEN:
                 </h3>
 
-                <ul className="space-y-4 mb-8">
+                <ul className="space-y-3 mb-6">
                   {[
                     "Customers book again",
                     "Families refer friends",
@@ -185,7 +185,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                   ))}
                 </ul>
 
-                <div className="w-full h-px bg-slate-800 mb-8"></div>
+                <div className="w-full h-px bg-slate-800 mb-6"></div>
 
                 <div>
                   <h4 className="text-white font-extrabold text-[clamp(1.25rem,2vw,1.875rem)] leading-tight mb-[clamp(0.75rem,1vw,1rem)]">
@@ -238,9 +238,9 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
               strokeWidth={1.5}
             />
             <div className="text-[clamp(0.75rem,1vw,0.95rem)] font-bold text-[#040a23] leading-tight">
-              Quick Launch Booking Flow
+              Step-by-Step
               <br />
-              <span className="font-medium text-slate-600">in 48–72 hours</span>
+              <span className="font-medium text-slate-600">Quick Launch System</span>
             </div>
           </div>
           <div className="hidden md:block w-px h-10 bg-slate-200 shrink-0"></div>
@@ -350,8 +350,8 @@ function FeaturesSection() {
 
 function ComparisonSection() {
   const badList = [
-    "They set the prices",
-    "They take 50–60% of every fare",
+    "App platforms determine pricing",
+    "They retain platform fees",
     "No customer ownership",
     "No repeat rider system",
     "No long-term security",
@@ -359,7 +359,7 @@ function ComparisonSection() {
 
   const goodList = [
     "You set your rates",
-    "You keep 100% of every fare",
+    "Fares are paid directly to your business",
     "You own your customers",
     "You build repeat riders",
     "You grow referrals",
@@ -756,7 +756,7 @@ function ReviewsSection() {
   const reviews = [
     {
       quote:
-        "We launched in 4 days and booked our first airport ride in 72 hours. It's amazing building a business and more freedom together.",
+        "We followed the step-by-step launch system and booked our first airport ride shortly after. It's amazing building a business and more freedom together.",
       name: "Mark & Lisa",
       location: "Phoenix, AZ",
       image: markLisaImage,
@@ -850,7 +850,7 @@ function FaqSection() {
     {
       question: "How is this different from Uber or Lyft?",
       answer:
-        "With rideshare apps, they control the customer, set the pricing, and take 50–60% of every fare. With QuitTheApp, you own your customer list, set your rates, keep 100% of your fare, and build a business asset together.",
+        "With rideshare apps, they control the customer. App platforms determine pricing and retain platform fees. With QuitTheApp, you own your customer list, set your rates, and fares are paid directly to your business, subject to payment processing and normal operating expenses.",
     },
     {
       question: "Is the $495 really a one-time payment?",
@@ -929,12 +929,12 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
     {
       icon: ShieldCheck,
       title: "One-Time Payment",
-      subtitle: "100% Safe",
+      subtitle: "Protected Payment",
     },
     {
       icon: Clock,
-      title: "Quick Launch Booking Flow",
-      subtitle: "in 48–72 Hours",
+      title: "Step-by-Step",
+      subtitle: "Quick Launch System",
     },
     {
       icon: Headset,
@@ -943,8 +943,8 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
     },
     {
       icon: ShieldCheck,
-      title: "Satisfaction Guaranteed",
-      subtitle: "Real results. Real partners.",
+      title: "Real Human Support",
+      subtitle: "From real partners",
     },
   ];
 
@@ -1003,43 +1003,64 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
             ))}
           </div>
 
-          {/* CTA Button */}
-          <div className="shrink-0 w-full xl:w-auto flex justify-center">
+          {/* CTA Button & Payments */}
+          <div className="shrink-0 w-full xl:w-auto flex flex-col items-center xl:items-end justify-center">
             {user?.status === "active" ? (
-              <Link
-                to="/dashboard"
+              <button
+                onClick={openPricingModal}
                 className="cursor-pointer w-full xl:w-auto bg-gradient-to-b from-[#fde047] to-[#eab308] hover:from-[#fef08a] hover:to-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(1rem,1.25vw,1.25rem)] px-[clamp(1.25rem,1.5vw,2rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/20 flex items-center justify-center gap-4 group text-[clamp(1rem,1.125vw,1.125rem)]"
               >
                 <span className="text-center">
-                  Go to Dashboard
+                  Start Your Business
                 </span>
                 <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3] shrink-0 transition-transform group-hover:translate-x-1.5" />
-              </Link>
+              </button>
             ) : accessToken ? (
               <button
                 onClick={openPricingModal}
                 className="cursor-pointer w-full xl:w-auto bg-gradient-to-b from-[#fde047] to-[#eab308] hover:from-[#fef08a] hover:to-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(1rem,1.25vw,1.25rem)] px-[clamp(1.25rem,1.5vw,2rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/20 flex items-center justify-center gap-4 group text-[clamp(1rem,1.125vw,1.125rem)]"
               >
                 <span className="text-center">
-                  Build Our Airport Transportation
-                  <br className="hidden sm:block" />
-                  Business Today™
+                  Start Our Private Airport Business™ — $495
                 </span>
                 <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3] shrink-0 transition-transform group-hover:translate-x-1.5" />
               </button>
             ) : (
-              <Link
-                to="/signup"
+              <button
+                onClick={openPricingModal}
                 className="cursor-pointer w-full xl:w-auto bg-gradient-to-b from-[#fde047] to-[#eab308] hover:from-[#fef08a] hover:to-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(1rem,1.25vw,1.25rem)] px-[clamp(1.25rem,1.5vw,2rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/20 flex items-center justify-center gap-4 group text-[clamp(1rem,1.125vw,1.125rem)]"
               >
                 <span className="text-center">
-                  Build Our Airport Transportation
-                  <br className="hidden sm:block" />
-                  Business Today™
+                  Start Our Private Airport Business™ — $495
                 </span>
                 <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3] shrink-0 transition-transform group-hover:translate-x-1.5" />
-              </Link>
+              </button>
             )}
+            
+            {/* Payment Badges */}
+            <div className="flex flex-col items-center lg:items-end gap-2 mt-4">
+              <div className="flex gap-2 flex-wrap justify-center lg:justify-end">
+                <div className="bg-white px-2 py-1 rounded text-[#1a1f71] font-bold text-xs italic tracking-tighter border border-slate-300">
+                  VISA
+                </div>
+                <div className="bg-white px-2 py-1 rounded flex items-center justify-center border border-slate-300">
+                  <div className="w-3 h-3 rounded-full bg-[#eb001b] -mr-1 opacity-90 mix-blend-multiply"></div>
+                  <div className="w-3 h-3 rounded-full bg-[#f79e1b] opacity-90 mix-blend-multiply"></div>
+                </div>
+                <div className="bg-[#2e77bc] px-2 py-1 rounded text-white font-bold text-xs border border-slate-300">
+                  AMEX
+                </div>
+                <div className="bg-white px-2 py-1 rounded text-[#f68121] font-bold text-xs border border-slate-300">
+                  DISCOVER
+                </div>
+              </div>
+              <div className="text-slate-400 text-[11px] flex items-center gap-1.5 font-medium mt-1">
+                Secure payment processed by{" "}
+                <span className="bg-[#635bff] px-1.5 py-0.5 rounded text-white font-bold text-[10px]">
+                  stripe
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1153,7 +1174,7 @@ function Navbar({ openPricingModal }: { openPricingModal: () => void }) {
                     btnClass,
                   )}
                 >
-                  Start My Business — $495
+                  Start Our Private Airport Business™ — $495
                 </button>
               </>
             )}
@@ -1257,7 +1278,7 @@ function Navbar({ openPricingModal }: { openPricingModal: () => void }) {
                     btnClass,
                   )}
                 >
-                  Start My Business — $495
+                  Start Our Private Airport Business™ — $495
                 </button>
               </>
             )}
