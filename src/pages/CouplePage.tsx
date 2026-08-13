@@ -291,7 +291,7 @@ const features = [
 
 function FeaturesSection() {
   return (
-    <section className="bg-white py-[clamp(1.5rem,3vw,3rem)]" id="how-it-works">
+    <section className="bg-white py-3" id="how-it-works">
       <PageContainer size="full">
         <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-[clamp(1.5rem,4vw,3.5rem)]">
           <h2 className="text-center text-[#1a1f71] font-extrabold text-[clamp(1.25rem,2.5vw,1.875rem)] tracking-wide uppercase mb-[clamp(2.5rem,4vw,4rem)]">
@@ -368,7 +368,7 @@ function ComparisonSection() {
   ];
 
   return (
-    <section className="bg-white py-[clamp(1.5rem,3vw,3rem)]" id="comparison">
+    <section className="bg-white py-3" id="comparison">
       <PageContainer size="full">
         {/* WIDESCREEN DESKTOP LAYOUT (Strict Grid matching screenshot at xl and above) */}
         <div className="hidden xl:grid grid-cols-[1.1fr_1fr_auto_1.15fr_1.1fr] bg-white border border-slate-200 rounded-[2rem] overflow-hidden shadow-sm items-stretch">
@@ -646,7 +646,7 @@ function WhyWinSection() {
   ];
 
   return (
-    <section className="bg-white py-[clamp(1.5rem,3vw,3rem)]" id="why-win">
+    <section className="bg-white py-3" id="why-win">
       <PageContainer size="full">
         <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-[clamp(1.5rem,4vw,3.5rem)]">
           <h2 className="text-center text-[#0a1154] font-extrabold text-[clamp(1.25rem,2.5vw,1.875rem)] uppercase tracking-wide mb-[clamp(2rem,4vw,3rem)]">
@@ -704,7 +704,7 @@ function HowItWorksSection() {
   ];
 
   return (
-    <section className="bg-white py-[clamp(1.5rem,3vw,3rem)]" id="how-it-works-steps">
+    <section className="bg-white py-3" id="how-it-works-steps">
       <PageContainer size="full">
         <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-[clamp(1.5rem,4vw,3.5rem)]">
           <h2 className="text-center text-[#1a1f71] font-extrabold text-[clamp(1.25rem,2.5vw,1.875rem)] uppercase tracking-wide mb-[clamp(2.5rem,4vw,4rem)]">
@@ -778,7 +778,7 @@ function ReviewsSection() {
   ];
 
   return (
-    <section className="bg-white py-[clamp(1.5rem,3vw,3rem)]" id="reviews">
+    <section className="bg-white py-3" id="reviews">
       <PageContainer size="full">
         <div className="w-full rounded-[2rem] border border-slate-200 shadow-sm p-[clamp(1.5rem,4vw,3.5rem)] bg-white">
           <h2 className="text-[clamp(1.25rem,2.5vw,1.875rem)] font-extrabold text-[#1a1f71] text-center mb-[clamp(2.5rem,4vw,4rem)] uppercase tracking-wide">
@@ -876,7 +876,7 @@ function FaqSection() {
   ];
 
   return (
-    <section className="bg-white py-[clamp(1.5rem,3vw,3rem)]" id="faq">
+    <section className="bg-white py-3" id="faq">
       <PageContainer size="full">
         <div className="w-full rounded-[2rem] border border-slate-200 shadow-sm p-[clamp(1.5rem,4vw,3.5rem)] bg-white">
           <h2 className="text-[clamp(1.25rem,2.5vw,1.875rem)] font-extrabold text-[#1a1f71] text-center mb-[clamp(2.5rem,4vw,4rem)] uppercase tracking-wide">
@@ -949,7 +949,7 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
   ];
 
   return (
-    <section className="bg-white py-[clamp(1.5rem,3vw,3rem)] pb-[clamp(3rem,4vw,4rem)]" id="footer-cta">
+    <section className="bg-white py-3 pb-3" id="footer-cta">
       <PageContainer size="full">
         {/* Dark Blue Banner Card - horizontal layout triggered at xl (1240px) to ensure no squeezed typography on tablets or small laptops */}
         <div className="w-full bg-[#0b0f19] rounded-[2rem] shadow-2xl flex flex-col xl:flex-row flex-wrap items-center justify-between p-[clamp(1rem,1.5vw,1.5rem)] gap-[clamp(0.6875rem,0.75vw,1.25rem)] border-b-[6px] border-[#eab308]">

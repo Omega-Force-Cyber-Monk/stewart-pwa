@@ -523,7 +523,7 @@ function ComparisonSection() {
   ];
 
   return (
-    <section className="bg-slate-50 py-12 lg:py-16" id="comparison">
+    <section className="bg-slate-50 py-3" id="comparison">
       <PageContainer size="full">
         <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 relative max-w-6xl mx-auto px-4 sm:px-8">
           {/* Left Card */}
@@ -898,7 +898,7 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
   ];
 
   return (
-    <section className="bg-[#0b0f19] pt-12 pb-6 border-t border-slate-800">
+    <section className="bg-[#0b0f19] py-3 border-t border-slate-800">
       <PageContainer size="full">
         {/* Main 3-Column Layout */}
         <div className="flex flex-col lg:flex-row justify-between gap-10 lg:gap-8 pb-10 border-b border-slate-800">

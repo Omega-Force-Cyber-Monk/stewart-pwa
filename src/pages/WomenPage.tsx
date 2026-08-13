@@ -262,7 +262,7 @@ function FeaturesSection() {
 
 function ComparisonSection() {
   return (
-    <section id="comparison" className="bg-white py-3 sm:py-4">
+    <section id="comparison" className="bg-white py-3">
       <PageContainer size="full">
         <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
           {/* Mobile: stack image above content */}
@@ -688,7 +688,7 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
   ];
 
   return (
-    <section className="bg-[#0b0f19] pt-12 pb-6 border-t-4 border-[#f42661]">
+    <section className="bg-[#0b0f19] py-3 border-t-4 border-[#f42661]">
       <PageContainer size="full">
         {/* Main 3-Column Layout */}
         <div className="flex flex-col lg:flex-row justify-between gap-10 lg:gap-8 pb-10 border-b border-slate-800">
