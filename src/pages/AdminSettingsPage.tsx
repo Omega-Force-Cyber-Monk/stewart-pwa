@@ -2,8 +2,6 @@ import { useState } from "react";
 import {
   User,
   Monitor,
-  Bell,
-  ShieldCheck,
   Edit,
   Loader2,
   Save,
@@ -30,8 +28,6 @@ export default function AdminSettingsPage() {
   const tabs = [
     { name: "Account Settings", icon: User },
     { name: "Platform Settings", icon: Monitor },
-    { name: "Notifications", icon: Bell },
-    { name: "Legal & Compliance", icon: ShieldCheck },
   ];
 
   return (
@@ -69,8 +65,6 @@ export default function AdminSettingsPage() {
       <div>
         {activeTab === "Account Settings" && <AccountSettingsTab />}
         {activeTab === "Platform Settings" && <SettingsTab title="Platform Settings" settingKey="platform" />}
-        {activeTab === "Notifications" && <SettingsTab title="Notifications" settingKey="notifications" />}
-        {activeTab === "Legal & Compliance" && <SettingsTab title="Legal & Compliance" settingKey="legalCompliance" />}
       </div>
     </div>
   );
@@ -202,7 +196,7 @@ function AccountSettingsTab() {
               <label className="w-32 text-sm font-medium text-slate-500 flex-shrink-0">Role</label>
               <input
                 type="text"
-                value={profile?.role || "rider"}
+                value={profile?.role === "rider" ? "driver" : profile?.role || "account"}
                 disabled
                 className="flex-1 px-4 py-2.5 rounded-lg border border-slate-200 bg-slate-50 text-slate-400 cursor-not-allowed capitalize"
               />

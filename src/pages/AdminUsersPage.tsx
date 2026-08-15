@@ -148,7 +148,7 @@ export default function AdminUsersPage() {
         <div>
           <h2 className="text-2xl font-bold text-slate-800">User Management</h2>
           <p className="text-slate-500 text-sm mt-1">
-            Manage rider and admin accounts on the platform.
+            Manage driver and admin accounts on the platform.
           </p>
         </div>
         <button
@@ -220,7 +220,7 @@ export default function AdminUsersPage() {
               onChange={(e) => setCreateForm((prev) => ({ ...prev, role: e.target.value }))}
               className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm text-slate-800"
             >
-              <option value="rider">Rider</option>
+              <option value="rider">Driver</option>
               <option value="admin">Admin</option>
             </select>
           </div>

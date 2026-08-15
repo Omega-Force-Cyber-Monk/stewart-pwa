@@ -112,7 +112,7 @@ export default function SignupPage() {
   return (
     <AuthLayout
       title="Start Your Transport Business"
-      subtitle="Register a new rider profile today, verify your credentials, and get complete access to the launch kit."
+      subtitle="Register a new profile today, verify your credentials, and get complete access to the launch kit."
     >
       {step === "register" && (
         <>
@@ -304,7 +304,7 @@ export default function SignupPage() {
         <div className="text-center py-6">
           <CheckCircle className="size-16 text-cyan-400 mx-auto animate-pulse" />
           <p className="mt-4 text-slate-200 text-sm font-semibold leading-relaxed">
-            Your rider account has been verified successfully. You can now log in and configure your transport setup.
+            Your account has been verified successfully. You can now log in and configure your transport setup.
           </p>
           <div className="mt-8">
             <button

@@ -125,7 +125,7 @@ export default function AdminDashboardPage() {
                 <Wallet className="h-4 w-4 text-purple-500" />
               </div>
             </div>
-            <p className="text-sm font-medium text-slate-600">Total Revenue</p>
+            <p className="text-sm font-medium text-slate-600">Platform Sales Revenue</p>
           </div>
         </div>
 

@@ -32,6 +32,7 @@ import coupleComparisonRight from "../assets/coupleComparisonSectionRight.png";
 import chrisImage from "../assets/50_Chris_S.jpg";
 import dougImage from "../assets/50_Doug_L.jpg";
 import naylinImage from "../assets/50_Naylin_H.jpg";
+import { PaymentBadges } from "../components/common/PaymentBadges";
 
 export default function SeniorPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -296,15 +297,14 @@ function HeroBanner() {
           <div className="flex flex-col lg:flex-row w-full justify-between items-center gap-10">
             {/* Left Content */}
             <div className="w-full lg:w-[50%] text-left text-center lg:text-left">
-              <h1 className="text-[clamp(2.25rem,4vw,3.5rem)] font-extrabold text-white leading-[1.15] mb-6 tracking-tight uppercase">
-                START A PRIVATE
+              <h1 className="text-[clamp(2rem,3.8vw,3.25rem)] font-extrabold text-white leading-[1.1] mb-6 tracking-tight uppercase">
+                START A PRIVATE AIRPORT
                 <br />
-                AIRPORT BUSINESS
+                BUSINESS THAT WORKS
                 <br />
-                THAT WORKS ON YOUR
+                ON YOUR SCHEDULE.
                 <br />
-                SCHEDULE.{" "}
-                <span className="text-[#39b54a]">NOT SOMEONE ELSE'S.</span>
+                <span className="text-[#39b54a] block mt-1">NOT SOMEONE ELSE'S.</span>
               </h1>
               <p className="text-[clamp(1rem,1.1vw,1.15rem)] text-white font-medium mb-8 max-w-[650px] leading-relaxed tracking-wide mx-auto lg:mx-0">
                 QuitTheApp helps experienced drivers launch their own private airport transportation business, accept direct bookings, build trusted client relationships, and create repeat riders and referrals.
@@ -994,12 +994,6 @@ function FaqSection() {
 function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }) {
   const { accessToken, user } = useAppSelector((state) => state.auth);
 
-  const checkmarks = [
-    "No monthly platform fees",
-    "Built specifically for 50+ drivers",
-    "Real human support",
-    "Secure checkout",
-  ];
 
   const trustBadges = [
     {
@@ -1028,145 +1022,118 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
       subtitle: "Real Business Experience Since 2016",
     },
   ];
+  const benefits = [
+    "One-time payment",
+    "No monthly QuitTheApp platform fees",
+    "Built for airport transportation",
+    "Real human support",
+  ];
 
   return (
-    <section className="bg-white py-3 pb-8" id="footer-cta">
+    <section className="bg-[#0b0f19] py-3 border-t-4 border-[#39b54a]" id="footer-cta">
       <PageContainer size="full">
-        {/* Dark Blue Banner Card */}
-        <div className="w-full bg-[#040a23] rounded-2xl shadow-xl flex flex-col lg:flex-row flex-wrap items-center justify-between p-[clamp(1rem,2.5vw,1.5rem)] gap-[clamp(1rem,2vw,1.5rem)] lg:gap-[clamp(0.5rem,1vw,1rem)] border border-slate-800">
-          {/* Left: Icon and Title */}
-          <div className="flex items-center gap-[clamp(0.75rem,1.5vw,1.5rem)] lg:w-auto shrink-0 min-w-0 flex-1 lg:flex-none justify-center lg:justify-start">
-            {/* Custom Icon Group */}
-            <div className="relative flex items-center justify-center shrink-0 w-[clamp(3rem,6vw,5rem)] h-[clamp(3rem,6vw,5rem)]">
-              <RefreshCcw
-                className="w-full h-full text-[#39b54a] absolute inset-0"
-                strokeWidth={1.5}
-              />
-              <Users
-                className="w-[clamp(1.5rem,3vw,2.5rem)] h-[clamp(1.5rem,3vw,2.5rem)] text-white relative z-10"
-                strokeWidth={1.5}
-              />
-            </div>
-
-            <div className="flex flex-col min-w-0 text-center lg:text-left">
-              <h3 className="text-white font-bold text-[clamp(0.875rem,1.6vw,1.375rem)] tracking-wide leading-snug">
-                ONE GREAT AIRPORT CLIENT
-                <br />
-                CAN LEAD TO <span className="text-[#39b54a]">YEARS OF</span>
-                <br />
-                <span className="text-[#39b54a]">REPEAT RIDES.™</span>
-              </h3>
+        {/* Main 3-Column Layout */}
+        <div className="flex flex-col lg:flex-row justify-between gap-10 lg:gap-8 pb-10 border-b border-slate-800">
+          {/* Column 1: Intro */}
+          <div className="lg:w-1/3 flex flex-col pr-0 lg:pr-8 lg:border-r border-slate-800">
+            <h3 className="text-2xl sm:text-3xl font-bold text-white leading-tight mb-6 uppercase">
+              Start My <br />
+              <span className="text-[#39b54a]">Private Airport Business™</span>
+            </h3>
+            <div className="flex items-start gap-4">
+              <Users className="w-10 h-10 text-[#39b54a] shrink-0 stroke-[1.5]" />
+              <p className="text-slate-300 text-sm leading-relaxed">
+                Build a trusted, professional business that puts you in
+                control—and your clients keep coming back.
+              </p>
             </div>
           </div>
 
-          {/* Pricing */}
-          <div className="flex flex-col items-center justify-center shrink-0 min-w-0">
-            <span className="text-[#39b54a] text-[clamp(2.5rem,5vw,3.75rem)] font-extrabold leading-none tracking-tight mb-1">
-              $495
-            </span>
-            <span className="text-white text-[clamp(0.625rem,1vw,0.875rem)] font-bold tracking-widest uppercase">
-              ONE-TIME PAYMENT
-            </span>
-            <span className="text-white/80 text-[clamp(0.625rem,0.9vw,0.75rem)] font-medium tracking-wide text-center mt-1 max-w-[260px]">
-              Includes the complete QuitTheApp DIY launch system.<br/>
-              Optional $199 We Do It for You upgrade available.
-            </span>
-          </div>
-
-          {/* Vertical Divider */}
-          <div className="hidden lg:block w-px h-[clamp(4rem,8vw,6rem)] bg-slate-700/80 shrink-0"></div>
-
-          {/* Checkmarks */}
-          <div className="flex flex-col gap-[clamp(0.25rem,0.6vw,0.5rem)] shrink-0">
-            {checkmarks.map((item, idx) => (
-              <div
-                key={idx}
-                className="flex items-center gap-[clamp(0.5rem,1vw,0.75rem)] min-w-0 justify-center lg:justify-start"
-              >
-                <CheckCircle2 className="w-[clamp(1rem,1.6vw,1.25rem)] h-[clamp(1rem,1.6vw,1.25rem)] fill-[#39b54a] text-white shrink-0" />
-                <span className="text-white text-[clamp(0.75rem,1.1vw,0.875rem)] font-semibold tracking-wide">
-                  {item}
+          {/* Column 2: Pricing & Checklist */}
+          <div className="lg:w-1/3 flex flex-col justify-center">
+            <div className="flex flex-col mb-4">
+              <div className="flex items-baseline gap-3 flex-wrap">
+                <span className="text-[clamp(2.5rem,4vw,3rem)] font-bold text-[#39b54a]">$495</span>
+                <span className="text-white font-bold text-lg">
+                  One-time payment
                 </span>
               </div>
-            ))}
+              <span className="text-slate-300 text-sm mt-2 leading-snug max-w-[280px]">
+                Includes the complete QuitTheApp DIY launch system.<br/>
+                <span className="mt-2 block font-medium">Optional $199 We Do It for You upgrade available.</span>
+              </span>
+            </div>
+            <ul className="space-y-2 mt-2">
+              {benefits.map((benefit, i) => (
+                <li
+                  key={i}
+                  className="flex items-center text-slate-300 text-sm"
+                >
+                  <CheckCircle2 className="w-5 h-5 text-[#39b54a] mr-3 shrink-0 stroke-[3]" />
+                  <span>{benefit}</span>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          {/* CTA Button */}
-          <div className="shrink-0 w-full lg:w-auto mt-1 lg:mt-0 flex justify-center">
+          {/* Column 3: Button & Payments */}
+          <div className="lg:w-1/3 flex flex-col justify-center items-center lg:items-end">
             {user?.status === "active" ? (
               <button
                 onClick={openPricingModal}
-                className="cursor-pointer w-full sm:w-auto bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-[clamp(0.75rem,1.2vw,1rem)] px-[clamp(1rem,1.8vw,1.5rem)] rounded-xl transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-center gap-[clamp(0.75rem,1.4vw,1rem)] group text-[clamp(0.875rem,1.2vw,1.125rem)] min-w-0"
+                className="cursor-pointer w-full bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-4 px-6 rounded-lg transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-between group text-base sm:text-lg mb-4 min-h-[56px]"
               >
-                <span className="text-center drop-shadow-sm leading-snug">
-                  Start My Private Airport
-                  <br />
-                  Business™ — $495
+                <span className="text-center w-full">
+                  Start Your Business
                 </span>
-                <div className="w-[clamp(1.5rem,2.4vw,2rem)] h-[clamp(1.5rem,2.4vw,2rem)] bg-white rounded-full flex items-center justify-center shrink-0">
-                  <ArrowRight className="w-[clamp(0.875rem,1.4vw,1.25rem)] h-[clamp(0.875rem,1.4vw,1.25rem)] stroke-[3] text-[#16a34a] transition-transform group-hover:translate-x-0.5" />
+                <div className="bg-white rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
+                  <ArrowRight className="w-5 h-5 text-[#16a34a] stroke-[3]" />
                 </div>
               </button>
             ) : accessToken ? (
               <button
                 onClick={openPricingModal}
-                className="cursor-pointer w-full sm:w-auto bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-[clamp(0.75rem,1.2vw,1rem)] px-[clamp(1rem,1.8vw,1.5rem)] rounded-xl transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-center gap-[clamp(0.75rem,1.4vw,1rem)] group text-[clamp(0.875rem,1.2vw,1.125rem)] min-w-0"
+                className="cursor-pointer w-full bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-4 px-6 rounded-lg transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-between group text-base sm:text-lg mb-4 min-h-[56px]"
               >
-                <span className="text-center drop-shadow-sm leading-snug">
-                  Start My Private Airport
-                  <br />
-                  Business™ — $495
+                <span className="text-center w-full">
+                  Start My Private Airport Business™ — $495
                 </span>
-                <div className="w-[clamp(1.5rem,2.4vw,2rem)] h-[clamp(1.5rem,2.4vw,2rem)] bg-white rounded-full flex items-center justify-center shrink-0">
-                  <ArrowRight className="w-[clamp(0.875rem,1.4vw,1.25rem)] h-[clamp(0.875rem,1.4vw,1.25rem)] stroke-[3] text-[#16a34a] transition-transform group-hover:translate-x-0.5" />
+                <div className="bg-white rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
+                  <ArrowRight className="w-5 h-5 text-[#16a34a] stroke-[3]" />
                 </div>
               </button>
             ) : (
               <button
                 onClick={openPricingModal}
-                className="cursor-pointer w-full sm:w-auto bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-[clamp(0.75rem,1.2vw,1rem)] px-[clamp(1rem,1.8vw,1.5rem)] rounded-xl transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-center gap-[clamp(0.75rem,1.4vw,1rem)] group text-[clamp(0.875rem,1.2vw,1.125rem)] min-w-0"
+                className="cursor-pointer w-full bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-4 px-6 rounded-lg transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-between group text-base sm:text-lg mb-4 min-h-[56px]"
               >
-                <span className="text-center drop-shadow-sm leading-snug">
-                  Start My Private Airport
-                  <br />
-                  Business™ — $495
+                <span className="text-center w-full">
+                  Start My Private Airport Business™ — $495
                 </span>
-                <div className="w-[clamp(1.5rem,2.4vw,2rem)] h-[clamp(1.5rem,2.4vw,2rem)] bg-white rounded-full flex items-center justify-center shrink-0">
-                  <ArrowRight className="w-[clamp(0.875rem,1.4vw,1.25rem)] h-[clamp(0.875rem,1.4vw,1.25rem)] stroke-[3] text-[#16a34a] transition-transform group-hover:translate-x-0.5" />
+                <div className="bg-white rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
+                  <ArrowRight className="w-5 h-5 text-[#16a34a] stroke-[3]" />
                 </div>
               </button>
             )}
+            
+            {/* Payment Badges */}
+            <PaymentBadges justify="center" />
           </div>
         </div>
 
-        {/* Trust Badges */}
-        <div className="mt-[clamp(1rem,2vw,1.5rem)] flex flex-wrap items-center justify-center lg:justify-between gap-x-[clamp(0.75rem,1.5vw,1.5rem)] gap-y-[clamp(0.75rem,1.5vw,1rem)] w-full px-1">
-          {trustBadges.map((badge, idx) => (
-            <div
-              key={idx}
-              className="flex items-center gap-[clamp(0.5rem,1vw,0.75rem)] w-[45%] sm:w-[30%] lg:w-auto min-w-0"
-            >
-              <badge.icon className="w-[clamp(1.25rem,2vw,2rem)] h-[clamp(1.25rem,2vw,2rem)] text-[#4f46e5] shrink-0 stroke-[1.5]" />
-              <div className="flex flex-col min-w-0">
-                <span className="text-[#1a1f71] font-bold text-[clamp(0.625rem,0.85vw,0.75rem)] leading-tight">
-                  {badge.title}
-                </span>
-                <span className="text-[#1a1f71] font-medium text-[clamp(0.5625rem,0.75vw,0.6875rem)] leading-tight">
-                  {badge.subtitle}
-                </span>
+        {/* Bottom Trust Indicators & Copyright */}
+        <div className="pt-6 flex flex-col items-center">
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-4 mb-6">
+            {trustBadges.map((badge, idx) => (
+              <div key={idx} className="flex items-center gap-2 text-slate-400">
+                <badge.icon className="w-4 h-4 shrink-0" strokeWidth={1.5} />
+                <span className="text-xs">{badge.title}</span>
               </div>
-            </div>
-          ))}
-
-          {/* Copyright */}
-          <div className="w-[45%] sm:w-[30%] lg:w-auto flex flex-col items-start lg:items-end justify-center">
-            <span className="text-slate-500 font-medium text-[clamp(0.625rem,0.85vw,0.75rem)] leading-tight">
-              © 2026 QuitTheApp.
-            </span>
-            <span className="text-slate-500 font-medium text-[clamp(0.625rem,0.85vw,0.75rem)] leading-tight">
-              All Rights Reserved.
-            </span>
+            ))}
           </div>
+          <p className="text-slate-500 text-xs">
+            © {new Date().getFullYear()} QuitTheApp. All Rights Reserved.
+          </p>
         </div>
       </PageContainer>
     </section>

@@ -21,6 +21,7 @@ import {
   Clock,
 } from "lucide-react";
 import { PageContainer } from "../components/layout/PageContainer";
+import { PaymentBadges } from "../components/common/PaymentBadges";
 import { ProfileDropdown } from "../components/ProfileDropdown";
 import { PricingModal } from "../components/PricingModal";
 import { useAppDispatch, useAppSelector } from "../hooks/storeHooks";
@@ -140,29 +141,29 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
               {accessToken ? (
                 <button
                   onClick={openPricingModal}
-                  className="cursor-pointer bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(0.875rem,1vw,1.125rem)] px-[clamp(1.25rem,1.5vw,1.75rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/30 flex items-center justify-between group w-full sm:w-auto mb-[clamp(1.5rem,2vw,3rem)]"
+                  className="cursor-pointer bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(0.75rem,0.9vw,1rem)] px-[clamp(1rem,1.2vw,1.5rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/30 flex items-center justify-between group w-full sm:w-auto mb-[clamp(1.5rem,2vw,3rem)]"
                 >
-                  <span className="text-left leading-snug pr-4 text-[clamp(1rem,1.1vw,1.25rem)] font-extrabold">
+                  <span className="text-left leading-snug pr-3 text-[clamp(0.9rem,1vw,1.125rem)] font-extrabold">
                     Start Our Private Airport Business™ — $495
                   </span>
-                  <ArrowRight className="w-6 h-6 sm:w-7 sm:h-7 shrink-0 group-hover:translate-x-1.5 transition-transform stroke-[2.5]" />
+                  <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 group-hover:translate-x-1.5 transition-transform stroke-[2.5]" />
                 </button>
               ) : (
                 <button
                   onClick={openPricingModal}
-                  className="cursor-pointer bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(0.875rem,1vw,1.125rem)] px-[clamp(1.25rem,1.5vw,1.75rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/30 flex items-center justify-between group w-full sm:w-auto mb-[clamp(1.5rem,2vw,3rem)]"
+                  className="cursor-pointer bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(0.75rem,0.9vw,1rem)] px-[clamp(1rem,1.2vw,1.5rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/30 flex items-center justify-between group w-full sm:w-auto mb-[clamp(1.5rem,2vw,3rem)]"
                 >
-                  <span className="text-left leading-snug pr-4 text-[clamp(1rem,1.1vw,1.25rem)] font-extrabold">
+                  <span className="text-left leading-snug pr-3 text-[clamp(0.9rem,1vw,1.125rem)] font-extrabold">
                     Start Our Private Airport Business™ — $495
                   </span>
-                  <ArrowRight className="w-6 h-6 sm:w-7 sm:h-7 shrink-0 group-hover:translate-x-1.5 transition-transform stroke-[2.5]" />
+                  <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 group-hover:translate-x-1.5 transition-transform stroke-[2.5]" />
                 </button>
               )}
             </div>
 
             {/* Right Side Card */}
             <div className="w-full lg:w-auto xl:w-[40%] flex justify-center xl:justify-end z-10 mt-6 lg:mt-0">
-              <div className="bg-[#0b0f19] rounded-[2rem] p-[clamp(1.25rem,2vw,2.5rem)] shadow-2xl w-fit xl:w-full xl:max-w-[400px] border-t-[6px] border-[#eab308]">
+              <div className="bg-[#0b0f19] rounded-[2rem] p-[clamp(1.25rem,2vw,2.5rem)] shadow-2xl w-fit xl:w-full xl:max-w-[340px] border-t-[6px] border-[#eab308]">
                 <h3 className="text-[#eab308] font-bold text-[clamp(0.875rem,1vw,1rem)] mb-[clamp(0.75rem,1vw,1rem)] uppercase tracking-wider">
                   YOUR BUSINESS GROWS WHEN:
                 </h3>
@@ -949,139 +950,110 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
   ];
 
   return (
-    <section className="bg-white py-3 pb-3" id="footer-cta">
+    <section className="bg-[#0b0f19] py-3 border-t-4 border-[#eab308]" id="footer-cta">
       <PageContainer size="full">
-        {/* Dark Blue Banner Card - horizontal layout triggered at xl (1240px) to ensure no squeezed typography on tablets or small laptops */}
-        <div className="w-full bg-[#0b0f19] rounded-[2rem] shadow-2xl flex flex-col xl:flex-row flex-wrap items-center justify-between p-[clamp(1rem,1.5vw,1.5rem)] gap-[clamp(0.6875rem,0.75vw,1.25rem)] border-b-[6px] border-[#eab308]">
-          {/* Left: Icon and Title */}
-          <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 shrink-0 text-center sm:text-left">
-            {/* Custom Icon Group */}
-            <div className="relative flex items-center justify-center shrink-0 w-[clamp(3.25rem,4vw,4rem)] h-[clamp(3.25rem,4vw,4rem)]">
-              <RefreshCcw
-                className="w-full h-full text-[#eab308] absolute inset-0"
-                strokeWidth={1.5}
-              />
-              <Users
-                className="w-[clamp(1.625rem,2vw,2rem)] h-[clamp(1.625rem,2vw,2rem)] text-[#eab308] relative z-10"
-                strokeWidth={1.5}
-              />
-            </div>
-
-            <div className="flex flex-col">
-              <h3 className="text-white font-extrabold text-[clamp(1.0625rem,1.375vw,1.375rem)] tracking-wide leading-snug">
-                ONE GREAT AIRPORT CUSTOMER
-                <br />
-                CAN TURN INTO <span className="text-[#eab308]">YEARS OF</span>
-                <br />
-                <span className="text-[#eab308]">REPEAT RIDES.™</span>
-              </h3>
+        {/* Main 3-Column Layout */}
+        <div className="flex flex-col lg:flex-row justify-between gap-10 lg:gap-8 pb-10 border-b border-slate-800">
+          {/* Column 1: Intro */}
+          <div className="lg:w-1/3 flex flex-col pr-0 lg:pr-8 lg:border-r border-slate-800">
+            <h3 className="text-2xl sm:text-3xl font-bold text-white leading-tight mb-6 uppercase">
+              Start Our <br />
+              <span className="text-[#eab308]">Private Airport Business™</span>
+            </h3>
+            <div className="flex items-start gap-4">
+              <Users className="w-10 h-10 text-[#eab308] shrink-0 stroke-[1.5]" />
+              <p className="text-slate-300 text-sm leading-relaxed">
+                Build a trusted, professional business that puts you in
+                control—and your clients keep coming back.
+              </p>
             </div>
           </div>
 
-          {/* Pricing */}
-          <div className="flex flex-col items-center justify-center shrink-0">
-            <span className="text-[#eab308] text-[clamp(2.75rem,4vw,3.75rem)] font-extrabold leading-none tracking-tight mb-2">
-              $495
-            </span>
-            <span className="text-white text-[clamp(0.75rem,1vw,0.875rem)] font-bold tracking-widest uppercase">
-              ONE-TIME PAYMENT
-            </span>
-          </div>
-
-          {/* Vertical Divider */}
-          <div className="hidden xl:block w-px h-[clamp(3rem,4.5vw,4.5rem)] bg-slate-800 shrink-0 mx-2"></div>
-
-          {/* Checkmarks */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:flex xl:flex-col gap-3 sm:gap-4 xl:gap-3 shrink-0 w-full sm:w-auto">
-            {checkmarks.map((item, idx) => (
-              <div key={idx} className="flex items-center gap-3">
-                <CheckCircle2 className="w-5 h-5 fill-[#2563eb] text-white shrink-0" />
-                <span className="text-white text-[clamp(0.75rem,0.875vw,0.9375rem)] font-semibold tracking-wide">
-                  {item}
+          {/* Column 2: Pricing & Checklist */}
+          <div className="lg:w-1/3 flex flex-col justify-center">
+            <div className="flex flex-col mb-4">
+              <div className="flex items-baseline gap-3 flex-wrap">
+                <span className="text-[clamp(2.5rem,4vw,3rem)] font-bold text-[#eab308]">$495</span>
+                <span className="text-white font-bold text-lg">
+                  One-time payment
                 </span>
               </div>
-            ))}
+              <span className="text-slate-300 text-sm mt-2 leading-snug max-w-[280px]">
+                Includes the complete QuitTheApp DIY launch system.<br/>
+                <span className="mt-2 block font-medium">Optional $199 We Do It for You upgrade available.</span>
+              </span>
+            </div>
+            <ul className="space-y-2 mt-2">
+              {checkmarks.map((item, idx) => (
+                <li
+                  key={idx}
+                  className="flex items-center text-slate-300 text-sm"
+                >
+                  <CheckCircle2 className="w-5 h-5 text-[#eab308] mr-3 shrink-0 stroke-[3]" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          {/* CTA Button & Payments */}
-          <div className="shrink-0 w-full xl:w-auto flex flex-col items-center xl:items-end justify-center">
+          {/* Column 3: Button & Payments */}
+          <div className="lg:w-1/3 flex flex-col justify-center items-center lg:items-end">
             {user?.status === "active" ? (
               <button
                 onClick={openPricingModal}
-                className="cursor-pointer w-full xl:w-auto bg-gradient-to-b from-[#fde047] to-[#eab308] hover:from-[#fef08a] hover:to-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(1rem,1.25vw,1.25rem)] px-[clamp(1.25rem,1.5vw,2rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/20 flex items-center justify-center gap-4 group text-[clamp(1rem,1.125vw,1.125rem)]"
+                className="cursor-pointer w-full bg-gradient-to-b from-[#fde047] to-[#eab308] hover:from-[#fef08a] hover:to-[#ca8a04] text-[#0b0f19] font-extrabold py-4 px-6 rounded-lg transition-all shadow-lg shadow-[#eab308]/20 flex items-center justify-between group text-base sm:text-lg mb-4 min-h-[56px]"
               >
-                <span className="text-center">
+                <span className="text-center w-full">
                   Start Your Business
                 </span>
-                <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3] shrink-0 transition-transform group-hover:translate-x-1.5" />
+                <div className="bg-[#0b0f19] rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
+                  <ArrowRight className="w-5 h-5 text-[#eab308] stroke-[3]" />
+                </div>
               </button>
             ) : accessToken ? (
               <button
                 onClick={openPricingModal}
-                className="cursor-pointer w-full xl:w-auto bg-gradient-to-b from-[#fde047] to-[#eab308] hover:from-[#fef08a] hover:to-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(1rem,1.25vw,1.25rem)] px-[clamp(1.25rem,1.5vw,2rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/20 flex items-center justify-center gap-4 group text-[clamp(1rem,1.125vw,1.125rem)]"
+                className="cursor-pointer w-full bg-gradient-to-b from-[#fde047] to-[#eab308] hover:from-[#fef08a] hover:to-[#ca8a04] text-[#0b0f19] font-extrabold py-4 px-6 rounded-lg transition-all shadow-lg shadow-[#eab308]/20 flex items-center justify-between group text-base sm:text-lg mb-4 min-h-[56px]"
               >
-                <span className="text-center">
+                <span className="text-center w-full">
                   Start Our Private Airport Business™ — $495
                 </span>
-                <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3] shrink-0 transition-transform group-hover:translate-x-1.5" />
+                <div className="bg-[#0b0f19] rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
+                  <ArrowRight className="w-5 h-5 text-[#eab308] stroke-[3]" />
+                </div>
               </button>
             ) : (
               <button
                 onClick={openPricingModal}
-                className="cursor-pointer w-full xl:w-auto bg-gradient-to-b from-[#fde047] to-[#eab308] hover:from-[#fef08a] hover:to-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(1rem,1.25vw,1.25rem)] px-[clamp(1.25rem,1.5vw,2rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/20 flex items-center justify-center gap-4 group text-[clamp(1rem,1.125vw,1.125rem)]"
+                className="cursor-pointer w-full bg-gradient-to-b from-[#fde047] to-[#eab308] hover:from-[#fef08a] hover:to-[#ca8a04] text-[#0b0f19] font-extrabold py-4 px-6 rounded-lg transition-all shadow-lg shadow-[#eab308]/20 flex items-center justify-between group text-base sm:text-lg mb-4 min-h-[56px]"
               >
-                <span className="text-center">
+                <span className="text-center w-full">
                   Start Our Private Airport Business™ — $495
                 </span>
-                <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3] shrink-0 transition-transform group-hover:translate-x-1.5" />
+                <div className="bg-[#0b0f19] rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
+                  <ArrowRight className="w-5 h-5 text-[#eab308] stroke-[3]" />
+                </div>
               </button>
             )}
             
             {/* Payment Badges */}
-            <div className="flex flex-col items-center lg:items-end gap-2 mt-4">
-              <div className="flex gap-2 flex-wrap justify-center lg:justify-end">
-                <div className="bg-white px-2 py-1 rounded text-[#1a1f71] font-bold text-xs italic tracking-tighter border border-slate-300">
-                  VISA
-                </div>
-                <div className="bg-white px-2 py-1 rounded flex items-center justify-center border border-slate-300">
-                  <div className="w-3 h-3 rounded-full bg-[#eb001b] -mr-1 opacity-90 mix-blend-multiply"></div>
-                  <div className="w-3 h-3 rounded-full bg-[#f79e1b] opacity-90 mix-blend-multiply"></div>
-                </div>
-                <div className="bg-[#2e77bc] px-2 py-1 rounded text-white font-bold text-xs border border-slate-300">
-                  AMEX
-                </div>
-                <div className="bg-white px-2 py-1 rounded text-[#f68121] font-bold text-xs border border-slate-300">
-                  DISCOVER
-                </div>
-              </div>
-              <div className="text-slate-400 text-[11px] flex items-center gap-1.5 font-medium mt-1">
-                Secure payment processed by{" "}
-                <span className="bg-[#635bff] px-1.5 py-0.5 rounded text-white font-bold text-[10px]">
-                  stripe
-                </span>
-              </div>
-            </div>
+            <PaymentBadges justify="center" />
           </div>
         </div>
 
-        {/* Trust Badges */}
-        <div className="mt-8 sm:mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-[clamp(1.5rem,2vw,2rem)] w-full px-2 sm:px-4">
-          {trustBadges.map((badge, idx) => (
-            <div
-              key={idx}
-              className="flex items-center gap-3 sm:gap-4"
-            >
-              <badge.icon className="w-[clamp(2.25rem,3vw,3rem)] h-[clamp(2.25rem,3vw,3rem)] text-[#1a1f71] shrink-0 stroke-[1.5]" />
-              <div className="flex flex-col">
-                <span className="text-[#1a1f71] font-extrabold text-[clamp(0.75rem,1vw,0.875rem)] leading-tight">
-                  {badge.title}
-                </span>
-                <span className="text-slate-600 font-medium text-[clamp(0.6875rem,0.9vw,0.75rem)] leading-tight">
-                  {badge.subtitle}
-                </span>
+        {/* Bottom Trust Indicators & Copyright */}
+        <div className="pt-6 flex flex-col items-center">
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-4 mb-6">
+            {trustBadges.map((badge, idx) => (
+              <div key={idx} className="flex items-center gap-2 text-slate-400">
+                <badge.icon className="w-4 h-4 shrink-0" strokeWidth={1.5} />
+                <span className="text-xs">{badge.title}</span>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+          <p className="text-slate-500 text-xs">
+            © {new Date().getFullYear()} QuitTheApp. All Rights Reserved.
+          </p>
         </div>
       </PageContainer>
     </section>

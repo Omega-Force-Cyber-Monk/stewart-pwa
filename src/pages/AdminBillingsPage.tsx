@@ -1,3 +1,4 @@
+import { formatCategory } from "../lib/formatCategory";
 import { useState } from "react";
 import { Eye, Filter, ChevronLeft, ChevronRight, Loader2, X, Download, ExternalLink } from "lucide-react";
 import { cn } from "../lib/cn";
@@ -208,7 +209,7 @@ export default function AdminBillingsPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4 text-slate-600">
-                          {payment.rider.driverProfile?.category || "—"}
+                          {formatCategory(payment.rider.driverProfile?.category)}
                         </td>
                         <td className="px-6 py-4 text-slate-600">
                           {payment.lineItems?.map((li) => li.name).join(", ") || "—"}
@@ -308,7 +309,7 @@ export default function AdminBillingsPage() {
               <div className="p-6 space-y-6">
                 {/* Rider Info */}
                 <div className="bg-slate-50 rounded-xl p-5">
-                  <h4 className="text-sm font-bold text-slate-700 mb-3">Rider</h4>
+                  <h4 className="text-sm font-bold text-slate-700 mb-3">Driver Account</h4>
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div>
                       <span className="text-slate-500 block text-xs">Name</span>
@@ -328,7 +329,7 @@ export default function AdminBillingsPage() {
                     </div>
                     <div>
                       <span className="text-slate-500 block text-xs">Category</span>
-                      <span className="font-medium text-slate-800">{payment.rider.driverProfile?.category || "—"}</span>
+                      <span className="font-medium text-slate-800">{formatCategory(payment.rider.driverProfile?.category)}</span>
                     </div>
                   </div>
                 </div>

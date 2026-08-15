@@ -35,6 +35,7 @@ import womenLogo from "../assets/womenLogo.png";
 import jessicaImage from "../assets/Women_Page_Jessica.jpg";
 import mariaImage from "../assets/Womans_Page_Maria.jpg";
 import lisaImage from "../assets/Womans_Page_Lisa.jpg";
+import { PaymentBadges } from "../components/common/PaymentBadges";
 
 export default function WomenPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -96,7 +97,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
           <div className="flex flex-col lg:flex-row w-full justify-between items-center lg:items-stretch flex-grow gap-[clamp(1.5rem,4vw,3rem)]">
             {/* Left Side Content */}
             <div className="w-full max-w-[clamp(280px,40vw,672px)] text-left z-10 self-center">
-              <h1 className="text-[clamp(1.9rem,4.5vw,3.75rem)] font-bold text-white leading-[1.15] mb-[clamp(1rem,1.5vw,1.25rem)] tracking-tight text-balance">
+              <h1 className="text-[clamp(2rem,4vw,3.25rem)] font-bold text-white leading-[1.1] mb-[clamp(1rem,1.5vw,1.25rem)] tracking-tight text-balance">
                 Build Your Own <br />
                 Private Airport Business. <br />
                 <span className="text-[#f42661]">Designed for Women.</span>
@@ -216,7 +217,7 @@ function FeaturesSection() {
     <section className="bg-white py-3" id="how-it-works">
       <PageContainer size="full">
         <div className="text-center mb-8">
-          <h2 className="text-[clamp(1.5rem,3.2vw,2.25rem)] font-bold text-[#0b0f19] tracking-tight text-balance">
+          <h2 className="text-[clamp(1.375rem,3vw,1.75rem)] font-bold text-[#0b0f19] tracking-tight text-balance">
             Everything You Need to{" "}
             <span className="text-[#f42661]">
               Create Your Own Successful Client Base
@@ -406,7 +407,7 @@ function WhyWinSection() {
   return (
     <section className="bg-white py-3 border-b border-slate-100">
       <PageContainer size="full">
-        <h2 className="text-[clamp(1.375rem,3vw,2rem)] font-bold text-[#0b0f19] text-center mb-10 text-balance">
+        <h2 className="text-[clamp(1.25rem,2.5vw,1.75rem)] font-bold text-[#0b0f19] text-center mb-10 text-balance">
           Why Women Travelers Choose Women Drivers
         </h2>
 
@@ -606,7 +607,7 @@ function FaqSection() {
         "The system can be used in markets with an airport and travelers who need reliable transportation. You choose your service area, rates, schedule, and availability. Results depend on local demand, competition, pricing, expenses, and your marketing efforts.",
     },
     {
-      question: "How is this different from Uber or Lyft?",
+      question: "How is this different from rideshare apps?",
       answer:
         "With rideshare apps, the platform controls the client relationship, pricing structure, and access to future ride opportunities. With QuitTheApp, you build your own client list, set your own rates, and keep the fares paid directly to your business, subject to normal operating expenses and payment processing costs.",
     },
@@ -774,30 +775,8 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
               </button>
             )}
 
-            {/* Payment Badges (CSS simulated) */}
-            <div className="flex flex-col items-center lg:items-end gap-2">
-              <div className="flex gap-2 flex-wrap justify-center lg:justify-end">
-                <div className="bg-white px-2 py-1 rounded text-[#1a1f71] font-bold text-xs italic tracking-tighter border border-slate-300">
-                  VISA
-                </div>
-                <div className="bg-white px-2 py-1 rounded flex items-center justify-center border border-slate-300">
-                  <div className="w-3 h-3 rounded-full bg-[#eb001b] -mr-1 opacity-90 mix-blend-multiply"></div>
-                  <div className="w-3 h-3 rounded-full bg-[#f79e1b] opacity-90 mix-blend-multiply"></div>
-                </div>
-                <div className="bg-[#2e77bc] px-2 py-1 rounded text-white font-bold text-xs border border-slate-300">
-                  AMEX
-                </div>
-                <div className="bg-white px-2 py-1 rounded text-[#f68121] font-bold text-xs border border-slate-300">
-                  DISCOVER
-                </div>
-              </div>
-              <div className="text-slate-400 text-[11px] flex items-center gap-1.5 font-medium mt-1">
-                Secure payment processed by{" "}
-                <span className="bg-[#635bff] px-1.5 py-0.5 rounded text-white font-bold text-[10px]">
-                  stripe
-                </span>
-              </div>
-            </div>
+            {/* Payment Badges */}
+            <PaymentBadges justify="center" />
           </div>
         </div>
 
