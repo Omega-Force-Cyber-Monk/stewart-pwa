@@ -27,9 +27,10 @@ import { useAppDispatch, useAppSelector } from "../hooks/storeHooks";
 import { logOut } from "../store/features/auth/authSlice";
 import { useLogoutUserMutation } from "../store/api/Auth/auth.api";
 import spanishBanner from "../assets/spanishBanner.png";
-import reviewImage from "../assets/review.jpg";
-import standardImage from "../assets/standard.png";
-import reviewCoupleImage from "../assets/reviewCouple.png";
+import spanishDriver1 from "../assets/spanish_driver_1.jpg";
+import spanishDriver2 from "../assets/spanish_driver_2.jpg";
+import spanishDriver3 from "../assets/spanish_driver_3.jpg";
+import { PaymentBadges } from "../components/common/PaymentBadges";
 
 export default function SpanishPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -155,7 +156,7 @@ function SpanishNavbar({ openPricingModal }: { openPricingModal: () => void }) {
                     onClick={openPricingModal}
                     className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg"
                   >
-                    Empezar mi negocio — $495
+                    Empezar mi negocio privado de transporte — $495
                   </button>
                 </>
               )}
@@ -269,7 +270,7 @@ function SpanishNavbar({ openPricingModal }: { openPricingModal: () => void }) {
                 }}
                 className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-3 px-6 rounded-md transition-colors w-full mt-4 min-h-[52px]"
               >
-                Empezar mi negocio — $495
+                Empezar mi negocio privado de transporte — $495
               </button>
             </>
           )}
@@ -529,7 +530,7 @@ function ComparisonSection() {
           {/* Left Card */}
           <div className="bg-white rounded-2xl p-8 lg:p-12 shadow-sm w-full lg:w-1/2 flex flex-col items-start min-h-[380px]">
             <h3 className="text-[#ef4444] font-bold text-sm lg:text-[15px] uppercase tracking-wider mb-8">
-              CONDUCIR CON APPS DE RIDESHARE
+              CONDUCIR CON APPS DE TRANSPORTE
             </h3>
             <ul className="space-y-5 w-full">
               {badList.map((item, i) => (
@@ -725,21 +726,21 @@ function ReviewsSection() {
         "Quit TheApp me dio todo lo que necesitaba para dejar las apps y construir mi negocio propio.",
       name: "Alex F.",
       location: "Phoenix, AZ",
-      image: reviewImage,
+      image: spanishDriver1,
     },
     {
       quote:
         "En menos de dos semanas ya tenía reservas directas. Lo mejor que he invertido en mi negocio.",
       name: "Brenda T.",
       location: "Dallas, TX",
-      image: standardImage,
+      image: spanishDriver2,
     },
     {
       quote:
         "Ahora mis clientes me eligen a mi no a una app. Estoy construyendo algo real y duradero.",
       name: "Carlos M.",
       location: "Naples, FL, USA",
-      image: reviewCoupleImage,
+      image: spanishDriver3,
     },
   ];
 
@@ -982,30 +983,8 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
               </button>
             )}
 
-            {/* Payment Badges (CSS simulated) */}
-            <div className="flex flex-col items-center lg:items-end gap-2">
-              <div className="flex gap-2 flex-wrap justify-center lg:justify-end">
-                <div className="bg-white px-2 py-1 rounded text-[#1a1f71] font-bold text-xs italic tracking-tighter border border-slate-300">
-                  VISA
-                </div>
-                <div className="bg-[#00a1e0] px-2 py-1 rounded text-white font-bold text-xs border border-[#00a1e0]">
-                  AMEX
-                </div>
-                <div className="bg-[#1c3c95] px-2 py-1 rounded text-white font-bold text-xs border border-[#1c3c95]">
-                  DISCOVER
-                </div>
-                <div className="bg-[#1c1c1c] px-2 py-1 rounded flex items-center justify-center border border-slate-800">
-                  <div className="w-3 h-3 rounded-full bg-[#eb001b] -mr-1 opacity-90 mix-blend-screen"></div>
-                  <div className="w-3 h-3 rounded-full bg-[#f79e1b] opacity-90 mix-blend-screen"></div>
-                </div>
-              </div>
-              <div className="text-slate-400 text-[11px] flex items-center gap-1.5 font-medium mt-1">
-                Pago seguro procesado por{" "}
-                <span className="bg-[#635bff] px-1.5 py-0.5 rounded text-white font-bold text-[10px]">
-                  stripe
-                </span>
-              </div>
-            </div>
+            {/* Payment Badges */}
+            <PaymentBadges justify="center" />
           </div>
         </div>
 

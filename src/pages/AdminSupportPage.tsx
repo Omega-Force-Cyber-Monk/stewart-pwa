@@ -1,3 +1,4 @@
+import { formatCategory } from "../lib/formatCategory";
 import { useState } from "react";
 import { Eye, Trash2, ChevronLeft, ChevronRight, Loader2, X, Send, Search } from "lucide-react";
 import { cn } from "../lib/cn";
@@ -223,7 +224,7 @@ export default function AdminSupportPage() {
                             </div>
                           </td>
                           <td className="px-6 py-4 text-slate-600">
-                            {ticket.rider.driverProfile?.category || "—"}
+                            {formatCategory(ticket.rider.driverProfile?.category)}
                           </td>
                           <td className="px-6 py-4 text-slate-600">{ticket.subject}</td>
                           <td className="px-6 py-4">
@@ -371,7 +372,7 @@ export default function AdminSupportPage() {
                         )}>
                           <p>{msg.message}</p>
                           <p className={cn("text-[10px] mt-1.5", msg.isAdmin ? "text-blue-100" : "text-slate-400")}>
-                            {msg.isAdmin ? "Admin" : "Rider"} · {formatDate(msg.createdAt).date} {formatDate(msg.createdAt).time}
+                            {msg.isAdmin ? "Admin" : "Driver"} · {formatDate(msg.createdAt).date} {formatDate(msg.createdAt).time}
                           </p>
                         </div>
                       </div>
@@ -396,7 +397,7 @@ export default function AdminSupportPage() {
                         onChange={(e) => setNotifyEmail(e.target.checked)}
                         className="rounded border-slate-300"
                       />
-                      Notify rider by email
+                      Notify driver by email
                     </label>
                     <button
                       onClick={handleReply}

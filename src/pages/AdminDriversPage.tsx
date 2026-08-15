@@ -1,3 +1,4 @@
+import { formatCategory } from "../lib/formatCategory";
 import { useState } from "react";
 import { Eye, Trash2, MoreVertical, Filter, ChevronLeft, ChevronRight, Loader2, Search } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -191,8 +192,8 @@ export default function AdminDriversPage() {
             <table className="w-full text-sm text-left">
               <thead className="text-xs text-[#1a56ff] bg-[#f0f4ff] font-medium">
                 <tr>
-                  <th className="px-6 py-4 rounded-tl-lg">Driver ID</th>
-                  <th className="px-6 py-4">Driver Name</th>
+                  <th className="px-6 py-4 rounded-tl-lg sticky left-0 z-10 bg-[#f0f4ff]">Driver ID</th>
+                  <th className="px-6 py-4 sticky left-[120px] sm:left-[140px] z-10 bg-[#f0f4ff]">Driver Name</th>
                   <th className="px-6 py-4">Email Address</th>
                   <th className="px-6 py-4">Category</th>
                   <th className="px-6 py-4">Service Area</th>
@@ -214,9 +215,9 @@ export default function AdminDriversPage() {
                   drivers.map((driver) => {
                     const reg = formatDate(driver.createdAt || driver.user.createdAt || "");
                     return (
-                      <tr key={driver.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
-                        <td className="px-6 py-4 font-medium text-slate-700">{driver.driverCode}</td>
-                        <td className="px-6 py-4">
+                      <tr key={driver.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors group">
+                        <td className="px-6 py-4 font-medium text-slate-700 sticky left-0 z-10 bg-white group-hover:bg-slate-50">{driver.driverCode}</td>
+                        <td className="px-6 py-4 sticky left-[120px] sm:left-[140px] z-10 bg-white group-hover:bg-slate-50">
                           <div className="flex items-center gap-3">
                             {driver.avatarUrl ? (
                               <img src={driver.avatarUrl} alt={driver.user.name || ""} className="w-8 h-8 rounded-full object-cover" />
@@ -229,7 +230,7 @@ export default function AdminDriversPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4 text-slate-600">{driver.user.email}</td>
-                        <td className="px-6 py-4 text-slate-600">{driver.category}</td>
+                        <td className="px-6 py-4 text-slate-600">{formatCategory(driver.category)}</td>
                         <td className="px-6 py-4 text-slate-600">{driver.serviceArea?.cityArea || "—"}</td>
                         <td className="px-6 py-4">
                           <div className="flex flex-col">

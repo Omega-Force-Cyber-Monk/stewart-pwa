@@ -1,3 +1,4 @@
+import { formatCategory } from "../lib/formatCategory";
 import { useState } from "react";
 import { ArrowLeft, CheckCircle2, Loader2, XCircle, ShieldCheck, ShieldOff, Trash2 } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -23,13 +24,6 @@ const formatDate = (iso: string | null | undefined) => {
   }
 };
 
-const categoryLabel: Record<string, string> = {
-  WOMEN: "Women Focused",
-  COUPLE: "Couples",
-  FIFTY_PLUS: "Drivers 50+",
-  STANDARD: "Main",
-  SPANISH: "Spanish",
-};
 
 export default function AdminDriverDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -200,7 +194,7 @@ export default function AdminDriverDetailsPage() {
               </div>
               <div className="flex justify-between items-start border-b border-slate-50 pb-3">
                 <span className="text-sm text-slate-500">Driver Category</span>
-                <span className="text-sm font-medium text-slate-800 text-right">{categoryLabel[driver.category] || driver.category}</span>
+                <span className="text-sm font-medium text-slate-800 text-right">{formatCategory(driver.category)}</span>
               </div>
               <div className="flex justify-between items-start border-b border-slate-50 pb-3">
                 <span className="text-sm text-slate-500">Account Status</span>

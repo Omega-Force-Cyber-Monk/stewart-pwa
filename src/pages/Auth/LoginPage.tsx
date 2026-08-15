@@ -70,7 +70,7 @@ export default function LoginPage() {
   return (
     <AuthLayout
       title="Welcome Back"
-      subtitle="Sign in to your rider account to manage your booking pipeline, referral cards, and launch settings."
+      subtitle="Sign in to your QuitTheApp account to manage your business, launch tools, resources, and support."
     >
       <div>
         <h2 className="text-2xl font-bold tracking-tight text-slate-100">
@@ -79,7 +79,7 @@ export default function LoginPage() {
         <p className="mt-2 text-sm text-slate-400">
           Or{" "}
           <Link to="/signup" className="font-semibold text-cyan-400 hover:text-cyan-300 transition-colors">
-            create a new rider account
+            create a new account
           </Link>
         </p>
       </div>
