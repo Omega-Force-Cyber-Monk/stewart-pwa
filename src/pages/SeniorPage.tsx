@@ -111,7 +111,7 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
                 />
               </Link>
             </div>
-            
+
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-8">
               <a
@@ -1059,7 +1059,7 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
                 </span>
               </div>
               <span className="text-slate-300 text-sm mt-2 leading-snug max-w-[280px]">
-                Includes the complete QuitTheApp DIY launch system.<br/>
+                Includes the complete QuitTheApp DIY launch system.<br />
                 <span className="mt-2 block font-medium">Optional $199 We Do It for You upgrade available.</span>
               </span>
             </div>
@@ -1115,7 +1115,7 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
                 </div>
               </button>
             )}
-            
+
             {/* Payment Badges */}
             <PaymentBadges justify="center" />
           </div>
