@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import {
   useRegisterRiderMutation,
   useVerifyRegistrationOtpMutation,
@@ -12,6 +12,9 @@ type SignupStep = "register" | "verify-otp" | "success";
 
 export default function SignupPage() {
   const [step, setStep] = useState<SignupStep>("register");
+  
+  const [searchParams] = useSearchParams();
+  const sessionId = searchParams.get("session_id");
 
   // Registration form state
   const [email, setEmail] = useState("");
@@ -47,7 +50,11 @@ export default function SignupPage() {
     }
 
     try {
-      const result = await registerRider({ email, password, confirmPassword }).unwrap();
+      const payload: any = { email, password, confirmPassword };
+      if (sessionId) {
+        payload.stripeSessionId = sessionId;
+      }
+      const result = await registerRider(payload).unwrap();
       if (result.success) {
         if (result.delivery?.devOtp) {
           setDevOtpCode(result.delivery.devOtp);
@@ -127,6 +134,18 @@ export default function SignupPage() {
               </Link>
             </p>
           </div>
+
+          {sessionId && (
+            <div className="mt-6 bg-[#04B5A3]/10 border border-[#04B5A3]/30 rounded-lg p-4 flex items-start gap-3">
+              <CheckCircle className="size-5 text-[#04B5A3] shrink-0 mt-0.5" />
+              <div className="text-sm">
+                <p className="text-[#04B5A3] font-semibold mb-1">Payment Successful!</p>
+                <p className="text-[#04B5A3]/80 leading-snug">
+                  Please create your account below to access your Launch Package.
+                </p>
+              </div>
+            </div>
+          )}
 
           <form className="mt-8 space-y-6" onSubmit={handleRegisterSubmit}>
             {errorMessage && (

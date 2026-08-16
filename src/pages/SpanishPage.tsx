@@ -284,13 +284,13 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
   const { accessToken } = useAppSelector((state) => state.auth);
 
   return (
-    <div className="relative w-full min-h-[90svh] h-auto flex flex-col justify-between overflow-hidden bg-[#040a23] pt-[80px]">
+    <div className="relative w-full min-h-[100svh] lg:min-h-[90svh] pt-[clamp(64px,8vw,80px)] flex flex-col justify-between overflow-hidden bg-[#040a23]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
           src={spanishBanner}
           alt="Spanish Banner"
-          className="w-full h-full object-cover object-[center_top] lg:object-[right_top] transform scale-[0.85] lg:scale-[0.85] translate-x-[5%] origin-right pointer-events-none opacity-90"
+          className="w-full h-full object-cover object-[75%_top] sm:object-[80%_top] lg:object-[85%_center] pointer-events-none opacity-90"
         />
         {/* Dark overlay for text readability */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/70 to-transparent lg:to-black/30"></div>
