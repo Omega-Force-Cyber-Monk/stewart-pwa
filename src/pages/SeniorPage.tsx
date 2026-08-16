@@ -280,18 +280,17 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
 
 function HeroBanner() {
   return (
-    <div className="relative w-full min-h-[90svh] flex flex-col justify-between overflow-hidden bg-[#040a23] pt-[80px]">
+    <div className="relative w-full min-h-[100svh] lg:min-h-[90svh] pt-[clamp(64px,8vw,80px)] flex flex-col justify-between overflow-hidden bg-[#040a23]">
       {/* Background Image on the right side */}
       {/* Background Image */}
       <img
         src={seniorBanner}
         alt="Senior couple"
-        className="absolute inset-0 w-full h-full object-cover object-[center_top] lg:object-[right_top] transform scale-[0.85] lg:scale-[0.85] translate-x-[5%] origin-right pointer-events-none opacity-90"
+        className="absolute inset-0 w-full h-full object-cover object-[75%_top] sm:object-[80%_top] lg:object-[85%_center] pointer-events-none opacity-90"
       />
       {/* Dark gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#040a23] via-[#040a23]/90 to-[#040a23]/30 w-full lg:w-[70%] xl:w-[65%] z-0"></div>
-      <div className="absolute inset-0 bg-gradient-to-t from-[#040a23] via-[#040a23]/80 to-transparent lg:hidden w-full h-full z-0"></div>
-
+      <div className="absolute inset-0 w-full h-full bg-gradient-to-t from-[#040a23]/95 via-[#040a23]/50 to-[#040a23]/20 lg:bg-gradient-to-r lg:from-[#040a23] lg:via-[#040a23]/80 lg:to-transparent z-0"></div>
+      
       <div className="relative z-10 w-full flex-grow flex items-center py-6">
         <PageContainer size="full">
           <div className="flex flex-col lg:flex-row w-full justify-between items-center gap-8">

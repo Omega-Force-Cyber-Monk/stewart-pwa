@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useCreateRiderCheckoutSessionMutation } from "../store/api/Payment/payment.api";
 import { Loader2, X, Check, AlertTriangle, Rocket, Users } from "lucide-react";
 
@@ -11,7 +10,6 @@ const BASE_VARIANT_ID = "base_variant";
 const ADDON_ID = "addon";
 
 export function PricingModal({ onClose }: PricingModalProps) {
-  const navigate = useNavigate();
   const [selectedPlan, setSelectedPlan] = useState<"base" | "bundle" | null>(null);
   const [createCheckoutSession, { isLoading, error }] = useCreateRiderCheckoutSessionMutation();
 
@@ -26,27 +24,17 @@ export function PricingModal({ onClose }: PricingModalProps) {
         ];
 
     try {
-      const result = await createCheckoutSession({ items }).unwrap();
+      const result = await createCheckoutSession({
+        items,
+        successUrl: `${window.location.origin}/signup?session_id={CHECKOUT_SESSION_ID}`,
+        cancelUrl: window.location.href,
+      }).unwrap();
       if (result.checkoutUrl) {
         window.location.href = result.checkoutUrl;
       }
     } catch (err: unknown) {
       console.error("Checkout session failed:", err);
       setSelectedPlan(null);
-      
-      const isAuthError = (err as { status?: number })?.status === 401 || 
-        ((err as { data?: { message?: string | string[] } })?.data?.message && (
-          (err as { data: { message: string | string[] } }).data.message === "Missing or invalid bearer token." || 
-          typeof (err as { data: { message: string | string[] } }).data.message === "string" && ((err as { data: { message: string } }).data.message as string).toLowerCase().includes("bearer") ||
-          Array.isArray((err as { data: { message: string[] } }).data.message) && (err as { data: { message: string[] } }).data.message[0]?.toLowerCase().includes("bearer")
-        ));
-        
-      if (isAuthError) {
-        setTimeout(() => {
-          onClose();
-          navigate("/login");
-        }, 1500);
-      }
     }
   };
 
@@ -56,12 +44,8 @@ export function PricingModal({ onClose }: PricingModalProps) {
       const data = error.data as { message?: string | string[] };
       const msg = Array.isArray(data.message) ? data.message[0] : data.message;
       
-      if (
-        (error as { status?: number })?.status === 401 || 
-        msg === "Missing or invalid bearer token." || 
-        (typeof msg === "string" && msg.toLowerCase().includes("bearer"))
-      ) {
-        return "Login first";
+      if ((error as { status?: number })?.status === 401) {
+        return "Authentication required.";
       }
       
       return msg || "Something went wrong. Please try again.";
@@ -103,9 +87,9 @@ export function PricingModal({ onClose }: PricingModalProps) {
         )}
 
         {/* Plan Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-8 overflow-y-auto min-h-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-6 overflow-y-auto min-h-0">
           {/* Plan 1: Do It Yourself */}
-          <div className="relative flex flex-col bg-[#0B0D2C] border border-[#00E5FF33] rounded-xl p-6 hover:border-cyan-400/60 transition-all duration-200">
+          <div className="relative flex flex-col bg-[#0B0D2C] border border-[#00E5FF33] rounded-xl p-5 hover:border-cyan-400/60 transition-all duration-200">
             <div className="flex items-center gap-3 mb-4">
               <div className="bg-cyan-400/10 rounded-lg p-2">
                 <Rocket className="size-6 text-cyan-400" />
@@ -120,19 +104,19 @@ export function PricingModal({ onClose }: PricingModalProps) {
               </div>
             </div>
 
-            <div className="mb-6">
+            <div className="mb-4">
               <span className="text-4xl font-extrabold text-white">$495</span>
               <span className="text-slate-400 text-sm ml-1">one-time</span>
             </div>
 
-            <ul className="space-y-3 mb-8 flex-1">
+            <ul className="space-y-2 mb-6 flex-1">
               {[
                 "Full launch system toolkit",
                 "Referral card template",
-                "Repeat rider follow-up system",
-                "Client acquisition center",
-                "Direct booking trust center",
-                "Personalized selling page",
+                "Repeat Rider Engine™",
+                "Client Acquisition Center™",
+                "Quick Launch Booking System™",
+                "Personalized Selling Page™",
                 "Launch essentials guide",
                 "Resources & guides library",
               ].map((item) => (
@@ -156,7 +140,7 @@ export function PricingModal({ onClose }: PricingModalProps) {
           </div>
 
           {/* Plan 2: Done For You */}
-          <div className="relative flex flex-col bg-[#0B0D2C] border-2 border-[#04B5A3] rounded-xl p-6 shadow-[0_0_30px_rgba(4,181,163,0.15)]">
+          <div className="relative flex flex-col bg-[#0B0D2C] border-2 border-[#04B5A3] rounded-xl p-5 shadow-[0_0_30px_rgba(4,181,163,0.15)]">
             {/* Popular badge */}
             <div className="absolute -top-3 left-1/2 -translate-x-1/2">
               <span className="bg-[#04B5A3] text-white text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wider whitespace-nowrap shadow-lg">
@@ -182,9 +166,9 @@ export function PricingModal({ onClose }: PricingModalProps) {
               <span className="text-4xl font-extrabold text-white">$694</span>
               <span className="text-slate-400 text-sm ml-1">one-time</span>
             </div>
-            <p className="text-xs text-slate-500 mb-6">$495 base + $199 add-on</p>
+            <p className="text-xs text-slate-500 mb-4">$495 base + $199 add-on</p>
 
-            <ul className="space-y-3 mb-8 flex-1">
+            <ul className="space-y-2 mb-6 flex-1">
               {[
                 "Everything in the Launch Kit",
                 "Done-for-you setup assistance",

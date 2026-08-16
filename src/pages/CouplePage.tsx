@@ -74,13 +74,13 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
   const { accessToken } = useAppSelector((state) => state.auth);
 
   return (
-    <div className="relative w-full bg-[#f8fafc] border-b border-gray-100 min-h-[90svh] h-auto flex flex-col justify-between pt-[clamp(1rem,1.5vw,1.75rem)] pb-[clamp(2rem,3vw,3rem)] lg:pb-0 overflow-hidden">
+    <div className="relative w-full min-h-[100svh] lg:min-h-[90svh] pt-[clamp(64px,8vw,80px)] flex flex-col justify-between overflow-hidden bg-[#f8fafc] border-b border-gray-100 pb-[clamp(2rem,3vw,3rem)] lg:pb-0">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
           src={coupleBanner}
           alt="Couple in a car"
-          className="w-full h-full object-cover object-[center_top] lg:object-[right_top] transform scale-[0.85] lg:scale-[0.85] translate-x-[5%] lg:translate-x-[5%] origin-right pointer-events-none opacity-90"
+          className="w-full h-full object-cover object-[75%_top] sm:object-[80%_top] lg:object-[85%_center] pointer-events-none opacity-90"
         />
       </div>
 

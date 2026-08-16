@@ -5,6 +5,8 @@ export interface CheckoutSessionItem {
 
 export interface CreateCheckoutSessionRequest {
   items: CheckoutSessionItem[];
+  successUrl?: string;
+  cancelUrl?: string;
 }
 
 export interface CreateCheckoutSessionResponse {
