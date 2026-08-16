@@ -280,24 +280,24 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
 
 function HeroBanner() {
   return (
-    <div className="relative w-full min-h-[100svh] flex flex-col justify-between overflow-hidden bg-[#040a23] pt-[80px]">
+    <div className="relative w-full min-h-[90svh] flex flex-col justify-between overflow-hidden bg-[#040a23] pt-[80px]">
       {/* Background Image on the right side */}
-            {/* Background Image */}
+      {/* Background Image */}
       <img
         src={seniorBanner}
         alt="Senior couple"
-        className="absolute inset-0 w-full h-full object-cover object-[center_top] lg:object-[right_top]"
+        className="absolute inset-0 w-full h-full object-cover object-[center_top] lg:object-[right_top] transform scale-[0.85] lg:scale-[0.85] translate-x-[5%] origin-right pointer-events-none opacity-90"
       />
       {/* Dark gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#040a23] via-[#040a23]/90 to-transparent w-full lg:w-[70%] xl:w-[65%] z-0"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-[#040a23] via-[#040a23]/90 to-[#040a23]/30 w-full lg:w-[70%] xl:w-[65%] z-0"></div>
       <div className="absolute inset-0 bg-gradient-to-t from-[#040a23] via-[#040a23]/80 to-transparent lg:hidden w-full h-full z-0"></div>
 
-      <div className="relative z-10 w-full flex-grow flex items-center py-8">
+      <div className="relative z-10 w-full flex-grow flex items-center py-6">
         <PageContainer size="full">
-          <div className="flex flex-col lg:flex-row w-full justify-between items-center gap-10">
+          <div className="flex flex-col lg:flex-row w-full justify-between items-center gap-8">
             {/* Left Content */}
-            <div className="w-full lg:w-[50%] text-left text-center lg:text-left">
-              <h1 className="text-[clamp(2rem,3.8vw,3.25rem)] font-extrabold text-white leading-[1.1] mb-6 tracking-tight uppercase">
+            <div className="w-full lg:w-[50%] text-center lg:text-left">
+              <h1 className="text-[clamp(1.75rem,3vw,2.5rem)] font-extrabold text-white leading-[1.1] mb-5 tracking-tight uppercase">
                 START A PRIVATE AIRPORT
                 <br />
                 BUSINESS THAT WORKS
@@ -306,7 +306,7 @@ function HeroBanner() {
                 <br />
                 <span className="text-[#39b54a] block mt-1">NOT SOMEONE ELSE'S.</span>
               </h1>
-              <p className="text-[clamp(1rem,1.1vw,1.15rem)] text-white font-medium mb-8 max-w-[650px] leading-relaxed tracking-wide mx-auto lg:mx-0">
+              <p className="text-[clamp(0.95rem,1.1vw,1.1rem)] text-white font-medium mb-6 max-w-[650px] leading-relaxed tracking-wide mx-auto lg:mx-0">
                 QuitTheApp helps experienced drivers launch their own private airport transportation business, accept direct bookings, build trusted client relationships, and create repeat riders and referrals.
               </p>
               <ul className="space-y-3 max-w-[500px] mx-auto lg:mx-0">

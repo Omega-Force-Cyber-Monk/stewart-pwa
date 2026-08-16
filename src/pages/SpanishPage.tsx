@@ -284,13 +284,13 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
   const { accessToken } = useAppSelector((state) => state.auth);
 
   return (
-    <div className="relative w-full min-h-[100svh] h-auto flex flex-col justify-between overflow-hidden bg-[#040a23] pt-[80px]">
+    <div className="relative w-full min-h-[90svh] h-auto flex flex-col justify-between overflow-hidden bg-[#040a23] pt-[80px]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
           src={spanishBanner}
           alt="Spanish Banner"
-          className="w-full h-full object-cover object-[center_top] lg:object-[right_top]"
+          className="w-full h-full object-cover object-[center_top] lg:object-[right_top] transform scale-[0.85] lg:scale-[0.85] translate-x-[5%] origin-right pointer-events-none opacity-90"
         />
         {/* Dark overlay for text readability */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/70 to-transparent lg:to-black/30"></div>
@@ -298,10 +298,10 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 w-full flex-grow flex items-center py-8">
+      <div className="relative z-10 w-full flex-grow flex items-center py-6">
         <PageContainer size="full">
           <div className="w-full max-w-[650px] text-left">
-            <h1 className="text-[clamp(2.5rem,4vw,4rem)] font-extrabold text-white leading-[1.05] mb-6 tracking-tight uppercase">
+            <h1 className="text-[clamp(1.75rem,3.5vw,2.75rem)] font-extrabold text-white leading-[1.05] mb-5 tracking-tight uppercase">
               DEJA LAS APPS.
               <br />
               <span className="text-[#22c55e]">
@@ -310,7 +310,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                 PROPIO NEGOCIO.
               </span>
             </h1>
-            <p className="text-white/90 text-[clamp(1rem,1.5vw,1.125rem)] font-medium mb-8 max-w-[550px] leading-relaxed">
+            <p className="text-white/90 text-[clamp(0.95rem,1.2vw,1.1rem)] font-medium mb-6 max-w-[550px] leading-relaxed">
               QuitTheApp te brinda las herramientas para lanzar tu propio
               negocio privado de transporte al aeropuerto, aceptar solicitudes
               de reserva directa, crear una base de clientes recurrentes y

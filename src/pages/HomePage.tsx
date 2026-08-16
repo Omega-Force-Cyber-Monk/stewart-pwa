@@ -292,31 +292,29 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
 
 function HeroBanner() {
   return (
-    <div className="relative w-full min-h-[100svh] flex flex-col justify-between overflow-hidden bg-[#040a23] pt-[80px]">
+    <div className="relative w-full min-h-[90svh] flex flex-col justify-between overflow-hidden bg-[#040a23] pt-[80px]">
       {/* Background Image */}
       <img
         src={seniorBanner}
-        alt="Senior couple"
-        className="absolute inset-0 w-full h-full object-cover object-[center_top] lg:object-[right_top]"
+        alt="Phone concept"
+        className="absolute inset-0 w-full h-full object-cover object-[center_top] lg:object-[right_top] transform scale-[0.85] lg:scale-[0.75] translate-x-[5%] lg:translate-x-[10%] origin-right pointer-events-none"
       />
       {/* Dark gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#040a23] via-[#040a23]/90 to-transparent w-full lg:w-[70%] xl:w-[65%]"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-[#040a23] via-[#040a23]/90 to-[#040a23]/30 w-full lg:w-[70%] xl:w-[65%]"></div>
 
-      <div className="relative z-10 w-full flex-grow flex items-center py-8">
+      <div className="relative z-10 w-full flex-grow flex items-center py-6">
         <PageContainer size="full">
           <div className="flex flex-col lg:flex-row w-full justify-between items-center gap-10">
             {/* Left Content */}
             <div className="w-full lg:w-[50%] text-left">
-              <h1 className="text-[clamp(2.25rem,4vw,3.5rem)] font-extrabold text-white leading-[1.15] mb-6 tracking-tight uppercase">
+              <h1 className="text-[clamp(1.875rem,3.5vw,2.75rem)] font-extrabold text-white leading-[1.1] mb-5 tracking-tight uppercase text-balance">
                 STOP DRIVING FOR THE APPS.
                 <br />
                 <span className="text-[#39b54a]">
-                  START YOUR OWN PRIVATE
-                  <br />
-                  AIRPORT BUSINESS.™
+                  START YOUR OWN PRIVATE AIRPORT BUSINESS.™
                 </span>
               </h1>
-              <p className="text-[clamp(1rem,1.1vw,1.15rem)] text-white font-medium mb-8 max-w-[650px] leading-relaxed tracking-wide">
+              <p className="text-[clamp(0.95rem,1.1vw,1.1rem)] text-white font-medium mb-6 max-w-[650px] leading-relaxed tracking-wide text-pretty">
                 QuitTheApp gives drivers the tools to launch their own private airport transportation business, get direct bookings, build repeat clients, and create a business they control.
               </p>
               <ul className="space-y-3 max-w-[500px]">

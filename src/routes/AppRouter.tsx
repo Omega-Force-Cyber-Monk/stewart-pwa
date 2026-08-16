@@ -24,6 +24,7 @@ import AdminDriversPage from "../pages/AdminDriversPage";
 import AdminDriverDetailsPage from "../pages/AdminDriverDetailsPage";
 import AdminResourcesPage from "../pages/AdminResourcesPage";
 import AdminAddResourcePage from "../pages/AdminAddResourcePage";
+import AdminEditResourcePage from "../pages/AdminEditResourcePage";
 import AdminBillingsPage from "../pages/AdminBillingsPage";
 import AdminSupportPage from "../pages/AdminSupportPage";
 import AdminSettingsPage from "../pages/AdminSettingsPage";
@@ -81,6 +82,7 @@ export function AppRouter() {
       <Route path="/admin/drivers/:id" element={<AdminRoute><AdminDashboardLayout title="Driver Management"><AdminDriverDetailsPage /></AdminDashboardLayout></AdminRoute>} />
       <Route path="/admin/resources" element={<AdminRoute><AdminDashboardLayout title="Resource Management"><AdminResourcesPage /></AdminDashboardLayout></AdminRoute>} />
       <Route path="/admin/resources/add" element={<AdminRoute><AdminDashboardLayout title="Resource Management"><AdminAddResourcePage /></AdminDashboardLayout></AdminRoute>} />
+      <Route path="/admin/resources/edit/:id" element={<AdminRoute><AdminDashboardLayout title="Resource Management"><AdminEditResourcePage /></AdminDashboardLayout></AdminRoute>} />
       <Route path="/admin/billings" element={<AdminRoute><AdminDashboardLayout title="Billing"><AdminBillingsPage /></AdminDashboardLayout></AdminRoute>} />
       <Route path="/admin/support" element={<AdminRoute><AdminDashboardLayout title="Support"><AdminSupportPage /></AdminDashboardLayout></AdminRoute>} />
       <Route path="/admin/settings" element={<AdminRoute><AdminDashboardLayout title="Settings"><AdminSettingsPage /></AdminDashboardLayout></AdminRoute>} />

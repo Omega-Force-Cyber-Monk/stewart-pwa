@@ -296,7 +296,7 @@ function ComparisonSection() {
                 ))}
               </ul>
               <h3 className="mb-3 text-xl font-bold text-[#16a34a] text-center">
-                Your Women-Focused Business
+                Your Own Private Airport Business.
               </h3>
               <ul className="space-y-2">
                 {[
@@ -354,7 +354,7 @@ function ComparisonSection() {
             {/* Right */}
             <div className="w-[32%] shrink-0 bg-white px-8 py-0 flex flex-col justify-center">
               <h3 className="mb-4 text-[22px] font-bold text-[#16a34a] leading-tight">
-                Your Women-Focused Business
+                Your Own Private Airport Business.
               </h3>
               <ul className="space-y-3">
                 {[
@@ -458,7 +458,7 @@ function HowItWorksSection() {
       number: 3,
       icon: Rocket,
       title: "Build and Launch",
-      description: "Follow the guided setup process while QuitTheApp prepares and hosts your personalized selling page. Prefer additional assistance? Add the optional $199 We Do It for You upgrade.",
+      description: "Follow the guided setup process to create and launch your personalized selling page, which QuitTheApp hosts for you. Prefer additional assistance? Add the optional $199 We Do It for You upgrade.",
     },
   ];
 

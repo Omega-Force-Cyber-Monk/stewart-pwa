@@ -10,6 +10,8 @@ import {
   Loader2,
   Trash2,
   ExternalLink,
+  Edit2,
+  Download,
 } from "lucide-react";
 import { cn } from "../lib/cn";
 import { Link } from "react-router-dom";
@@ -20,6 +22,7 @@ import {
 } from "../store/api/Admin/admin.api";
 import type { Resource } from "../store/api/Admin/admin.type";
 import { useConfirmDialog } from "../hooks/useConfirmDialog";
+import { useAppSelector } from "../hooks/storeHooks";
 
 const iconMap: Record<string, typeof FolderSearch> = {
   "folder-search": FolderSearch,
@@ -97,6 +100,54 @@ export default function AdminResourcesPage() {
         }
       }
     );
+  };
+
+  const { accessToken } = useAppSelector((state) => state.auth);
+
+  const handlePreview = async (resourceId: string) => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/resources/${resourceId}/file`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      if (!res.ok) throw new Error("Failed to load preview");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+    } catch (err) {
+      console.error(err);
+      showAlert({ title: "Error", message: "Failed to load file preview.", type: "error" });
+    }
+  };
+
+  const handleDownload = async (resource: Resource) => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/resources/${resource.id}/file`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      if (!res.ok) throw new Error("Failed to download file");
+
+      const disposition = res.headers.get("Content-Disposition");
+      let filename = resource.title || resource.name || "download";
+      if (disposition && disposition.indexOf("filename=") !== -1) {
+        const matches = /filename="([^"]+)"/.exec(disposition);
+        if (matches != null && matches[1]) {
+          filename = matches[1];
+        }
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+      showAlert({ title: "Error", message: "Failed to download resource.", type: "error" });
+    }
   };
 
   return (
@@ -212,24 +263,41 @@ export default function AdminResourcesPage() {
                       <p className="text-xs text-slate-500 leading-relaxed line-clamp-3">
                         {resource.description}
                       </p>
-                      <div className="flex items-center gap-2 mt-4">
-                        {resource.fileUrl && (
-                          <a
-                            href={resource.fileUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-[#1a56ff] hover:underline text-xs font-medium flex items-center gap-1"
-                          >
-                            <ExternalLink className="w-3 h-3" />
-                            View
-                          </a>
-                        )}
+                      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 mt-5">
+                        <button
+                          onClick={() => handlePreview(resource.id)}
+                          className="text-[#1a56ff] hover:text-blue-700 hover:underline text-[13px] font-medium flex items-center gap-1 transition-colors"
+                          title="Preview Resource"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                          View
+                        </button>
+                        <div className="w-px h-3.5 bg-slate-200"></div>
+                        <Link
+                          to={`/admin/resources/edit/${resource.id}`}
+                          className="text-slate-600 hover:text-slate-900 hover:underline text-[13px] font-medium flex items-center gap-1 transition-colors"
+                          title="Edit Resource"
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                          Edit
+                        </Link>
+                        <div className="w-px h-3.5 bg-slate-200"></div>
+                        <button
+                          onClick={() => handleDownload(resource)}
+                          className="text-emerald-600 hover:text-emerald-700 hover:underline text-[13px] font-medium flex items-center gap-1 transition-colors"
+                          title="Download Resource"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                          Download
+                        </button>
+                        <div className="w-px h-3.5 bg-slate-200"></div>
                         <button
                           onClick={() => handleDelete(resource)}
-                          className="text-red-400 hover:text-red-500 transition-colors"
+                          className="text-red-500 hover:text-red-600 hover:underline text-[13px] font-medium flex items-center gap-1 transition-colors"
                           title="Delete Resource"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-3.5 h-3.5" />
+                          Delete
                         </button>
                       </div>
                     </div>

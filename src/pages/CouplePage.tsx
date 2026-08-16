@@ -74,30 +74,27 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
   const { accessToken } = useAppSelector((state) => state.auth);
 
   return (
-    <div className="relative w-full bg-[#f8fafc] border-b border-gray-100 min-h-[100svh] h-auto flex flex-col justify-between pt-[clamp(1rem,1.5vw,1.75rem)] pb-[clamp(2.5rem,3vw,3.5rem)] lg:pb-0 overflow-hidden">
+    <div className="relative w-full bg-[#f8fafc] border-b border-gray-100 min-h-[90svh] h-auto flex flex-col justify-between pt-[clamp(1rem,1.5vw,1.75rem)] pb-[clamp(2rem,3vw,3rem)] lg:pb-0 overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
           src={coupleBanner}
           alt="Couple in a car"
-          className="w-full h-full object-cover object-center"
+          className="w-full h-full object-cover object-[center_top] lg:object-[right_top] transform scale-[0.85] lg:scale-[0.85] translate-x-[5%] lg:translate-x-[5%] origin-right pointer-events-none opacity-90"
         />
       </div>
-      {/* White gradient overlay for dark text */}
-      {/* <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-transparent w-full lg:w-[85%] xl:w-[75%] z-0"></div>
-      <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent lg:hidden w-full h-full z-0"></div> */}
 
-      <div className="relative z-10 w-full flex-grow flex items-center py-6 lg:py-0">
+      <div className="relative z-10 w-full flex-grow flex items-center py-4 lg:py-0">
         <PageContainer size="full">
-          <div className="flex flex-col lg:flex-row w-full justify-between items-start lg:items-center gap-10 xl:gap-16">
+          <div className="flex flex-col lg:flex-row w-full justify-between items-start lg:items-center gap-8 xl:gap-12">
             {/* Left Side Content */}
             <div className="w-full lg:w-1/2 text-left z-10 relative">
-              <h1 className="text-[clamp(1.75rem,2.6vw,2.75rem)] font-extrabold text-[#060D64] leading-[1.1] mb-[clamp(0.875rem,1.1vw,1.25rem)] tracking-tight uppercase">
+              <h1 className="text-[clamp(1.5rem,2.2vw,2.25rem)] font-extrabold text-[#060D64] leading-[1.1] mb-[clamp(0.75rem,1vw,1rem)] tracking-tight uppercase">
                 Build An Airport
                 <br />
                 Transportation Business
                 <br />
-                <span className="text-[#2563eb] text-[clamp(2.25rem,4vw,3.75rem)] relative inline-block mt-2 font-extrabold">
+                <span className="text-[#2563eb] text-[clamp(2rem,3.5vw,3rem)] relative inline-block mt-2 font-extrabold">
                   Together.
                   <svg
                     className="absolute -bottom-2 sm:-bottom-3 left-0 w-full h-2 sm:h-3 text-[#eab308]"
@@ -124,7 +121,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                 {[
                   "Attract & keep repeat customers",
                   "Set your own schedule together",
-                  "Keep 100% of every fare",
+                  "Keep the fares paid directly to your business",
                   "Create long-term income & freedom",
                   "Build a real business asset as a couple",
                 ].map((item, i) => (
