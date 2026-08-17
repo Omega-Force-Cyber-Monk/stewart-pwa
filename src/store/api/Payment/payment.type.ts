@@ -5,6 +5,7 @@ export interface CheckoutSessionItem {
 
 export interface CreateCheckoutSessionRequest {
   items: CheckoutSessionItem[];
+  email?: string;
   successUrl?: string;
   cancelUrl?: string;
 }
@@ -12,25 +13,8 @@ export interface CreateCheckoutSessionRequest {
 export interface CreateCheckoutSessionResponse {
   success: boolean;
   message?: string;
-  paymentId?: string;
-  checkoutUrl: string;
-  packageType: string;
-  amount: {
-    currency: string;
-    total: number;
-  };
-  purchase: {
-    baseVariant: {
-      included: boolean;
-      quantity: number;
-      unitPrice: number;
-    };
-    addon: {
-      included: boolean;
-      quantity: number;
-      unitPrice: number;
-    };
-  };
+  checkoutUrl: string | null;
+  sessionId: string;
 }
 
 export interface PaymentItem {

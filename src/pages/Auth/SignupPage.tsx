@@ -5,6 +5,7 @@ import {
   useVerifyRegistrationOtpMutation,
   useResendRegistrationOtpMutation,
 } from "../../store/api/Auth/auth.api";
+import type { RegisterRequest } from "../../store/api/Auth/auth.type";
 import { AuthLayout } from "../../components/layout/AuthLayout";
 import { Loader2, Mail, Lock, Eye, EyeOff, AlertTriangle, KeyRound, CheckCircle } from "lucide-react";
 
@@ -50,7 +51,7 @@ export default function SignupPage() {
     }
 
     try {
-      const payload: any = { email, password, confirmPassword };
+      const payload: RegisterRequest = { email, password, confirmPassword };
       if (sessionId) {
         payload.stripeSessionId = sessionId;
       }

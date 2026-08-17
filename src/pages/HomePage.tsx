@@ -43,7 +43,7 @@ export default function HomePage() {
   // LoginPage only sends non-active riders here, and the modal closes on
   // explicit user action — so no status re-check is needed at render time.
   const [showPricingModal, setShowPricingModal] = useState(
-    () => searchParams.get("showPricing") === "true" && !!accessToken
+    () => searchParams.get("showPricing") === "true"
   );
 
   // Fetch the latest user profile details (status, verification, etc.) on landing

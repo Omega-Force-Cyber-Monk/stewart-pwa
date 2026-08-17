@@ -34,11 +34,9 @@ import { PaymentBadges } from "../components/common/PaymentBadges";
 
 export default function SpanishPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { accessToken } = useAppSelector((state) => state.auth);
-
   // Auto-open the pricing modal when redirected here with ?showPricing=true.
   const [showPricingModal, setShowPricingModal] = useState(
-    () => searchParams.get("showPricing") === "true" && !!accessToken
+    () => searchParams.get("showPricing") === "true"
   );
 
   // Clear the ?showPricing=true query param once considered

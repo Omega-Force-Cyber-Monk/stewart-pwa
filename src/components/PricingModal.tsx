@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAppSelector } from "../hooks/storeHooks";
 import { useCreateRiderCheckoutSessionMutation } from "../store/api/Payment/payment.api";
 import { Loader2, X, Check, AlertTriangle, Rocket, Users } from "lucide-react";
 
@@ -11,9 +12,24 @@ const ADDON_ID = "addon";
 
 export function PricingModal({ onClose }: PricingModalProps) {
   const [selectedPlan, setSelectedPlan] = useState<"base" | "bundle" | null>(null);
+  const [guestEmail, setGuestEmail] = useState("");
+  const [validationError, setValidationError] = useState("");
+  const { accessToken } = useAppSelector((state) => state.auth);
   const [createCheckoutSession, { isLoading, error }] = useCreateRiderCheckoutSessionMutation();
 
   const handleSelectPlan = async (plan: "base" | "bundle") => {
+    setValidationError("");
+
+    const email = guestEmail.trim().toLowerCase();
+    if (!accessToken && !email) {
+      setValidationError("Please enter your email address to continue.");
+      return;
+    }
+    if (!accessToken && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setValidationError("Please enter a valid email address.");
+      return;
+    }
+
     setSelectedPlan(plan);
     const items =
       plan === "base"
@@ -26,6 +42,7 @@ export function PricingModal({ onClose }: PricingModalProps) {
     try {
       const result = await createCheckoutSession({
         items,
+        ...(accessToken ? {} : { email }),
         successUrl: `${window.location.origin}/signup?session_id={CHECKOUT_SESSION_ID}`,
         cancelUrl: window.location.href,
       }).unwrap();
@@ -39,14 +56,11 @@ export function PricingModal({ onClose }: PricingModalProps) {
   };
 
   const getErrorMessage = () => {
+    if (validationError) return validationError;
     if (!error) return "";
     if ("data" in error) {
       const data = error.data as { message?: string | string[] };
       const msg = Array.isArray(data.message) ? data.message[0] : data.message;
-      
-      if ((error as { status?: number })?.status === 401) {
-        return "Authentication required.";
-      }
       
       return msg || "Something went wrong. Please try again.";
     }
@@ -83,6 +97,31 @@ export function PricingModal({ onClose }: PricingModalProps) {
           <div className="mx-8 mt-6 bg-red-500/10 border border-red-500/30 rounded-lg p-4 flex items-start gap-3 flex-shrink-0">
             <AlertTriangle className="size-5 text-red-400 shrink-0 mt-0.5" />
             <span className="text-sm text-red-200 leading-snug">{errorMessage}</span>
+          </div>
+        )}
+
+        {!accessToken && (
+          <div className="px-6 pt-6">
+            <label htmlFor="guest-checkout-email" className="block text-sm font-medium text-slate-300">
+              Email address
+            </label>
+            <input
+              id="guest-checkout-email"
+              name="guest-checkout-email"
+              type="email"
+              autoComplete="email"
+              required
+              value={guestEmail}
+              onChange={(event) => {
+                setGuestEmail(event.target.value);
+                if (validationError) setValidationError("");
+              }}
+              placeholder="name@example.com"
+              className="mt-2 block w-full rounded-lg border border-[#00E5FF33] bg-[#0B0D2C] px-3 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400"
+            />
+            <p className="mt-2 text-xs text-slate-500">
+              We’ll use this email to connect your purchase to your account.
+            </p>
           </div>
         )}
 

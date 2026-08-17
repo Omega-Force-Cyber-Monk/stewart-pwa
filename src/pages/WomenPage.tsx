@@ -39,13 +39,11 @@ import { PaymentBadges } from "../components/common/PaymentBadges";
 
 export default function WomenPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { accessToken } = useAppSelector((state) => state.auth);
-
   // Auto-open the pricing modal when redirected here with ?showPricing=true.
   // LoginPage only sends non-active riders here, and the modal closes on
   // explicit user action — so no status re-check is needed at render time.
   const [showPricingModal, setShowPricingModal] = useState(
-    () => searchParams.get("showPricing") === "true" && !!accessToken
+    () => searchParams.get("showPricing") === "true"
   );
 
   // Clear the ?showPricing=true query param once considered
