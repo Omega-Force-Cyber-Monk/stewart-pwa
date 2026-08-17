@@ -1,6 +1,8 @@
 import { baseApi } from "../baseApi";
 import type {
   CreateCheckoutSessionRequest,
+  ConfirmCheckoutSessionRequest,
+  ConfirmCheckoutSessionResponse,
   CreateCheckoutSessionResponse,
   PaymentHistoryResponse,
 } from "./payment.type";
@@ -14,6 +16,16 @@ export const paymentApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+    confirmRiderCheckoutSession: builder.mutation<
+      ConfirmCheckoutSessionResponse,
+      ConfirmCheckoutSessionRequest
+    >({
+      query: (body) => ({
+        url: "/payments/checkout-session/confirm",
+        method: "POST",
+        body,
+      }),
+    }),
     getRiderPaymentHistory: builder.query<PaymentHistoryResponse, void>({
       query: () => "/payments/history",
     }),
@@ -22,6 +34,7 @@ export const paymentApi = baseApi.injectEndpoints({
 });
 
 export const {
+  useConfirmRiderCheckoutSessionMutation,
   useCreateRiderCheckoutSessionMutation,
   useGetRiderPaymentHistoryQuery,
 } = paymentApi;

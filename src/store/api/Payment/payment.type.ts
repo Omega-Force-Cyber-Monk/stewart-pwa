@@ -17,6 +17,16 @@ export interface CreateCheckoutSessionResponse {
   sessionId: string;
 }
 
+export interface ConfirmCheckoutSessionRequest {
+  stripeSessionId: string;
+}
+
+export interface ConfirmCheckoutSessionResponse {
+  success: boolean;
+  paymentId: string;
+  status: string;
+}
+
 export interface PaymentItem {
   id: string;
   type: string;
