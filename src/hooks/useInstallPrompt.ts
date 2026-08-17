@@ -5,6 +5,14 @@ type BeforeInstallPromptEvent = Event & {
   userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
 };
 
+let deferredInstallPrompt: BeforeInstallPromptEvent | null = null;
+let installed = false;
+const listeners = new Set<() => void>();
+
+function notify() {
+  listeners.forEach((listener) => listener());
+}
+
 function isStandaloneDisplay() {
   if (typeof window === "undefined") return false;
 
@@ -14,46 +22,51 @@ function isStandaloneDisplay() {
   );
 }
 
+function isIosDevice() {
+  if (typeof navigator === "undefined") return false;
+  return /iphone|ipad|ipod/i.test(navigator.userAgent);
+}
+
+if (typeof window !== "undefined") {
+  installed = isStandaloneDisplay();
+  window.addEventListener("beforeinstallprompt", (event) => {
+    event.preventDefault();
+    deferredInstallPrompt = event as BeforeInstallPromptEvent;
+    notify();
+  });
+  window.addEventListener("appinstalled", () => {
+    deferredInstallPrompt = null;
+    installed = true;
+    notify();
+  });
+}
+
 export function useInstallPrompt() {
-  const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-  const [isInstalled, setIsInstalled] = useState(isStandaloneDisplay);
+  const [, forceUpdate] = useState(0);
 
   useEffect(() => {
-    const handleBeforeInstallPrompt = (event: Event) => {
-      event.preventDefault();
-      setInstallPrompt(event as BeforeInstallPromptEvent);
-    };
-
-    const handleAppInstalled = () => {
-      setInstallPrompt(null);
-      setIsInstalled(true);
-    };
-
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-    window.addEventListener("appinstalled", handleAppInstalled);
-
+    const listener = () => forceUpdate((value) => value + 1);
+    listeners.add(listener);
     return () => {
-      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-      window.removeEventListener("appinstalled", handleAppInstalled);
+      listeners.delete(listener);
     };
   }, []);
 
   const promptInstall = async () => {
-    if (!installPrompt) return;
+    if (!deferredInstallPrompt) return false;
 
-    await installPrompt.prompt();
-    const choice = await installPrompt.userChoice;
-
-    if (choice.outcome === "accepted") {
-      setIsInstalled(true);
-    }
-
-    setInstallPrompt(null);
+    await deferredInstallPrompt.prompt();
+    const choice = await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    if (choice.outcome === "accepted") installed = true;
+    notify();
+    return choice.outcome === "accepted";
   };
 
   return {
-    canInstall: Boolean(installPrompt) && !isInstalled,
-    isInstalled,
+    canInstall: Boolean(deferredInstallPrompt) && !installed,
+    isInstalled: installed,
+    isIosInstall: !installed && !deferredInstallPrompt && isIosDevice(),
     promptInstall,
   };
 }

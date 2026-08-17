@@ -12,14 +12,12 @@ import { FAQSection } from "./FAQSection";
 import { ReserveRideBanner } from "./ReserveRideBanner";
 import { WebsiteFooter } from "./WebsiteFooter";
 import { InstallPrompt } from "../../components/pwa/InstallPrompt";
-import { useAppSelector } from "../../hooks/storeHooks";
 
 interface RiderWebsitePageProps {
   slug?: string;
 }
 
 export default function RiderWebsitePage({ slug }: RiderWebsitePageProps) {
-  const accessToken = useAppSelector((state) => state.auth.accessToken);
   const { data: publicResponse, isLoading, isError } =
     useGetPublicBusinessBySlugQuery(slug ?? skipToken);
 
@@ -60,7 +58,7 @@ export default function RiderWebsitePage({ slug }: RiderWebsitePageProps) {
 
   return (
     <div className="min-h-screen bg-[#070809] text-white flex flex-col font-sans relative">
-      {!accessToken && <InstallPrompt />}
+      <InstallPrompt personalized />
 
       {/* 1. Header Navigation */}
       <WebsiteNavbar

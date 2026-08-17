@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import {
   useRegisterRiderMutation,
@@ -8,6 +8,7 @@ import {
 import type { RegisterRequest } from "../../store/api/Auth/auth.type";
 import { AuthLayout } from "../../components/layout/AuthLayout";
 import { Loader2, Mail, Lock, Eye, EyeOff, AlertTriangle, KeyRound, CheckCircle } from "lucide-react";
+import { removeStorageValue, storageKeys } from "../../lib/storage";
 
 type SignupStep = "register" | "verify-otp" | "success";
 
@@ -16,6 +17,10 @@ export default function SignupPage() {
 
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id");
+
+  useEffect(() => {
+    if (sessionId) removeStorageValue(storageKeys.abandonedCheckout);
+  }, [sessionId]);
 
   // Registration form state
   const [email, setEmail] = useState("");

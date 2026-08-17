@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAppSelector } from "../hooks/storeHooks";
 import { useCreateRiderCheckoutSessionMutation } from "../store/api/Payment/payment.api";
+import { writeStorageValue, storageKeys } from "../lib/storage";
 import { Loader2, X, Check, AlertTriangle, Rocket, Users } from "lucide-react";
 
 interface PricingModalProps {
@@ -40,13 +41,24 @@ export function PricingModal({ onClose }: PricingModalProps) {
         ];
 
     try {
+      const currentUrl = new URL(window.location.href);
+      currentUrl.searchParams.set("checkout", "cancelled");
       const result = await createCheckoutSession({
         items,
         ...(accessToken ? {} : { email }),
         successUrl: `${window.location.origin}${accessToken ? "/payment/success" : "/signup"}?session_id={CHECKOUT_SESSION_ID}`,
-        cancelUrl: window.location.href,
+        cancelUrl: currentUrl.toString(),
       }).unwrap();
       if (result.checkoutUrl) {
+        writeStorageValue(
+          storageKeys.abandonedCheckout,
+          JSON.stringify({
+            sessionId: result.sessionId,
+            plan,
+            email: accessToken ? undefined : email,
+            startedAt: Date.now(),
+          }),
+        );
         window.location.href = result.checkoutUrl;
       }
     } catch (err: unknown) {
