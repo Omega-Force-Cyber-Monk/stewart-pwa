@@ -2,6 +2,7 @@ const storagePrefix = "quittheapp";
 
 export const storageKeys = {
   appFlowState: `${storagePrefix}:appFlowState`,
+  abandonedCheckout: `${storagePrefix}:abandonedCheckout`,
 };
 
 export function readStorageValue(key: string) {
