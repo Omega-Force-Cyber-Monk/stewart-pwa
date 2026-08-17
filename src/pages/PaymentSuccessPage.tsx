@@ -1,7 +1,8 @@
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Loader2, CheckCircle2 } from "lucide-react";
 import { useGetRiderProfileQuery } from "../store/api/Auth/auth.api";
+import { useConfirmRiderCheckoutSessionMutation } from "../store/api/Payment/payment.api";
 import { useAppDispatch, useAppSelector } from "../hooks/storeHooks";
 import { updateUser } from "../store/features/auth/authSlice";
 import standardLogo from "../assets/standardLogo.png";
@@ -10,6 +11,17 @@ import standardBanner from "../assets/standardBanner.png";
 export default function PaymentSuccessPage() {
   const dispatch = useAppDispatch();
   const accessToken = useAppSelector((state) => state.auth.accessToken);
+  const [searchParams] = useSearchParams();
+  const stripeSessionId = searchParams.get("session_id");
+  const [confirmCheckoutSession] = useConfirmRiderCheckoutSessionMutation();
+
+  useEffect(() => {
+    if (!accessToken || !stripeSessionId) {
+      return;
+    }
+
+    void confirmCheckoutSession({ stripeSessionId }).catch(() => undefined);
+  }, [accessToken, stripeSessionId, confirmCheckoutSession]);
 
   // Poll /auth/me to pick up the updated status after the Stripe webhook fires
   const { data: profileData, isLoading } = useGetRiderProfileQuery(undefined, {
