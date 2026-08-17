@@ -4,6 +4,7 @@ import type {
   DashboardSummary,
   Driver,
   DriverVerificationResponse,
+  AdminDriverDashboard,
   BusinessListItem,
   BusinessDetail,
   BusinessSetupProgress,
@@ -64,6 +65,10 @@ export const adminApi = baseApi.injectEndpoints({
     }),
     getAdminDriver: build.query<{ success: true; driver: Driver }, string>({
       query: (id) => `/admin/drivers/${id}`,
+      providesTags: (_result, _err, id) => [{ type: "Driver", id }],
+    }),
+    getAdminDriverDashboard: build.query<AdminDriverDashboard, string>({
+      query: (id) => `/admin/drivers/${id}/dashboard`,
       providesTags: (_result, _err, id) => [{ type: "Driver", id }],
     }),
     updateDriverVerification: build.mutation<
@@ -374,6 +379,7 @@ export const {
   // Drivers
   useGetAdminDriversQuery,
   useGetAdminDriverQuery,
+  useGetAdminDriverDashboardQuery,
   useUpdateDriverVerificationMutation,
   useUpdateDriverAccountStatusMutation,
   useDeleteDriverMutation,

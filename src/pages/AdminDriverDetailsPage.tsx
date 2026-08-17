@@ -1,6 +1,6 @@
 import { formatCategory } from "../lib/formatCategory";
 import { useState } from "react";
-import { ArrowLeft, CheckCircle2, Loader2, XCircle, ShieldCheck, ShieldOff, Trash2 } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Loader2, Monitor, XCircle, ShieldCheck, ShieldOff, Trash2 } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { cn } from "../lib/cn";
 import {
@@ -141,6 +141,13 @@ export default function AdminDriverDetailsPage() {
             <span className="text-sm font-medium text-slate-400">#{driver.driverCode}</span>
           </div>
         </div>
+        <Link
+          to={`/admin/drivers/${driver.id}/dashboard`}
+          className="inline-flex items-center gap-2 rounded-lg bg-[#1a56ff] px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+        >
+          <Monitor className="h-4 w-4" />
+          View Driver Dashboard
+        </Link>
         <span
           className={cn(
             "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold",

@@ -823,7 +823,7 @@ function HowItWorksSection() {
                   </div>
 
                   {/* Text Content */}
-                  <div className="flex flex-col justify-center text-center lg:max-w-[200px] lg:text-left">
+                  <div className={`flex flex-col justify-center text-center lg:text-left ${idx === 2 ? "lg:max-w-[260px]" : "lg:max-w-[200px]"}`}>
                     <h4 className="font-bold text-[#1a1f71] text-sm sm:text-base leading-snug">
                       {step.title}
                     </h4>

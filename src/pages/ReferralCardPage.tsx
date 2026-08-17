@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   QrCode,
   ChevronRight,
@@ -17,7 +17,10 @@ import {
   ExternalLink,
   Check
 } from "lucide-react";
-import { useGetReferralCardQuery } from "../store/api/Business/business.api";
+import {
+  useGenerateReferralCardMutation,
+  useGetReferralCardQuery,
+} from "../store/api/Business/business.api";
 import { copyToClipboard } from "../utils/clipboard";
 
 export default function ReferralCardPage() {
@@ -26,7 +29,26 @@ export default function ReferralCardPage() {
   const [copied, setCopied] = useState(false);
 
   const { data: referralResponse, isLoading } = useGetReferralCardQuery();
+  const [generateReferral, { isLoading: isGeneratingReferral }] = useGenerateReferralCardMutation();
   const referral = referralResponse?.data;
+  const autoGenerationAttempted = useRef(false);
+
+  useEffect(() => {
+    if (
+      isLoading ||
+      !referral ||
+      referral.ready ||
+      referral.missingRequirements.length > 0 ||
+      autoGenerationAttempted.current
+    ) {
+      return;
+    }
+
+    autoGenerationAttempted.current = true;
+    generateReferral().catch((error) => {
+      console.error("Automatic referral card generation failed:", error);
+    });
+  }, [generateReferral, isLoading, referral]);
 
   const websiteUrl = referral?.websiteUrl ?? "";
   const qrCodeUrl = referral?.qrCodeUrl ?? "";
@@ -93,6 +115,8 @@ export default function ReferralCardPage() {
               ? "Loading your referral card…"
               : referral?.ready
                 ? "Your referral card is ready. Print it, carry it, and hand it out on every ride."
+                : isGeneratingReferral
+                ? "Generating your referral card…"
                 : "Generate your referral card to get a QR code and shareable link."}
           </p>
         </div>

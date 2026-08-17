@@ -329,11 +329,11 @@ function HeroBanner() {
 
             {/* Right Card */}
             <div className="w-full lg:w-[35%] flex justify-center lg:justify-end">
-              <div className="bg-[#040a23]/70 backdrop-blur-md rounded-xl p-5 xl:p-6 shadow-2xl w-full max-w-[300px] xl:max-w-[320px] border border-slate-700/50 border-t-[3px] border-t-[#39b54a]">
-                <h3 className="text-[#39b54a] font-bold text-sm xl:text-[14px] mb-4 uppercase tracking-wider text-center lg:text-left">
+              <div className="bg-[#040a23]/70 backdrop-blur-md rounded-xl p-4 xl:p-5 shadow-2xl w-full max-w-[220px] xl:max-w-[240px] border border-slate-700/50 border-t-[3px] border-t-[#39b54a]">
+                <h3 className="text-[#39b54a] font-bold text-xs xl:text-[12px] mb-3 uppercase tracking-wider text-center lg:text-left">
                   YOUR CLIENT BASE GROWS WHEN:
                 </h3>
-                <ul className="space-y-3 mb-6">
+                <ul className="space-y-2 mb-4">
                   {[
                     "Clients book again",
                     "Friends and family refer you",
@@ -342,10 +342,10 @@ function HeroBanner() {
                   ].map((item, i) => (
                     <li
                       key={i}
-                      className="flex items-start text-white text-[13px] xl:text-[13.5px] font-medium tracking-wide justify-center lg:justify-start"
+                      className="flex items-start text-white text-[11px] xl:text-[11.5px] font-medium tracking-wide justify-center lg:justify-start"
                     >
                       <div className="bg-[#39b54a] rounded-full p-[2px] mr-3 mt-1 shrink-0">
-                        <Check className="w-3 h-3 text-white stroke-[4]" />
+                        <Check className="w-2.5 h-2.5 text-white stroke-[4]" />
                       </div>
                       <span className="leading-snug">{item}</span>
                     </li>
@@ -353,7 +353,7 @@ function HeroBanner() {
                 </ul>
                 <div className="w-full h-px bg-slate-700/80 mb-5"></div>
                 <div className="text-center lg:text-left">
-                  <h4 className="text-white font-extrabold text-lg xl:text-xl leading-tight mb-2 tracking-wide">
+                  <h4 className="text-white font-extrabold text-base xl:text-lg leading-tight mb-2 tracking-wide">
                     Real Business.
                     <br />
                     Real Clients.

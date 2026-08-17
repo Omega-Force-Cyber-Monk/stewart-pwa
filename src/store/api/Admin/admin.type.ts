@@ -130,6 +130,16 @@ export interface DriverVerificationResponse {
   };
 }
 
+export interface AdminDriverDashboard {
+  success: true;
+  driver: Driver;
+  dashboard: {
+    setup: BusinessSetupProgress["data"];
+    checklists: Record<string, ChecklistProgressItem[]>;
+    purchase: BusinessPurchase;
+  } | null;
+}
+
 // ---- Businesses ----
 export interface BusinessOwner {
   id: string;

@@ -1,19 +1,28 @@
-import { useState } from "react";
-import { ChevronRight, ChevronDown, FileText, UserCheck, ShieldCheck, PlaneTakeoff, DollarSign, Copy, HelpCircle, Tag, Monitor, Headset, Download, Loader2 } from "lucide-react";
+import { useCallback, useState } from "react";
+import { ChevronRight, ChevronDown, FileText, UserCheck, ShieldCheck, PlaneTakeoff, DollarSign, Copy, HelpCircle, Tag, Monitor, Headset, Eye, Loader2, CheckCircle2 } from "lucide-react";
 import ContactSupportModal from "../components/dashboard/ContactSupportModal";
-import { useGetBusinessResourcesQuery, useGetChecklistItemsQuery, useLazyDownloadBusinessResourceQuery } from "../store/api/Business/business.api";
+import ResourceViewerModal from "../components/dashboard/ResourceViewerModal";
+import {
+  useGetBusinessResourcesQuery,
+  useGetChecklistItemsQuery,
+  useUpdateChecklistItemMutation,
+} from "../store/api/Business/business.api";
 import type { BusinessResource, ChecklistItem } from "../store/api/Business/business.type";
 
 export default function DirectBookingTrustPage() {
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
-  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [selectedResource, setSelectedResource] = useState<BusinessResource | null>(null);
+  const [openedResourceIds, setOpenedResourceIds] = useState<string[]>([]);
 
   const { data: resourcesData, isLoading: isLoadingResources } =
     useGetBusinessResourcesQuery({ step: "BRAND_AND_TRUST" });
-  const { data: checklistData, isLoading: isLoadingChecklist } =
-    useGetChecklistItemsQuery({ step: "BRAND_AND_TRUST" });
-  const [downloadResource] = useLazyDownloadBusinessResourceQuery();
+  const {
+    data: checklistData,
+    isLoading: isLoadingChecklist,
+    refetch: refetchChecklist,
+  } = useGetChecklistItemsQuery({ step: "BRAND_AND_TRUST" });
+  const [updateChecklistItem] = useUpdateChecklistItemMutation();
 
   const resources: BusinessResource[] = resourcesData?.resources ?? [];
   const checklistItems: ChecklistItem[] = checklistData?.checklistItems ?? [];
@@ -22,24 +31,25 @@ export default function DirectBookingTrustPage() {
     setOpenAccordion(openAccordion === index ? null : index);
   };
 
-  const handleDownload = async (resource: BusinessResource) => {
-    setDownloadingId(resource.id);
-    try {
-      const blob = await downloadResource(resource.id).unwrap();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = resource.fileUrl.split("/").pop() || `${resource.title}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Download failed:", err);
-    } finally {
-      setDownloadingId(null);
+  const markResourceOpened = useCallback(async (resource: BusinessResource) => {
+    setOpenedResourceIds((current) =>
+      current.includes(resource.id) ? current : [...current, resource.id],
+    );
+
+    const sortedResources = [...resources].sort((a, b) => a.sortOrder - b.sortOrder);
+    const sortedChecklist = [...checklistItems].sort((a, b) => a.sortOrder - b.sortOrder);
+    const resourceIndex = sortedResources.findIndex((item) => item.id === resource.id);
+    const checklistItem = sortedChecklist[resourceIndex];
+
+    if (checklistItem && !checklistItem.completed) {
+      try {
+        await updateChecklistItem({ id: checklistItem.id, completed: true }).unwrap();
+        refetchChecklist();
+      } catch (error) {
+        console.error("Failed to update checklist:", error);
+      }
     }
-  };
+  }, [checklistItems, refetchChecklist, resources, updateChecklistItem]);
 
   const customerFears = [
     {
@@ -121,9 +131,13 @@ export default function DirectBookingTrustPage() {
                   onClick={() => toggleAccordion(idx)}
                   className="w-full bg-white hover:bg-slate-50 transition-colors p-4 flex items-center justify-between text-left"
                 >
-                  <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-4">
                     <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 shrink-0">
-                      <FileText className="w-4 h-4" />
+                      {openedResourceIds.includes(resource.id) ? (
+                        <CheckCircle2 className="w-4 h-4 text-green-500" />
+                      ) : (
+                        <FileText className="w-4 h-4" />
+                      )}
                     </div>
                     <div className="flex flex-col">
                       <span className="text-[14px] font-bold text-slate-800">{resource.title}</span>
@@ -144,12 +158,11 @@ export default function DirectBookingTrustPage() {
                       {resource.type.replace(/_/g, " ").toLowerCase()}
                     </p>
                     <button
-                      onClick={() => handleDownload(resource)}
-                      disabled={downloadingId === resource.id}
-                      className="shrink-0 bg-[#22c55e] hover:bg-[#1ea951] text-white px-4 py-2 rounded-lg font-bold text-[12px] transition-colors flex items-center gap-1.5 disabled:opacity-60"
+                      onClick={() => setSelectedResource(resource)}
+                      className="shrink-0 bg-[#22c55e] hover:bg-[#1ea951] text-white px-4 py-2 rounded-lg font-bold text-[12px] transition-colors flex items-center gap-1.5"
                     >
-                      {downloadingId === resource.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-                      Download
+                      <Eye className="w-4 h-4" />
+                      {openedResourceIds.includes(resource.id) ? "Opened" : "Open Resource"}
                     </button>
                   </div>
                 )}
@@ -240,9 +253,15 @@ export default function DirectBookingTrustPage() {
         </div>
       </div>
 
-      <ContactSupportModal 
-        isOpen={isSupportModalOpen} 
-        onClose={() => setIsSupportModalOpen(false)} 
+      <ContactSupportModal
+        isOpen={isSupportModalOpen}
+        onClose={() => setIsSupportModalOpen(false)}
+      />
+      <ResourceViewerModal
+        resource={selectedResource}
+        isOpen={Boolean(selectedResource)}
+        onClose={() => setSelectedResource(null)}
+        onOpened={markResourceOpened}
       />
     </div>
   );

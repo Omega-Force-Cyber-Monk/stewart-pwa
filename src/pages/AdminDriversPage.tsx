@@ -1,6 +1,6 @@
 import { formatCategory } from "../lib/formatCategory";
 import { useState } from "react";
-import { Eye, Trash2, MoreVertical, Filter, ChevronLeft, ChevronRight, Loader2, Search } from "lucide-react";
+import { Eye, Monitor, Trash2, MoreVertical, Filter, ChevronLeft, ChevronRight, Loader2, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "../lib/cn";
 import {
@@ -263,6 +263,13 @@ export default function AdminDriversPage() {
                               className="text-green-500 hover:text-green-600 transition-colors block"
                             >
                               <Eye className="w-4 h-4" />
+                            </Link>
+                            <Link
+                              to={`/admin/drivers/${driver.id}/dashboard`}
+                              title="View Driver Dashboard"
+                              className="text-[#1a56ff] hover:text-blue-700 transition-colors block"
+                            >
+                              <Monitor className="w-4 h-4" />
                             </Link>
                             <button
                               title={driver.user.status === "suspended" ? "Activate Account" : "Suspend Account"}

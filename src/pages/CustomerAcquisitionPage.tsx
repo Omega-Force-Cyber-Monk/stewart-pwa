@@ -1,7 +1,12 @@
-import { useState } from "react";
-import { FolderSearch, FileText, Printer, CheckCircle2, Download, Loader2 } from "lucide-react";
+import { useCallback, useState } from "react";
+import { FolderSearch, FileText, Printer, CheckCircle2, Eye, Loader2 } from "lucide-react";
 import ContactSupportModal from "../components/dashboard/ContactSupportModal";
-import { useGetBusinessResourcesQuery, useGetChecklistItemsQuery, useLazyDownloadBusinessResourceQuery } from "../store/api/Business/business.api";
+import ResourceViewerModal from "../components/dashboard/ResourceViewerModal";
+import {
+  useGetBusinessResourcesQuery,
+  useGetChecklistItemsQuery,
+  useUpdateChecklistItemMutation,
+} from "../store/api/Business/business.api";
 import type { BusinessResource, ChecklistItem } from "../store/api/Business/business.type";
 
 const iconByType: Record<string, React.ReactNode> = {
@@ -23,35 +28,40 @@ const bgByIndex = [
 
 export default function CustomerAcquisitionPage() {
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
-  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [selectedResource, setSelectedResource] = useState<BusinessResource | null>(null);
+  const [openedResourceIds, setOpenedResourceIds] = useState<string[]>([]);
 
   const { data: resourcesData, isLoading: isLoadingResources } =
     useGetBusinessResourcesQuery({ step: "CUSTOMER_ACQUISITION" });
-  const { data: checklistData, isLoading: isLoadingChecklist } =
-    useGetChecklistItemsQuery({ step: "CUSTOMER_ACQUISITION" });
-  const [downloadResource] = useLazyDownloadBusinessResourceQuery();
+  const {
+    data: checklistData,
+    isLoading: isLoadingChecklist,
+    refetch: refetchChecklist,
+  } = useGetChecklistItemsQuery({ step: "CUSTOMER_ACQUISITION" });
+  const [updateChecklistItem] = useUpdateChecklistItemMutation();
 
   const resourceCards: BusinessResource[] = resourcesData?.resources ?? [];
   const checklistItems: ChecklistItem[] = checklistData?.checklistItems ?? [];
 
-  const handleDownload = async (resource: BusinessResource) => {
-    setDownloadingId(resource.id);
-    try {
-      const blob = await downloadResource(resource.id).unwrap();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = resource.fileUrl.split("/").pop() || `${resource.title}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Download failed:", err);
-    } finally {
-      setDownloadingId(null);
+  const markResourceOpened = useCallback(async (resource: BusinessResource) => {
+    setOpenedResourceIds((current) =>
+      current.includes(resource.id) ? current : [...current, resource.id],
+    );
+
+    const sortedResources = [...resourceCards].sort((a, b) => a.sortOrder - b.sortOrder);
+    const sortedChecklist = [...checklistItems].sort((a, b) => a.sortOrder - b.sortOrder);
+    const resourceIndex = sortedResources.findIndex((item) => item.id === resource.id);
+    const checklistItem = sortedChecklist[resourceIndex];
+
+    if (checklistItem && !checklistItem.completed) {
+      try {
+        await updateChecklistItem({ id: checklistItem.id, completed: true }).unwrap();
+        refetchChecklist();
+      } catch (error) {
+        console.error("Failed to update checklist:", error);
+      }
     }
-  };
+  }, [checklistItems, refetchChecklist, resourceCards, updateChecklistItem]);
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto w-full">
@@ -85,8 +95,9 @@ export default function CustomerAcquisitionPage() {
             key={card.id} 
             className={`flex flex-col items-center text-center p-6 sm:p-8 rounded-3xl border ${bgByIndex[idx % bgByIndex.length]}`}
           >
-            <div className="mb-4">
+            <div className="mb-4 flex items-center gap-2">
               {iconByType[card.type] ?? <FolderSearch className="w-6 h-6 text-blue-500" />}
+              {openedResourceIds.includes(card.id) && <CheckCircle2 className="h-5 w-5 text-green-500" />}
             </div>
             <h3 className="text-[15px] font-bold text-slate-900 mb-2">
               {card.title}
@@ -95,12 +106,15 @@ export default function CustomerAcquisitionPage() {
               {card.description}
             </p>
             <button
-              onClick={() => handleDownload(card)}
-              disabled={downloadingId === card.id}
-              className="mt-auto bg-[#22c55e] hover:bg-[#1ea951] text-white px-4 py-2 rounded-lg font-bold text-[12px] transition-colors flex items-center gap-1.5 disabled:opacity-60"
+              onClick={() => setSelectedResource(card)}
+              className={`mt-auto px-4 py-2 rounded-lg font-bold text-[12px] transition-colors flex items-center gap-1.5 ${
+                openedResourceIds.includes(card.id)
+                  ? "bg-green-50 text-green-700 border border-green-200"
+                  : "bg-[#22c55e] hover:bg-[#1ea951] text-white"
+              }`}
             >
-              {downloadingId === card.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-              Download
+              <Eye className="w-4 h-4" />
+              {openedResourceIds.includes(card.id) ? "Opened" : "Open Resource"}
             </button>
           </div>
         ))}
@@ -154,9 +168,15 @@ export default function CustomerAcquisitionPage() {
         </div>
       </div>
       
-      <ContactSupportModal 
-        isOpen={isSupportModalOpen} 
-        onClose={() => setIsSupportModalOpen(false)} 
+      <ContactSupportModal
+        isOpen={isSupportModalOpen}
+        onClose={() => setIsSupportModalOpen(false)}
+      />
+      <ResourceViewerModal
+        resource={selectedResource}
+        isOpen={Boolean(selectedResource)}
+        onClose={() => setSelectedResource(null)}
+        onOpened={markResourceOpened}
       />
     </div>
   );

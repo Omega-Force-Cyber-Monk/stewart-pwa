@@ -72,7 +72,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
   const { accessToken } = useAppSelector((state) => state.auth);
 
   return (
-    <div className="relative w-full min-h-[100svh] lg:min-h-[90svh] pt-[clamp(64px,8vw,80px)] flex flex-col justify-between overflow-hidden bg-[#f8fafc] border-b border-gray-100 pb-[clamp(2rem,3vw,3rem)] lg:pb-0">
+    <div className="relative w-full min-h-[90svh] lg:min-h-[85svh] pt-[clamp(56px,7vw,72px)] flex flex-col justify-between overflow-hidden bg-[#f8fafc] border-b border-gray-100 pb-[clamp(2rem,3vw,3rem)] lg:pb-0">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
@@ -87,12 +87,12 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
           <div className="flex flex-col lg:flex-row w-full justify-between items-start lg:items-center gap-8 xl:gap-12">
             {/* Left Side Content */}
             <div className="w-full lg:w-1/2 text-left z-10 relative">
-              <h1 className="text-[clamp(1.5rem,2.2vw,2.25rem)] font-extrabold text-[#060D64] leading-[1.1] mb-[clamp(0.75rem,1vw,1rem)] tracking-tight uppercase">
+              <h1 className="text-[clamp(1.35rem,2vw,2rem)] font-extrabold text-[#060D64] leading-[1.1] mb-[clamp(0.75rem,1vw,1rem)] tracking-tight uppercase">
                 Build An Airport
                 <br />
                 Transportation Business
                 <br />
-                <span className="text-[#2563eb] text-[clamp(2rem,3.5vw,3rem)] relative inline-block mt-2 font-extrabold">
+                <span className="text-[#2563eb] text-[clamp(1.75rem,3vw,2.5rem)] relative inline-block mt-2 font-extrabold">
                   Together.
                   <svg
                     className="absolute -bottom-2 sm:-bottom-3 left-0 w-full h-2 sm:h-3 text-[#eab308]"
@@ -110,7 +110,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                 </span>
               </h1>
 
-              <p className="text-[clamp(1.0625rem,1.25vw,1.25rem)] text-[#060D64] font-semibold mb-[clamp(1.25rem,1.5vw,1.75rem)] max-w-xl leading-relaxed">
+              <p className="text-[clamp(0.95rem,1.1vw,1.125rem)] text-[#060D64] font-semibold mb-[clamp(1.25rem,1.5vw,1.75rem)] max-w-xl leading-relaxed">
                 Build your own business, your schedule, and the life you
                 want—while helping travelers every day.
               </p>
@@ -125,7 +125,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                 ].map((item, i) => (
                   <li
                     key={i}
-                    className="flex items-center text-[#060D64] font-bold text-[clamp(0.9375rem,1vw,1.0625rem)]"
+                    className="flex items-center text-[#060D64] font-bold text-[clamp(0.875rem,0.95vw,1rem)]"
                   >
                     <CheckCircle2 className="text-white mr-3 w-5 h-5 sm:w-6 sm:h-6 fill-[#2563eb] shrink-0" />
                     <span>{item}</span>
@@ -158,12 +158,12 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
 
             {/* Right Side Card */}
             <div className="w-full lg:w-auto xl:w-[40%] flex justify-center xl:justify-end z-10 mt-6 lg:mt-0">
-              <div className="bg-[#0b0f19] rounded-[2rem] p-[clamp(1.25rem,2vw,2.5rem)] shadow-2xl w-fit xl:w-full xl:max-w-[340px] border-t-[6px] border-[#eab308]">
-                <h3 className="text-[#eab308] font-bold text-[clamp(0.875rem,1vw,1rem)] mb-[clamp(0.75rem,1vw,1rem)] uppercase tracking-wider">
+              <div className="bg-[#0b0f19] rounded-[2rem] p-[clamp(1rem,1.5vw,1.75rem)] shadow-2xl w-fit xl:w-full xl:max-w-[260px] border-t-[4px] border-[#eab308]">
+                <h3 className="text-[#eab308] font-bold text-[clamp(0.75rem,0.85vw,0.875rem)] mb-[clamp(0.5rem,0.75vw,0.75rem)] uppercase tracking-wider">
                   YOUR BUSINESS GROWS WHEN:
                 </h3>
 
-                <ul className="space-y-3 mb-6">
+                <ul className="space-y-2 mb-4">
                   {[
                     "Customers book again",
                     "Families refer friends",
@@ -173,9 +173,9 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                   ].map((item, i) => (
                     <li
                       key={i}
-                      className="flex items-center text-white text-[clamp(0.875rem,1vw,1rem)] font-semibold"
+                      className="flex items-center text-white text-[clamp(0.75rem,0.85vw,0.875rem)] font-semibold"
                     >
-                      <CheckCircle2 className="w-5 h-5 mr-3 fill-[#2563eb] text-white shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 mr-2 fill-[#2563eb] text-white shrink-0" />
                       <span>{item}</span>
                     </li>
                   ))}
@@ -184,7 +184,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                 <div className="w-full h-px bg-slate-800 mb-6"></div>
 
                 <div>
-                  <h4 className="text-white font-extrabold text-[clamp(1.25rem,2vw,1.875rem)] leading-tight mb-[clamp(0.75rem,1vw,1rem)]">
+                  <h4 className="text-white font-extrabold text-[clamp(1rem,1.5vw,1.4rem)] leading-tight mb-[clamp(0.75rem,1vw,1rem)]">
                     Real Business.
                     <br />
                     Real Customers.
@@ -192,7 +192,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                     Real Freedom.™
                   </h4>
                   <svg
-                    className="w-24 sm:w-32 h-3 sm:h-4 text-[#eab308]"
+                    className="w-20 sm:w-24 h-2.5 sm:h-3 text-[#eab308]"
                     viewBox="0 0 100 10"
                     preserveAspectRatio="none"
                   >
@@ -934,7 +934,7 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
     },
     {
       icon: Headset,
-      title: "7-Day Support",
+      title: "Real Human Support",
       subtitle: "We're here for you",
     },
     {

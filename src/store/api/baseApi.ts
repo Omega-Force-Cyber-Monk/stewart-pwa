@@ -103,6 +103,7 @@ export const baseApi = createApi({
     "User",
     "Setup",
     "LaunchReady",
+    "ReferralCard",
   ],
   endpoints: () => ({}),
 });

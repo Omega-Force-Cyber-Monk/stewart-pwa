@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useCallback, useState, useRef, useEffect } from "react";
 import {
   Edit,
   Image as ImageIcon,
@@ -8,6 +8,7 @@ import {
   Scan,
   Car,
   Download,
+  Eye,
   ShieldCheck,
   Phone,
   Globe,
@@ -36,6 +37,7 @@ import {
 import { cn } from "../lib/cn";
 import { LaunchProgressStepper } from "../components/dashboard/LaunchProgressStepper";
 import { AlertModal } from "../components/ui/AlertModal";
+import ResourceViewerModal from "../components/dashboard/ResourceViewerModal";
 import {
   useInitializeSetupMutation,
   useGetSetupStateQuery,
@@ -49,8 +51,7 @@ import {
   useUpdateChecklistItemMutation,
   useGetLaunchReadinessQuery,
   useGetFinalReviewQuery,
-  useCompleteLaunchMutation,
-  useLazyDownloadBusinessResourceQuery
+  useCompleteLaunchMutation
 } from "../store/api/Business/business.api";
 import referralCardBg from "../assets/referralCardBg.png";
 import autocarLogo from "../assets/autocarLogo.png";
@@ -101,7 +102,9 @@ export default function LaunchDashboardPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [apiError, setApiError] = useState<string | null>(null);
   const [showQrModal, setShowQrModal] = useState(false);
-  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [selectedResource, setSelectedResource] = useState<BusinessResource | null>(null);
+  const [openedResourceIds, setOpenedResourceIds] = useState<string[]>([]);
+  const referralAutoGenerationAttempted = useRef(false);
   const [alertModal, setAlertModal] = useState<{
     isOpen: boolean;
     title: string;
@@ -146,27 +149,28 @@ export default function LaunchDashboardPage() {
 
   const { data: resourcesAcq } = useGetBusinessResourcesQuery({ step: "CUSTOMER_ACQUISITION" });
   const { data: resourcesBrand } = useGetBusinessResourcesQuery({ step: "BRAND_AND_TRUST" });
-  const [downloadResource] = useLazyDownloadBusinessResourceQuery();
 
-  const handleDownload = async (resource: BusinessResource) => {
-    setDownloadingId(resource.id);
-    try {
-      const blob = await downloadResource(resource.id).unwrap();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = resource.fileUrl.split("/").pop() || `${resource.title}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Download failed:", err);
-      showAlert("Error", "Failed to download resource. Please try again.", "error");
-    } finally {
-      setDownloadingId(null);
+  useEffect(() => {
+    const referral = referralCardResponse?.data;
+    if (
+      !referral ||
+      referral.ready ||
+      referral.missingRequirements.length > 0 ||
+      referralAutoGenerationAttempted.current
+    ) {
+      return;
     }
-  };
+
+    referralAutoGenerationAttempted.current = true;
+    generateReferral()
+      .then(() => {
+        refetchReferral();
+        refetchSetup();
+      })
+      .catch((error) => {
+        console.error("Automatic referral card generation failed:", error);
+      });
+  }, [generateReferral, referralCardResponse, refetchReferral, refetchSetup]);
 
   // Airport suggestions query
   const [triggerGetSuggestions, { data: suggestionsResponse }] = useLazyGetAirportSuggestionsQuery();
@@ -427,14 +431,52 @@ export default function LaunchDashboardPage() {
     }
   };
 
+  const markResourceOpened = useCallback(async (resource: BusinessResource) => {
+    setOpenedResourceIds((current) =>
+      current.includes(resource.id) ? current : [...current, resource.id],
+    );
+
+    const resources = resource.step === "CUSTOMER_ACQUISITION"
+      ? resourcesAcq?.resources ?? []
+      : resourcesBrand?.resources ?? [];
+    const checklist = resource.step === "CUSTOMER_ACQUISITION"
+      ? checklistAcq?.checklistItems ?? []
+      : checklistBrand?.checklistItems ?? [];
+    const sortedResources = [...resources].sort((a, b) => a.sortOrder - b.sortOrder);
+    const sortedChecklist = [...checklist].sort((a, b) => a.sortOrder - b.sortOrder);
+    const resourceIndex = sortedResources.findIndex((item) => item.id === resource.id);
+    const checklistItem = sortedChecklist[resourceIndex];
+
+    if (checklistItem && !checklistItem.completed) {
+      try {
+        await updateChecklistItem({ id: checklistItem.id, completed: true }).unwrap();
+        refetchChecklistAcq();
+        refetchChecklistBrand();
+        refetchSetup();
+        refetchLaunchReady();
+      } catch (error) {
+        console.error("Failed to update checklist:", error);
+      }
+    }
+  }, [checklistAcq, checklistBrand, refetchChecklistAcq, refetchChecklistBrand, refetchLaunchReady, refetchSetup, resourcesAcq, resourcesBrand, updateChecklistItem]);
+
+  const isAcquisitionComplete = Boolean(
+    checklistAcq?.checklistItems?.length && checklistAcq.checklistItems.every((item) => item.completed),
+  );
+  const isBrandTrustComplete = Boolean(
+    checklistBrand?.checklistItems?.length && checklistBrand.checklistItems.every((item) => item.completed),
+  );
+
   const handleStep5Submit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isAcquisitionComplete) return;
     refetchSetup();
     setCurrentStep(6);
   };
 
   const handleStep6Submit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isBrandTrustComplete) return;
     refetchSetup();
     setCurrentStep(7);
   };
@@ -1138,7 +1180,10 @@ export default function LaunchDashboardPage() {
                         style={{ borderColor: res.cardColor || "#e2e8f0" }}
                       >
                         <div className="flex flex-col items-center">
-                          <ResourceIcon iconKey={res.iconKey} />
+                          <div className="flex items-center gap-2">
+                            <ResourceIcon iconKey={res.iconKey} />
+                            {openedResourceIds.includes(res.id) && <CheckCircle2 className="h-5 w-5 text-green-500" />}
+                          </div>
                           <h3 className="text-[14px] font-bold text-slate-900 mb-2 leading-tight">{res.title}</h3>
                           <p className="text-[11px] text-slate-500 leading-relaxed px-1 mb-4">
                             {res.description}
@@ -1146,16 +1191,11 @@ export default function LaunchDashboardPage() {
                         </div>
                         <button
                           type="button"
-                          onClick={() => handleDownload(res)}
-                          disabled={downloadingId === res.id}
-                          className="w-full py-2 border border-slate-200 text-xs font-semibold text-slate-700 rounded-lg hover:bg-slate-50 transition flex items-center justify-center gap-2 disabled:opacity-60"
+                          onClick={() => setSelectedResource(res)}
+                          className="w-full py-2 border border-slate-200 text-xs font-semibold text-slate-700 rounded-lg hover:bg-slate-50 transition flex items-center justify-center gap-2"
                         >
-                          {downloadingId === res.id ? (
-                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          ) : (
-                            <Download className="w-3.5 h-3.5" />
-                          )}
-                          {downloadingId === res.id ? "Downloading..." : "Download Resource"}
+                          <Eye className="w-3.5 h-3.5" />
+                          {openedResourceIds.includes(res.id) ? "Opened" : "Open Resource"}
                         </button>
                       </div>
                     ))
@@ -1216,7 +1256,13 @@ export default function LaunchDashboardPage() {
                 </button>
                 <button
                   type="submit"
-                  className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-8 py-3 rounded-lg font-bold transition-colors"
+                  disabled={!isAcquisitionComplete}
+                  className={cn(
+                    "px-8 py-3 rounded-lg font-bold transition-colors",
+                    isAcquisitionComplete
+                      ? "bg-[#22c55e] hover:bg-[#1ea951] text-white"
+                      : "bg-slate-300 text-slate-500 cursor-not-allowed",
+                  )}
                 >
                   Save & Continue
                 </button>
@@ -1248,7 +1294,10 @@ export default function LaunchDashboardPage() {
                         style={{ borderColor: res.cardColor || "#e2e8f0" }}
                       >
                         <div className="flex flex-col items-center">
-                          <ResourceIcon iconKey={res.iconKey} />
+                          <div className="flex items-center gap-2">
+                            <ResourceIcon iconKey={res.iconKey} />
+                            {openedResourceIds.includes(res.id) && <CheckCircle2 className="h-5 w-5 text-green-500" />}
+                          </div>
                           <h3 className="text-[16px] font-bold text-slate-900 mb-3 leading-tight">{res.title}</h3>
                           <p className="text-[12px] text-slate-500 leading-relaxed mb-6">
                             {res.description}
@@ -1256,16 +1305,11 @@ export default function LaunchDashboardPage() {
                         </div>
                         <button
                           type="button"
-                          onClick={() => handleDownload(res)}
-                          disabled={downloadingId === res.id}
-                          className="w-full py-2.5 rounded-lg font-bold text-[13px] transition-all bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 flex items-center justify-center gap-2 disabled:opacity-60"
+                          onClick={() => setSelectedResource(res)}
+                          className="w-full py-2.5 rounded-lg font-bold text-[13px] transition-all bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 flex items-center justify-center gap-2"
                         >
-                          {downloadingId === res.id ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                          ) : (
-                            <Download className="w-4 h-4" />
-                          )}
-                          {downloadingId === res.id ? "Downloading..." : "Download Resource"}
+                          <Eye className="w-4 h-4" />
+                          {openedResourceIds.includes(res.id) ? "Opened" : "Open Resource"}
                         </button>
                       </div>
                     ))
@@ -1326,7 +1370,13 @@ export default function LaunchDashboardPage() {
                 </button>
                 <button
                   type="submit"
-                  className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-8 py-3 rounded-lg font-bold transition-colors"
+                  disabled={!isBrandTrustComplete}
+                  className={cn(
+                    "px-8 py-3 rounded-lg font-bold transition-colors",
+                    isBrandTrustComplete
+                      ? "bg-[#22c55e] hover:bg-[#1ea951] text-white"
+                      : "bg-slate-300 text-slate-500 cursor-not-allowed",
+                  )}
                 >
                   Save & Continue
                 </button>
@@ -1802,6 +1852,13 @@ export default function LaunchDashboardPage() {
 
         </div>
       </div>
+
+      <ResourceViewerModal
+        resource={selectedResource}
+        isOpen={Boolean(selectedResource)}
+        onClose={() => setSelectedResource(null)}
+        onOpened={markResourceOpened}
+      />
 
       {/* QR Code Viewer Modal */}
       {showQrModal && referralCardResponse?.data?.qrCodeUrl && (

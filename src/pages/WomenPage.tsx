@@ -154,14 +154,14 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
 
             {/* Right Side Trust Badge — stacks below the content on mobile, side-by-side on lg */}
             <div className="w-full lg:w-[45%] flex justify-center lg:justify-end self-end z-10">
-              <div className="flex bg-white rounded-[clamp(1rem,1.5vw,1.5rem)] p-[clamp(1.25rem,2vw,2rem)] shadow-2xl w-full max-w-[clamp(300px,35vw,500px)] flex-col items-center text-center">
+              <div className="flex bg-white rounded-[clamp(1rem,1.5vw,1.5rem)] p-[clamp(0.9rem,1.5vw,1.5rem)] shadow-2xl w-full max-w-[clamp(225px,26vw,375px)] flex-col items-center text-center">
                 <div className="flex items-center gap-[clamp(0.75rem,1.5vw,1.5rem)] mb-[clamp(1rem,2vw,2rem)] w-full justify-center lg:justify-start">
                   <ShieldCheck
-                    className="text-[#f42661] w-[clamp(3.5rem,6vw,7rem)] h-[clamp(3.5rem,6vw,7rem)] shrink-0"
+                    className="text-[#f42661] w-[clamp(2.5rem,4.5vw,5.25rem)] h-[clamp(2.5rem,4.5vw,5.25rem)] shrink-0"
                     strokeWidth={1.5}
                   />
                   <div className="text-left">
-                    <h3 className="text-[#0b0f19] font-bold text-[clamp(1.25rem,1.8vw,1.75rem)] leading-tight">
+                    <h3 className="text-[#0b0f19] font-bold text-[clamp(0.95rem,1.35vw,1.3rem)] leading-tight">
                       Trusted.
                       <br />
                       Professional.
@@ -171,7 +171,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                   </div>
                 </div>
 
-                <p className="text-[#f42661] font-bold text-[clamp(1.25rem,1.8vw,1.75rem)] mt-[clamp(0.25rem,0.5vw,0.5rem)]">
+                <p className="text-[#f42661] font-bold text-[clamp(0.95rem,1.35vw,1.3rem)] mt-[clamp(0.25rem,0.5vw,0.5rem)]">
                   Built for Women Operators.
                 </p>
               </div>

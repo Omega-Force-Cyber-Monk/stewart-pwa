@@ -79,13 +79,14 @@ export const businessApi = baseApi.injectEndpoints({
     }),
     getReferralCard: builder.query<ReferralCardResponse, void>({
       query: () => "/business/referral-card",
+      providesTags: ["ReferralCard"],
     }),
     generateReferralCard: builder.mutation<ReferralCardResponse, void>({
       query: () => ({
         url: "/business/referral-card/generate",
         method: "POST",
       }),
-      invalidatesTags: ["Setup", "LaunchReady"],
+      invalidatesTags: ["ReferralCard", "Setup", "LaunchReady"],
     }),
     getBusinessResources: builder.query<BusinessResourcesResponse, { step?: string; type?: string; categoryId?: string } | void>({
       query: (params) => {
@@ -115,6 +116,7 @@ export const businessApi = baseApi.injectEndpoints({
         }
         return url;
       },
+      providesTags: ["ChecklistItems"],
     }),
     updateChecklistItem: builder.mutation<ChecklistItemsResponse, { id: string; completed: boolean }>({
       query: ({ id, completed }) => ({
@@ -122,7 +124,7 @@ export const businessApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: { completed },
       }),
-      invalidatesTags: ["Setup", "LaunchReady"],
+      invalidatesTags: ["ChecklistItems", "Setup", "LaunchReady"],
     }),
     getLaunchReadiness: builder.query<LaunchReadinessResponse, void>({
       query: () => "/business/launch-ready",

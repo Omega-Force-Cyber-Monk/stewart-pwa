@@ -3,9 +3,14 @@ import { cn } from "../../lib/cn";
 interface PaymentBadgesProps {
   className?: string;
   justify?: "center" | "start" | "end";
+  paymentLabel?: string;
 }
 
-export function PaymentBadges({ className, justify = "center" }: PaymentBadgesProps) {
+export function PaymentBadges({
+  className,
+  justify = "center",
+  paymentLabel = "Secure payment processed by",
+}: PaymentBadgesProps) {
   const justifyClass = 
     justify === "start" ? "justify-start" : 
     justify === "end" ? "justify-end lg:justify-end" : 
@@ -34,7 +39,7 @@ export function PaymentBadges({ className, justify = "center" }: PaymentBadgesPr
         </div>
       </div>
       <div className="text-slate-400 text-[11px] flex items-center gap-1.5 font-medium mt-1">
-        Secure payment processed by{" "}
+        {paymentLabel}{" "}
         <span className="bg-[#635bff] px-1.5 py-0.5 rounded text-white font-bold text-[10px]">
           stripe
         </span>

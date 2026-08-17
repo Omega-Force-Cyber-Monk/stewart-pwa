@@ -955,7 +955,7 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
                 className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-4 px-6 rounded-lg transition-colors shadow-lg shadow-[#16a34a]/20 flex items-center justify-between group w-full text-sm sm:text-base mb-4"
               >
                 <span className="text-center w-full pr-4">
-                  Ir al Panel de Control
+                  Empezar Mi Negocio
                 </span>
                 <ArrowRight className="w-5 h-5 shrink-0 group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -982,7 +982,7 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
             )}
 
             {/* Payment Badges */}
-            <PaymentBadges justify="center" />
+            <PaymentBadges justify="center" paymentLabel="Pago seguro procesado por" />
           </div>
         </div>
 

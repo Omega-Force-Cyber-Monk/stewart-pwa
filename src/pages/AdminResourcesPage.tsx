@@ -106,7 +106,7 @@ export default function AdminResourcesPage() {
 
   const handlePreview = async (resourceId: string) => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/resources/${resourceId}/file`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/admin/resources/${resourceId}/file`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       if (!res.ok) throw new Error("Failed to load preview");
@@ -121,7 +121,7 @@ export default function AdminResourcesPage() {
 
   const handleDownload = async (resource: Resource) => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/resources/${resource.id}/file`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/admin/resources/${resource.id}/file`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       if (!res.ok) throw new Error("Failed to download file");
