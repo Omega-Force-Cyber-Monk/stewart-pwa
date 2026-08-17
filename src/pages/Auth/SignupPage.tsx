@@ -13,7 +13,7 @@ type SignupStep = "register" | "verify-otp" | "success";
 
 export default function SignupPage() {
   const [step, setStep] = useState<SignupStep>("register");
-  
+
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id");
 

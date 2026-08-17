@@ -61,7 +61,7 @@ export function PricingModal({ onClose }: PricingModalProps) {
     if ("data" in error) {
       const data = error.data as { message?: string | string[] };
       const msg = Array.isArray(data.message) ? data.message[0] : data.message;
-      
+
       return msg || "Something went wrong. Please try again.";
     }
     return "Failed to start checkout. Please check your connection.";
