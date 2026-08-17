@@ -203,13 +203,15 @@ export default function AdminBillingsPage() {
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             <span className="w-8 h-8 rounded-full bg-[#f0f4ff] text-[#1a56ff] flex items-center justify-center text-xs font-bold">
-                              {(payment.rider.name || payment.rider.email || "?").slice(0, 2).toUpperCase()}
+                              {(payment.rider?.name || payment.rider?.email || "G").slice(0, 2).toUpperCase()}
                             </span>
-                            <span className="font-medium text-slate-800">{payment.rider.name || payment.rider.email}</span>
+                            <span className="font-medium text-slate-800">
+                              {payment.rider?.name || payment.rider?.email || "Guest checkout"}
+                            </span>
                           </div>
                         </td>
                         <td className="px-6 py-4 text-slate-600">
-                          {formatCategory(payment.rider.driverProfile?.category)}
+                          {formatCategory(payment.rider?.driverProfile?.category)}
                         </td>
                         <td className="px-6 py-4 text-slate-600">
                           {payment.lineItems?.map((li) => li.name).join(", ") || "—"}
@@ -310,32 +312,36 @@ export default function AdminBillingsPage() {
                 {/* Rider Info */}
                 <div className="bg-slate-50 rounded-xl p-5">
                   <h4 className="text-sm font-bold text-slate-700 mb-3">Driver Account</h4>
-                  <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div>
-                      <span className="text-slate-500 block text-xs">Name</span>
-                      <span className="font-medium text-slate-800">{payment.rider.name || "—"}</span>
+                  {payment.rider ? (
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div>
+                        <span className="text-slate-500 block text-xs">Name</span>
+                        <span className="font-medium text-slate-800">{payment.rider.name || "—"}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block text-xs">Email</span>
+                        <span className="font-medium text-slate-800 break-all">{payment.rider.email}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block text-xs">Phone</span>
+                        <span className="font-medium text-slate-800">{payment.rider.phone || "—"}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block text-xs">Driver Code</span>
+                        <span className="font-medium text-slate-800">{payment.rider.driverProfile?.driverCode || "—"}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block text-xs">Category</span>
+                        <span className="font-medium text-slate-800">{formatCategory(payment.rider.driverProfile?.category)}</span>
+                      </div>
                     </div>
-                    <div>
-                      <span className="text-slate-500 block text-xs">Email</span>
-                      <span className="font-medium text-slate-800 break-all">{payment.rider.email}</span>
-                    </div>
-                    <div>
-                      <span className="text-slate-500 block text-xs">Phone</span>
-                      <span className="font-medium text-slate-800">{payment.rider.phone || "—"}</span>
-                    </div>
-                    <div>
-                      <span className="text-slate-500 block text-xs">Driver Code</span>
-                      <span className="font-medium text-slate-800">{payment.rider.driverProfile?.driverCode || "—"}</span>
-                    </div>
-                    <div>
-                      <span className="text-slate-500 block text-xs">Category</span>
-                      <span className="font-medium text-slate-800">{formatCategory(payment.rider.driverProfile?.category)}</span>
-                    </div>
-                  </div>
+                  ) : (
+                    <p className="text-sm text-slate-500">Guest checkout — no rider account is linked yet.</p>
+                  )}
                 </div>
 
                 {/* Business */}
-                {payment.rider.business && (
+                {payment.rider?.business && (
                   <div className="bg-slate-50 rounded-xl p-5">
                     <h4 className="text-sm font-bold text-slate-700 mb-3">Business</h4>
                     <div className="grid grid-cols-2 gap-3 text-sm">
