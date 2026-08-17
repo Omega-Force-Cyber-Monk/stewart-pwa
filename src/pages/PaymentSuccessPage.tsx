@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "../hooks/storeHooks";
 import { updateUser } from "../store/features/auth/authSlice";
 import standardLogo from "../assets/standardLogo.png";
 import standardBanner from "../assets/standardBanner.png";
+import { removeStorageValue, storageKeys } from "../lib/storage";
 
 export default function PaymentSuccessPage() {
   const dispatch = useAppDispatch();
@@ -16,10 +17,10 @@ export default function PaymentSuccessPage() {
   const [confirmCheckoutSession] = useConfirmRiderCheckoutSessionMutation();
 
   useEffect(() => {
-    if (!accessToken || !stripeSessionId) {
-      return;
-    }
+    if (!stripeSessionId) return;
+    removeStorageValue(storageKeys.abandonedCheckout);
 
+    if (!accessToken) return;
     void confirmCheckoutSession({ stripeSessionId }).catch(() => undefined);
   }, [accessToken, stripeSessionId, confirmCheckoutSession]);
 
