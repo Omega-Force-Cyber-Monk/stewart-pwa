@@ -11,6 +11,7 @@ import type {
   AirportSuggestionsResponse,
   ReferralCardResponse,
   BusinessResourcesResponse,
+  GuideResourceResponse,
   ChecklistItemsResponse,
   LaunchReadinessResponse,
   FinalReviewResponse,
@@ -88,25 +89,28 @@ export const businessApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["ReferralCard", "Setup", "LaunchReady"],
     }),
-    getBusinessResources: builder.query<BusinessResourcesResponse, { step?: string; type?: string; categoryId?: string } | void>({
+    getBusinessResources: builder.query<BusinessResourcesResponse, { type?: string; search?: string; page?: number; limit?: number; step?: string; categoryId?: string } | void>({
       query: (params) => {
-        let url = "/business/resources";
-        if (params) {
-          const queryParams = new URLSearchParams();
-          if (params.step) queryParams.append("step", params.step);
-          if (params.type) queryParams.append("type", params.type);
-          if (params.categoryId) queryParams.append("categoryId", params.categoryId);
-          const queryString = queryParams.toString();
-          if (queryString) url += `?${queryString}`;
-        }
-        return url;
+        const queryParams = new URLSearchParams();
+        if (params?.type) queryParams.append("type", params.type);
+        if (params?.search) queryParams.append("search", params.search);
+        if (params?.page) queryParams.append("page", String(params.page));
+        if (params?.limit) queryParams.append("limit", String(params.limit));
+        if (params?.step) queryParams.append("step", params.step);
+        if (params?.categoryId) queryParams.append("categoryId", params.categoryId);
+        const queryString = queryParams.toString();
+        return `/business/resources${queryString ? `?${queryString}` : ""}`;
       },
+      providesTags: ["Resources"],
     }),
     downloadBusinessResource: builder.query<Blob, string>({
       query: (id) => ({
         url: `/business/resources/${id}/file`,
         responseHandler: (response) => response.blob(),
       }),
+    }),
+    getGuide: builder.query<GuideResourceResponse, string>({
+      query: (id) => `/business/resources/${id}/guide`,
     }),
     getChecklistItems: builder.query<ChecklistItemsResponse, { step?: string } | void>({
       query: (params) => {
@@ -159,6 +163,7 @@ export const {
   useGenerateReferralCardMutation,
   useGetBusinessResourcesQuery,
   useLazyDownloadBusinessResourceQuery,
+  useGetGuideQuery,
   useGetChecklistItemsQuery,
   useUpdateChecklistItemMutation,
   useGetLaunchReadinessQuery,

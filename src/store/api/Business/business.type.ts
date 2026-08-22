@@ -194,24 +194,50 @@ export interface ReferralCardResponse {
   data: ReferralCardData;
 }
 
+export type ResourceType = "video" | "pdf" | "link" | "guide";
+
 export interface BusinessResource {
   id: string;
-  categoryId: string;
+  categoryId?: string | null;
   name: string;
   title: string;
   description: string;
-  type: string;
-  step: string;
-  cardColor: string;
-  iconKey: string;
+  type: ResourceType | string;
+  step?: string;
+  cardColor?: string | null;
+  iconKey?: string | null;
   sortOrder: number;
   fileUrl: string;
-  isActive: boolean;
+  linkUrl?: string | null;
+  durationSec?: number | null;
+  hasFile?: boolean;
+  createdAt?: string;
+  isActive?: boolean;
+}
+
+export interface GuideResource {
+  name: string;
+  description: string | null;
+  body: string;
 }
 
 export interface BusinessResourcesResponse {
   success: boolean;
   resources: BusinessResource[];
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+export interface GuideResourceResponse {
+  success?: boolean;
+  data?: GuideResource;
+  name?: string;
+  description?: string | null;
+  body?: string;
 }
 
 export interface ChecklistItem {
