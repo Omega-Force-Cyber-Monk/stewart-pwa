@@ -959,7 +959,7 @@ function Navbar({ openPricingModal }: { openPricingModal: () => void }) {
                 </button>
               )}
               <Link
-                to={user?.role === "admin" ? "/admin/settings" : "/profile"}
+                to={user?.role === "admin" ? "/admin/settings" : "/profile-settings"}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="text-white hover:text-[#f42661] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
               >

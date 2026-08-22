@@ -42,7 +42,7 @@ export const businessApi = baseApi.injectEndpoints({
     }),
     getRiderDashboard: builder.query<BusinessDashboardResponse, void>({
       query: () => "/business/dashboard",
-      providesTags: ["Business"],
+      providesTags: ["Dashboard"],
     }),
     getPublicBusinessFromHost: builder.query<PublicBusinessResponse, void>({
       query: () => "/public/business-from-host",
@@ -66,7 +66,7 @@ export const businessApi = baseApi.injectEndpoints({
         method: "PATCH",
         body,
       }),
-      invalidatesTags: ["Setup", "LaunchReady"],
+      invalidatesTags: ["Setup", "LaunchReady", "Dashboard", "Business"],
     }),
     uploadBusinessLogo: builder.mutation<UploadLogoResponse, FormData>({
       query: (formData) => ({
@@ -74,6 +74,7 @@ export const businessApi = baseApi.injectEndpoints({
         method: "POST",
         body: formData,
       }),
+      invalidatesTags: ["Business", "Setup", "Dashboard"],
     }),
     getAirportSuggestions: builder.query<AirportSuggestionsResponse, { cityArea: string; limit?: number }>({
       query: ({ cityArea, limit = 5 }) => `/business/service-area/airports?cityArea=${encodeURIComponent(cityArea)}&limit=${limit}`,
@@ -142,6 +143,7 @@ export const businessApi = baseApi.injectEndpoints({
         url: "/business/complete-launch",
         method: "POST",
       }),
+      invalidatesTags: ["Dashboard", "Setup", "Business", "ReferralCard", "LaunchReady"],
     }),
   }),
   overrideExisting: false,

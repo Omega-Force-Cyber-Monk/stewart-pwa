@@ -4,11 +4,9 @@ import type {
   DashboardSummary,
   Driver,
   DriverVerificationResponse,
-  AdminDriverDashboard,
   BusinessListItem,
   BusinessDetail,
   BusinessSetupProgress,
-  BusinessChecklistProgress,
   PaymentListItem,
   PaymentDetail,
   TicketListItem,
@@ -17,9 +15,6 @@ import type {
   PlatformSettings,
   SettingKey,
   Resource,
-  ResourceCategory,
-  AdminChecklistItem,
-  AdminUser,
   RevenueBucket,
   ActivityEvent,
   RecentDriver,
@@ -65,10 +60,6 @@ export const adminApi = baseApi.injectEndpoints({
     }),
     getAdminDriver: build.query<{ success: true; driver: Driver }, string>({
       query: (id) => `/admin/drivers/${id}`,
-      providesTags: (_result, _err, id) => [{ type: "Driver", id }],
-    }),
-    getAdminDriverDashboard: build.query<AdminDriverDashboard, string>({
-      query: (id) => `/admin/drivers/${id}/dashboard`,
       providesTags: (_result, _err, id) => [{ type: "Driver", id }],
     }),
     updateDriverVerification: build.mutation<
@@ -136,9 +127,6 @@ export const adminApi = baseApi.injectEndpoints({
     getAdminBusinessSetup: build.query<BusinessSetupProgress, string>({
       query: (id) => `/admin/businesses/${id}/setup`,
     }),
-    getAdminBusinessChecklist: build.query<BusinessChecklistProgress, string>({
-      query: (id) => `/admin/businesses/${id}/checklist`,
-    }),
 
     // ---- Payments ----
     getAdminPayments: build.query<
@@ -168,35 +156,6 @@ export const adminApi = baseApi.injectEndpoints({
     }),
 
     // ---- Resources ----
-    getAdminResourceCategories: build.query<
-      { success: true; categories: ResourceCategory[] },
-      { active?: boolean; search?: string }
-    >({
-      query: (params) => ({ url: "/admin/resource-categories", params }),
-      providesTags: ["ResourceCategories"],
-    }),
-    createAdminResourceCategory: build.mutation<
-      { success: true; category: ResourceCategory },
-      { name: string; slug: string; description?: string; sortOrder?: number; isActive?: boolean }
-    >({
-      query: (body) => ({ url: "/admin/resource-categories", method: "POST", body }),
-      invalidatesTags: ["ResourceCategories"],
-    }),
-    updateAdminResourceCategory: build.mutation<
-      { success: true; category: ResourceCategory },
-      { id: string; name?: string; slug?: string; description?: string; sortOrder?: number; isActive?: boolean }
-    >({
-      query: ({ id, ...body }) => ({
-        url: `/admin/resource-categories/${id}`,
-        method: "PATCH",
-        body,
-      }),
-      invalidatesTags: ["ResourceCategories"],
-    }),
-    deleteAdminResourceCategory: build.mutation<{ success: true; message: string }, string>({
-      query: (id) => ({ url: `/admin/resource-categories/${id}`, method: "DELETE" }),
-      invalidatesTags: ["ResourceCategories"],
-    }),
     getAdminResources: build.query<
       { success: true; resources: Resource[]; pagination: Pagination },
       { page?: number; limit?: number; categoryId?: string; step?: string; type?: string; active?: boolean; search?: string }
@@ -230,40 +189,6 @@ export const adminApi = baseApi.injectEndpoints({
     deleteAdminResource: build.mutation<{ success: true; message: string }, string>({
       query: (id) => ({ url: `/admin/resources/${id}`, method: "DELETE" }),
       invalidatesTags: ["Resources", "ResourceCategories"],
-    }),
-
-    // ---- Checklist items ----
-    getAdminChecklistItems: build.query<
-      { success: true; checklistItems: AdminChecklistItem[] },
-      { step?: string; active?: boolean }
-    >({
-      query: (params) => ({ url: "/admin/checklist-items", params }),
-      providesTags: ["ChecklistItems"],
-    }),
-    createAdminChecklistItem: build.mutation<
-      { success: true; checklistItem: AdminChecklistItem },
-      { step: string; title: string; description?: string; sortOrder?: number }
-    >({
-      query: (body) => ({ url: "/admin/checklist-items", method: "POST", body }),
-      invalidatesTags: ["ChecklistItems"],
-    }),
-    updateAdminChecklistItem: build.mutation<
-      { success: true; checklistItem: AdminChecklistItem },
-      { id: string; title?: string; description?: string; sortOrder?: number; isActive?: boolean; step?: string }
-    >({
-      query: ({ id, ...body }) => ({
-        url: `/admin/checklist-items/${id}`,
-        method: "PATCH",
-        body,
-      }),
-      invalidatesTags: ["ChecklistItems"],
-    }),
-    deleteAdminChecklistItem: build.mutation<
-      { success: true; message: string; checklistItem?: { id: string; isActive: boolean } },
-      string
-    >({
-      query: (id) => ({ url: `/admin/checklist-items/${id}`, method: "DELETE" }),
-      invalidatesTags: ["ChecklistItems"],
     }),
 
     // ---- Support tickets ----
@@ -338,34 +263,6 @@ export const adminApi = baseApi.injectEndpoints({
       invalidatesTags: ["Settings", { type: "Setting", id: "platform" }, { type: "Setting", id: "notifications" }, { type: "Setting", id: "legalCompliance" }],
     }),
 
-    // ---- Admin users ----
-    getAdminUsers: build.query<{ success: true; users: AdminUser[] }, void>({
-      query: () => "/auth/admin/users",
-      providesTags: ["Users"],
-    }),
-    createAdminUser: build.mutation<{ success: true; user: AdminUser }, Record<string, unknown>>({
-      query: (body) => ({ url: "/auth/admin/users", method: "POST", body }),
-      invalidatesTags: ["Users"],
-    }),
-    getAdminUser: build.query<{ success: true; user: AdminUser }, string>({
-      query: (id) => `/auth/admin/users/${id}`,
-      providesTags: (_result, _err, id) => [{ type: "User", id }],
-    }),
-    updateAdminUser: build.mutation<
-      { success: true; user: AdminUser },
-      { id: string; name?: string; phone?: string; status?: string; role?: string; isVerified?: boolean }
-    >({
-      query: ({ id, ...body }) => ({
-        url: `/auth/admin/users/${id}`,
-        method: "PATCH",
-        body,
-      }),
-      invalidatesTags: (_result, _err, { id }) => ["Users", { type: "User", id }],
-    }),
-    deleteAdminUser: build.mutation<{ success: true; message: string }, string>({
-      query: (id) => ({ url: `/auth/admin/users/${id}`, method: "DELETE" }),
-      invalidatesTags: ["Users"],
-    }),
   }),
   overrideExisting: false,
 });
@@ -379,7 +276,6 @@ export const {
   // Drivers
   useGetAdminDriversQuery,
   useGetAdminDriverQuery,
-  useGetAdminDriverDashboardQuery,
   useUpdateDriverVerificationMutation,
   useUpdateDriverAccountStatusMutation,
   useDeleteDriverMutation,
@@ -388,26 +284,16 @@ export const {
   useGetAdminBusinessQuery,
   useUpdateAdminBusinessStatusMutation,
   useGetAdminBusinessSetupQuery,
-  useGetAdminBusinessChecklistQuery,
   // Payments
   useGetAdminPaymentsQuery,
   useGetAdminPaymentQuery,
   useGetAdminPaymentReceiptQuery,
   // Resources
-  useGetAdminResourceCategoriesQuery,
-  useCreateAdminResourceCategoryMutation,
-  useUpdateAdminResourceCategoryMutation,
-  useDeleteAdminResourceCategoryMutation,
   useGetAdminResourcesQuery,
   useGetAdminResourceQuery,
   useCreateAdminResourceMutation,
   useUpdateAdminResourceMutation,
   useDeleteAdminResourceMutation,
-  // Checklist items
-  useGetAdminChecklistItemsQuery,
-  useCreateAdminChecklistItemMutation,
-  useUpdateAdminChecklistItemMutation,
-  useDeleteAdminChecklistItemMutation,
   // Support tickets
   useGetAdminTicketsQuery,
   useGetAdminTicketQuery,
@@ -418,10 +304,4 @@ export const {
   useGetAdminSettingsQuery,
   useGetAdminSettingQuery,
   useUpdateAdminSettingMutation,
-  // Admin users
-  useGetAdminUsersQuery,
-  useCreateAdminUserMutation,
-  useGetAdminUserQuery,
-  useUpdateAdminUserMutation,
-  useDeleteAdminUserMutation,
 } = adminApi;

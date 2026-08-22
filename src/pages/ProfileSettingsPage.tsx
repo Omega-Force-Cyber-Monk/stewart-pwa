@@ -33,7 +33,7 @@ const getApiErrorMessage = (err: unknown, fallback: string): string => {
   return fallback;
 };
 
-export default function ProfilePage() {
+export default function ProfileSettingsPage() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const fileInputRef = useRef<HTMLInputElement>(null);

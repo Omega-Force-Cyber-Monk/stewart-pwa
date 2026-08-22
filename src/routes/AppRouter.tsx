@@ -8,8 +8,8 @@ import LaunchDashboardPage from "../pages/LaunchDashboardPage";
 import BookingReferralCardPage from "../pages/BookingReferralCardPage";
 import SellingPage from "../pages/SellingPage";
 import ResourcesAndGuidesPage from "../pages/ResourcesAndGuidesPage";
-import ProfilePage from "../pages/ProfilePage";
-import BillingPage from "../pages/BillingPage";
+import ProfileSettingsPage from "../pages/ProfileSettingsPage";
+import PaymentBillingPage from "../pages/PaymentBillingPage";
 import DashboardPage from "../pages/DashboardPage";
 import { DashboardLayout } from "../components/layout/DashboardLayout";
 import { AdminDashboardLayout } from "../components/layout/AdminDashboardLayout";
@@ -59,8 +59,8 @@ export function AppRouter() {
       <Route path="/booking-referral-card" element={<DashboardLayout title="Booking & Referral Card"><BookingReferralCardPage /></DashboardLayout>} />
       <Route path="/selling-page" element={<DashboardLayout title="Selling Page"><SellingPage /></DashboardLayout>} />
       <Route path="/resources-guide" element={<DashboardLayout title="Resources & Guide"><ResourcesAndGuidesPage /></DashboardLayout>} />
-      <Route path="/payment-billing" element={<DashboardLayout title="Payment & Billing"><BillingPage /></DashboardLayout>} />
-      <Route path="/profile-settings" element={<DashboardLayout title="Profile & Settings"><ProfilePage /></DashboardLayout>} />
+      <Route path="/payment-billing" element={<DashboardLayout title="Payment & Billing"><PaymentBillingPage /></DashboardLayout>} />
+      <Route path="/profile-settings" element={<DashboardLayout title="Profile & Settings"><ProfileSettingsPage /></DashboardLayout>} />
       <Route path="/launch-dashboard" element={<DashboardLayout title="Launch Setup Form"><LaunchDashboardPage /></DashboardLayout>} />
 
       {/* Legacy rider paths intentionally redirect to the redesigned destinations. */}

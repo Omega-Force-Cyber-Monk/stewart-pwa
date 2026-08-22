@@ -7,7 +7,7 @@ function downloadInvoice(value: Blob | { invoiceUrl?: string }) { if (value inst
 function category(payment: PaymentRecord) { return payment.items.some((item) => item.type.toLowerCase().includes("addon")) ? "Add-Ons" : "Launch Package"; }
 function product(payment: PaymentRecord) { const addOn = category(payment) === "Add-Ons"; return addOn ? "Booking Setup Add-on" : `${payment.items[0]?.name || "Private Airport Business"}`; }
 
-export default function BillingPage() {
+export default function PaymentBillingPage() {
   const { data, isLoading, isError } = useGetRiderPaymentHistoryQuery();
   const [getInvoice, { isFetching: invoiceLoading }] = useLazyGetRiderPaymentInvoiceQuery();
   const orders = data?.payments ?? [];
