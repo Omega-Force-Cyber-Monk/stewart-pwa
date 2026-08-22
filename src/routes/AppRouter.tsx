@@ -17,7 +17,7 @@ import { useRequireAdmin } from "../hooks/useRequireAdmin";
 import AdminDashboardPage from "../pages/AdminDashboardPage";
 import AdminDriversPage from "../pages/AdminDriversPage";
 import AdminDriverDetailsPage from "../pages/AdminDriverDetailsPage";
-import AdminResourcesPage from "../pages/AdminResourcesPage";
+import AdminResourcesUploadPage from "../pages/AdminResourcesUploadPage";
 import AdminBillingsPage from "../pages/AdminBillingsPage";
 import AdminSupportPage from "../pages/AdminSupportPage";
 import AdminSettingsPage from "../pages/AdminSettingsPage";
@@ -78,7 +78,7 @@ export function AppRouter() {
       <Route path="/admin" element={<AdminRoute><AdminDashboardLayout><AdminDashboardPage /></AdminDashboardLayout></AdminRoute>} />
       <Route path="/admin/drivers" element={<AdminRoute><AdminDashboardLayout title="Drivers Management"><AdminDriversPage /></AdminDashboardLayout></AdminRoute>} />
       <Route path="/admin/drivers/:id" element={<AdminRoute><AdminDashboardLayout title="Drivers Management"><AdminDriverDetailsPage /></AdminDashboardLayout></AdminRoute>} />
-      <Route path="/admin/resources-upload" element={<AdminRoute><AdminDashboardLayout title="Resources Upload"><AdminResourcesPage /></AdminDashboardLayout></AdminRoute>} />
+      <Route path="/admin/resources-upload" element={<AdminRoute><AdminDashboardLayout title="Resources Upload"><AdminResourcesUploadPage /></AdminDashboardLayout></AdminRoute>} />
       <Route path="/admin/billings" element={<AdminRoute><AdminDashboardLayout title="Billings"><AdminBillingsPage /></AdminDashboardLayout></AdminRoute>} />
       <Route path="/admin/support" element={<AdminRoute><AdminDashboardLayout title="Support"><AdminSupportPage /></AdminDashboardLayout></AdminRoute>} />
       <Route path="/admin/settings" element={<AdminRoute><AdminDashboardLayout title="Settings"><AdminSettingsPage /></AdminDashboardLayout></AdminRoute>} />
