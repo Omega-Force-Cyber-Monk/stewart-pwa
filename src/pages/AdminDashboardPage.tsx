@@ -1,4 +1,4 @@
-import { User, Wallet, RefreshCw, Eye, Trash2 } from "lucide-react";
+import { User, Wallet, Eye, Trash2 } from "lucide-react";
 import {
   LineChart,
   Line,
@@ -96,7 +96,7 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="flex flex-col xl:flex-row gap-8">
+    <div className="flex flex-col gap-8">
       {/* Left Column - Main Content */}
       <div className="flex-1 space-y-6">
         <div>
@@ -240,36 +240,6 @@ export default function AdminDashboardPage() {
                 )}
               </tbody>
             </table>
-          </div>
-        </div>
-      </div>
-
-      {/* Right Column - Platform Activity */}
-      <div className="xl:w-[350px] flex-shrink-0">
-        <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm h-full flex flex-col">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-bold text-slate-800">Platform Activity</h3>
-            <button onClick={refetch} className="text-slate-400 hover:text-slate-600 transition-colors">
-              <RefreshCw className="w-4 h-4" />
-            </button>
-          </div>
-
-          <div className="flex-1 overflow-y-auto pr-2 space-y-6">
-            {data.activity.length === 0 ? (
-              <p className="text-sm text-slate-500">No recent platform activity</p>
-            ) : (
-              data.activity.map((activity) => (
-                <div key={activity.id} className="flex gap-4 group">
-                  <div className="w-10 h-10 rounded-full bg-[#f0f4ff] text-[#1a56ff] flex-shrink-0 flex items-center justify-center font-bold text-xs transition-transform group-hover:scale-105">
-                    {(activity.metadata?.email as string | undefined)?.slice(0, 2).toUpperCase() || "ACT"}
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm text-slate-700 leading-snug">{activity.message}</p>
-                    <p className="text-xs text-slate-400 mt-1">{formatDate(activity.createdAt)}</p>
-                  </div>
-                </div>
-              ))
-            )}
           </div>
         </div>
       </div>
