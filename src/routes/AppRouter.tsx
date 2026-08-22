@@ -5,7 +5,7 @@ import WomenPage from "../pages/WomenPage";
 import CouplePage from "../pages/CouplePage";
 import SeniorPage from "../pages/SeniorPage";
 import LaunchDashboardPage from "../pages/LaunchDashboardPage";
-import BookingSystemPage from "../pages/BookingSystemPage";
+import BookingReferralCardPage from "../pages/BookingReferralCardPage";
 import SellingPage from "../pages/SellingPage";
 import ResourcesAndGuidesPage from "../pages/ResourcesAndGuidesPage";
 import ProfilePage from "../pages/ProfilePage";
@@ -56,7 +56,7 @@ export function AppRouter() {
       <Route path="/senior" element={<SeniorPage />} />
 
       <Route path="/dashboard" element={<DashboardLayout><DashboardPage /></DashboardLayout>} />
-      <Route path="/booking-referral-card" element={<DashboardLayout title="Booking & Referral Card"><BookingSystemPage /></DashboardLayout>} />
+      <Route path="/booking-referral-card" element={<DashboardLayout title="Booking & Referral Card"><BookingReferralCardPage /></DashboardLayout>} />
       <Route path="/selling-page" element={<DashboardLayout title="Selling Page"><SellingPage /></DashboardLayout>} />
       <Route path="/resources-guide" element={<DashboardLayout title="Resources & Guide"><ResourcesAndGuidesPage /></DashboardLayout>} />
       <Route path="/payment-billing" element={<DashboardLayout title="Payment & Billing"><BillingPage /></DashboardLayout>} />
