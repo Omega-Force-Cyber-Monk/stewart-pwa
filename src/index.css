@@ -8,6 +8,19 @@
   --color-brand-border: #00E5FF33;
   --color-brand-btn: #04B5A3;
   --color-brand-btn-hover: #039384;
+
+  --color-dashboard-navy: #06152f;
+  --color-dashboard-sidebar: #001126;
+  --color-dashboard-canvas: #f7f7f7;
+  --color-dashboard-rider: #22c55e;
+  --color-dashboard-rider-dark: #16a34a;
+  --color-dashboard-admin: #2563eb;
+  --color-dashboard-admin-dark: #1d4ed8;
+  --color-status-pending: #f59e0b;
+  --color-status-approved: #16a34a;
+  --color-status-review: #2563eb;
+  --color-status-completed: #16a34a;
+  --radius-dashboard: 0.75rem;
 }
 
 .container {
