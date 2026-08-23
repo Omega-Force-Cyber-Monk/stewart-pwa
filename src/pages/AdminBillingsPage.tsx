@@ -11,14 +11,7 @@ import { useConfirmDialog } from "../hooks/useConfirmDialog";
 
 const PAGE_SIZE = 10;
 
-const categoryTabs = [
-  { name: "All", value: "" },
-  { name: "Women Focused", value: "WOMEN" },
-  { name: "Couples", value: "COUPLE" },
-  { name: "Drivers 50+", value: "FIFTY_PLUS" },
-  { name: "Main", value: "STANDARD" },
-  { name: "Spanish", value: "SPANISH" },
-];
+
 
 const statusStyles: Record<string, string> = {
   paid: "bg-green-50 text-green-600 border border-green-100",
@@ -47,7 +40,7 @@ export default function AdminBillingsPage() {
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState("");
   const [purchaseTypeFilter, setPurchaseTypeFilter] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("");
+
   const [showFilters, setShowFilters] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
@@ -56,7 +49,7 @@ export default function AdminBillingsPage() {
     limit: PAGE_SIZE,
     status: statusFilter || undefined,
     purchaseType: purchaseTypeFilter || undefined,
-    category: categoryFilter || undefined,
+
   });
 
   // Payment detail drawer
@@ -104,23 +97,7 @@ export default function AdminBillingsPage() {
 
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm flex flex-col">
           {/* Table Header Controls */}
-          <div className="flex flex-col sm:flex-row flex-wrap sm:items-center justify-between p-6 gap-4 border-b border-slate-50">
-            <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide">
-              {categoryTabs.map((tab) => (
-                <button
-                  key={tab.value || "all"}
-                  onClick={() => { setCategoryFilter(tab.value); setPage(1); }}
-                  className={cn(
-                    "px-6 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap",
-                    categoryFilter === tab.value
-                      ? "border border-blue-200 text-blue-600 bg-blue-50/50"
-                      : "border border-slate-200 text-slate-600 hover:bg-slate-50"
-                  )}
-                >
-                  {tab.name}
-                </button>
-              ))}
-            </div>
+          <div className="flex flex-col sm:flex-row flex-wrap sm:items-center justify-end p-6 gap-4 border-b border-slate-50">
             <button
               onClick={() => setShowFilters(!showFilters)}
               className={cn(

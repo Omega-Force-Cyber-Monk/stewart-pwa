@@ -93,8 +93,6 @@ export const baseApi = createApi({
     "Payment",
     "Resources",
     "Resource",
-    "ResourceCategories",
-    "ChecklistItems",
     "Tickets",
     "Ticket",
     "Settings",

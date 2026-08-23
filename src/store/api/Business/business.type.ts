@@ -240,21 +240,6 @@ export interface GuideResourceResponse {
   body?: string;
 }
 
-export interface ChecklistItem {
-  id: string;
-  step: string;
-  title: string;
-  description: string;
-  sortOrder: number;
-  completed: boolean;
-  completedAt: string | null;
-}
-
-export interface ChecklistItemsResponse {
-  success: boolean;
-  checklistItems: ChecklistItem[];
-}
-
 export interface LaunchReadinessResponse {
   success: boolean;
   ready: boolean;

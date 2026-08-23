@@ -130,16 +130,6 @@ export interface DriverVerificationResponse {
   };
 }
 
-export interface AdminDriverDashboard {
-  success: true;
-  driver: Driver;
-  dashboard: {
-    setup: BusinessSetupProgress["data"];
-    checklists: Record<string, ChecklistProgressItem[]>;
-    purchase: BusinessPurchase;
-  } | null;
-}
-
 // ---- Businesses ----
 export interface BusinessOwner {
   id: string;
@@ -176,15 +166,6 @@ export interface BusinessListItem {
   purchase: BusinessPurchase;
 }
 
-export interface ChecklistProgressItem {
-  id: string;
-  title: string;
-  description: string | null;
-  active: boolean;
-  completed: boolean;
-  completedAt: string | null;
-}
-
 export interface BusinessDetail extends BusinessListItem {
   businessInfo: string | null;
   logoUrl: string | null;
@@ -197,7 +178,6 @@ export interface BusinessDetail extends BusinessListItem {
     digitalCardUrl: string | null;
     printCardUrl: string | null;
   };
-  checklists: Record<string, ChecklistProgressItem[]>;
 }
 
 export interface SetupProgressStep {
@@ -219,11 +199,6 @@ export interface BusinessSetupProgress {
     businessStatus: string;
     steps: SetupProgressStep[];
   };
-}
-
-export interface BusinessChecklistProgress {
-  success: true;
-  groups: Record<string, ChecklistProgressItem[]>;
 }
 
 // ---- Payments ----
@@ -316,39 +291,6 @@ export interface Resource {
   name: string;
   description: string | null;
   type: string;
-  step: string;
-  title: string | null;
-  cardColor: string | null;
-  iconKey: string | null;
-  sortOrder: number;
-  fileUrl: string;
-  publicId: string;
-  cloudinaryResourceType: string;
-  isActive: boolean;
-  categoryId: string | null;
-  category: { id: string; name: string; slug: string } | null;
-}
-
-export interface ResourceCategory {
-  id: string;
-  name: string;
-  slug: string;
-  description: string | null;
-  sortOrder: number;
-  isActive: boolean;
-  _count: { resources: number };
-}
-
-// ---- Checklist items ----
-export interface AdminChecklistItem {
-  id: string;
-  step: string;
-  title: string;
-  description: string | null;
-  sortOrder: number;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
 }
 
 // ---- Settings ----
@@ -401,8 +343,6 @@ export const USER_ROLES = ["admin", "rider"] as const;
 export const USER_STATUSES = ["active", "pending", "suspended"] as const;
 export const BUSINESS_STATUSES = ["NOT_STARTED", "IN_PROGRESS", "COMPLETED", "ACTIVE", "SUSPENDED"] as const;
 export const PAYMENT_STATUSES = ["pending", "paid", "failed", "expired"] as const;
-export const RESOURCE_STEPS = ["CUSTOMER_ACQUISITION", "BRAND_AND_TRUST"] as const;
-export const RESOURCE_TYPES = ["PDF_DOCUMENT", "WORD_DOCUMENT", "IMAGE", "OTHER"] as const;
 export const DRIVER_CATEGORIES = ["WOMEN", "COUPLE", "FIFTY_PLUS", "STANDARD", "SPANISH"] as const;
 export const DRIVER_VERIFICATION_STATUSES = ["PENDING", "UNDER_REVIEW", "APPROVED", "REJECTED"] as const;
 export const TICKET_STATUSES = ["PENDING", "UNDER_REVIEW", "COMPLETED"] as const;
@@ -457,7 +397,6 @@ export interface Lead {
   referrer: string | null;
   smsConsent: boolean;
   consentedAt?: string;
-  consentAt?: string;
   consentTextVersion: string;
   submittedAt: string;
   updatedAt: string;

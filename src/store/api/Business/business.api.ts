@@ -12,7 +12,6 @@ import type {
   ReferralCardResponse,
   BusinessResourcesResponse,
   GuideResourceResponse,
-  ChecklistItemsResponse,
   LaunchReadinessResponse,
   FinalReviewResponse,
   CompleteLaunchResponse,
@@ -104,15 +103,13 @@ export const businessApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["ReferralCard", "Setup", "LaunchReady"],
     }),
-    getBusinessResources: builder.query<BusinessResourcesResponse, { type?: string; search?: string; page?: number; limit?: number; step?: string; categoryId?: string } | void>({
+    getBusinessResources: builder.query<BusinessResourcesResponse, { type?: string; search?: string; page?: number; limit?: number } | void>({
       query: (params) => {
         const queryParams = new URLSearchParams();
         if (params?.type) queryParams.append("type", params.type);
         if (params?.search) queryParams.append("search", params.search);
         if (params?.page) queryParams.append("page", String(params.page));
         if (params?.limit) queryParams.append("limit", String(params.limit));
-        if (params?.step) queryParams.append("step", params.step);
-        if (params?.categoryId) queryParams.append("categoryId", params.categoryId);
         const queryString = queryParams.toString();
         return `/business/resources${queryString ? `?${queryString}` : ""}`;
       },
@@ -126,24 +123,6 @@ export const businessApi = baseApi.injectEndpoints({
     }),
     getGuide: builder.query<GuideResourceResponse, string>({
       query: (id) => `/business/resources/${id}/guide`,
-    }),
-    getChecklistItems: builder.query<ChecklistItemsResponse, { step?: string } | void>({
-      query: (params) => {
-        let url = "/business/checklist";
-        if (params && params.step) {
-          url += `?step=${encodeURIComponent(params.step)}`;
-        }
-        return url;
-      },
-      providesTags: ["ChecklistItems"],
-    }),
-    updateChecklistItem: builder.mutation<ChecklistItemsResponse, { id: string; completed: boolean }>({
-      query: ({ id, completed }) => ({
-        url: `/business/checklist/${id}`,
-        method: "PATCH",
-        body: { completed },
-      }),
-      invalidatesTags: ["ChecklistItems", "Setup", "LaunchReady"],
     }),
     getLaunchReadiness: builder.query<LaunchReadinessResponse, void>({
       query: () => "/business/launch-ready",
@@ -182,8 +161,6 @@ export const {
   useGetBusinessResourcesQuery,
   useLazyDownloadBusinessResourceQuery,
   useGetGuideQuery,
-  useGetChecklistItemsQuery,
-  useUpdateChecklistItemMutation,
   useGetLaunchReadinessQuery,
   useGetFinalReviewQuery,
   useCompleteLaunchMutation,

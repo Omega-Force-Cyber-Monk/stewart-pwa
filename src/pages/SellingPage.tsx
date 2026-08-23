@@ -20,6 +20,29 @@ export default function SellingPage() {
     }
   };
 
+  const [showQr, setShowQr] = useState(false);
+
+  const handleDownloadQr = () => {
+    if (referralResponse?.data?.qrCodeUrl) {
+      const a = document.createElement("a");
+      a.href = referralResponse.data.qrCodeUrl;
+      a.download = "qr-code.png";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } else {
+      alert("QR Code not available yet.");
+    }
+  };
+
+  const shareSocial = (platform: "facebook" | "linkedin" | "mail") => {
+    if (!personalizedUrl) return;
+    const url = encodeURIComponent(personalizedUrl);
+    if (platform === "facebook") window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, "_blank");
+    if (platform === "linkedin") window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, "_blank");
+    if (platform === "mail") window.location.href = `mailto:?subject=Book%20Direct&body=${url}`;
+  };
+
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto w-full">
       {/* Header */}
@@ -80,12 +103,12 @@ export default function SellingPage() {
               {copied ? "Copied!" : "Copy link"}
             </button>
 
-            <button className="flex items-center gap-2 bg-white hover:bg-slate-50 border border-slate-200 px-5 py-3 rounded-xl font-bold text-[14px] text-slate-700 transition-colors shadow-sm">
+            <button onClick={() => setShowQr(true)} className="flex items-center gap-2 bg-white hover:bg-slate-50 border border-slate-200 px-5 py-3 rounded-xl font-bold text-[14px] text-slate-700 transition-colors shadow-sm">
               <QrCode className="w-4 h-4 text-slate-500" />
               View QR Code
             </button>
 
-            <button className="flex items-center gap-2 bg-white hover:bg-slate-50 border border-slate-200 px-5 py-3 rounded-xl font-bold text-[14px] text-slate-700 transition-colors shadow-sm">
+            <button onClick={handleDownloadQr} className="flex items-center gap-2 bg-white hover:bg-slate-50 border border-slate-200 px-5 py-3 rounded-xl font-bold text-[14px] text-slate-700 transition-colors shadow-sm">
               <Download className="w-4 h-4 text-slate-500" />
               <div className="flex flex-col items-start">
                 <span>Download QR Code</span>
@@ -96,13 +119,13 @@ export default function SellingPage() {
             <div className="w-px h-10 bg-slate-200 mx-2 hidden sm:block"></div>
 
             <div className="flex items-center gap-2">
-              <button className="w-10 h-10 rounded-full bg-[#1877F2] text-white flex items-center justify-center hover:bg-[#0c63d4] transition-colors shadow-sm font-bold text-xl">
+              <button onClick={() => shareSocial("facebook")} className="w-10 h-10 rounded-full bg-[#1877F2] text-white flex items-center justify-center hover:bg-[#0c63d4] transition-colors shadow-sm font-bold text-xl">
                 f
               </button>
-              <button className="w-10 h-10 rounded-full bg-[#0A66C2] text-white flex items-center justify-center hover:bg-[#084e96] transition-colors shadow-sm font-bold text-lg">
+              <button onClick={() => shareSocial("linkedin")} className="w-10 h-10 rounded-full bg-[#0A66C2] text-white flex items-center justify-center hover:bg-[#084e96] transition-colors shadow-sm font-bold text-lg">
                 in
               </button>
-              <button className="w-10 h-10 rounded-full bg-[#EA4335] text-white flex items-center justify-center hover:bg-[#d33426] transition-colors shadow-sm">
+              <button onClick={() => shareSocial("mail")} className="w-10 h-10 rounded-full bg-[#EA4335] text-white flex items-center justify-center hover:bg-[#d33426] transition-colors shadow-sm">
                 <Mail className="w-5 h-5" fill="currentColor" />
               </button>
             </div>
@@ -174,6 +197,24 @@ export default function SellingPage() {
 
         </div>
       </div>
+
+      {showQr && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 p-4">
+          <div className="rounded-2xl bg-white p-6 shadow-xl max-w-sm w-full text-center">
+            <h3 className="text-lg font-bold text-slate-900 mb-4">Your QR Code</h3>
+            {referralResponse?.data?.qrCodeUrl ? (
+              <img src={referralResponse.data.qrCodeUrl} alt="QR Code" className="mx-auto w-48 h-48 mb-6" />
+            ) : (
+              <div className="w-48 h-48 mx-auto bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 mb-6">
+                Not Available
+              </div>
+            )}
+            <button onClick={() => setShowQr(false)} className="w-full py-3 rounded-xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200 transition-colors">
+              Close
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );

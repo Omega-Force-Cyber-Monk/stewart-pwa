@@ -9,9 +9,10 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { cn } from "../lib/cn";
-import { useGetAdminDashboardQuery } from "../store/api/Admin/admin.api";
+import { useGetAdminDashboardQuery, useDeleteDriverMutation } from "../store/api/Admin/admin.api";
 import { Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useConfirmDialog } from "../hooks/useConfirmDialog";
 
 const StatusBadge = ({ status }: { status: string }) => {
   const styles: Record<string, string> = {
@@ -64,6 +65,26 @@ const formatMoney = (total: number) =>
 
 export default function AdminDashboardPage() {
   const { data, isLoading, isError, refetch } = useGetAdminDashboardQuery();
+  const [deleteDriver, { isLoading: isDeleting }] = useDeleteDriverMutation();
+  const { openConfirm, confirmDialog, showAlert, alertDialog } = useConfirmDialog();
+
+  const handleDelete = (driver: { id: string; name: string | null; email: string }) => {
+    openConfirm(
+      {
+        title: "Delete Driver",
+        message: "Are you sure you want to permanently delete this driver account?",
+        confirmText: "Yes, delete",
+      },
+      async () => {
+        try {
+          await deleteDriver(driver.id).unwrap();
+        } catch (err) {
+          console.error("Failed to delete driver:", err);
+          showAlert({ title: "Error", message: "Failed to delete driver.", type: "error" });
+        }
+      }
+    );
+  };
 
   const revenueData =
     data?.monthlyRevenue?.map((bucket) => ({
@@ -230,7 +251,12 @@ export default function AdminDashboardPage() {
                           >
                             <Eye className="w-4 h-4" />
                           </Link>
-                          <button className="text-red-400 hover:text-red-500 transition-colors p-1" title="Delete Driver">
+                          <button
+                            onClick={() => handleDelete(driver)}
+                            disabled={isDeleting}
+                            className="text-red-400 hover:text-red-500 transition-colors p-1 disabled:opacity-50"
+                            title="Delete Driver"
+                          >
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
@@ -243,6 +269,8 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       </div>
+      {confirmDialog}
+      {alertDialog}
     </div>
   );
 }

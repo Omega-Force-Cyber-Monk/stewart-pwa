@@ -204,17 +204,13 @@ export const adminApi = baseApi.injectEndpoints({
       query: (params) => ({ url: "/admin/resources", params }),
       providesTags: ["Resources"],
     }),
-    getAdminResource: build.query<{ success: true; resource: Resource }, string>({
-      query: (id) => `/admin/resources/${id}`,
-      providesTags: (_result, _err, id) => [{ type: "Resource", id }],
-    }),
     createAdminResource: build.mutation<{ success: true; resource: Resource }, FormData>({
       query: (formData) => ({
         url: "/admin/resources",
         method: "POST",
         body: formData,
       }),
-      invalidatesTags: ["Resources", "ResourceCategories"],
+      invalidatesTags: ["Resources"],
     }),
     updateAdminResource: build.mutation<
       { success: true; resource: Resource },
@@ -225,11 +221,11 @@ export const adminApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: formData,
       }),
-      invalidatesTags: ["Resources", "ResourceCategories"],
+      invalidatesTags: ["Resources"],
     }),
     deleteAdminResource: build.mutation<{ success: true; message: string }, string>({
       query: (id) => ({ url: `/admin/resources/${id}`, method: "DELETE" }),
-      invalidatesTags: ["Resources", "ResourceCategories"],
+      invalidatesTags: ["Resources"],
     }),
 
     // ---- Support tickets ----
@@ -344,7 +340,6 @@ export const {
   useGetAdminPaymentReceiptQuery,
   // Resources
   useGetAdminResourcesQuery,
-  useGetAdminResourceQuery,
   useCreateAdminResourceMutation,
   useUpdateAdminResourceMutation,
   useDeleteAdminResourceMutation,
