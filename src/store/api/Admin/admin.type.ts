@@ -407,3 +407,84 @@ export const DRIVER_CATEGORIES = ["WOMEN", "COUPLE", "FIFTY_PLUS", "STANDARD", "
 export const DRIVER_VERIFICATION_STATUSES = ["PENDING", "UNDER_REVIEW", "APPROVED", "REJECTED"] as const;
 export const TICKET_STATUSES = ["PENDING", "UNDER_REVIEW", "COMPLETED"] as const;
 export const PURCHASE_TYPES = ["SETUP_PAYMENT", "ADDON_PAYMENT"] as const;
+
+// ---- Leads ----
+export type LeadSourcePage = "main" | "senior" | "women" | "couple" | "spanish";
+export type LeadStatus = "NEW" | "CONTACTED" | "CONVERTED" | "SPAM";
+
+export interface AdminLeadFilters {
+  page?: number;
+  limit?: number;
+  search?: string;
+  sourcePage?: LeadSourcePage | string;
+  status?: LeadStatus | string;
+  from?: string;
+  to?: string;
+}
+
+export type AdminLeadExportFilters = Omit<AdminLeadFilters, "page" | "limit">;
+
+/** Accepts the documented filter values; string fields also support existing callers. */
+export type AdminLeadQueryArgs = AdminLeadFilters | {
+  page: number;
+  limit: number;
+  search?: string;
+  sourcePage?: string;
+  status?: string;
+  from?: string;
+  to?: string;
+};
+
+export type AdminLeadExportQueryArgs = AdminLeadExportFilters | {
+  search?: string;
+  sourcePage?: string;
+  status?: string;
+  from?: string;
+  to?: string;
+};
+
+export interface Lead {
+  id: string;
+  phone: string;
+  city: string;
+  sourcePage: LeadSourcePage;
+  sessionId: string;
+  utmSource: string | null;
+  utmMedium: string | null;
+  utmCampaign: string | null;
+  utmTerm: string | null;
+  utmContent: string | null;
+  referrer: string | null;
+  smsConsent: boolean;
+  consentedAt?: string;
+  consentAt?: string;
+  consentTextVersion: string;
+  submittedAt: string;
+  updatedAt: string;
+  ipAddress: string | null;
+  userAgent: string | null;
+  status: LeadStatus;
+}
+
+export interface AdminLeadsResponse {
+  success: true;
+  leads: Lead[];
+  pagination: Pagination;
+}
+
+export type AdminLead = Lead;
+
+export interface AdminLeadResponse {
+  success: true;
+  lead: Lead;
+}
+
+export interface UpdateAdminLeadStatusRequest {
+  id: string;
+  status: LeadStatus;
+}
+
+export interface DeleteAdminLeadResponse {
+  success: true;
+  message: string;
+}

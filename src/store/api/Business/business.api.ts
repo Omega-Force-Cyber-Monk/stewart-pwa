@@ -16,6 +16,9 @@ import type {
   LaunchReadinessResponse,
   FinalReviewResponse,
   CompleteLaunchResponse,
+  PublicLeadConfigResponse,
+  CreatePublicLeadRequest,
+  CreatePublicLeadResponse,
 } from "./business.type";
 
 export const businessApi = baseApi.injectEndpoints({
@@ -49,6 +52,17 @@ export const businessApi = baseApi.injectEndpoints({
     }),
     getPublicBusinessBySlug: builder.query<PublicBusinessResponse, string>({
       query: (slug) => `/public/business/${slug}`,
+    }),
+    getPublicLeadConfig: builder.query<PublicLeadConfigResponse, void>({
+      query: () => "/public/lead-config",
+    }),
+    createPublicLead: builder.mutation<CreatePublicLeadResponse, CreatePublicLeadRequest>({
+      query: (body) => ({
+        url: "/public/leads",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Leads"],
     }),
     initializeSetup: builder.mutation<SetupStateResponse, void>({
       query: () => ({
@@ -156,6 +170,8 @@ export const {
   useGetRiderDashboardQuery,
   useGetPublicBusinessFromHostQuery,
   useGetPublicBusinessBySlugQuery,
+  useGetPublicLeadConfigQuery,
+  useCreatePublicLeadMutation,
   useInitializeSetupMutation,
   useGetSetupStateQuery,
   useUpdateSetupStateMutation,

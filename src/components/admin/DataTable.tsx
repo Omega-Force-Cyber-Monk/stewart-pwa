@@ -13,7 +13,7 @@ export function DataTable({ headers, children, showing, actions }: DataTableProp
 
 export function AdminStatusChip({ status }: { status: string }) {
   const normalized = status.toUpperCase();
-  const styles = normalized === "APPROVED" || normalized === "COMPLETED" || normalized === "PAID" ? "bg-green-50 text-green-700" : normalized === "UNDER_REVIEW" ? "bg-blue-50 text-blue-700" : normalized === "REJECTED" || normalized === "FAILED" ? "bg-red-50 text-red-700" : "bg-amber-50 text-amber-700";
+  const styles = normalized === "APPROVED" || normalized === "COMPLETED" || normalized === "PAID" || normalized === "CONVERTED" ? "bg-green-50 text-green-700" : normalized === "UNDER_REVIEW" || normalized === "CONTACTED" ? "bg-blue-50 text-blue-700" : normalized === "REJECTED" || normalized === "FAILED" || normalized === "SPAM" ? "bg-red-50 text-red-700" : "bg-amber-50 text-amber-700";
   const label = status.replace(/_/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
   return <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${styles}`}>{label}</span>;
 }

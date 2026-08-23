@@ -72,7 +72,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
   const { accessToken } = useAppSelector((state) => state.auth);
 
   return (
-    <div className="relative w-full min-h-[90svh] lg:min-h-[85svh] pt-[clamp(56px,7vw,72px)] flex flex-col justify-between overflow-hidden bg-[#f8fafc] border-b border-gray-100 pb-[clamp(2rem,3vw,3rem)] lg:pb-0">
+    <div data-exit-intent-hero className="relative w-full min-h-[90svh] lg:min-h-[85svh] pt-[clamp(56px,7vw,72px)] flex flex-col justify-between overflow-hidden bg-[#f8fafc] border-b border-gray-100 pb-[clamp(2rem,3vw,3rem)] lg:pb-0">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img

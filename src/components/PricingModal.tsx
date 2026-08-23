@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppSelector } from "../hooks/storeHooks";
 import { useCreateRiderCheckoutSessionMutation } from "../store/api/Payment/payment.api";
 import { writeStorageValue, storageKeys } from "../lib/storage";
 import { Loader2, X, Check, AlertTriangle, Rocket, Users } from "lucide-react";
+import { readMarketingOverlayState, setMarketingOverlayState } from "../lib/marketingOverlay";
 
 interface PricingModalProps {
   onClose: () => void;
@@ -13,6 +14,15 @@ const ADDON_ID = "addon";
 
 export function PricingModal({ onClose }: PricingModalProps) {
   const [selectedPlan, setSelectedPlan] = useState<"base" | "bundle" | null>(null);
+
+  useEffect(() => {
+    const current = readMarketingOverlayState();
+    setMarketingOverlayState({ ...current, pricingModalVisible: true });
+    return () => {
+      const next = readMarketingOverlayState();
+      setMarketingOverlayState({ ...next, pricingModalVisible: false });
+    };
+  }, []);
   const [guestEmail, setGuestEmail] = useState("");
   const [validationError, setValidationError] = useState("");
   const { accessToken } = useAppSelector((state) => state.auth);

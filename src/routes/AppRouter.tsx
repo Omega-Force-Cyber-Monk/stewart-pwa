@@ -15,6 +15,7 @@ import { DashboardLayout } from "../components/layout/DashboardLayout";
 import { AdminDashboardLayout } from "../components/layout/AdminDashboardLayout";
 import { useRequireAdmin } from "../hooks/useRequireAdmin";
 import AdminDashboardPage from "../pages/AdminDashboardPage";
+import AdminLeadsPage from "../pages/AdminLeadsPage";
 import AdminDriversPage from "../pages/AdminDriversPage";
 import AdminDriverDetailsPage from "../pages/AdminDriverDetailsPage";
 import AdminResourcesUploadPage from "../pages/AdminResourcesUploadPage";
@@ -76,6 +77,7 @@ export function AppRouter() {
 
       {/* Admin routes */}
       <Route path="/admin" element={<AdminRoute><AdminDashboardLayout><AdminDashboardPage /></AdminDashboardLayout></AdminRoute>} />
+      <Route path="/admin/leads" element={<AdminRoute><AdminDashboardLayout title="Lead Submissions"><AdminLeadsPage /></AdminDashboardLayout></AdminRoute>} />
       <Route path="/admin/drivers" element={<AdminRoute><AdminDashboardLayout title="Drivers Management"><AdminDriversPage /></AdminDashboardLayout></AdminRoute>} />
       <Route path="/admin/drivers/:id" element={<AdminRoute><AdminDashboardLayout title="Drivers Management"><AdminDriverDetailsPage /></AdminDashboardLayout></AdminRoute>} />
       <Route path="/admin/resources-upload" element={<AdminRoute><AdminDashboardLayout title="Resources Upload"><AdminResourcesUploadPage /></AdminDashboardLayout></AdminRoute>} />

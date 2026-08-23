@@ -7,6 +7,7 @@ import {
   removeStorageValue,
   storageKeys,
 } from "../../lib/storage";
+import { readMarketingOverlayState, setMarketingOverlayState, subscribeMarketingOverlayState } from "../../lib/marketingOverlay";
 
 const MARKETING_PATHS = new Set(["/", "/women", "/couple", "/senior", "/spanish"]);
 const ABANDONED_AFTER_MS = 15 * 60 * 1000;
@@ -38,6 +39,14 @@ export function AbandonedCheckoutPrompt() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    const currentOverlayState = readMarketingOverlayState();
+    setMarketingOverlayState({ ...currentOverlayState, abandonedCheckoutVisible: false });
+    const unsubscribePricing = subscribeMarketingOverlayState((state) => {
+      if (state.pricingModalVisible && state.abandonedCheckoutVisible) {
+        setIsVisible(false);
+        setMarketingOverlayState({ ...state, abandonedCheckoutVisible: false });
+      }
+    });
     const host = resolveBusinessHost(
       window.location.hostname,
       import.meta.env.VITE_PUBLIC_BUSINESS_DOMAIN || "quittheapp.com",
@@ -45,20 +54,29 @@ export function AbandonedCheckoutPrompt() {
     const isMarketingPage = MARKETING_PATHS.has(location.pathname);
     if (host.kind !== "main" || !isMarketingPage) {
       setIsVisible(false);
-      return;
+      return unsubscribePricing;
     }
 
     const marker = readMarker();
     if (!marker) {
       setIsVisible(false);
-      return;
+      return unsubscribePricing;
     }
 
     const age = Date.now() - marker.startedAt;
     const cancelled = new URLSearchParams(location.search).get("checkout") === "cancelled";
     const isFreshEnough = age >= ABANDONED_AFTER_MS && age <= MARKER_MAX_AGE_MS;
-    setIsVisible(cancelled || isFreshEnough);
+    const visible = cancelled || isFreshEnough;
+    setIsVisible(visible);
+    const nextOverlayState = readMarketingOverlayState();
+    setMarketingOverlayState({ ...nextOverlayState, abandonedCheckoutVisible: visible });
+    return unsubscribePricing;
   }, [location.pathname, location.search]);
+
+  useEffect(() => () => {
+    const current = readMarketingOverlayState();
+    setMarketingOverlayState({ ...current, abandonedCheckoutVisible: false });
+  }, []);
 
   const dismiss = () => {
     removeStorageValue(storageKeys.abandonedCheckout);

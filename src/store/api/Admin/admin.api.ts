@@ -18,6 +18,12 @@ import type {
   RevenueBucket,
   ActivityEvent,
   RecentDriver,
+  AdminLeadQueryArgs,
+  AdminLeadExportQueryArgs,
+  AdminLeadsResponse,
+  AdminLeadResponse,
+  UpdateAdminLeadStatusRequest,
+  DeleteAdminLeadResponse,
 } from "./admin.type";
 
 export const adminApi = baseApi.injectEndpoints({
@@ -41,6 +47,41 @@ export const adminApi = baseApi.injectEndpoints({
     }),
     getAdminRecentDrivers: build.query<{ success: true; drivers: RecentDriver[] }, { limit?: number }>({
       query: (params) => ({ url: "/admin/recent-drivers", params }),
+    }),
+
+    // ---- Leads ----
+    getLeads: build.query<AdminLeadsResponse, AdminLeadQueryArgs>({
+      query: (params) => ({ url: "/admin/leads", params }),
+      providesTags: (result) => [
+        "Leads",
+        ...(result?.leads ?? []).map(({ id }) => ({ type: "Lead" as const, id })),
+      ],
+    }),
+    getLead: build.query<AdminLeadResponse, string>({
+      query: (id) => `/admin/leads/${id}`,
+      providesTags: (_result, _err, id) => [{ type: "Lead", id }],
+    }),
+    updateLeadStatus: build.mutation<AdminLeadResponse, UpdateAdminLeadStatusRequest>({
+      query: ({ id, status }) => ({
+        url: `/admin/leads/${id}`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: (_result, _err, { id }) => [
+        "Leads",
+        { type: "Lead", id },
+      ],
+    }),
+    deleteLead: build.mutation<DeleteAdminLeadResponse, string>({
+      query: (id) => ({ url: `/admin/leads/${id}`, method: "DELETE" }),
+      invalidatesTags: (_result, _err, id) => ["Leads", { type: "Lead", id }],
+    }),
+    exportLeads: build.query<Blob, AdminLeadExportQueryArgs | void>({
+      query: (params) => ({
+        url: "/admin/leads/export.csv",
+        ...(params ? { params } : {}),
+        responseHandler: (response) => response.blob(),
+      }),
     }),
 
     // ---- Drivers ----
@@ -273,6 +314,19 @@ export const {
   useGetAdminRevenueQuery,
   useGetAdminActivityQuery,
   useGetAdminRecentDriversQuery,
+  // Leads
+  useGetLeadsQuery,
+  useGetLeadQuery,
+  useUpdateLeadStatusMutation,
+  useDeleteLeadMutation,
+  useExportLeadsQuery,
+  useLazyExportLeadsQuery,
+  // Backward-compatible names used by the existing admin page
+  useGetLeadsQuery: useGetAdminLeadsQuery,
+  useGetLeadQuery: useGetAdminLeadQuery,
+  useUpdateLeadStatusMutation: useUpdateAdminLeadStatusMutation,
+  useDeleteLeadMutation: useDeleteAdminLeadMutation,
+  useLazyExportLeadsQuery: useLazyExportAdminLeadsQuery,
   // Drivers
   useGetAdminDriversQuery,
   useGetAdminDriverQuery,

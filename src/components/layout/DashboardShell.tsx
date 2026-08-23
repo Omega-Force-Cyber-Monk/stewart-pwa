@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   BookOpen,
   CalendarDays,
+  ClipboardList,
   CreditCard,
   Globe,
   LayoutDashboard,
@@ -55,6 +56,7 @@ const adminSections: Array<{ title: string; items: NavigationItem[] }> = [
     title: "",
     items: [
       { name: "Dashboard", path: "/admin", icon: LayoutDashboard },
+      { name: "Lead Submissions", path: "/admin/leads", icon: ClipboardList },
       { name: "Drivers Management", path: "/admin/drivers", icon: Users },
       { name: "Resources Upload", path: "/admin/resources-upload", icon: Upload },
       { name: "Billings", path: "/admin/billings", icon: CreditCard },
