@@ -14,7 +14,6 @@ import {
   RefreshCcw,
   Rocket,
   ShieldCheck,
-  Star,
   Users,
   XCircle,
   CreditCard,
@@ -27,9 +26,10 @@ import { useAppDispatch, useAppSelector } from "../hooks/storeHooks";
 import { logOut } from "../store/features/auth/authSlice";
 import { useLogoutUserMutation } from "../store/api/Auth/auth.api";
 import spanishBanner from "../assets/spanishBanner.png";
-import spanishDriver1 from "../assets/spanish_driver_1.jpg";
-import spanishDriver2 from "../assets/spanish_driver_2.jpg";
-import spanishDriver3 from "../assets/spanish_driver_3.jpg";
+import { ExperienceSection } from "../components/marketing/ExperienceSection";
+import spanish1 from "../assets/experience/spanish-1.jpg";
+import spanish2 from "../assets/experience/spanish-2.jpg";
+import spanish3 from "../assets/experience/spanish-3.jpg";
 import { PaymentBadges } from "../components/common/PaymentBadges";
 
 export default function SpanishPage() {
@@ -59,7 +59,7 @@ export default function SpanishPage() {
       <ComparisonSection />
       <WhyWinSection />
       <HowItWorksSection />
-      <ReviewsSection />
+      <ExperienceSectionWrapper />
       <FaqSection />
       <FooterCTASection openPricingModal={openPricingModal} />
     </>
@@ -711,90 +711,35 @@ function HowItWorksSection() {
   );
 }
 
-function ReviewsSection() {
-  const reviews = [
+function ExperienceSectionWrapper() {
+  const cards = [
     {
-      quote:
-        "Quit TheApp me dio todo lo que necesitaba para dejar las apps y construir mi negocio propio.",
-      name: "Alex F.",
-      location: "Phoenix, AZ",
-      image: spanishDriver1,
+      image: spanish1,
+      titlePrefix: "TODO EMPEZÓ CON ",
+      titleHighlight: "SOLO 3 RESERVAS.",
+      description: "Lo que empezó como unos cuantos viajes privados al aeropuerto se convirtió en la base de un negocio real de transporte."
     },
     {
-      quote:
-        "En menos de dos semanas ya tenía reservas directas. Lo mejor que he invertido en mi negocio.",
-      name: "Brenda T.",
-      location: "Dallas, TX",
-      image: spanishDriver2,
+      image: spanish2,
+      titlePrefix: "CERCA DE ",
+      titleHighlight: "6,000 VIAJES PROGRAMADOS EN UN SOLO AÑO.",
+      description: "Los clientes directos se convirtieron en pasajeros frecuentes. Los pasajeros frecuentes trajeron recomendaciones. Los sistemas se construyeron y perfeccionaron en el camino."
     },
     {
-      quote:
-        "Ahora mis clientes me eligen a mi no a una app. Estoy construyendo algo real y duradero.",
-      name: "Carlos M.",
-      location: "Naples, FL, USA",
-      image: spanishDriver3,
-    },
+      image: spanish3,
+      titlePrefix: "QUITTHEAPP NACIÓ DE ",
+      titleHighlight: "TODO LO QUE PASÓ EN EL CAMINO.",
+      description: "No necesitas miles de clientes para empezar. Necesitas un lugar donde comenzar, un sistema que seguir y un proceso simple que pueda lanzar la página de tu negocio una vez que tu información esté completa."
+    }
   ];
 
   return (
-    <section className="bg-white py-3" id="reviews">
-      <PageContainer size="full">
-        <div className="w-full rounded-[2rem] border border-slate-200 shadow-sm p-6 bg-white">
-          <h2 className="text-[1.1rem] sm:text-xl lg:text-[1.35rem] font-bold text-[#1a1f71] text-center mb-8 uppercase tracking-wide">
-            CONDUCTORES INDEPENDIENTES ESTÁN CONSTRUYENDO SUS PROPIOS NEGOCIOS
-          </h2>
-
-          <div className="flex flex-col lg:flex-row items-stretch justify-between gap-8 lg:gap-0 lg:divide-x divide-slate-100 w-full">
-            {reviews.map((review, idx) => (
-              <div
-                key={idx}
-                className="flex flex-col sm:flex-row items-stretch gap-4 sm:gap-6 w-full flex-1 lg:px-6 first:pl-0 last:pr-0"
-              >
-                {/* Image */}
-                <div className="shrink-0 w-full sm:w-[130px] lg:w-[140px] flex">
-                  <img
-                    src={review.image}
-                    alt={review.name}
-                    loading="lazy"
-                    className="w-full h-40 sm:h-full rounded-xl object-cover object-top shadow-sm"
-                  />
-                </div>
-
-                {/* Review Content */}
-                <div className="flex flex-col justify-start py-1 text-left flex-1">
-                  {/* Quote */}
-                  <p className="text-[#1a1f71] font-medium text-sm sm:text-base leading-snug mb-4">
-                    "{review.quote}"
-                  </p>
-
-                  <div className="mt-auto">
-                    {/* Stars */}
-                    <div className="flex items-center justify-start gap-[2px] mb-2">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className="w-[18px] h-[18px] fill-[#eab308] text-[#eab308]"
-                        />
-                      ))}
-                    </div>
-
-                    {/* Author */}
-                    <div>
-                      <h5 className="font-bold text-[#1a1f71] text-[15px] leading-tight">
-                        {review.name}
-                      </h5>
-                      <span className="text-[#1a1f71] font-medium text-sm">
-                        {review.location}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </PageContainer>
-    </section>
+    <ExperienceSection 
+      title="CONSTRUIDO CON EXPERIENCIA REAL EN TRANSPORTE"
+      titleClassName="text-[#1a1f71]"
+      highlightClassName="text-[#22c55e]"
+      cards={cards}
+    />
   );
 }
 

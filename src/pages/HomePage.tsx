@@ -19,7 +19,6 @@ import {
   RefreshCcw,
   Rocket,
   ShieldCheck,
-  Star,
   Users,
   XCircle,
   CreditCard,
@@ -30,9 +29,10 @@ import { PageContainer } from "../components/layout/PageContainer";
 import seniorBanner from "../assets/standardBanner.png";
 import coupleComparisonLeft from "../assets/coupleComparisonSectionLeft.png";
 import coupleComparisonRight from "../assets/coupleComparisonSectionRight.png";
-import timGImage from "../assets/Main_selling_Page_Tim_G.jpg";
-import tomRImage from "../assets/Main_Page_Tom_R.jpg";
-import williamRImage from "../assets/Main_Page_william_R.jpg";
+import { ExperienceSection } from "../components/marketing/ExperienceSection";
+import standard1 from "../assets/experience/standard-1.jpg";
+import standard2 from "../assets/experience/standard-2.jpg";
+import standard3 from "../assets/experience/standard-3.jpg";
 
 export default function HomePage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -78,7 +78,7 @@ export default function HomePage() {
       <ComparisonSection />
       <WhyWinSection />
       <HowItWorksSection />
-      <ReviewsSection />
+      <ExperienceSectionWrapper />
       <FaqSection />
       <FooterCTASection openPricingModal={openPricingModal} />
     </>
@@ -848,90 +848,35 @@ function HowItWorksSection() {
   );
 }
 
-function ReviewsSection() {
-  const reviews = [
+function ExperienceSectionWrapper() {
+  const cards = [
     {
-      quote:
-        "We launched in 3 weeks and booked our first airport ride in 7 days. I finally have freedom and extra income on my own terms.",
-      name: "Tim G.",
-      location: "Knoxville, TN",
-      image: timGImage,
+      image: standard1,
+      titlePrefix: "IT STARTED WITH ",
+      titleHighlight: "JUST 3 BOOKINGS.",
+      description: "What began as a handful of private airport rides became the foundation of a real transportation business."
     },
     {
-      quote:
-        "The system is simple, professional, and it works. I set my schedule and now I'm meeting great people every day.",
-      name: "Tom R.",
-      location: "Tampa, FL",
-      image: tomRImage,
+      image: standard2,
+      titlePrefix: "NEARLY ",
+      titleHighlight: "6,000 SCHEDULED RIDES IN A SINGLE YEAR.",
+      description: "Direct clients became repeat riders. Repeat riders created referrals. Systems were built and refined along the way."
     },
     {
-      quote:
-        "We started part time and now we're fully booked most weeks. This business has given us the life we wanted.",
-      name: "William B.",
-      location: "Houston, TX",
-      image: williamRImage,
-    },
+      image: standard3,
+      titlePrefix: "QUITTHEAPP WAS ",
+      titleHighlight: "BUILT FROM WHAT HAPPENED IN BETWEEN.",
+      description: "You don't need thousands of customers to begin. You need a place to start, a system to follow, and a simple process that can launch your business page once your information is complete."
+    }
   ];
 
   return (
-    <section className="bg-white py-3" id="reviews">
-      <PageContainer size="full">
-        <div className="w-full rounded-[2rem] border border-slate-200 shadow-sm p-6 bg-white">
-          <h2 className="text-[1.1rem] sm:text-xl lg:text-[1.35rem] font-extrabold text-[#1a1f71] text-center mb-8 uppercase tracking-wide">
-            INDEPENDENT DRIVERS ARE BUILDING THEIR OWN TRANSPORTATION BUSINESSES
-          </h2>
-
-          <div className="flex flex-col lg:flex-row items-stretch justify-between gap-8 lg:gap-0 lg:divide-x divide-slate-100 w-full">
-            {reviews.map((review, idx) => (
-              <div
-                key={idx}
-                className="flex flex-col sm:flex-row items-stretch gap-4 sm:gap-6 w-full flex-1 lg:px-6 first:pl-0 last:pr-0"
-              >
-                {/* Image */}
-                <div className="shrink-0 w-full sm:w-[130px] lg:w-[140px] flex">
-                  <img
-                    src={review.image}
-                    alt={review.name}
-                    loading="lazy"
-                    className="w-full h-40 sm:h-full rounded-xl object-cover object-top shadow-sm"
-                  />
-                </div>
-
-                {/* Review Content */}
-                <div className="flex flex-col justify-start py-1 text-left flex-1">
-                  {/* Quote */}
-                  <p className="text-[#1a1f71] font-bold text-xs sm:text-[13px] leading-relaxed mb-4 italic">
-                    "{review.quote}"
-                  </p>
-
-                  <div className="mt-auto">
-                    {/* Stars */}
-                    <div className="flex items-center justify-start gap-[2px] mb-2">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className="w-4 h-4 fill-[#eab308] text-[#eab308]"
-                        />
-                      ))}
-                    </div>
-
-                    {/* Author */}
-                    <div>
-                      <div className="font-bold text-[#1a1f71] text-[13px] sm:text-sm">
-                        {review.name}
-                      </div>
-                      <div className="text-[#1a1f71] text-xs font-medium">
-                        {review.location}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </PageContainer>
-    </section>
+    <ExperienceSection 
+      title="BUILT FROM REAL TRANSPORTATION EXPERIENCE"
+      titleClassName="text-[#1a1f71]"
+      highlightClassName="text-[#22c55e]"
+      cards={cards}
+    />
   );
 }
 

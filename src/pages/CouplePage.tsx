@@ -14,7 +14,6 @@ import {
   RefreshCcw,
   Rocket,
   ShieldCheck,
-  Star,
   Users,
   XCircle,
   CreditCard,
@@ -30,9 +29,11 @@ import { useLogoutUserMutation } from "../store/api/Auth/auth.api";
 import coupleBanner from "../assets/coupleBanner.png";
 import coupleComparisonLeft from "../assets/coupleComparisonSectionLeft.png";
 import coupleComparisonRight from "../assets/coupleComparisonSectionRight.png";
-import markLisaImage from "../assets/Couples_Mark_Lisa.jpg";
-import tomKarenImage from "../assets/Couples_tom_Karen.jpg";
-import ryanMichelleImage from "../assets/Couple_Ryan_Michelle.jpg";
+import { ExperienceSection } from "../components/marketing/ExperienceSection";
+import couple1 from "../assets/experience/couple-1.jpg";
+import couple2 from "../assets/experience/couple-2.jpg";
+import couple3 from "../assets/experience/couple-3.jpg";
+import { User, Heart, TrendingUp } from "lucide-react";
 
 export default function CouplePage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -61,7 +62,7 @@ export default function CouplePage() {
       <ComparisonSection />
       <WhyWinSection />
       <HowItWorksSection />
-      <ReviewsSection />
+      <ExperienceSectionWrapper />
       <FaqSection />
       <FooterCTASection openPricingModal={openPricingModal} />
     </>
@@ -748,90 +749,38 @@ function HowItWorksSection() {
   );
 }
 
-function ReviewsSection() {
-  const reviews = [
+function ExperienceSectionWrapper() {
+  const cards = [
     {
-      quote:
-        "We followed the step-by-step launch system and booked our first airport ride shortly after. It's amazing building a business and more freedom together.",
-      name: "Mark & Lisa",
-      location: "Phoenix, AZ",
-      image: markLisaImage,
+      image: couple1,
+      icon: <User className="w-7 h-7 text-[#eab308]" />,
+      titlePrefix: "",
+      titleHighlight: "IT STARTED WITH JUST 3 BOOKINGS.",
+      description: "What began as a handful of private airport rides became the foundation of a real transportation business."
     },
     {
-      quote:
-        "The system is everything we needed. We finally have control of our schedule and our income.",
-      name: "Tom & Karen",
-      location: "Dallas, TX",
-      image: tomKarenImage,
+      image: couple2,
+      icon: <TrendingUp className="w-7 h-7 text-[#eab308]" />,
+      titlePrefix: "",
+      titleHighlight: "NEARLY 6,000 SCHEDULED RIDES IN A SINGLE YEAR.",
+      description: "Direct clients became repeat riders. Repeat riders created referrals. Systems were built and refined over time."
     },
     {
-      quote:
-        "We love helping travelers and building a business that's 100% ours. This business has changed our future.",
-      name: "Ryan & Michelle",
-      location: "Charlotte, NC",
-      image: ryanMichelleImage,
-    },
+      image: couple3,
+      icon: <Heart className="w-7 h-7 text-[#eab308]" />,
+      titlePrefix: "",
+      titleHighlight: "QUITTHEAPP WAS BUILT FROM WHAT HAPPENED IN BETWEEN.",
+      description: "You don't need thousands of customers to begin. You need a place to start, a system to follow, and something you can build together."
+    }
   ];
 
   return (
-    <section className="bg-white py-3" id="reviews">
-      <PageContainer size="full">
-        <div className="w-full rounded-[2rem] border border-slate-200 shadow-sm p-[clamp(1.5rem,4vw,3.5rem)] bg-white">
-          <h2 className="text-[clamp(1.25rem,2.5vw,1.875rem)] font-extrabold text-[#1a1f71] text-center mb-[clamp(2.5rem,4vw,4rem)] uppercase tracking-wide">
-            COUPLES ACROSS THE COUNTRY ARE BUILDING REAL BUSINESSES TOGETHER
-          </h2>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-6 lg:divide-x divide-slate-100 w-full">
-            {reviews.map((review, idx) => (
-              <div
-                key={idx}
-                className="flex flex-col sm:flex-row lg:flex-col xl:flex-row items-stretch gap-4 sm:gap-6 w-full flex-1 lg:px-6 first:pl-0 last:pr-0"
-              >
-                {/* Image */}
-                <div className="shrink-0 w-full sm:w-[150px] lg:w-full xl:w-[140px] flex">
-                  <img
-                    src={review.image}
-                    alt={review.name}
-                    loading="lazy"
-                    className="w-full h-48 sm:h-auto lg:h-48 xl:h-auto rounded-2xl object-cover object-top shadow-sm"
-                  />
-                </div>
-
-                {/* Review Content */}
-                <div className="flex flex-col justify-start py-1 text-left flex-1">
-                  {/* Quote */}
-                  <p className="text-slate-800 font-medium text-[clamp(0.875rem,1.1vw,1rem)] leading-relaxed mb-[clamp(1.5rem,2vw,2rem)]">
-                    "{review.quote}"
-                  </p>
-
-                  <div className="mt-auto">
-                    {/* Stars */}
-                    <div className="flex items-center justify-start gap-1 mb-2">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className="w-5 h-5 fill-[#eab308] text-[#eab308]"
-                        />
-                      ))}
-                    </div>
-
-                    {/* Author */}
-                    <div>
-                      <h5 className="font-extrabold text-[#1a1f71] text-[clamp(1rem,1.2vw,1.125rem)] leading-tight">
-                        {review.name}
-                      </h5>
-                      <span className="text-slate-600 font-medium text-[clamp(0.875rem,1vw,0.875rem)]">
-                        {review.location}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </PageContainer>
-    </section>
+    <ExperienceSection 
+      title="BUILT FROM REAL TRANSPORTATION EXPERIENCE"
+      titleClassName="text-[#1a1f71]"
+      highlightClassName="text-[#eab308]"
+      cards={cards}
+    />
   );
 }
 

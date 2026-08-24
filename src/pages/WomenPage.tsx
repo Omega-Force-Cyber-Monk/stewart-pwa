@@ -32,9 +32,11 @@ import { useLogoutUserMutation } from "../store/api/Auth/auth.api";
 import womenBannerImage from "../assets/womenBannerImage.png";
 import womenMiddleSection from "../assets/womenMiddleSection.png";
 import womenLogo from "../assets/womenLogo.png";
-import jessicaImage from "../assets/Women_Page_Jessica.jpg";
-import mariaImage from "../assets/Womans_Page_Maria.jpg";
-import lisaImage from "../assets/Womans_Page_Lisa.jpg";
+import { ExperienceSection } from "../components/marketing/ExperienceSection";
+import women1 from "../assets/experience/women-1.jpg";
+import women2 from "../assets/experience/women-2.jpg";
+import women3 from "../assets/experience/women-3.jpg";
+import { TrendingUp } from "lucide-react";
 import { PaymentBadges } from "../components/common/PaymentBadges";
 
 export default function WomenPage() {
@@ -66,7 +68,7 @@ export default function WomenPage() {
       <ComparisonSection />
       <WhyWinSection />
       <HowItWorksSection />
-      <ReviewsSection />
+      <ExperienceSectionWrapper />
       <FaqSection />
       <FooterCTASection openPricingModal={openPricingModal} />
     </>
@@ -512,88 +514,38 @@ function HowItWorksSection() {
   );
 }
 
-function ReviewsSection() {
-  const reviews = [
+function ExperienceSectionWrapper() {
+  const cards = [
     {
-      quote:
-        "I launched in 2 weeks and my repeat bookings and referrals keep growing.",
-      name: "Jessica M.",
-      location: "Austin, TX",
-      image: jessicaImage,
+      image: women1,
+      icon: <User className="w-7 h-7 text-[#f42661]" />,
+      titlePrefix: "",
+      titleHighlight: "IT STARTED WITH JUST 3 BOOKINGS.",
+      description: "What began as a handful of private airport rides became the foundation of a real transportation business."
     },
     {
-      quote:
-        "My clients love the touch of trust and care I bring to every ride.",
-      name: "Maria R.",
-      location: "Scottsdale, AZ",
-      image: mariaImage,
+      image: women2,
+      icon: <TrendingUp className="w-7 h-7 text-[#f42661]" />,
+      titlePrefix: "",
+      titleHighlight: "NEARLY 6,000 SCHEDULED RIDES IN A SINGLE YEAR.",
+      description: "Direct clients became repeat riders. Repeat riders created referrals. Trust, relationships, and systems built the business over time."
     },
     {
-      quote:
-        "This system gave me the freedom to build a business I'm proud of.",
-      name: "Lisa T.",
-      location: "Charlotte, NC",
-      image: lisaImage,
-    },
+      image: women3,
+      icon: <Heart className="w-7 h-7 text-[#f42661]" />,
+      titlePrefix: "",
+      titleHighlight: "QUITTHEAPP WAS BUILT FROM WHAT HAPPENED IN BETWEEN.",
+      description: "You don't need thousands of customers to begin. You need a place to start, a system to follow, and the confidence to build something on your terms."
+    }
   ];
 
   return (
-    <section className="bg-white py-3" id="reviews">
-      <PageContainer size="full">
-        <div className="w-full rounded-[2rem] border border-slate-200 shadow-sm p-[clamp(1rem,2vw,1.5rem)] bg-white">
-          <h2 className="text-[clamp(1.375rem,3vw,2rem)] font-bold text-[#0b0f19] text-center mb-8 text-balance">
-            Women Operators Are Building Real Businesses
-          </h2>
-
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-6 w-full">
-            {reviews.map((review, idx) => (
-              <div
-                key={idx}
-                className="flex flex-col sm:flex-row items-stretch gap-4 sm:gap-5 w-full flex-1 min-w-0"
-              >
-                {/* Image */}
-                <div className="shrink-0 w-full sm:w-[150px] lg:w-[140px] xl:w-[160px] flex">
-                  <img
-                    src={review.image}
-                    alt={review.name}
-                    loading="lazy"
-                    className="w-full h-40 sm:h-full rounded-2xl object-cover object-top shadow-sm"
-                  />
-                </div>
-
-                {/* Review Content */}
-                <div className="flex flex-col justify-between py-1 text-center sm:text-left min-w-0">
-                  {/* Stars */}
-                  <div className="flex items-center justify-center sm:justify-start gap-1 mb-2">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="w-4 h-4 fill-amber-400 text-amber-400"
-                      />
-                    ))}
-                  </div>
-
-                  {/* Quote */}
-                  <p className="text-[#0b0f19] font-medium text-sm sm:text-base leading-snug mb-3 text-pretty">
-                    "{review.quote}"
-                  </p>
-
-                  {/* Author */}
-                  <div>
-                    <h5 className="font-bold text-[#f42661] text-sm sm:text-base">
-                      {review.name}
-                    </h5>
-                    <span className="text-slate-600 text-xs sm:text-sm">
-                      {review.location}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </PageContainer>
-    </section>
+    <ExperienceSection 
+      title="BUILT FROM REAL TRANSPORTATION EXPERIENCE"
+      titleClassName="text-[#f42661]"
+      highlightClassName="text-[#f42661]"
+      cards={cards}
+    />
   );
 }
 

@@ -100,43 +100,43 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <div className="relative w-full max-w-[724px] overflow-y-auto rounded-[26px] bg-white px-7 py-9 shadow-2xl sm:px-9 sm:py-12 md:px-10 md:py-12">
+      <div className="relative w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 sm:p-8 shadow-2xl">
         <button
           type="button"
           onClick={onClose}
           aria-label="Close popup"
-          className="absolute right-7 top-7 rounded-lg p-1 text-slate-900 transition hover:bg-slate-100 sm:right-9 sm:top-9"
+          className="absolute right-4 top-4 rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 sm:right-5 sm:top-5"
         >
-          <X className="h-6 w-6" strokeWidth={1.5} />
+          <X className="h-5 w-5" strokeWidth={1.5} />
         </button>
 
         {submitted ? (
-          <div className="flex min-h-[430px] flex-col items-center justify-center text-center">
-            <CheckCircle2 className="mb-5 h-16 w-16 text-[#2aa84a]" strokeWidth={1.5} />
-            <h2 className="max-w-xl text-3xl font-bold leading-tight text-[#121212] sm:text-4xl">
+          <div className="flex min-h-[300px] flex-col items-center justify-center text-center">
+            <CheckCircle2 className="mb-4 h-14 w-14 text-[#2aa84a]" strokeWidth={1.5} />
+            <h2 className="text-2xl font-bold leading-tight text-[#121212] sm:text-3xl">
               Thanks — your request was received.
             </h2>
-            <p className="mt-5 max-w-xl text-lg leading-7 text-slate-500">
+            <p className="mt-3 text-base leading-relaxed text-slate-500">
               We’ll send the requested checklist or guide to the phone number provided.
             </p>
-            <button type="button" onClick={onClose} className="mt-9 rounded-lg bg-[#2aa84a] px-8 py-3 text-sm font-semibold text-white hover:bg-[#23913f]">
+            <button type="button" onClick={onClose} className="mt-7 rounded-lg bg-[#2aa84a] px-8 py-2.5 text-sm font-semibold text-white hover:bg-[#23913f] transition-colors">
               Close
             </button>
           </div>
         ) : (
           <>
-            <h2 id="exit-intent-title" className="max-w-[600px] pr-8 text-3xl font-bold leading-[1.2] tracking-tight text-[#121212] sm:text-[36px]">
+            <h2 id="exit-intent-title" className="pr-6 text-2xl font-bold leading-tight tracking-tight text-[#121212] sm:text-[28px]">
               {config.headline}
             </h2>
-            <p className="mt-5 max-w-[635px] text-lg leading-6 text-[#929292] sm:text-[19px]">
+            <p className="mt-3 text-base leading-relaxed text-[#666]">
               {config.subhead}
             </p>
 
-            <form onSubmit={handleSubmit} className="mt-9 space-y-4">
-              <label className="block text-base font-medium text-[#171717]">
+            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+              <label className="block text-sm font-semibold text-[#171717]">
                 {config.locale === "es" ? "Número de teléfono" : "Phone Number"}<span className="text-red-500">*</span>
-                <span className="relative mt-2 block">
-                  <Phone className="pointer-events-none absolute left-4 top-1/2 h-6 w-6 -translate-y-1/2 text-[#111]" strokeWidth={1.5} />
+                <span className="relative mt-1.5 block">
+                  <Phone className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" strokeWidth={1.5} />
                   <input
                     value={phone}
                     onChange={(event) => setPhone(event.target.value)}
@@ -144,40 +144,40 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
                     autoComplete="tel"
                     placeholder="(415) 555-0134"
                     aria-label="Phone number"
-                    className="h-[54px] w-full rounded-lg border border-[#dedede] pl-14 pr-4 text-base outline-none transition focus:border-[#2aa84a] focus:ring-2 focus:ring-green-100"
+                    className="h-12 w-full rounded-lg border border-slate-200 pl-11 pr-4 text-sm outline-none transition focus:border-[#2aa84a] focus:ring-1 focus:ring-[#2aa84a]"
                   />
                 </span>
               </label>
-              <label className="block text-base font-medium text-[#171717]">
+              <label className="block text-sm font-semibold text-[#171717]">
                 {config.locale === "es" ? "Ciudad" : "City"}<span className="text-red-500">*</span>
-                <span className="relative mt-2 block">
-                  <Building2 className="pointer-events-none absolute left-4 top-1/2 h-6 w-6 -translate-y-1/2 text-[#111]" strokeWidth={1.5} />
+                <span className="relative mt-1.5 block">
+                  <Building2 className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" strokeWidth={1.5} />
                   <input
                     value={city}
                     onChange={(event) => setCity(event.target.value)}
                     autoComplete="address-level2"
                     placeholder="San Francisco"
                     aria-label="City"
-                    className="h-[54px] w-full rounded-lg border border-[#dedede] pl-14 pr-4 text-base outline-none transition focus:border-[#2aa84a] focus:ring-2 focus:ring-green-100"
+                    className="h-12 w-full rounded-lg border border-slate-200 pl-11 pr-4 text-sm outline-none transition focus:border-[#2aa84a] focus:ring-1 focus:ring-[#2aa84a]"
                   />
                 </span>
               </label>
-              <label className="flex items-start gap-4 pt-3 text-base leading-6 text-[#4d607b]">
+              <label className="flex items-start gap-3 pt-2 text-sm leading-snug text-slate-500">
                 <input
                   type="checkbox"
                   checked={consent}
                   onChange={(event) => setConsent(event.target.checked)}
-                  className="mt-0.5 h-5 w-5 shrink-0 rounded border-slate-300 accent-[#2aa84a]"
+                  className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 accent-[#2aa84a]"
                 />
                 <span>{consentText}</span>
               </label>
-              {(validationError || submissionError) && <p className="text-sm font-medium text-red-600">{validationError || submissionError}</p>}
-              <button type="submit" disabled={isLoading} className="mt-4 flex h-[58px] w-full items-center justify-center gap-2 rounded-lg bg-[#2aa84a] text-base font-medium text-white transition hover:bg-[#23913f] disabled:cursor-not-allowed disabled:opacity-60">
-                {isLoading && <Loader2 className="h-5 w-5 animate-spin" />}
+              {(validationError || submissionError) && <p className="text-sm font-medium text-red-500">{validationError || submissionError}</p>}
+              <button type="submit" disabled={isLoading} className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#2aa84a] text-sm font-semibold text-white transition hover:bg-[#23913f] disabled:cursor-not-allowed disabled:opacity-60 shadow-sm">
+                {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
                 {config.submitLabel}
               </button>
             </form>
-            <p className="mt-9 text-center text-lg text-[#4d607b]">{config.microcopy}</p>
+            <p className="mt-6 text-center text-sm text-slate-400">{config.microcopy}</p>
           </>
         )}
       </div>
