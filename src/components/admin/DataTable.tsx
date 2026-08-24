@@ -8,7 +8,7 @@ interface DataTableProps {
 }
 
 export function DataTable({ headers, children, showing, actions }: DataTableProps) {
-  return <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"><div className="flex items-center justify-end gap-3 p-4">{actions}</div><div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead className="bg-blue-50 text-xs font-semibold text-blue-700"><tr>{headers.map((header) => <th key={header} className="whitespace-nowrap px-4 py-3">{header}</th>)}</tr></thead><tbody className="divide-y divide-slate-100">{children}</tbody></table></div>{showing && <div className="border-t border-slate-100 px-4 py-3 text-xs text-slate-500">{showing}</div>}</div>;
+  return <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">{actions && <div className="p-4 border-b border-slate-100">{actions}</div>}<div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead className="bg-blue-50 text-xs font-semibold text-blue-700"><tr>{headers.map((header) => <th key={header} className="whitespace-nowrap px-4 py-3">{header}</th>)}</tr></thead><tbody className="divide-y divide-slate-100">{children}</tbody></table></div>{showing && <div className="border-t border-slate-100 px-4 py-3 text-xs text-slate-500">{showing}</div>}</div>;
 }
 
 export function AdminStatusChip({ status }: { status: string }) {

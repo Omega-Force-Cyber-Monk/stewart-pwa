@@ -70,7 +70,7 @@ export default function ResourcesAndGuidesPage() {
       </div>
       <div className="relative">
         <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-        <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search all lessons" className="h-11 w-full rounded-lg border border-slate-200 bg-white pl-12 pr-4 text-sm outline-none focus:border-dashboard-rider focus:ring-2 focus:ring-green-100" />
+        <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search all lessons" className="h-11 w-full rounded-lg border border-slate-200 bg-white pl-12 pr-4 text-sm text-slate-900 outline-none focus:border-dashboard-rider focus:ring-2 focus:ring-green-100 placeholder:text-slate-400" />
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-slate-500">Showing {data?.pagination?.total ?? resources.length} resources</p>
