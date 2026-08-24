@@ -131,7 +131,18 @@ export interface SetupStateResponse {
     business: BusinessInfo;
     acuity: AcuityInfo;
     serviceArea: ServiceAreaInfo;
+    referralCard?: {
+      websiteUrl: string | null;
+      qrCodeUrl: string | null;
+      digitalCardUrl: string | null;
+      printCardUrl: string | null;
+      ready: boolean;
+    };
     progress: ProgressInfo;
+    launchReady?: {
+      ready: boolean;
+      missingRequirements: string[];
+    };
     businessStatus: string;
   };
 }
@@ -179,6 +190,9 @@ export interface ReferralCardData {
   businessName: string;
   businessPhone: string;
   businessEmail: string;
+  businessInfo?: string | null;
+  logoUrl?: string | null;
+  serviceArea?: ServiceAreaInfo;
   businessSlug: string;
   websiteUrl: string;
   bookingUrl: string;
