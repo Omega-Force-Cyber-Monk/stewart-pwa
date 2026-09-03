@@ -6,19 +6,23 @@ import coupleLogo from "../assets/coupleLogo.png";
 import {
   ArrowRight,
   CalendarDays,
-  CheckCircle2,
   ClipboardList,
   Gift,
-  Lock,
   Monitor,
   RefreshCcw,
-  Rocket,
-  ShieldCheck,
-  Star,
   Users,
-  XCircle,
   CreditCard,
   Clock,
+  Car,
+  Target,
+  Heart,
+  Check,
+  CheckCircle2,
+  PenLine,
+  LineChart,
+  Trophy,
+  Lock,
+  Rocket
 } from "lucide-react";
 import { PageContainer } from "../components/layout/PageContainer";
 import { PaymentBadges } from "../components/common/PaymentBadges";
@@ -28,11 +32,9 @@ import { useAppDispatch, useAppSelector } from "../hooks/storeHooks";
 import { logOut } from "../store/features/auth/authSlice";
 import { useLogoutUserMutation } from "../store/api/Auth/auth.api";
 import coupleBanner from "../assets/coupleBanner.png";
-import coupleComparisonLeft from "../assets/coupleComparisonSectionLeft.png";
-import coupleComparisonRight from "../assets/coupleComparisonSectionRight.png";
-import markLisaImage from "../assets/Couples_Mark_Lisa.jpg";
-import tomKarenImage from "../assets/Couples_tom_Karen.jpg";
-import ryanMichelleImage from "../assets/Couple_Ryan_Michelle.jpg";
+import card1 from "../assets/1st card.jpg";
+import card2 from "../assets/2nd card.jpg";
+import card4 from "../assets/4th card.jpg";
 
 export default function CouplePage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -57,12 +59,10 @@ export default function CouplePage() {
       )}
       <Navbar openPricingModal={openPricingModal} />
       <HeroBanner openPricingModal={openPricingModal} />
-      <FeaturesSection />
-      <ComparisonSection />
-      <WhyWinSection />
-      <HowItWorksSection />
-      <ReviewsSection />
-      <FaqSection />
+      <AllYouNeedSection />
+      <TwoPeopleStrengthsSection />
+      <ProvenModelSection />
+      <LaunchKitAndFaqSection openPricingModal={openPricingModal} />
       <FooterCTASection openPricingModal={openPricingModal} />
     </>
   );
@@ -72,188 +72,194 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
   const { accessToken } = useAppSelector((state) => state.auth);
 
   return (
-    <div className="relative w-full min-h-[90svh] lg:min-h-[85svh] pt-[clamp(56px,7vw,72px)] flex flex-col justify-between overflow-hidden bg-[#f8fafc] border-b border-gray-100 pb-[clamp(2rem,3vw,3rem)] lg:pb-0">
-      {/* Background Image */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src={coupleBanner}
-          alt="Couple in a car"
-          className="w-full h-full object-cover object-[75%_top] sm:object-[80%_top] lg:object-[85%_center] pointer-events-none opacity-90"
-        />
-      </div>
+    <div className="relative w-full flex flex-col justify-between bg-white border-b border-gray-100">
+      {/* Background Image and Main Content container */}
+      <div className="relative w-full min-h-[70svh] pt-[clamp(56px,7vw,72px)] flex flex-col justify-between overflow-hidden bg-[#f8fafc] pb-0 lg:pb-0">
 
-      <div className="relative z-10 w-full flex-grow flex items-center py-4 lg:py-0">
-        <PageContainer size="full">
-          <div className="flex flex-col lg:flex-row w-full justify-between items-start lg:items-center gap-8 xl:gap-12">
-            {/* Left Side Content */}
-            <div className="w-full lg:w-1/2 text-left z-10 relative">
-              <h1 className="text-[clamp(1.35rem,2vw,2rem)] font-extrabold text-[#060D64] leading-[1.1] mb-[clamp(0.75rem,1vw,1rem)] tracking-tight uppercase">
-                Build An Airport
-                <br />
-                Transportation Business
-                <br />
-                <span className="text-[#2563eb] text-[clamp(1.75rem,3vw,2.5rem)] relative inline-block mt-2 font-extrabold">
-                  Together.
-                  <svg
-                    className="absolute -bottom-2 sm:-bottom-3 left-0 w-full h-2 sm:h-3 text-[#eab308]"
-                    viewBox="0 0 100 10"
-                    preserveAspectRatio="none"
-                  >
-                    <path
-                      d="M0 5 Q 50 10 100 0"
-                      fill="transparent"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </span>
-              </h1>
+        {/* Background Image on the right side */}
+        <div className="absolute inset-0 w-full h-full flex justify-end">
+          <div className="relative w-full lg:w-[70%] h-full">
+            {/* Left edge fade for ultra-wide screens */}
+            <div className="hidden lg:block absolute inset-y-0 left-0 w-48 bg-gradient-to-r from-[#f8fafc] via-[#f8fafc]/80 to-transparent z-10"></div>
+            <img
+              src={coupleBanner}
+              alt="Couple in a car"
+              className="w-full h-full object-cover object-[75%_top] sm:object-[80%_top] lg:object-[85%_center] pointer-events-none opacity-95"
+            />
+          </div>
+        </div>
 
-              <p className="text-[clamp(0.95rem,1.1vw,1.125rem)] text-[#060D64] font-semibold mb-[clamp(1.25rem,1.5vw,1.75rem)] max-w-xl leading-relaxed">
-                Build your own business, your schedule, and the life you
-                want—while helping travelers every day.
-              </p>
+        {/* Light gradient overlay for mobile readability */}
+        <div className="absolute inset-0 w-full h-full bg-gradient-to-t from-white/95 via-white/80 to-transparent lg:hidden z-0"></div>
 
-              <ul className="space-y-3 mb-8 sm:mb-10 max-w-xl">
-                {[
-                  "Attract & keep repeat customers",
-                  "Set your own schedule together",
-                  "Keep the fares paid directly to your business",
-                  "Create long-term income & freedom",
-                  "Build a real business asset as a couple",
-                ].map((item, i) => (
-                  <li
-                    key={i}
-                    className="flex items-center text-[#060D64] font-bold text-[clamp(0.875rem,0.95vw,1rem)]"
-                  >
-                    <CheckCircle2 className="text-white mr-3 w-5 h-5 sm:w-6 sm:h-6 fill-[#2563eb] shrink-0" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-
-              {accessToken ? (
-                <button
-                  onClick={openPricingModal}
-                  className="cursor-pointer bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(0.75rem,0.9vw,1rem)] px-[clamp(1rem,1.2vw,1.5rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/30 flex items-center justify-between group w-full sm:w-auto mb-[clamp(1.5rem,2vw,3rem)]"
-                >
-                  <span className="text-left leading-snug pr-3 text-[clamp(0.9rem,1vw,1.125rem)] font-extrabold">
-                    Start Our Private Airport Business™ — $495
+        <div className="relative z-10 w-full flex-grow flex items-center py-4 lg:py-0">
+          <PageContainer size="full">
+            <div className="flex flex-col lg:flex-row w-full justify-between items-start lg:items-center gap-8 xl:gap-12">
+              {/* Left Side Content */}
+              <div className="w-full lg:w-1/2 text-left z-10 relative bg-white/40 lg:bg-transparent backdrop-blur-sm lg:backdrop-blur-none p-4 sm:p-6 lg:p-0 rounded-2xl lg:rounded-none border border-white/50 lg:border-none shadow-sm lg:shadow-none">
+                <h1 className="text-[clamp(1.75rem,3vw,2.75rem)] font-extrabold text-[#060D64] leading-[1.05] mb-[clamp(0.75rem,1vw,1rem)] tracking-tight uppercase">
+                  BUILD SOMETHING
+                  <br />
+                  OF YOUR OWN.
+                  <br />
+                  <span className="text-[#eab308] relative inline-block mt-1 font-extrabold">
+                    TOGETHER.
                   </span>
-                  <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 group-hover:translate-x-1.5 transition-transform stroke-[2.5]" />
-                </button>
-              ) : (
-                <button
-                  onClick={openPricingModal}
-                  className="cursor-pointer bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(0.75rem,0.9vw,1rem)] px-[clamp(1rem,1.2vw,1.5rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/30 flex items-center justify-between group w-full sm:w-auto mb-[clamp(1.5rem,2vw,3rem)]"
-                >
-                  <span className="text-left leading-snug pr-3 text-[clamp(0.9rem,1vw,1.125rem)] font-extrabold">
-                    Start Our Private Airport Business™ — $495
-                  </span>
-                  <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 group-hover:translate-x-1.5 transition-transform stroke-[2.5]" />
-                </button>
-              )}
-            </div>
+                </h1>
 
-            {/* Right Side Card */}
-            <div className="w-full lg:w-auto xl:w-[40%] flex justify-center xl:justify-end z-10 mt-6 lg:mt-0">
-              <div className="bg-[#0b0f19] rounded-[2rem] p-[clamp(1rem,1.5vw,1.75rem)] shadow-2xl w-fit xl:w-full xl:max-w-[260px] border-t-[4px] border-[#eab308]">
-                <h3 className="text-[#eab308] font-bold text-[clamp(0.75rem,0.85vw,0.875rem)] mb-[clamp(0.5rem,0.75vw,0.75rem)] uppercase tracking-wider">
-                  YOUR BUSINESS GROWS WHEN:
-                </h3>
+                <p className="text-[clamp(0.95rem,1.1vw,1.125rem)] text-[#060D64] font-semibold mb-[clamp(1.25rem,1.5vw,1.75rem)] max-w-[550px] leading-relaxed">
+                  Turn the experience, relationships, skills and resources you've built together into the starting point for a private transportation business you can build as a team.
+                </p>
 
-                <ul className="space-y-2 mb-4">
+                <ul className="space-y-3 mb-2 sm:mb-10 max-w-[500px]">
                   {[
-                    "Customers book again",
-                    "Families refer friends",
-                    "Hotels & airports recommend you",
-                    "Airport travelers save your card",
-                    "Your reputation compounds",
+                    "Build around your life and your goals",
+                    "Combine your strengths and resources",
+                    "Grow through relationships and referrals",
+                    "Create an additional source of income",
+                    "Build a business asset you both own",
                   ].map((item, i) => (
                     <li
                       key={i}
-                      className="flex items-center text-white text-[clamp(0.75rem,0.85vw,0.875rem)] font-semibold"
+                      className="flex items-center text-[#060D64] font-bold text-[clamp(0.875rem,0.95vw,1rem)]"
                     >
-                      <CheckCircle2 className="w-4 h-4 mr-2 fill-[#2563eb] text-white shrink-0" />
+                      <div className="rounded-full bg-[#eab308] flex items-center justify-center shrink-0 mr-3 w-5 h-5 sm:w-6 sm:h-6">
+                        <Check className="text-white w-[60%] h-[60%]" strokeWidth={4} />
+                      </div>
                       <span>{item}</span>
                     </li>
                   ))}
                 </ul>
 
-                <div className="w-full h-px bg-slate-800 mb-6"></div>
-
-                <div>
-                  <h4 className="text-white font-extrabold text-[clamp(1rem,1.5vw,1.4rem)] leading-tight mb-[clamp(0.75rem,1vw,1rem)]">
-                    Real Business.
-                    <br />
-                    Real Customers.
-                    <br />
-                    Real Freedom.™
-                  </h4>
-                  <svg
-                    className="w-20 sm:w-24 h-2.5 sm:h-3 text-[#eab308]"
-                    viewBox="0 0 100 10"
-                    preserveAspectRatio="none"
+                {accessToken ? (
+                  <button
+                    onClick={openPricingModal}
+                    className="cursor-pointer bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(0.75rem,0.9vw,1rem)] px-[clamp(1rem,1.2vw,1.5rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/30 flex items-center justify-between group w-full sm:w-auto mb-[clamp(1.5rem,2vw,3rem)] border border-[#eab308]"
                   >
-                    <path
-                      d="M0 5 Q 50 10 100 0"
-                      fill="transparent"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                      strokeLinecap="round"
-                    />
-                  </svg>
+                    <span className="text-left leading-snug pr-3 text-[clamp(0.9rem,1vw,1.125rem)] font-extrabold">
+                      Start My Private Transportation Business™ — $495
+                    </span>
+                    <div className="bg-[#0b0f19]/10 rounded-full p-1 border border-[#0b0f19]/20 group-hover:bg-[#0b0f19]/20 transition-colors">
+                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 stroke-[2.5]" />
+                    </div>
+                  </button>
+                ) : (
+                  <button
+                    onClick={openPricingModal}
+                    className="cursor-pointer bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(0.75rem,0.9vw,1rem)] px-[clamp(1rem,1.2vw,1.5rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/30 flex items-center justify-between group w-full sm:w-auto mb-[clamp(1.5rem,2vw,3rem)] border border-[#eab308]"
+                  >
+                    <span className="text-left leading-snug pr-3 text-[clamp(0.9rem,1vw,1.125rem)] font-extrabold">
+                      Start My Private Transportation Business™ — $495
+                    </span>
+                    <div className="bg-[#0b0f19]/10 rounded-full p-1 border border-[#0b0f19]/20 group-hover:bg-[#0b0f19]/20 transition-colors">
+                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 stroke-[2.5]" />
+                    </div>
+                  </button>
+                )}
+              </div>
+
+              {/* Right Side Card */}
+              <div className="w-full lg:w-auto xl:w-[40%] flex justify-center xl:justify-end z-10 mt-6 lg:mt-0">
+                <div className="bg-[#0b0f19] rounded-[1.5rem] p-[clamp(1.25rem,1.5vw,2rem)] shadow-2xl w-fit xl:w-full xl:max-w-[320px] border border-white/10 relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-[4px] bg-[#eab308]"></div>
+
+                  <h3 className="text-[#eab308] font-bold text-[clamp(0.85rem,1vw,0.95rem)] mb-[clamp(1rem,1.25vw,1.25rem)] uppercase tracking-wide">
+                    YOUR BUSINESS GROWS WHEN:
+                  </h3>
+
+                  <ul className="space-y-3 mb-6">
+                    {[
+                      "Clients book again",
+                      "Friends and family refer you",
+                      "Travelers save your contact information",
+                      "Your reputation grows with every great ride",
+                    ].map((item, i) => (
+                      <li
+                        key={i}
+                        className="flex items-start text-white text-[clamp(0.85rem,1vw,0.95rem)] font-medium leading-snug"
+                      >
+                        <div className="rounded-full bg-[#eab308] flex items-center justify-center shrink-0 mr-3 w-5 h-5 mt-0.5">
+                          <Check className="text-[#0b0f19] w-[65%] h-[65%]" strokeWidth={4} />
+                        </div>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="w-full h-px bg-white/10 mb-6"></div>
+
+                  <div>
+                    <h4 className="text-white font-extrabold text-[clamp(1.1rem,1.5vw,1.4rem)] leading-tight mb-[clamp(0.5rem,0.75vw,0.75rem)]">
+                      Real Business.
+                      <br />
+                      Real Clients.
+                      <br />
+                      Real Freedom.™
+                    </h4>
+                    <svg
+                      className="w-24 sm:w-28 h-2 sm:h-2.5 text-[#eab308]"
+                      viewBox="0 0 100 10"
+                      preserveAspectRatio="none"
+                    >
+                      <path
+                        d="M0 5 Q 50 10 100 0"
+                        fill="transparent"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </PageContainer>
+          </PageContainer>
+        </div>
       </div>
 
-      {/* Bottom Curve & Trust Badges */}
-      <div className="relative z-20 w-full lg:w-[70%] xl:w-[60%] bg-white lg:rounded-tr-[5rem] mt-auto py-[clamp(1.5rem,2vw,2rem)] px-[clamp(1rem,4vw,4rem)] shadow-sm">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-4 xl:gap-6">
-          <div className="flex items-center gap-3 xl:gap-4">
-            <CreditCard
-              className="w-8 h-8 xl:w-10 xl:h-10 text-[#040a23] shrink-0"
-              strokeWidth={1.5}
-            />
-            <div className="text-[clamp(0.75rem,1vw,0.95rem)] font-bold text-[#040a23] leading-tight">
-              One-time payment
-              <br />
-              <span className="font-medium text-slate-600">
-                No monthly fees
-              </span>
+      {/* Bottom Trust Badges (Horizontal centered block) */}
+      <div className="relative z-20 w-full bg-white py-2 border-b border-gray-100">
+        <PageContainer size="full">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 w-full items-center justify-center">
+
+            <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left justify-center">
+              <CreditCard className="w-8 h-8 text-[#060D64] shrink-0" strokeWidth={1.5} />
+              <div className="text-[13px] sm:text-sm font-bold text-[#060D64] leading-tight">
+                One-time payment
+                <br />
+                <span className="font-medium text-slate-600">No monthly fees</span>
+              </div>
             </div>
-          </div>
-          <div className="hidden md:block w-px h-10 bg-slate-200 shrink-0"></div>
-          <div className="flex items-center gap-3 xl:gap-4">
-            <Clock
-              className="w-8 h-8 xl:w-10 xl:h-10 text-[#040a23] shrink-0"
-              strokeWidth={1.5}
-            />
-            <div className="text-[clamp(0.75rem,1vw,0.95rem)] font-bold text-[#040a23] leading-tight">
-              Step-by-Step
-              <br />
-              <span className="font-medium text-slate-600">Quick Launch System</span>
+
+            <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left justify-center border-l-0 md:border-l border-slate-200">
+              <Users className="w-8 h-8 text-[#060D64] shrink-0" strokeWidth={1.5} />
+              <div className="text-[13px] sm:text-sm font-bold text-[#060D64] leading-tight">
+                Built for couples
+                <br />
+                <span className="font-medium text-slate-600">Work together your way</span>
+              </div>
             </div>
-          </div>
-          <div className="hidden md:block w-px h-10 bg-slate-200 shrink-0"></div>
-          <div className="flex items-center gap-3 xl:gap-4">
-            <ShieldCheck
-              className="w-8 h-8 xl:w-10 xl:h-10 text-[#040a23] shrink-0"
-              strokeWidth={1.5}
-            />
-            <div className="text-[clamp(0.75rem,1vw,0.95rem)] font-bold text-[#040a23] leading-tight">
-              Built for couples
-              <br />
-              <span className="font-medium text-slate-600">
-                Your business. Your future.
-              </span>
+
+            <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left justify-center border-l-0 md:border-l border-slate-200">
+              <Clock className="w-8 h-8 text-[#060D64] shrink-0" strokeWidth={1.5} />
+              <div className="text-[13px] sm:text-sm font-bold text-[#060D64] leading-tight">
+                Launch in 48-72 hours
+                <br />
+                <span className="font-medium text-slate-600">We build, you start</span>
+              </div>
             </div>
+
+            <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left justify-center border-l-0 md:border-l border-slate-200">
+              <Headset className="w-8 h-8 text-[#060D64] shrink-0" strokeWidth={1.5} />
+              <div className="text-[13px] sm:text-sm font-bold text-[#060D64] leading-tight">
+                Real human support
+                <br />
+                <span className="font-medium text-slate-600">We're here for you</span>
+              </div>
+            </div>
+
           </div>
-        </div>
+        </PageContainer>
       </div>
     </div>
   );
@@ -263,38 +269,38 @@ const features = [
     icon: CalendarDays,
     title: "Quick Launch Booking System™",
     description:
-      "Get your professional booking flow live fast so you can start getting customers and bookings.",
+      "Create a professional booking flow that lets travelers request rides directly from you.",
   },
   {
     icon: Users,
-    title: "Customer Acquisition Center™",
+    title: "Client Acquisition Center™",
     description:
-      "Get QR cards, referral tools, templates, and more to attract and convert new customers.",
+      "Use QR cards, referral tools, outreach templates, and strategies to attract new clients and generate direct bookings.",
   },
   {
     icon: Monitor,
     title: "Personalized Selling Page™",
     description:
-      "Your trust-building page that turns visitors into bookings and helps you stand out online.",
+      "Show travelers who you are, what you do and why they can trust you — all in one place.",
   },
   {
     icon: RefreshCcw,
     title: "Repeat Rider Engine™",
     description:
-      "Build repeat customers and referrals so your business grows month after month.",
+      "Follow up, request reviews, encourage referrals, and turn successful rides into repeat bookings.",
   },
 ];
 
-function FeaturesSection() {
+function AllYouNeedSection() {
   return (
-    <section className="bg-white py-3" id="how-it-works">
+    <section className="bg-white py-1" id="how-it-works">
       <PageContainer size="full">
-        <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-[clamp(1.5rem,4vw,3.5rem)]">
-          <h2 className="text-center text-[#1a1f71] font-extrabold text-[clamp(1.25rem,2.5vw,1.875rem)] tracking-wide uppercase mb-[clamp(2.5rem,4vw,4rem)]">
-            YOUR CORE SYSTEMS™ FOR BUILDING YOUR BUSINESS
+        <div className="bg-white p-2">
+          <h2 className="text-center text-[#060D64] font-extrabold text-[clamp(1.25rem,2vw,1.75rem)] tracking-wide uppercase mb-2">
+            EVERYTHING YOU NEED TO TURN THE OPPORTUNITY INTO A BUSINESS
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-[clamp(2.5rem,4vw,3.5rem)] gap-x-[clamp(1.5rem,2vw,2rem)] relative mb-[clamp(3rem,4.5vw,4.5rem)]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-4 lg:gap-y-[clamp(2.5rem,4vw,3.5rem)] gap-x-[clamp(1.5rem,2vw,2rem)] relative mb-4">
             {features.map((feature, idx) => (
               <div
                 key={idx}
@@ -302,14 +308,14 @@ function FeaturesSection() {
               >
                 <div className="mb-[clamp(1rem,1.5vw,1.5rem)]">
                   <feature.icon
-                    className="w-[clamp(3rem,4vw,4rem)] h-[clamp(3rem,4vw,4rem)] text-[#2563eb]"
+                    className="w-[clamp(2.5rem,3vw,3rem)] h-[clamp(2.5rem,3vw,3rem)] text-[#eab308]"
                     strokeWidth={1.5}
                   />
                 </div>
-                <h3 className="font-extrabold text-[#0b0f19] mb-[clamp(0.5rem,1vw,1rem)] text-[clamp(1rem,1.25vw,1.125rem)] leading-snug">
+                <h3 className="font-extrabold text-[#0b0f19] mb-[clamp(0.5rem,1vw,1rem)] text-[clamp(1rem,1.15vw,1.125rem)] leading-snug">
                   {feature.title}
                 </h3>
-                <p className="text-slate-700 font-medium text-[clamp(0.875rem,1vw,1rem)] leading-relaxed max-w-[260px]">
+                <p className="text-slate-700 font-medium text-[clamp(0.85rem,0.95vw,0.95rem)] leading-relaxed max-w-[260px]">
                   {feature.description}
                 </p>
 
@@ -325,17 +331,17 @@ function FeaturesSection() {
             ))}
           </div>
 
-          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-[clamp(1.25rem,2vw,2rem)] flex flex-col sm:flex-row items-center justify-center gap-4 max-w-4xl mx-auto mt-[clamp(1rem,2vw,2rem)] shadow-xs">
+          <div className="bg-slate-50 border border-[#eab308]/30 rounded-xl p-[clamp(1rem,1.5vw,1.5rem)] flex flex-col sm:flex-row items-center justify-center gap-4 max-w-4xl mx-auto shadow-sm">
             <Gift
-              className="w-[clamp(2rem,3vw,3rem)] h-[clamp(2rem,3vw,3rem)] text-[#eab308] shrink-0"
+              className="w-[clamp(2rem,2.5vw,2.5rem)] h-[clamp(2rem,2.5vw,2.5rem)] text-[#eab308] shrink-0"
               strokeWidth={1.5}
             />
-            <p className="text-[#0b0f19] text-[clamp(0.875rem,1.1vw,1rem)] text-center sm:text-left leading-relaxed font-medium">
-              <strong className="text-[#1a1f71] font-bold">
+            <p className="text-[#0b0f19] text-[clamp(0.85rem,1vw,0.95rem)] text-center sm:text-left leading-relaxed font-medium">
+              <strong className="text-[#060D64] font-bold">
                 Also includes:
               </strong>{" "}
               Launch Dashboard™ access, Operator Dashboard™ tools, training
-              resources, lifetime updates, and real human support.
+              resources, lifetime updates and real human support.
             </p>
           </div>
         </div>
@@ -344,330 +350,247 @@ function FeaturesSection() {
   );
 }
 
-function ComparisonSection() {
-  const badList = [
-    "App platforms determine pricing",
-    "They retain platform fees",
-    "No customer ownership",
-    "No repeat rider system",
-    "No long-term security",
-  ];
-
-  const goodList = [
-    "You set your rates",
-    "Fares are paid directly to your business",
-    "You own your customers",
-    "You build repeat riders",
-    "You grow referrals",
-    "Customers save YOUR number",
-    "You create long-term income",
-  ];
-
+function TwoPeopleStrengthsSection() {
   return (
-    <section className="bg-white py-3" id="comparison">
+    <section className="bg-white py-1 border-t border-slate-100" id="two-people-strengths">
       <PageContainer size="full">
-        {/* WIDESCREEN DESKTOP LAYOUT (Strict Grid matching screenshot at xl and above) */}
-        <div className="hidden xl:grid grid-cols-[1.1fr_1fr_auto_1.15fr_1.1fr] bg-white border border-slate-200 rounded-[2rem] overflow-hidden shadow-sm items-stretch">
-          {/* 1. Left Image */}
-          <div className="relative min-h-[360px]">
-            <img
-              src={coupleComparisonLeft}
-              alt="Unhappy couple in car"
-              className="absolute inset-0 w-full h-full object-cover object-[right_top]"
-              style={{
-                WebkitMaskImage:
-                  "linear-gradient(to right, black 60%, transparent 100%)",
-                maskImage:
-                  "linear-gradient(to right, black 60%, transparent 100%)",
-              }}
-            />
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch pt-2">
 
-          {/* 2. Left Text */}
-          <div className="flex flex-col justify-center py-8 px-4 2xl:px-6 z-10 bg-white">
-            <h3 className="text-[clamp(1.125rem,1.5vw,1.5rem)] font-extrabold text-[#b91c1c] mb-[clamp(1rem,1.5vw,1.25rem)] uppercase tracking-wide leading-snug">
-              RIDESHARING APPS
-              <br />
-              CONTROL EVERYTHING
+          {/* Column 1: Two People. Two Sets of Strengths. One Business. */}
+          <div className="bg-[#f8fafc] rounded-[1.5rem] p-3 border border-slate-200 flex flex-col h-full shadow-sm">
+            <h3 className="text-[#060D64] font-extrabold text-[clamp(1rem,1.25vw,1.25rem)] leading-tight mb-2 uppercase tracking-wide">
+              TWO PEOPLE. TWO SETS OF STRENGTHS.<br />
+              ONE BUSINESS.
             </h3>
-            <ul className="space-y-3 2xl:space-y-4">
-              {badList.map((item, i) => (
-                <li
-                  key={i}
-                  className="flex items-start text-[#1a1f71] text-[clamp(0.875rem,1.1vw,1.125rem)] font-bold"
-                >
-                  <XCircle className="w-5 h-5 mr-3 mt-[2px] fill-[#b91c1c] text-white shrink-0" />
-                  <span className="leading-snug">{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
 
-          {/* 3. Center VS */}
-          <div className="flex items-center justify-center px-6 2xl:px-8 bg-white z-20">
-            <div className="w-[clamp(4rem,6vw,6rem)] h-[clamp(4rem,6vw,6rem)] bg-[#081363] rounded-full flex items-center justify-center text-white font-extrabold text-[clamp(1.5rem,2vw,2rem)] shadow-md">
-              VS.
+            <div className="space-y-5 mb-2 flex-grow">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-[#060D64] flex items-center justify-center shrink-0">
+                  <Car className="text-white w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-[#060D64] text-sm leading-tight mb-1">One Loves Driving</h4>
+                  <p className="text-slate-600 text-xs leading-relaxed font-medium">Serve clients and create<br />amazing experiences</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-[#060D64] flex items-center justify-center shrink-0">
+                  <ClipboardList className="text-white w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-[#060D64] text-sm leading-tight mb-1">One is Organized</h4>
+                  <p className="text-slate-600 text-xs leading-relaxed font-medium">Manage bookings, schedules<br />and customer communication</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-[#060D64] flex items-center justify-center shrink-0">
+                  <Users className="text-white w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-[#060D64] text-sm leading-tight mb-1">One Knows Everybody</h4>
+                  <p className="text-slate-600 text-xs leading-relaxed font-medium">Build referrals and open doors</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-[#060D64] flex items-center justify-center shrink-0">
+                  <Monitor className="text-white w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-[#060D64] text-sm leading-tight mb-1">One Likes Social Media</h4>
+                  <p className="text-slate-600 text-xs leading-relaxed font-medium">Promote the business and<br />stay connected</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-[#060D64] flex items-center justify-center shrink-0">
+                  <Users className="text-white w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-[#060D64] text-sm leading-tight mb-1">Both Have Networks</h4>
+                  <p className="text-slate-600 text-xs leading-relaxed font-medium">More potential connections<br />to introduce your business</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-[#060D64] flex items-center justify-center shrink-0">
+                  <Target className="text-white w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-[#060D64] text-sm leading-tight mb-1">Both Own the Outcome</h4>
+                  <p className="text-slate-600 text-xs leading-relaxed font-medium">Build something together<br />with a shared vision</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-[#060D64] rounded-xl p-4 flex items-center gap-3 mt-auto">
+              <Check className="text-[#eab308] w-6 h-6 shrink-0" />
+              <p className="text-white text-sm font-medium leading-snug">
+                You decide how your business works best as a team.
+              </p>
             </div>
           </div>
 
-          {/* 4. Right Text */}
-          <div className="flex flex-col justify-center py-8 pl-4 pr-4 2xl:pr-6 z-10 bg-white">
-            <h3 className="text-[clamp(1.125rem,1.5vw,1.5rem)] font-extrabold text-[#1a1f71] mb-[clamp(1rem,1.5vw,1.25rem)] uppercase tracking-wide leading-snug">
-              YOUR AIRPORT TRANSPORTATION
-              <br />
-              BUSINESS™
+          {/* Column 2: Two People. More Ways To Build. */}
+          <div className="bg-white rounded-[1.5rem] p-3 border border-slate-200 flex flex-col h-full shadow-sm">
+            <h3 className="text-[#060D64] font-extrabold text-[clamp(1rem,1.25vw,1.25rem)] leading-tight mb-1 uppercase tracking-wide">
+              TWO PEOPLE. MORE WAYS TO BUILD.
             </h3>
-            <ul className="space-y-3 2xl:space-y-4">
-              {goodList.map((item, i) => (
-                <li
-                  key={i}
-                  className="flex items-start text-[#1a1f71] text-[clamp(0.875rem,1.1vw,1.125rem)] font-bold"
-                >
-                  <CheckCircle2 className="w-5 h-5 mr-3 mt-[2px] fill-[#2563eb] text-white shrink-0" />
-                  <span className="leading-snug">{item}</span>
-                </li>
+            <p className="text-slate-600 font-medium text-sm leading-relaxed mb-2">
+              You decide how to work together and how to build your business.
+            </p>
+
+            <div className="space-y-4 mb-2 flex-grow">
+              <div className="bg-[#f8fafc] rounded-xl p-4 border border-slate-200 flex items-start gap-4">
+                <Car className="text-[#2563eb] w-7 h-7 shrink-0 mt-1" />
+                <div>
+                  <h4 className="font-bold text-[#060D64] text-sm leading-tight mb-1">Both Drive</h4>
+                  <p className="text-slate-600 text-xs leading-relaxed font-medium">More availability and more opportunities to serve customers.</p>
+                </div>
+              </div>
+
+              <div className="bg-[#f8fafc] rounded-xl p-4 border border-slate-200 flex items-start gap-4">
+                <Users className="text-[#2563eb] w-7 h-7 shrink-0 mt-1" />
+                <div>
+                  <h4 className="font-bold text-[#060D64] text-sm leading-tight mb-1">Divide the Work</h4>
+                  <p className="text-slate-600 text-xs leading-relaxed font-medium">One drives while the other handles bookings, communication, marketing or referrals.</p>
+                </div>
+              </div>
+
+              <div className="bg-[#f8fafc] rounded-xl p-4 border border-slate-200 flex items-start gap-4">
+                <Clock className="text-[#2563eb] w-7 h-7 shrink-0 mt-1" />
+                <div>
+                  <h4 className="font-bold text-[#060D64] text-sm leading-tight mb-1">Work Different Schedules</h4>
+                  <p className="text-slate-600 text-xs leading-relaxed font-medium">Build coverage around your individual availability.</p>
+                </div>
+              </div>
+
+              <div className="bg-[#f8fafc] rounded-xl p-4 border border-slate-200 flex items-start gap-4">
+                <Users className="text-[#2563eb] w-7 h-7 shrink-0 mt-1" />
+                <div>
+                  <h4 className="font-bold text-[#060D64] text-sm leading-tight mb-1">Build Together</h4>
+                  <p className="text-slate-600 text-xs leading-relaxed font-medium">Two sets of skills, relationships and networks working toward one business.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-[#060D64] rounded-xl p-4 text-center mt-auto">
+              <p className="text-white text-sm font-medium leading-snug">
+                More ways to serve customers.<br />More capacity. More opportunity.
+              </p>
+            </div>
+          </div>
+
+          {/* Column 3: Your Network + Their Network */}
+          <div className="bg-white rounded-[1.5rem] p-3 border border-slate-200 flex flex-col h-full shadow-sm">
+            <h3 className="text-[#060D64] font-extrabold text-[clamp(1rem,1.25vw,1.25rem)] leading-tight mb-1 uppercase tracking-wide">
+              YOUR NETWORK +<br />THEIR NETWORK =<br />YOUR BUSINESS NETWORK
+            </h3>
+            <p className="text-slate-600 font-medium text-sm leading-relaxed mb-2">
+              Between the two of you, you've built relationships for years. Those relationships can be the starting point for your business.
+            </p>
+
+            <div className="flex items-center justify-between mb-2 px-2">
+              <div className="flex flex-col items-center">
+                <Users className="w-10 h-10 text-[#060D64]" />
+                <span className="text-[10px] font-bold text-[#060D64] mt-1 text-center">Your<br />Network</span>
+              </div>
+              <span className="text-2xl font-extrabold text-[#060D64]">+</span>
+              <div className="flex flex-col items-center">
+                <Users className="w-10 h-10 text-[#060D64]" />
+                <span className="text-[10px] font-bold text-[#060D64] mt-1 text-center">Their<br />Network</span>
+              </div>
+              <span className="text-2xl font-extrabold text-[#060D64]">=</span>
+              <div className="flex flex-col items-center">
+                <Users className="w-12 h-12 text-[#2563eb]" />
+                <span className="text-[10px] font-bold text-[#2563eb] mt-1 text-center">Your Business<br />Network</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-y-3 gap-x-2 mb-2 flex-grow">
+              {[
+                "Church friends",
+                "Local businesses",
+                "Family & relatives",
+                "Professional contacts",
+                "Neighbors & community",
+                "Social groups",
+                "Coworkers (past & present)",
+                "Parents you know",
+                "Clubs, sports & hobbies",
+                "And many more",
+              ].map((item, i) => (
+                <div key={i} className="flex items-start">
+                  <div className="rounded-full bg-[#eab308] flex items-center justify-center shrink-0 w-4 h-4 mr-2 mt-0.5">
+                    <Check className="text-[#0b0f19] w-3 h-3" strokeWidth={4} />
+                  </div>
+                  <span className="text-[11px] font-semibold text-slate-700 leading-tight">{item}</span>
+                </div>
               ))}
-            </ul>
-          </div>
-
-          {/* 5. Right Image */}
-          <div className="relative min-h-[360px]">
-            <img
-              src={coupleComparisonRight}
-              alt="Happy couple in car"
-              className="absolute inset-0 w-full h-full object-cover object-[right_top]"
-              style={{
-                WebkitMaskImage:
-                  "linear-gradient(to left, black 60%, transparent 100%)",
-                maskImage:
-                  "linear-gradient(to left, black 60%, transparent 100%)",
-              }}
-            />
-          </div>
-        </div>
-
-        {/* MOBILE / TABLET / SMALL LAPTOP LAYOUT */}
-        <div className="xl:hidden w-full flex flex-col bg-white border border-slate-200 rounded-[2rem] overflow-hidden shadow-sm">
-          {/* Left Side (Bad) */}
-          <div className="relative flex flex-col sm:flex-row items-stretch border-b border-slate-100">
-            <div className="w-full sm:w-[45%] lg:w-[50%] relative min-h-[240px] sm:min-h-full">
-              <img
-                src={coupleComparisonLeft}
-                alt="Unhappy couple"
-                className="absolute inset-0 w-full h-full object-cover object-[center_top]"
-                style={{
-                  WebkitMaskImage:
-                    "linear-gradient(to right, black 60%, transparent 100%)",
-                  maskImage:
-                    "linear-gradient(to right, black 60%, transparent 100%)",
-                }}
-              />
             </div>
-            <div className="w-full sm:w-[55%] lg:w-[50%] py-8 px-6 md:p-10 relative z-10 flex flex-col justify-center bg-white sm:bg-transparent">
-              <h3 className="text-[clamp(1.125rem,2vw,1.5rem)] font-extrabold text-[#b91c1c] mb-5 uppercase tracking-wide leading-snug">
-                RIDESHARING APPS
-                <br />
-                CONTROL EVERYTHING
-              </h3>
-              <ul className="space-y-3 sm:space-y-4">
-                {badList.map((item, i) => (
-                  <li
-                    key={i}
-                    className="flex items-start text-[#1a1f71] text-[clamp(0.875rem,1.5vw,1.125rem)] font-bold"
-                  >
-                    <XCircle className="w-5 h-5 md:w-6 md:h-6 mr-3 mt-[1px] fill-[#b91c1c] text-white shrink-0" />
-                    <span className="leading-snug">{item}</span>
-                  </li>
-                ))}
-              </ul>
+
+            <div className="bg-[#f8fafc] rounded-xl p-4 border border-[#eab308]/40 flex items-start gap-3 mt-auto shadow-sm">
+              <Heart className="text-[#eab308] w-6 h-6 shrink-0 mt-0.5" />
+              <p className="text-slate-700 text-[13px] font-medium leading-relaxed">
+                One great ride can create a repeat customer. One happy customer can create a referral. Two networks can give your business more places to start.
+              </p>
             </div>
           </div>
 
-          {/* Mobile VS */}
-          <div className="w-full bg-slate-50 py-5 flex items-center justify-center relative z-20 border-y border-slate-200">
-            <div className="w-[clamp(4rem,5vw,5rem)] h-[clamp(4rem,5vw,5rem)] bg-[#081363] rounded-full flex items-center justify-center text-white font-extrabold text-[clamp(1.25rem,2vw,1.5rem)] shadow-md">
-              VS.
-            </div>
-          </div>
-
-          {/* Right Side (Good) */}
-          <div className="relative flex flex-col-reverse sm:flex-row items-stretch">
-            <div className="w-full sm:w-[55%] lg:w-[50%] py-8 px-6 md:p-10 relative z-10 flex flex-col justify-center bg-white sm:bg-transparent">
-              <h3 className="text-[clamp(1.125rem,2vw,1.5rem)] font-extrabold text-[#1a1f71] mb-5 uppercase tracking-wide leading-snug">
-                YOUR AIRPORT TRANSPORTATION BUSINESS™
-              </h3>
-              <ul className="space-y-3 sm:space-y-4">
-                {goodList.map((item, i) => (
-                  <li
-                    key={i}
-                    className="flex items-start text-[#1a1f71] text-[clamp(0.875rem,1.5vw,1.125rem)] font-bold"
-                  >
-                    <CheckCircle2 className="w-5 h-5 md:w-6 md:h-6 mr-3 mt-[1px] fill-[#2563eb] text-white shrink-0" />
-                    <span className="leading-snug">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="w-full sm:w-[45%] lg:w-[50%] relative min-h-[240px] sm:min-h-full">
-              <img
-                src={coupleComparisonRight}
-                alt="Happy couple"
-                className="absolute inset-0 w-full h-full object-cover object-[center_top]"
-                style={{
-                  WebkitMaskImage:
-                    "linear-gradient(to left, black 60%, transparent 100%)",
-                  maskImage:
-                    "linear-gradient(to left, black 60%, transparent 100%)",
-                }}
-              />
-            </div>
-          </div>
         </div>
       </PageContainer>
     </section>
   );
 }
 
-const IconLowerPay = () => (
-  <svg
-    className="w-7 h-7 xl:w-8 xl:h-8 text-[#0a1154]"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M12 2v6" />
-    <path d="M9.5 3.5h3a1.5 1.5 0 0 1 0 3h-3a1.5 1.5 0 0 0 0 3h3.5" />
-    <path d="M3 20l5-5 4 4 7-8" />
-    <path d="M16 11h3v3" />
-  </svg>
-);
 
-const IconDeactivations = () => (
-  <svg
-    className="w-7 h-7 xl:w-8 xl:h-8 text-[#0a1154]"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <rect x="5" y="2" width="14" height="20" rx="3" />
-    <path d="M9.5 9l5 5" />
-    <path d="M14.5 9l-5 5" />
-    <line x1="12" y1="18" x2="12.01" y2="18" />
-  </svg>
-);
 
-const IconLongHours = () => (
-  <svg
-    className="w-7 h-7 xl:w-8 xl:h-8 text-[#0a1154]"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <circle cx="12" cy="12" r="9" />
-    <polyline points="12 7 12 12 15 15" />
-  </svg>
-);
-
-const IconAppsGrow = () => (
-  <svg
-    className="w-7 h-7 xl:w-8 xl:h-8 text-[#0a1154]"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M4 14l6-6 4 4 6-7" />
-    <path d="M16 5h4v4" />
-    <rect x="4" y="16" width="3" height="5" rx="0.5" />
-    <rect x="9" y="14" width="3" height="7" rx="0.5" />
-    <rect x="14" y="11" width="3" height="10" rx="0.5" />
-    <rect x="19" y="8" width="3" height="13" rx="0.5" />
-  </svg>
-);
-
-const IconNoOwnership = () => (
-  <svg
-    className="w-7 h-7 xl:w-8 xl:h-8 text-[#0a1154]"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3" />
-    <path d="M19 19c-1 2.5-3.5 3-7 2.5" />
-    <circle cx="11" cy="21.5" r="1" />
-  </svg>
-);
-
-function WhyWinSection() {
-  const reasons = [
-    {
-      icon: IconLowerPay,
-      title: "Lower pay.\nHigher fees.",
-      description: "You earn less\nevery year.",
-    },
-    {
-      icon: IconDeactivations,
-      title: "Unfair deactivations\nwith no warning.",
-      description: "One issue can take away\nyour only income.",
-    },
-    {
-      icon: IconLongHours,
-      title: "Long hours.\nNo freedom.",
-      description: "You're always on their\nschedule, not your own.",
-    },
-    {
-      icon: IconAppsGrow,
-      title: "Apps grow.\nYou stay stuck.",
-      description: "They take billions.\nYou get a fraction.",
-    },
-    {
-      icon: IconNoOwnership,
-      title: "No customer\nownership.",
-      description: "You're just a driver\nnumber.",
-    },
-  ];
-
+function ProvenModelSection() {
   return (
-    <section className="bg-white py-3" id="why-win">
+    <section className="bg-white py-1" id="proven-model">
       <PageContainer size="full">
-        <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-[clamp(1.5rem,4vw,3.5rem)]">
-          <h2 className="text-center text-[#0a1154] font-extrabold text-[clamp(1.25rem,2.5vw,1.875rem)] uppercase tracking-wide mb-[clamp(2rem,4vw,3rem)]">
-            WHY COUPLES ARE BUILDING THEIR OWN BUSINESSES
-          </h2>
+        <h2 className="text-[clamp(1.1rem,1.5vw,1.35rem)] font-extrabold text-[#060D64] mb-2 uppercase tracking-wide">
+          START WITH A PROVEN<br />AIRPORT TRANSPORTATION MODEL
+        </h2>
 
-          <div className="flex flex-col xl:flex-row items-stretch justify-between divide-y xl:divide-y-0 xl:divide-x divide-slate-200">
-            {reasons.map((reason, idx) => (
-              <div
-                key={idx}
-                className="flex flex-row items-center gap-4 sm:gap-6 xl:gap-4 flex-1 py-6 xl:py-0 xl:px-4 2xl:px-6 first:pt-0 xl:first:pt-0 xl:first:pl-0 last:pb-0 xl:last:pb-0 xl:last:pr-0"
-              >
-                <div className="w-[clamp(3.5rem,4vw,4rem)] h-[clamp(3.5rem,4vw,4rem)] rounded-full bg-[#ebf0fc] flex items-center justify-center shrink-0 shadow-xs">
-                  <reason.icon />
-                </div>
-                <div className="flex flex-col text-left">
-                  <h4 className="font-extrabold text-[#0a1154] text-[clamp(1rem,1.1vw,1.125rem)] leading-snug whitespace-pre-line mb-1">
-                    {reason.title}
-                  </h4>
-                  <p className="text-[#0a1154]/80 text-[clamp(0.875rem,1vw,1rem)] leading-relaxed font-medium whitespace-pre-line">
-                    {reason.description}
-                  </p>
-                </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          {/* Card 1 */}
+          <div className="flex flex-col">
+            <div className="flex items-start gap-4 mb-4">
+              <div className="w-12 h-12 rounded-full bg-[#060D64] text-white flex items-center justify-center shrink-0">
+                <PenLine className="w-6 h-6" />
               </div>
-            ))}
+              <div>
+                <h4 className="font-extrabold text-[#060D64] text-lg uppercase leading-tight mb-1">3 BOOKINGS</h4>
+                <p className="text-[#060D64] font-medium text-[13px] leading-snug pr-4">What started as just 3 airport rides turned into real clients and a real business.</p>
+              </div>
+            </div>
+            <img src={card1} className="w-full h-40 object-cover rounded-xl mt-auto shadow-sm" alt="3 Bookings" />
+          </div>
+
+          {/* Card 2 */}
+          <div className="flex flex-col">
+            <div className="flex items-start gap-4 mb-4">
+              <div className="w-12 h-12 rounded-full bg-[#060D64] text-white flex items-center justify-center shrink-0">
+                <LineChart className="w-6 h-6" />
+              </div>
+              <div>
+                <h4 className="font-extrabold text-[#060D64] text-lg uppercase leading-tight mb-1">NEARLY 6,000 RIDES</h4>
+                <p className="text-[#060D64] font-medium text-[13px] leading-snug pr-4">In a single year through repeat business, referrals, and a direct booking model.</p>
+              </div>
+            </div>
+            <img src={card2} className="w-full h-40 object-cover rounded-xl mt-auto shadow-sm" alt="6000 Rides" />
+          </div>
+
+          {/* Card 3 */}
+          <div className="flex flex-col">
+            <div className="flex items-start gap-4 mb-4">
+              <div className="w-12 h-12 rounded-full bg-[#eab308] text-white flex items-center justify-center shrink-0">
+                <Trophy className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h4 className="font-extrabold text-[#060D64] text-lg uppercase leading-tight mb-1">BUILT FROM EXPERIENCE</h4>
+                <p className="text-[#060D64] font-medium text-[13px] leading-snug pr-4">QuitTheApp was built from what actually works in real markets serving real travelers.</p>
+              </div>
+            </div>
+            <img src={card4} className="w-full h-40 object-cover rounded-xl mt-auto shadow-sm object-top" alt="Built from experience" />
           </div>
         </div>
       </PageContainer>
@@ -675,230 +598,132 @@ function WhyWinSection() {
   );
 }
 
-function HowItWorksSection() {
-  const steps = [
-    {
-      number: 1,
-      icon: Lock,
-      title: "Get Access",
-      description: "Secure your system and get started instantly.",
-    },
-    {
-      number: 2,
-      icon: ClipboardList,
-      title: "Submit Your Details",
-      description:
-        "We gather your business information and get everything ready.",
-    },
-    {
-      number: 3,
-      icon: Rocket,
-      title: "We Build & You Start",
-      description:
-        "We build your booking flow and selling page. You start getting customers.",
-    },
-  ];
+function LaunchKitAndFaqSection({ openPricingModal }: { openPricingModal: () => void }) {
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  return (
-    <section className="bg-white py-3" id="how-it-works-steps">
-      <PageContainer size="full">
-        <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-[clamp(1.5rem,4vw,3.5rem)]">
-          <h2 className="text-center text-[#1a1f71] font-extrabold text-[clamp(1.25rem,2.5vw,1.875rem)] uppercase tracking-wide mb-[clamp(2.5rem,4vw,4rem)]">
-            HOW IT WORKS: LAUNCH YOUR BUSINESS IN 3 SIMPLE STEPS
-          </h2>
+  const toggleFaq = (idx: number) => {
+    setOpenFaq(openFaq === idx ? null : idx);
+  };
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-6 items-center w-full relative">
-            {steps.map((step, idx) => (
-              <div
-                key={idx}
-                className="flex flex-row items-center gap-4 sm:gap-6 lg:gap-4 justify-start sm:justify-center relative"
-              >
-                {/* Number Circle */}
-                <div className="w-[clamp(2.5rem,3vw,3rem)] h-[clamp(2.5rem,3vw,3rem)] rounded-full bg-[#2563eb] text-white flex items-center justify-center font-extrabold text-[clamp(1rem,1.2vw,1.125rem)] shrink-0 shadow-sm">
-                  {step.number}
-                </div>
-
-                <div className="shrink-0">
-                  <step.icon
-                    className="w-[clamp(2.5rem,3vw,3rem)] h-[clamp(2.5rem,3vw,3rem)] text-[#1a1f71]"
-                    strokeWidth={1.5}
-                  />
-                </div>
-
-                <div className="flex flex-col justify-center max-w-xs">
-                  <h4 className="font-extrabold text-[#1a1f71] text-[clamp(1rem,1.25vw,1.125rem)] leading-snug">
-                    {step.title}
-                  </h4>
-                  <p className="text-slate-700 text-[clamp(0.875rem,1.1vw,1rem)] leading-snug font-medium mt-1">
-                    {step.description}
-                  </p>
-                </div>
-
-                {idx < steps.length - 1 && (
-                  <div className="hidden lg:flex absolute -right-4 top-1/2 -translate-y-1/2 text-[#1a1f71] z-10">
-                    <ArrowRight className="w-[clamp(1.5rem,2vw,2rem)] h-[clamp(1.5rem,2vw,2rem)] stroke-[2.5]" />
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </PageContainer>
-    </section>
-  );
-}
-
-function ReviewsSection() {
-  const reviews = [
-    {
-      quote:
-        "We followed the step-by-step launch system and booked our first airport ride shortly after. It's amazing building a business and more freedom together.",
-      name: "Mark & Lisa",
-      location: "Phoenix, AZ",
-      image: markLisaImage,
-    },
-    {
-      quote:
-        "The system is everything we needed. We finally have control of our schedule and our income.",
-      name: "Tom & Karen",
-      location: "Dallas, TX",
-      image: tomKarenImage,
-    },
-    {
-      quote:
-        "We love helping travelers and building a business that's 100% ours. This business has changed our future.",
-      name: "Ryan & Michelle",
-      location: "Charlotte, NC",
-      image: ryanMichelleImage,
-    },
-  ];
-
-  return (
-    <section className="bg-white py-3" id="reviews">
-      <PageContainer size="full">
-        <div className="w-full rounded-[2rem] border border-slate-200 shadow-sm p-[clamp(1.5rem,4vw,3.5rem)] bg-white">
-          <h2 className="text-[clamp(1.25rem,2.5vw,1.875rem)] font-extrabold text-[#1a1f71] text-center mb-[clamp(2.5rem,4vw,4rem)] uppercase tracking-wide">
-            COUPLES ACROSS THE COUNTRY ARE BUILDING REAL BUSINESSES TOGETHER
-          </h2>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-6 lg:divide-x divide-slate-100 w-full">
-            {reviews.map((review, idx) => (
-              <div
-                key={idx}
-                className="flex flex-col sm:flex-row lg:flex-col xl:flex-row items-stretch gap-4 sm:gap-6 w-full flex-1 lg:px-6 first:pl-0 last:pr-0"
-              >
-                {/* Image */}
-                <div className="shrink-0 w-full sm:w-[150px] lg:w-full xl:w-[140px] flex">
-                  <img
-                    src={review.image}
-                    alt={review.name}
-                    loading="lazy"
-                    className="w-full h-48 sm:h-auto lg:h-48 xl:h-auto rounded-2xl object-cover object-top shadow-sm"
-                  />
-                </div>
-
-                {/* Review Content */}
-                <div className="flex flex-col justify-start py-1 text-left flex-1">
-                  {/* Quote */}
-                  <p className="text-slate-800 font-medium text-[clamp(0.875rem,1.1vw,1rem)] leading-relaxed mb-[clamp(1.5rem,2vw,2rem)]">
-                    "{review.quote}"
-                  </p>
-
-                  <div className="mt-auto">
-                    {/* Stars */}
-                    <div className="flex items-center justify-start gap-1 mb-2">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className="w-5 h-5 fill-[#eab308] text-[#eab308]"
-                        />
-                      ))}
-                    </div>
-
-                    {/* Author */}
-                    <div>
-                      <h5 className="font-extrabold text-[#1a1f71] text-[clamp(1rem,1.2vw,1.125rem)] leading-tight">
-                        {review.name}
-                      </h5>
-                      <span className="text-slate-600 font-medium text-[clamp(0.875rem,1vw,0.875rem)]">
-                        {review.location}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </PageContainer>
-    </section>
-  );
-}
-
-function FaqSection() {
   const faqs = [
-    // Row 1
-    {
-      question: "Will this work in our city?",
-      answer:
-        "Yes. This system can work in any market with an airport and travelers who need reliable transportation. You choose your service area, your rates, and your availability.",
-    },
-    {
-      question: "How is this different from Uber or Lyft?",
-      answer:
-        "With rideshare apps, they control the customer. App platforms determine pricing and retain platform fees. With QuitTheApp, you own your customer list, set your rates, and fares are paid directly to your business, subject to payment processing and normal operating expenses.",
-    },
-    {
-      question: "Is the $495 really a one-time payment?",
-      answer:
-        "Yes. The $495 core system is a one-time payment. No monthly platform fees. No commissions. No subscription.",
-    },
-    // Row 2
-    {
-      question: "Do we both need to drive?",
-      answer:
-        "No. Many couples can divide the work. One person may drive while the other handles scheduling, follow-up, customer communication, outreach, or referrals.",
-    },
-    {
-      question: "How do we get our first customers?",
-      answer:
-        "Your system includes the Customer Acquisition Center™ with QR referral cards, outreach templates, and customer-building tools designed for airport transportation operators.",
-    },
-    {
-      question: "What if we are not tech-savvy?",
-      answer:
-        "No problem. You can use the step-by-step resources, choose Guided Setup, or have the system built for you with Done For You setup.",
-    },
+    { question: "Do we both need to drive?", answer: "No. Many couples divide the work—one handles driving while the other manages bookings, communication, and marketing." },
+    { question: "Will this work in our city?", answer: "Yes. As long as you have a local airport and people who travel, this model can work. The demand for reliable airport transportation is universal." },
+    { question: "How is this different from rideshare apps?", answer: "You own the business. You set your own prices, keep 100% of the profits, and build a network of repeat, loyal clients instead of relying on an algorithm." },
+    { question: "How do we get our first clients?", answer: "The launch kit includes a Relationship & Referral Strategy to help you leverage your existing network and community to get your very first bookings." },
+    { question: "Is the $495 really a one-time payment?", answer: "Yes! There are no monthly platform fees or ongoing subscriptions. You pay once for lifetime access to the system." },
+    { question: "What if we're not tech-savvy?", answer: "No problem. The system is designed to be plug-and-play, and if you want us to handle the technical setup, we offer a 'We Do It For You' upgrade for $199." },
   ];
 
   return (
-    <section className="bg-white py-3" id="faq">
+    <section className="bg-white py-1" id="faq">
       <PageContainer size="full">
-        <div className="w-full rounded-[2rem] border border-slate-200 shadow-sm p-[clamp(1.5rem,4vw,3.5rem)] bg-white">
-          <h2 className="text-[clamp(1.25rem,2.5vw,1.875rem)] font-extrabold text-[#1a1f71] text-center mb-[clamp(2.5rem,4vw,4rem)] uppercase tracking-wide">
-            FREQUENTLY ASKED QUESTIONS
-          </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 border border-slate-200 rounded-3xl bg-white shadow-sm p-3">
+          {/* Column 1 */}
+          <div className="flex flex-col lg:pr-6 lg:border-r border-slate-200">
+            <h3 className="text-[#060D64] font-extrabold text-[1.1rem] uppercase tracking-wide mb-2">HOW IT WORKS: 3 SIMPLE STEPS</h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-[clamp(2rem,3vw,3rem)] gap-y-[clamp(2rem,3vw,2.5rem)] w-full relative">
-            {/* Desktop Vertical Dividers for 3-col Widescreen */}
-            <div className="hidden xl:block absolute left-[33.33%] top-0 bottom-0 w-px bg-slate-100 -translate-x-1/2"></div>
-            <div className="hidden xl:block absolute left-[66.66%] top-0 bottom-0 w-px bg-slate-100 -translate-x-1/2"></div>
-
-            {faqs.map((faq, idx) => (
-              <div key={idx} className="flex items-start gap-4 sm:gap-5">
-                <div className="shrink-0 w-8 h-8 rounded-full bg-[#2563eb] text-white flex items-center justify-center font-extrabold text-sm shadow-sm mt-0.5">
-                  Q
-                </div>
-                <div className="flex flex-col">
-                  <h4 className="font-extrabold text-[#1a1f71] text-[clamp(1rem,1.25vw,1.125rem)] leading-snug mb-2">
-                    {faq.question}
-                  </h4>
-                  <p className="text-slate-700 text-[clamp(0.875rem,1.1vw,1rem)] font-medium leading-relaxed">
-                    {faq.answer}
-                  </p>
-                </div>
+            <div className="flex items-start gap-4 mb-2">
+              <div className="w-8 h-8 rounded-full bg-[#060D64] text-white flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">1</div>
+              <div className="flex-1">
+                <h4 className="font-extrabold text-[#060D64] text-[15px] mb-1">Get Access</h4>
+                <p className="text-[#060D64] text-[12px] font-medium leading-relaxed pr-2">Purchase the $495 DIY system and receive immediate access to the launch resources.</p>
               </div>
-            ))}
+              <Lock className="w-8 h-8 text-[#060D64] shrink-0 opacity-80" strokeWidth={1.5} />
+            </div>
+
+            <div className="flex items-start gap-4 mb-2">
+              <div className="w-8 h-8 rounded-full bg-[#060D64] text-white flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">2</div>
+              <div className="flex-1">
+                <h4 className="font-extrabold text-[#060D64] text-[15px] mb-1">Submit Your Details</h4>
+                <p className="text-[#060D64] text-[12px] font-medium leading-relaxed pr-2">Provide your business information and branding details. We handle the setup.</p>
+              </div>
+              <ClipboardList className="w-8 h-8 text-[#060D64] shrink-0 opacity-80" strokeWidth={1.5} />
+            </div>
+
+            <div className="flex items-start gap-4">
+              <div className="w-8 h-8 rounded-full bg-[#060D64] text-white flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">3</div>
+              <div className="flex-1">
+                <h4 className="font-extrabold text-[#060D64] text-[15px] mb-1">Both Build & You Start</h4>
+                <p className="text-[#060D64] text-[12px] font-medium leading-relaxed pr-2">We build your booking flow and selling page. You start getting customers.</p>
+              </div>
+              <Rocket className="w-8 h-8 text-[#060D64] shrink-0 opacity-80" strokeWidth={1.5} />
+            </div>
+          </div>
+
+          {/* Column 2 */}
+          <div className="flex flex-col lg:px-6 lg:border-r border-slate-200 mt-8 lg:mt-0">
+            <h3 className="text-[#060D64] font-extrabold text-[1.1rem] uppercase tracking-wide leading-tight mb-1">COUPLES BUSINESS LAUNCH KIT™</h3>
+            <p className="text-[#060D64] font-bold text-[13px] mb-6">Everything you need to launch with confidence.</p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-y-5 gap-x-2 mb-2">
+              <div className="flex items-start gap-2">
+                <CheckCircle2 className="w-[18px] h-[18px] text-[#eab308] shrink-0" strokeWidth={2.5} />
+                <span className="text-[#060D64] text-[12.5px] font-bold leading-tight">Custom Brand Identity Kit</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <CheckCircle2 className="w-[18px] h-[18px] text-[#eab308] shrink-0" strokeWidth={2.5} />
+                <span className="text-[#060D64] text-[12.5px] font-bold leading-tight">Personalized Selling Page Setup</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <CheckCircle2 className="w-[18px] h-[18px] text-[#eab308] shrink-0" strokeWidth={2.5} />
+                <span className="text-[#060D64] text-[12.5px] font-bold leading-tight">Social Media Starter Pack</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <CheckCircle2 className="w-[18px] h-[18px] text-[#eab308] shrink-0" strokeWidth={2.5} />
+                <span className="text-[#060D64] text-[12.5px] font-bold leading-tight">Local Client & Positioning Guide</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <CheckCircle2 className="w-[18px] h-[18px] text-[#eab308] shrink-0" strokeWidth={2.5} />
+                <span className="text-[#060D64] text-[12.5px] font-bold leading-tight flex items-center flex-wrap gap-1">3 Done For You Launch Videos <span className="bg-[#eab308] text-[#060D64] text-[9px] px-[5px] py-[2px] font-extrabold rounded uppercase mt-0.5">NEW!</span></span>
+              </div>
+              <div className="flex items-start gap-2">
+                <CheckCircle2 className="w-[18px] h-[18px] text-[#eab308] shrink-0" strokeWidth={2.5} />
+                <span className="text-[#060D64] text-[12.5px] font-bold leading-tight">Relationship & Referral Launch Strategy</span>
+              </div>
+              <div className="flex items-start gap-2 col-span-1 sm:col-span-2">
+                <CheckCircle2 className="w-[18px] h-[18px] text-[#eab308] shrink-0" strokeWidth={2.5} />
+                <span className="text-[#060D64] text-[12.5px] font-bold leading-tight">Text / Customer Response Pack</span>
+              </div>
+            </div>
+
+            <button onClick={openPricingModal} className="mt-4 w-full text-left bg-[#eab308] rounded-xl p-4 flex items-center justify-between shadow-sm cursor-pointer hover:bg-[#ca8a04] transition-colors group">
+              <span className="text-[#060D64] font-extrabold text-[14px]">Optional Upgrade: We Do It For You — $199</span>
+              <Users className="w-6 h-6 text-[#060D64] opacity-80 group-hover:opacity-100 transition-opacity" />
+            </button>
+          </div>
+
+          {/* Column 3 */}
+          <div className="flex flex-col lg:pl-6 mt-8 lg:mt-0">
+            <h3 className="text-[#060D64] font-extrabold text-[1.1rem] uppercase tracking-wide mb-6">FREQUENTLY ASKED QUESTIONS</h3>
+
+            <div className="flex flex-col space-y-[6px] mb-4">
+              {faqs.map((faq, idx) => {
+                const isOpen = openFaq === idx;
+                return (
+                  <div key={idx} className="flex flex-col border border-slate-200 rounded-lg overflow-hidden bg-white shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-colors hover:bg-slate-50">
+                    <div 
+                      onClick={() => toggleFaq(idx)}
+                      className="flex justify-between items-center p-3 cursor-pointer"
+                    >
+                      <span className="text-[#060D64] font-bold text-[13px]">{faq.question}</span>
+                      <span className={cn("text-[#060D64] font-black text-lg opacity-60 leading-none transition-transform duration-300", isOpen ? "rotate-45" : "")}>+</span>
+                    </div>
+                    <div 
+                      className={cn(
+                        "grid transition-all duration-300 ease-in-out",
+                        isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                      )}
+                    >
+                      <div className="overflow-hidden">
+                        <p className="text-slate-600 text-[12.5px] p-3 pt-0 leading-relaxed font-medium">
+                          {faq.answer}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </PageContainer>
@@ -907,148 +732,54 @@ function FaqSection() {
 }
 
 function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }) {
-  const { accessToken, user } = useAppSelector((state) => state.auth);
-
-  const checkmarks = [
-    "No monthly platform fees",
-    "Built specifically for couples",
-    "Real human support",
-    "Secure checkout",
-  ];
-
-  const trustBadges = [
-    {
-      icon: Lock,
-      title: "Secure Checkout",
-      subtitle: "100% safe & encrypted",
-    },
-    {
-      icon: ShieldCheck,
-      title: "One-Time Payment",
-      subtitle: "Protected Payment",
-    },
-    {
-      icon: Clock,
-      title: "Step-by-Step",
-      subtitle: "Quick Launch System",
-    },
-    {
-      icon: Headset,
-      title: "Real Human Support",
-      subtitle: "We're here for you",
-    },
-    {
-      icon: ShieldCheck,
-      title: "Real Human Support",
-      subtitle: "From real partners",
-    },
-  ];
-
   return (
-    <section className="bg-[#0b0f19] py-3 border-t-4 border-[#eab308]" id="footer-cta">
+    <section className="bg-white py-1" id="footer-cta">
       <PageContainer size="full">
-        {/* Main 3-Column Layout */}
-        <div className="flex flex-col lg:flex-row justify-between gap-10 lg:gap-8 pb-10 border-b border-slate-800">
-          {/* Column 1: Intro */}
-          <div className="lg:w-1/3 flex flex-col pr-0 lg:pr-8 lg:border-r border-slate-800">
-            <h3 className="text-2xl sm:text-3xl font-bold text-white leading-tight mb-6 uppercase">
-              Start Our <br />
-              <span className="text-[#eab308]">Private Airport Business™</span>
-            </h3>
-            <div className="flex items-start gap-4">
-              <Users className="w-10 h-10 text-[#eab308] shrink-0 stroke-[1.5]" />
-              <p className="text-slate-300 text-sm leading-relaxed">
-                Build a trusted, professional business that puts you in
-                control—and your clients keep coming back.
-              </p>
+        <div className="bg-[#0b0f19] rounded-[24px] p-4 flex flex-col lg:flex-row items-center lg:items-stretch gap-4 justify-between shadow-xl">
+
+          {/* Left Block */}
+          <div className="flex items-center gap-5 lg:border-r border-slate-700 lg:pr-10 w-full lg:w-auto justify-center lg:justify-start">
+            <Users className="w-16 h-16 text-white shrink-0 opacity-90" strokeWidth={1} />
+            <div className="flex flex-col justify-center">
+              <h3 className="text-white font-extrabold text-[1.2rem] lg:text-[1.35rem] uppercase leading-tight mb-2 tracking-wide">
+                YOUR NEXT CHAPTER.<br />
+                <span className="text-[#eab308]">YOUR BUSINESS.<br />TOGETHER.</span>
+              </h3>
+              <p className="text-white/90 text-[13px] font-medium leading-snug">Create freedom, build income,<br />and own your future — as a team.</p>
             </div>
           </div>
 
-          {/* Column 2: Pricing & Checklist */}
-          <div className="lg:w-1/3 flex flex-col justify-center">
-            <div className="flex flex-col mb-4">
-              <div className="flex items-baseline gap-3 flex-wrap">
-                <span className="text-[clamp(2.5rem,4vw,3rem)] font-bold text-[#eab308]">$495</span>
-                <span className="text-white font-bold text-lg">
-                  One-time payment
-                </span>
-              </div>
-              <span className="text-slate-300 text-sm mt-2 leading-snug max-w-[280px]">
-                Includes the complete QuitTheApp DIY launch system.<br/>
-                <span className="mt-2 block font-medium">Optional $199 We Do It for You upgrade available.</span>
-              </span>
-            </div>
-            <ul className="space-y-2 mt-2">
-              {checkmarks.map((item, idx) => (
-                <li
-                  key={idx}
-                  className="flex items-center text-slate-300 text-sm"
-                >
-                  <CheckCircle2 className="w-5 h-5 text-[#eab308] mr-3 shrink-0 stroke-[3]" />
-                  <span>{item}</span>
-                </li>
+          {/* Middle Block */}
+          <div className="flex-1 flex flex-col justify-center w-full lg:w-auto items-center lg:items-start text-center lg:text-left">
+            <h4 className="text-white font-extrabold text-[13px] uppercase mb-4 tracking-wider">THIS $495 SYSTEM INCLUDES:</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
+              {[
+                "Complete DIY launch system",
+                "Step-by-step training",
+                "No monthly platform fees",
+                "Lifetime updates",
+                "Built for couples",
+                "Real human support"
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-center gap-3">
+                  <CheckCircle2 className="w-[18px] h-[18px] text-[#eab308] shrink-0" strokeWidth={2.5} />
+                  <span className="text-white text-[13px] font-medium leading-none">{item}</span>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
 
-          {/* Column 3: Button & Payments */}
-          <div className="lg:w-1/3 flex flex-col justify-center items-center lg:items-end">
-            {user?.status === "active" ? (
-              <button
-                onClick={openPricingModal}
-                className="cursor-pointer w-full bg-gradient-to-b from-[#fde047] to-[#eab308] hover:from-[#fef08a] hover:to-[#ca8a04] text-[#0b0f19] font-extrabold py-4 px-6 rounded-lg transition-all shadow-lg shadow-[#eab308]/20 flex items-center justify-between group text-base sm:text-lg mb-4 min-h-[56px]"
-              >
-                <span className="text-center w-full">
-                  Start Your Business
-                </span>
-                <div className="bg-[#0b0f19] rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
-                  <ArrowRight className="w-5 h-5 text-[#eab308] stroke-[3]" />
-                </div>
-              </button>
-            ) : accessToken ? (
-              <button
-                onClick={openPricingModal}
-                className="cursor-pointer w-full bg-gradient-to-b from-[#fde047] to-[#eab308] hover:from-[#fef08a] hover:to-[#ca8a04] text-[#0b0f19] font-extrabold py-4 px-6 rounded-lg transition-all shadow-lg shadow-[#eab308]/20 flex items-center justify-between group text-base sm:text-lg mb-4 min-h-[56px]"
-              >
-                <span className="text-center w-full">
-                  Start Our Private Airport Business™ — $495
-                </span>
-                <div className="bg-[#0b0f19] rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
-                  <ArrowRight className="w-5 h-5 text-[#eab308] stroke-[3]" />
-                </div>
-              </button>
-            ) : (
-              <button
-                onClick={openPricingModal}
-                className="cursor-pointer w-full bg-gradient-to-b from-[#fde047] to-[#eab308] hover:from-[#fef08a] hover:to-[#ca8a04] text-[#0b0f19] font-extrabold py-4 px-6 rounded-lg transition-all shadow-lg shadow-[#eab308]/20 flex items-center justify-between group text-base sm:text-lg mb-4 min-h-[56px]"
-              >
-                <span className="text-center w-full">
-                  Start Our Private Airport Business™ — $495
-                </span>
-                <div className="bg-[#0b0f19] rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
-                  <ArrowRight className="w-5 h-5 text-[#eab308] stroke-[3]" />
-                </div>
-              </button>
-            )}
-            
-            {/* Payment Badges */}
-            <PaymentBadges justify="center" />
-          </div>
-        </div>
-
-        {/* Bottom Trust Indicators & Copyright */}
-        <div className="pt-6 flex flex-col items-center">
-          <div className="flex flex-wrap justify-center gap-x-6 gap-y-4 mb-6">
-            {trustBadges.map((badge, idx) => (
-              <div key={idx} className="flex items-center gap-2 text-slate-400">
-                <badge.icon className="w-4 h-4 shrink-0" strokeWidth={1.5} />
-                <span className="text-xs">{badge.title}</span>
+          {/* Right Block */}
+          <div className="flex flex-col items-center justify-center shrink-0 w-full lg:w-auto lg:min-w-[320px]">
+            <button onClick={openPricingModal} className="w-full bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-4 px-5 rounded-xl flex items-center justify-between mb-1 cursor-pointer shadow-lg transition-colors group">
+              <span className="text-left w-full text-[14px] lg:text-[15px] leading-tight">Start My Private Transportation<br />Business™ — $495</span>
+              <div className="w-8 h-8 rounded-full border-2 border-[#0b0f19] flex items-center justify-center shrink-0 group-hover:bg-[#0b0f19] group-hover:text-[#eab308] transition-colors ml-3">
+                <ArrowRight className="w-4 h-4" strokeWidth={3} />
               </div>
-            ))}
+            </button>
+            <PaymentBadges justify="center" paymentLabel="Secure checkout powered by" />
           </div>
-          <p className="text-slate-500 text-xs">
-            © {new Date().getFullYear()} QuitTheApp. All Rights Reserved.
-          </p>
+
         </div>
       </PageContainer>
     </section>
