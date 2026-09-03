@@ -6,22 +6,17 @@ import {
   ArrowRight,
   CalendarDays,
   Check,
-  CheckCircle2,
   ChevronRight,
   ClipboardList,
-  Contact,
-  Gift,
   Heart,
   Lock,
-  Monitor,
-  Plane,
   RefreshCcw,
   Rocket,
   ShieldCheck,
   Star,
+  TrendingUp,
   User,
   Users,
-  XCircle,
 } from "lucide-react";
 import { PageContainer } from "../components/layout/PageContainer";
 import { ProfileDropdown } from "../components/ProfileDropdown";
@@ -33,8 +28,6 @@ import womenBannerImage from "../assets/womenBannerImage.png";
 import womenMiddleSection from "../assets/womenMiddleSection.png";
 import womenLogo from "../assets/womenLogo.png";
 import jessicaImage from "../assets/Women_Page_Jessica.jpg";
-import mariaImage from "../assets/Womans_Page_Maria.jpg";
-import lisaImage from "../assets/Womans_Page_Lisa.jpg";
 import { PaymentBadges } from "../components/common/PaymentBadges";
 
 export default function WomenPage() {
@@ -62,12 +55,11 @@ export default function WomenPage() {
       )}
       <Navbar openPricingModal={openPricingModal} />
       <HeroBanner openPricingModal={openPricingModal} />
-      <FeaturesSection />
-      <ComparisonSection />
+      <BusinessBuiltAroundYourLifeSection />
       <WhyWinSection />
-      <HowItWorksSection />
-      <ReviewsSection />
-      <FaqSection />
+      <OneClientFlowSection />
+      <ProvenModelSection />
+      <HowItWorksAndFaqSection />
       <FooterCTASection openPricingModal={openPricingModal} />
     </>
   );
@@ -96,22 +88,21 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
             {/* Left Side Content */}
             <div className="w-full max-w-[clamp(280px,40vw,672px)] text-left z-10 self-center">
               <h1 className="text-[clamp(2rem,4vw,3.25rem)] font-bold text-white leading-[1.1] mb-[clamp(1rem,1.5vw,1.25rem)] tracking-tight text-balance">
-                Build Your Own <br />
-                Private Airport Business. <br />
-                <span className="text-[#f42661]">Designed for Women.</span>
+                Build Something <br />
+                of Your Own. <br />
+                <span className="text-[#f42661]">On Your Schedule.</span>
               </h1>
 
               <p className="text-[clamp(1rem,1.35vw,1.125rem)] text-slate-200 mb-[clamp(1.5rem,2vw,2rem)] max-w-[clamp(280px,38vw,576px)] leading-relaxed text-pretty">
-                QuitTheApp gives women operators the tools to attract direct clients, accept private airport ride requests, build trust, and create repeat business.
+                Turn the vehicle you already own into the starting point for a flexible, profitable private transportation business built around your life, your relationships, and your future.
               </p>
 
               <ul className="space-y-[clamp(0.5rem,0.8vw,0.625rem)] mb-[clamp(1.5rem,2vw,2rem)]">
                 {[
-                  "Own your client list",
-                  "Offer safe, professional airport rides",
-                  "Build repeat riders and referrals",
-                  "Keep the fares paid directly to your business",
-                  "Create a business asset you control",
+                  "Work around your life, not the other way around",
+                  "Build relationships with great clients",
+                  "Get repeat bookings and referrals",
+                  "Create a business you own and control",
                 ].map((item, i) => (
                   <li
                     key={i}
@@ -131,7 +122,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                   className="cursor-pointer bg-[#f42661] hover:bg-[#d91950] text-white font-bold py-[clamp(0.875rem,1.2vw,1rem)] px-[clamp(1.25rem,2vw,2rem)] rounded-[clamp(0.375rem,0.5vw,0.5rem)] transition-colors shadow-lg shadow-[#f42661]/30 flex items-center justify-between group w-full sm:w-auto text-[clamp(0.875rem,1.1vw,1.125rem)] min-h-[52px]"
                 >
                   <span className="text-left leading-snug">
-                    Start My Private Airport Business™ — $495
+                    Start My Transportation Business™ — $495
                   </span>
                   <div className="bg-white rounded-full p-[clamp(0.2rem,0.3vw,0.3rem)] ml-[clamp(0.75rem,1vw,1rem)] group-hover:translate-x-1 transition-transform shrink-0">
                     <ChevronRight className="text-[#f42661] w-[clamp(1.1rem,1.2vw,1.3rem)] h-[clamp(1.1rem,1.2vw,1.3rem)]" />
@@ -143,7 +134,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                   className="cursor-pointer bg-[#f42661] hover:bg-[#d91950] text-white font-bold py-[clamp(0.875rem,1.2vw,1rem)] px-[clamp(1.25rem,2vw,2rem)] rounded-[clamp(0.375rem,0.5vw,0.5rem)] transition-colors shadow-lg shadow-[#f42661]/30 flex items-center justify-between group w-full sm:w-auto text-[clamp(0.875rem,1.1vw,1.125rem)] min-h-[52px]"
                 >
                   <span className="text-left leading-snug">
-                    Start My Private Airport Business™ — $495
+                    Start My Transportation Business™ — $495
                   </span>
                   <div className="bg-white rounded-full p-[clamp(0.2rem,0.3vw,0.3rem)] ml-[clamp(0.75rem,1vw,1rem)] group-hover:translate-x-1 transition-transform shrink-0">
                     <ChevronRight className="text-[#f42661] w-[clamp(1.1rem,1.2vw,1.3rem)] h-[clamp(1.1rem,1.2vw,1.3rem)]" />
@@ -183,195 +174,94 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
   );
 }
 
-const features = [
-  {
-    icon: CalendarDays,
-    title: "Quick Launch Booking System™",
-    description:
-      "Take direct airport ride requests with your own professional booking flow.",
-  },
-  {
-    icon: Contact,
-    title: "Client Acquisition Center™",
-    description:
-      "Get QR cards, referral tools, and outreach templates to attract prospective clients and generate direct bookings.",
-  },
-  {
-    icon: Monitor,
-    title: "Personalized Selling Page™",
-    description:
-      "Show travelers who you are and why they should trust and book with you.",
-  },
-  {
-    icon: RefreshCcw,
-    title: "Repeat Rider Engine™",
-    description:
-      "Follow up, get reviews, encourage referrals, and bring riders back for more repeat rides.",
-  },
-];
+function BusinessBuiltAroundYourLifeSection() {
+  const features = [
+    {
+      icon: CalendarDays,
+      title: "Set Your Schedule",
+      description: "Work the days and hours that fit your family, responsibilities, and lifestyle.",
+    },
+    {
+      icon: User,
+      title: "Choose Your Clients",
+      description: "Accept the types of rides you want and build relationships you enjoy.",
+    },
+    {
+      icon: TrendingUp,
+      title: "Start Small, Grow Over Time",
+      description: "Begin with your existing network and let repeat bookings and referrals grow your business.",
+    },
+    {
+      icon: Heart,
+      title: "Own Your Business",
+      description: "You keep your clients, your reputation, and 100% of the fares.",
+    },
+  ];
 
-function FeaturesSection() {
   return (
-    <section className="bg-white py-3" id="how-it-works">
+    <section className="bg-white py-1 border-b border-slate-100" id="business-built-around-your-life">
       <PageContainer size="full">
-        <div className="text-center mb-8">
-          <h2 className="text-[clamp(1.375rem,3vw,1.75rem)] font-bold text-[#0b0f19] tracking-tight text-balance">
-            Everything You Need to{" "}
-            <span className="text-[#f42661]">
-              Create Your Own Successful Client Base
-            </span>
+        <div className="text-center mb-10">
+          <h2 className="text-[clamp(1.375rem,3vw,1.75rem)] font-bold text-[#0b0f19] tracking-tight">
+            A Business Built Around Your Life
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[clamp(0.75rem,1.5vw,1rem)] mb-8">
-          {features.map((feature, idx) => (
-            <div
-              key={idx}
-              className="bg-white rounded-xl border border-slate-200 p-[clamp(1rem,1.5vw,1.25rem)] flex flex-col items-center text-center shadow-sm hover:shadow-md transition-shadow min-w-0"
-            >
-              <div className="mb-4 bg-white p-2">
-                <feature.icon
-                  className="w-10 h-10 text-[#f42661]"
-                  strokeWidth={1.5}
-                />
-              </div>
-              <h3 className="text-lg font-bold text-[#0b0f19] mb-2 leading-snug">
-                {feature.title}
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-stretch mb-8 lg:mb-10">
+          {/* Left: Image with Overlay */}
+          <div className="w-full lg:w-[45%] xl:w-1/2 relative min-h-[300px] lg:min-h-0 flex flex-col justify-end mb-6 lg:mb-0">
+            <div className="absolute inset-0 rounded-[1.5rem] overflow-hidden">
+              <img
+                src={womenMiddleSection}
+                alt="Woman at airport"
+                className="w-full h-full object-cover object-center"
+              />
+            </div>
+            {/* Overlay Box */}
+            <div className="relative z-10 bg-[#0b0f19] p-6 sm:p-8 ml-4 sm:ml-6 translate-y-12 sm:translate-y-8 rounded-2xl max-w-sm sm:max-w-md w-[90%] shadow-xl">
+              <h3 className="text-white text-lg sm:text-xl font-bold leading-snug mb-3">
+                <span className="text-[#f42661] text-3xl font-serif leading-none mr-2">“</span>
+                What if earning more didn't have to mean seeing your kids less?
               </h3>
-              <p className="text-slate-600 leading-relaxed text-xs sm:text-sm">
-                {feature.description}
+              <p className="text-slate-300 text-sm font-medium leading-relaxed">
+                Build a business that works around your life—not the other way around.
               </p>
             </div>
-          ))}
+          </div>
+
+          {/* Right: Features Grid */}
+          <div className="w-full lg:w-[55%] xl:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-x-8 lg:gap-y-10 py-4">
+            {features.map((feature, idx) => (
+              <div key={idx} className="flex flex-col items-start min-w-0">
+                <div className="mb-4">
+                  <feature.icon
+                    className="w-8 h-8 text-[#f42661]"
+                    strokeWidth={1.5}
+                  />
+                </div>
+                <h4 className="text-[15px] font-bold text-[#0b0f19] mb-2 leading-snug">
+                  {feature.title}
+                </h4>
+                <p className="text-slate-600 leading-relaxed text-[13px]">
+                  {feature.description}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="bg-[#f42661]/5 border border-[#f42661]/10 rounded-xl p-[clamp(1rem,1.5vw,1.25rem)] flex flex-col sm:flex-row items-center gap-3 sm:gap-4 max-w-4xl mx-auto">
-          <Gift className="w-8 h-8 text-[#f42661] shrink-0" strokeWidth={1.5} />
-          <p className="text-slate-700 text-xs sm:text-sm text-center sm:text-left leading-relaxed">
-            <strong className="text-[#f42661]">Also includes:</strong> Launch
-            Dashboard™ access, Operator Dashboard™ tools, personalized selling
-            page hosting, training resources, lifetime system updates, and real
-            human support.
+        {/* Bottom Callout */}
+        <div 
+          className="border shadow-sm rounded-xl p-5 sm:p-6 flex items-center justify-center gap-4 sm:gap-6 mx-auto max-w-4xl"
+          style={{ 
+            backgroundColor: '#fef4f7', 
+            borderColor: 'rgba(244, 38, 97, 0.1)' 
+          }}
+        >
+          <Heart className="w-8 h-8 sm:w-10 sm:h-10 text-[#f42661] shrink-0" strokeWidth={1.5} />
+          <p className="text-[#0b0f19] text-sm sm:text-[15px] font-medium leading-relaxed">
+            Many women prefer <strong className="text-[#f42661] font-bold">a woman driver</strong> when they have the choice.<br className="hidden sm:block" /> That preference can become your advantage.
           </p>
-        </div>
-      </PageContainer>
-    </section>
-  );
-}
-
-function ComparisonSection() {
-  return (
-    <section id="comparison" className="bg-white py-3">
-      <PageContainer size="full">
-        <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
-          {/* Mobile: stack image above content */}
-          <div className="lg:hidden">
-            <div className="relative aspect-[16/9] sm:aspect-[16/7] overflow-hidden">
-              <img
-                src={womenMiddleSection}
-                alt="Woman at airport"
-                className="absolute inset-0 h-full w-full object-cover object-center"
-              />
-              <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent" />
-            </div>
-            <div className="px-5 py-4">
-              <h3 className="mb-3 text-xl font-bold text-[#f42661] text-center">
-                Relying on Apps
-              </h3>
-              <ul className="space-y-2 mb-5">
-                {[
-                  "The platform controls the client relationship",
-                  "No repeat system",
-                  "Limited control",
-                  "Dependent on app traffic",
-                ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3">
-                    <XCircle className="h-5 w-5 shrink-0 fill-[#f42661] text-white" />
-                    <span className="text-[14px] font-semibold text-slate-800">
-                      {item}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <h3 className="mb-3 text-xl font-bold text-[#16a34a] text-center">
-                Your Own Private Airport Business.
-              </h3>
-              <ul className="space-y-2">
-                {[
-                  "You own your client relationships",
-                  "Build repeat riders and referrals",
-                  "Set your own rates and keep the fares paid directly to your business",
-                  "Create a professional, trust-based experience",
-                  "Build business assets you control",
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 shrink-0 mt-0.5 fill-[#16a34a] text-white" />
-                    <span className="text-[14px] font-semibold text-slate-800 leading-snug">
-                      {item}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Desktop: Left | Image | Right — image is natural size, panels center vertically */}
-          <div className="hidden lg:flex flex-row items-center">
-            {/* Left */}
-            <div className="w-[32%] shrink-0 bg-white px-8 py-0 flex flex-col justify-center">
-              <h3 className="mb-4 text-[22px] font-bold text-[#f42661]">
-                Relying on Apps
-              </h3>
-              <ul className="space-y-3">
-                {[
-                  "The platform controls the client relationship",
-                  "No repeat system",
-                  "Limited control",
-                  "Dependent on app traffic",
-                ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3">
-                    <XCircle className="h-5 w-5 shrink-0 fill-[#f42661] text-white" />
-                    <span className="text-[14px] font-semibold text-slate-800 leading-snug">
-                      {item}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Center Image — natural width/height, left edge blended */}
-            <div className="flex-1 relative overflow-hidden min-w-0">
-              <img
-                src={womenMiddleSection}
-                alt="Woman at airport"
-                className="w-full h-auto block"
-                loading="lazy"
-              />
-            </div>
-
-            {/* Right */}
-            <div className="w-[32%] shrink-0 bg-white px-8 py-0 flex flex-col justify-center">
-              <h3 className="mb-4 text-[22px] font-bold text-[#16a34a] leading-tight">
-                Your Own Private Airport Business.
-              </h3>
-              <ul className="space-y-3">
-                {[
-                  "You own your client relationships",
-                  "Build repeat riders and referrals",
-                  "Set your own rates and keep the fares paid directly to your business",
-                  "Create a professional, trust-based experience",
-                  "Build business assets you control",
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 shrink-0 mt-0.5 fill-[#16a34a] text-white" />
-                    <span className="text-[14px] font-semibold text-slate-800 leading-snug">
-                      {item}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
         </div>
       </PageContainer>
     </section>
@@ -382,30 +272,30 @@ function WhyWinSection() {
   const reasons = [
     {
       icon: ShieldCheck,
-      title: "Greater Comfort and Trust",
-      description: "Many women travelers may feel more comfortable booking with another woman, particularly for early morning, late night, or unfamiliar airport trips.",
+      title: "Greater Comfort & Trust",
+      description: "Many women feel more comfortable booking with another woman, especially for early mornings, late nights, or unfamiliar trips.",
     },
     {
       icon: Star,
       title: "A More Personal Experience",
-      description: "Women operators can build lasting client relationships through dependable service, communication, and personal attention.",
+      description: "You build real relationships through dependable service, great communication, and personal attention.",
     },
     {
       icon: Users,
-      title: "Family and Senior Referrals",
-      description: "Satisfied travelers may refer daughters, mothers, friends, seniors, and family members who value a trusted woman driver.",
+      title: "Family & Senior Referrals",
+      description: "Happy clients refer daughters, mothers, friends, seniors, and family members who value a trusted woman driver.",
     },
     {
-      icon: Plane,
-      title: "Repeat Airport Clients",
-      description: "A safe, professional experience can turn one airport ride into repeat bookings and referrals.",
+      icon: RefreshCcw,
+      title: "Repeat Transportation Clients",
+      description: "A safe, professional experience turns one ride into repeat bookings across many and referrals.",
     },
   ];
 
   return (
-    <section className="bg-white py-3 border-b border-slate-100">
+    <section className="bg-white py-1">
       <PageContainer size="full">
-        <h2 className="text-[clamp(1.25rem,2.5vw,1.75rem)] font-bold text-[#0b0f19] text-center mb-10 text-balance">
+        <h2 className="text-[clamp(1.25rem,2.5vw,1.75rem)] font-bold text-[#0b0f19] text-center mb-10 lg:mb-14 text-balance">
           Why Women Travelers Choose Women Drivers
         </h2>
 
@@ -419,16 +309,16 @@ function WhyWinSection() {
                 className="w-10 h-10 text-[#f42661] mb-4 shrink-0"
                 strokeWidth={1.5}
               />
-              <h4 className="font-bold text-[#0b0f19] text-base leading-snug mb-2">
+              <h4 className="font-bold text-[#0b0f19] text-[15px] leading-snug mb-3">
                 {reason.title}
               </h4>
-              <p className="text-slate-600 text-sm leading-relaxed max-w-[240px]">
+              <p className="text-slate-600 text-[13px] leading-relaxed">
                 {reason.description}
               </p>
-              
+
               {/* Vertical Divider for Desktop */}
               {idx < reasons.length - 1 && (
-                <div className="hidden lg:block absolute right-[-12px] top-[10%] bottom-[10%] w-px bg-slate-200"></div>
+                <div className="hidden lg:block absolute right-[-12px] top-[10%] bottom-[10%] w-px bg-slate-100"></div>
               )}
             </div>
           ))}
@@ -438,13 +328,142 @@ function WhyWinSection() {
   );
 }
 
-function HowItWorksSection() {
+function OneClientFlowSection() {
+  const steps = [
+    { icon: User, label: "First\nClient" },
+    { icon: Heart, label: "Great\nExperience" },
+    { icon: CalendarDays, label: "Repeat\nBooking" },
+    { icon: Users, label: "Referral" },
+    { icon: User, label: "New\nClient", plus: true },
+    { icon: TrendingUp, label: "Growing\nBusiness" },
+  ];
+
+  return (
+    <section 
+      className="py-1 border"
+      style={{ 
+        backgroundColor: '#fef4f7', 
+        borderColor: 'rgba(244, 38, 97, 0.1)' 
+      }}
+    >
+      <PageContainer size="full">
+        <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16 py-8">
+          {/* Left: Text Content */}
+          <div className="w-full lg:w-1/3 flex flex-col items-center lg:items-start text-center lg:text-left">
+            <h3 className="text-xl sm:text-2xl font-bold text-[#f42661] mb-4 leading-tight w-full">
+              One Client Can Grow Your Business
+            </h3>
+            <p className="text-slate-700 text-sm leading-relaxed w-full">
+              Trust leads to repeat bookings. Repeat bookings lead to referrals. Referrals build the business that gives you freedom, income, and independence.
+            </p>
+          </div>
+
+          {/* Right: Flow Diagram */}
+          <div className="w-full lg:w-2/3 flex flex-col items-center w-full">
+            <div className="flex flex-row flex-wrap justify-center sm:flex-nowrap items-center w-full gap-y-8 gap-x-2 sm:gap-x-4">
+              {steps.map((step, idx) => (
+                <div key={idx} className="flex items-center">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full border-2 border-[#f42661]/30 flex items-center justify-center bg-white shadow-sm mb-3 relative">
+                      <step.icon className="w-5 h-5 sm:w-7 sm:h-7 text-[#f42661]" strokeWidth={1.5} />
+                      {step.plus && (
+                        <span className="absolute -top-1 -right-2 text-[#f42661] font-bold text-sm">+</span>
+                      )}
+                    </div>
+                    <span className="text-[#0b0f19] font-bold text-[11px] sm:text-[13px] leading-tight whitespace-pre-line">
+                      {step.label}
+                    </span>
+                  </div>
+                  {idx < steps.length - 1 && (
+                    <div className="mx-2 sm:mx-4 flex items-center shrink-0 -mt-8">
+                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-[#f42661]/40" strokeWidth={2} />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-10 lg:mt-12 text-center w-full">
+              <span className="text-[#f42661] text-2xl sm:text-3xl font-serif italic tracking-wide opacity-90">
+                Relationships create opportunity.
+              </span>
+            </div>
+          </div>
+        </div>
+      </PageContainer>
+    </section>
+  );
+}
+
+function ProvenModelSection() {
+  return (
+    <section className="bg-white py-1">
+      <PageContainer size="full">
+        <h2 className="text-[clamp(1.1rem,2vw,1.25rem)] font-bold text-[#f42661] text-center mb-8 uppercase tracking-wide">
+          START WITH A PROVEN AIRPORT TRANSPORTATION MODEL
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Card 1 */}
+          <div className="bg-[#f42661]/5 rounded-[1.5rem] p-6 lg:p-8 flex flex-col items-start border border-[#f42661]/10">
+            <div className="mb-4 text-[#f42661]">
+              <Rocket className="w-8 h-8" strokeWidth={1.5} />
+            </div>
+            <h3 className="text-[#f42661] font-bold text-xl lg:text-2xl leading-tight mb-4 text-balance">
+              Get Access with just 3 bookings.
+            </h3>
+            <p className="text-[#0b0f19] font-medium text-[13px] leading-relaxed">
+              What began as a handful of private airport rides became the foundation of a real transportation business.
+            </p>
+          </div>
+
+          {/* Card 2 */}
+          <div className="bg-[#0b0f19] rounded-[1.5rem] p-6 lg:p-8 flex flex-col items-start shadow-xl">
+            <div className="mb-4 text-[#f42661]">
+              <TrendingUp className="w-8 h-8" strokeWidth={1.5} />
+            </div>
+            <h3 className="text-white font-bold text-xl lg:text-2xl leading-tight mb-4 text-balance">
+              Nearly 6,000 scheduled rides in a single year.
+            </h3>
+            <p className="text-slate-300 text-[13px] leading-relaxed">
+              Direct clients became repeat riders. Repeat riders created referrals. Trust, relationships, and systems built the business over time.
+            </p>
+          </div>
+
+          {/* Card 3 */}
+          <div className="bg-[#f42661]/5 rounded-[1.5rem] p-6 lg:p-8 flex flex-col items-start border border-[#f42661]/10">
+            <div className="mb-4 text-[#f42661]">
+              <Heart className="w-8 h-8" strokeWidth={1.5} />
+            </div>
+            <h3 className="text-[#f42661] font-bold text-xl lg:text-2xl leading-tight mb-4 text-balance">
+              QuitTheApp was built from what happened in between.
+            </h3>
+            <p className="text-[#0b0f19] font-medium text-[13px] leading-relaxed">
+              You don't need thousands of customers to begin. You need a system, a plan, and the confidence to build something on your terms.
+            </p>
+          </div>
+
+          {/* Card 4 - Image */}
+          <div className="rounded-[1.5rem] overflow-hidden min-h-[250px] relative">
+            <img
+              src={jessicaImage}
+              alt="Woman with luggage"
+              className="absolute inset-0 w-full h-full object-cover object-[70%_center]"
+            />
+          </div>
+        </div>
+      </PageContainer>
+    </section>
+  );
+}
+
+function HowItWorksAndFaqSection() {
   const steps = [
     {
       number: 1,
       icon: Lock,
       title: "Get Access",
-      description: "Purchase the $495 DIY system and receive immediate access to your launch resources.",
+      description: "Purchase the $495 DIY system and get instant access to your launch resources.",
     },
     {
       number: 2,
@@ -455,212 +474,122 @@ function HowItWorksSection() {
     {
       number: 3,
       icon: Rocket,
-      title: "Build and Launch",
-      description: "Follow the guided setup process to create and launch your personalized selling page, which QuitTheApp hosts for you. Prefer additional assistance? Add the optional $199 We Do It for You upgrade.",
+      title: "Build & Launch",
+      description: "Follow the guided process to create and launch your personalized selling page. Need help? Add the optional $199 We Do It for You upgrade.",
     },
   ];
 
-  return (
-    <section className="bg-white py-3" id="how-it-works-steps">
-      <PageContainer size="full">
-        <h2 className="text-[clamp(1.375rem,3vw,2rem)] font-bold text-[#0b0f19] text-center mb-8">
-          How It Works
-        </h2>
-
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-4 w-full">
-          {steps.map((step, idx) => (
-            <div
-              key={idx}
-              className="flex items-center w-full md:w-auto flex-1 justify-center min-w-0"
-            >
-              <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-3 sm:gap-4 w-full justify-center">
-                {/* Icon Container with Overlapping Number */}
-                <div className="relative shrink-0">
-                  <div className="absolute -left-2 sm:-left-3 top-1/2 -translate-y-1/2 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#f42661] text-white flex items-center justify-center font-bold text-xs sm:text-sm z-10 shadow-sm border border-white">
-                    {step.number}
-                  </div>
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#f42661]/5 border border-[#f42661]/10 flex items-center justify-center relative z-0">
-                    <step.icon
-                      className="w-7 h-7 sm:w-8 sm:h-8 text-[#f42661]"
-                      strokeWidth={1.5}
-                    />
-                  </div>
-                </div>
-
-                {/* Text Content */}
-                <div className="flex flex-col justify-center h-full max-w-[200px]">
-                  <h4 className="font-bold text-[#0b0f19] text-sm sm:text-base mb-1">
-                    {step.title}
-                  </h4>
-                  <p className="text-slate-600 text-xs sm:text-sm leading-snug">
-                    {step.description}
-                  </p>
-                </div>
-              </div>
-
-              {/* Arrow separator (hidden on mobile, hidden after last item) */}
-              {idx < steps.length - 1 && (
-                <div className="hidden lg:flex shrink-0 mx-2 text-[#f42661]">
-                  <ArrowRight className="w-5 h-5 opacity-60" strokeWidth={2} />
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </PageContainer>
-    </section>
-  );
-}
-
-function ReviewsSection() {
-  const reviews = [
-    {
-      quote:
-        "I launched in 2 weeks and my repeat bookings and referrals keep growing.",
-      name: "Jessica M.",
-      location: "Austin, TX",
-      image: jessicaImage,
-    },
-    {
-      quote:
-        "My clients love the touch of trust and care I bring to every ride.",
-      name: "Maria R.",
-      location: "Scottsdale, AZ",
-      image: mariaImage,
-    },
-    {
-      quote:
-        "This system gave me the freedom to build a business I'm proud of.",
-      name: "Lisa T.",
-      location: "Charlotte, NC",
-      image: lisaImage,
-    },
-  ];
-
-  return (
-    <section className="bg-white py-3" id="reviews">
-      <PageContainer size="full">
-        <div className="w-full rounded-[2rem] border border-slate-200 shadow-sm p-[clamp(1rem,2vw,1.5rem)] bg-white">
-          <h2 className="text-[clamp(1.375rem,3vw,2rem)] font-bold text-[#0b0f19] text-center mb-8 text-balance">
-            Women Operators Are Building Real Businesses
-          </h2>
-
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-6 w-full">
-            {reviews.map((review, idx) => (
-              <div
-                key={idx}
-                className="flex flex-col sm:flex-row items-stretch gap-4 sm:gap-5 w-full flex-1 min-w-0"
-              >
-                {/* Image */}
-                <div className="shrink-0 w-full sm:w-[150px] lg:w-[140px] xl:w-[160px] flex">
-                  <img
-                    src={review.image}
-                    alt={review.name}
-                    loading="lazy"
-                    className="w-full h-40 sm:h-full rounded-2xl object-cover object-top shadow-sm"
-                  />
-                </div>
-
-                {/* Review Content */}
-                <div className="flex flex-col justify-between py-1 text-center sm:text-left min-w-0">
-                  {/* Stars */}
-                  <div className="flex items-center justify-center sm:justify-start gap-1 mb-2">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="w-4 h-4 fill-amber-400 text-amber-400"
-                      />
-                    ))}
-                  </div>
-
-                  {/* Quote */}
-                  <p className="text-[#0b0f19] font-medium text-sm sm:text-base leading-snug mb-3 text-pretty">
-                    "{review.quote}"
-                  </p>
-
-                  {/* Author */}
-                  <div>
-                    <h5 className="font-bold text-[#f42661] text-sm sm:text-base">
-                      {review.name}
-                    </h5>
-                    <span className="text-slate-600 text-xs sm:text-sm">
-                      {review.location}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </PageContainer>
-    </section>
-  );
-}
-
-function FaqSection() {
   const faqs = [
     {
+      question: "Do I need transportation experience?",
+      answer: "No prior experience is necessary. The QuitTheApp system provides the framework, tools, and guidance you need to start.",
+    },
+    {
       question: "Will this work in my city?",
-      answer:
-        "The system can be used in markets with an airport and travelers who need reliable transportation. You choose your service area, rates, schedule, and availability. Results depend on local demand, competition, pricing, expenses, and your marketing efforts.",
+      answer: "The system works in markets with an airport and travelers seeking reliable transportation.",
     },
     {
       question: "How is this different from rideshare apps?",
-      answer:
-        "With rideshare apps, the platform controls the client relationship, pricing structure, and access to future ride opportunities. With QuitTheApp, you build your own client list, set your own rates, and keep the fares paid directly to your business, subject to normal operating expenses and payment processing costs.",
-    },
-    {
-      question: "Is my personalized selling page and hosting included?",
-      answer:
-        "Yes. QuitTheApp builds and hosts your personalized selling page. The $495 DIY system guides you through submitting your business information, services, pricing, branding, and booking preferences. The optional $199 We Do It for You upgrade provides additional setup assistance from our team.",
-    },
-    {
-      question: "Is the $495 really a one-time payment?",
-      answer:
-        "Yes. The $495 QuitTheApp DIY system is a one-time payment with no monthly QuitTheApp platform fee. An optional $199 We Do It for You upgrade is available. Normal business expenses such as scheduling software, domain registration, payment processing, commercial insurance, licensing, fuel, vehicle maintenance, and other operating costs may still apply.",
-    },
-    {
-      question: "I'm not tech savvy. Can I still do this?",
-      answer:
-        "Absolutely. The $495 QuitTheApp DIY system includes step-by-step guidance for submitting your business information, selecting your booking preferences, and preparing the content needed for your personalized selling page. Prefer additional assistance? Add the optional $199 We Do It for You upgrade.",
+      answer: "With QuitTheApp, you build your own client list, set your own rates, and keep the fares paid directly to your business.",
     },
     {
       question: "How do I get my first clients?",
-      answer:
-        "Use the Client Acquisition Center™ with QR cards, outreach templates, and client-building tools. Start with your network, local hotels, and referrals—one client becomes many.",
+      answer: "Use the included Client Acquisition Center™ with QR cards, outreach templates, and local strategies to attract initial clients.",
+    },
+    {
+      question: "Is the $495 really a one-time payment?",
+      answer: "Yes. The $495 DIY system is a one-time payment with no monthly platform fees.",
+    },
+    {
+      question: "I'm not tech savvy. Can I still do this?",
+      answer: "Absolutely. The system includes step-by-step guidance. If you prefer, you can add the $199 'We Do It for You' upgrade for additional setup assistance.",
     },
     {
       question: "What if it doesn't work for me?",
-      answer:
-        "QuitTheApp was created from real experience building and operating a private airport transportation business since 2016. Results depend on your market, pricing, effort, expenses, and ability to attract clients. If you need help deciding whether the system fits your goals, contact support@quittheapp.com.",
+      answer: "Results depend on your market, effort, and execution. The system provides the proven tools and framework for success.",
     },
+    {
+      question: "Is my personalized selling page and hosting included?",
+      answer: "Yes, your personalized selling page and its ongoing hosting are included in the one-time cost.",
+    }
   ];
 
-  return (
-    <section className="bg-white py-3 " id="faq">
-      <PageContainer size="full">
-        <div className="w-full rounded-[2rem] border border-slate-200 shadow-sm p-[clamp(1rem,2vw,1.5rem)] bg-white">
-          <h2 className="text-[clamp(1.375rem,3vw,2rem)] font-bold text-[#0b0f19] text-center mb-8 sm:mb-10">
-            Frequently <span className="text-[#f42661]">Asked Questions</span>
-          </h2>
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
-            {faqs.map((faq, idx) => (
-              <div key={idx} className="flex items-start gap-4 min-w-0">
-                <div className="shrink-0 w-8 h-8 rounded-full bg-[#f42661] text-white flex items-center justify-center font-bold text-sm shadow-sm mt-0.5">
-                  Q
+  const toggleFaq = (idx: number) => {
+    setOpenFaqIndex(openFaqIndex === idx ? null : idx);
+  };
+
+  return (
+    <section className="bg-white py-1 border-t border-slate-100" id="how-it-works-faq">
+      <PageContainer size="full">
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
+
+          {/* Left Side: How It Works */}
+          <div className="w-full lg:w-1/2">
+            <h2 className="text-[clamp(1.25rem,2.5vw,1.75rem)] font-bold text-[#0b0f19] mb-8 lg:mb-10 text-balance">
+              How It Works
+            </h2>
+            <div className="flex flex-col sm:flex-row items-stretch justify-between gap-6 sm:gap-4 w-full relative">
+              {/* Horizontal line for desktop steps connection */}
+              <div className="hidden sm:block absolute top-[28px] left-[10%] right-[10%] h-[2px] bg-[#f42661]/10 z-0"></div>
+
+              {steps.map((step, idx) => (
+                <div
+                  key={idx}
+                  className="flex flex-row sm:flex-col items-center sm:items-start sm:text-center w-full flex-1 z-10"
+                >
+                  <div className="shrink-0 flex sm:w-full justify-center mr-4 sm:mr-0 mb-0 sm:mb-4 relative">
+                    <div className="w-14 h-14 rounded-full bg-white border-2 border-[#f42661]/20 flex items-center justify-center relative shadow-sm">
+                      <div className="absolute -left-2 sm:-left-3 top-1/2 -translate-y-1/2 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#f42661] text-white flex items-center justify-center font-bold text-xs sm:text-sm shadow-sm border border-white">
+                        {step.number}
+                      </div>
+                      <step.icon className="w-6 h-6 text-[#f42661]" strokeWidth={1.5} />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col justify-center">
+                    <h4 className="font-bold text-[#0b0f19] text-[15px] mb-1 sm:mx-auto">
+                      {step.title}
+                    </h4>
+                    <p className="text-slate-600 text-[12px] sm:text-[13px] leading-relaxed">
+                      {step.description}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex flex-col">
-                  <h4 className="font-bold text-[#0b0f19] text-sm sm:text-base leading-snug mb-2">
-                    {faq.question}
-                  </h4>
-                  <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
-                    {faq.answer}
-                  </p>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
+
+          {/* Right Side: FAQ */}
+          <div className="w-full lg:w-1/2">
+            <h2 className="text-[clamp(1.25rem,2.5vw,1.75rem)] font-bold text-[#0b0f19] mb-8 lg:mb-10 text-balance">
+              Frequently <span className="text-[#f42661]">Asked Questions</span>
+            </h2>
+
+            <div className="flex flex-col gap-4">
+              {faqs.map((faq, idx) => (
+                <div key={idx} className="flex flex-col cursor-pointer pb-3 border-b border-slate-100 last:border-0" onClick={() => toggleFaq(idx)}>
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 font-bold text-[#0b0f19] text-[14px] leading-snug select-none">
+                      {faq.question}
+                    </div>
+                    <div className={`text-[#f42661] shrink-0 w-5 h-5 flex items-center justify-center rounded-full border border-[#f42661]/30 transition-transform duration-300 ${openFaqIndex === idx ? 'bg-[#f42661] text-white rotate-45' : 'bg-transparent'}`}>
+                      <span className="text-[15px] leading-none mb-0.5">+</span>
+                    </div>
+                  </div>
+                  <div className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${openFaqIndex === idx ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                    <div className="overflow-hidden">
+                      <p className="pr-8 pt-3 text-slate-600 text-[13px] leading-relaxed">
+                        {faq.answer}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
         </div>
       </PageContainer>
     </section>
@@ -668,40 +597,28 @@ function FaqSection() {
 }
 
 function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }) {
-  const { accessToken, user } = useAppSelector((state) => state.auth);
-
   const benefits = [
     "One-time payment",
-    "No monthly QuitTheApp platform fees",
-    "Built for airport transportation",
-    "Real human support",
-  ];
-
-  const trustBadges = [
-    { icon: ShieldCheck, text: "Secure Checkout" },
-    { icon: CheckCircle2, text: "Protected Payment" },
-    { icon: Lock, text: "One-time payment" },
-    { icon: XCircle, text: "No monthly platform fees" },
-    { icon: Plane, text: "Built for Airport Transportation Businesses™" },
-    { icon: User, text: "Real Humans. Real Support." },
+    "No monthly platform fees",
+    "Built for private transportation",
+    "Real humans. Real support.",
   ];
 
   return (
-    <section className="bg-[#0b0f19] py-3 border-t-4 border-[#f42661]">
+    <section className="bg-[#0b0f19] py-1">
       <PageContainer size="full">
         {/* Main 3-Column Layout */}
         <div className="flex flex-col lg:flex-row justify-between gap-10 lg:gap-8 pb-10 border-b border-slate-800">
           {/* Column 1: Intro */}
-          <div className="lg:w-1/3 flex flex-col pr-0 lg:pr-8 lg:border-r border-slate-800">
-            <h3 className="text-2xl sm:text-3xl font-bold text-white leading-tight mb-6">
+          <div className="lg:w-1/3 flex flex-col pr-0 lg:pr-8">
+            <h3 className="text-2xl sm:text-3xl font-bold text-white leading-tight mb-6 text-balance">
               Start My <br />
-              <span className="text-[#f42661]">Private Airport Business™</span>
+              <span className="text-[#f42661]">Transportation Business™</span>
             </h3>
             <div className="flex items-start gap-4">
-              <Heart className="w-10 h-10 text-[#f42661] shrink-0 stroke-[1.5]" />
+              <Heart className="w-8 h-8 text-[#f42661] shrink-0 stroke-[1.5]" />
               <p className="text-slate-300 text-sm leading-relaxed">
-                Build a trusted, professional business that puts you in
-                control—and your clients keep coming back.
+                Build a trusted, professional business that fits your life—and your clients keep coming back.
               </p>
             </div>
           </div>
@@ -711,83 +628,51 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
             <div className="flex flex-col mb-4">
               <div className="flex items-baseline gap-3 flex-wrap">
                 <span className="text-[clamp(2.5rem,4vw,3rem)] font-bold text-[#f42661]">$495</span>
-                <span className="text-white font-bold text-lg">
+                <span className="text-white font-bold text-sm uppercase tracking-wide mt-2">
                   One-time payment
                 </span>
               </div>
-              <span className="text-slate-300 text-sm mt-2 leading-snug max-w-[280px]">
-                Includes the complete QuitTheApp DIY launch system and personalized driver selling page.<br/>
-                <span className="mt-2 block font-medium">Optional $199 We Do It for You upgrade available.</span>
+              <span className="text-slate-300 text-xs mt-2 leading-snug max-w-[280px]">
+                Includes the complete QuitTheApp DIY launch system and personalized driver selling page.<br />
+                <span className="mt-2 block opacity-80">Optional $199 We Do It for You upgrade available.</span>
               </span>
             </div>
-            <ul className="space-y-2 mt-2">
+          </div>
+
+          {/* Column 3: Button & Payments */}
+          <div className="lg:w-1/3 flex flex-col justify-center items-start lg:items-end">
+            <div className="w-full sm:w-auto">
+              <button
+                onClick={openPricingModal}
+                className="cursor-pointer bg-[#f42661] hover:bg-[#d91950] text-white font-bold py-4 px-8 rounded-[0.5rem] transition-colors shadow-lg shadow-[#f42661]/20 flex items-center justify-center gap-4 w-full text-base sm:text-lg mb-4 min-h-[56px]"
+              >
+                <span>Start Your Business</span>
+                <div className="bg-white rounded-full p-1 shrink-0">
+                  <ChevronRight className="w-5 h-5 text-[#f42661] stroke-[3]" />
+                </div>
+              </button>
+              {/* Payment Badges */}
+              <div className="flex justify-center w-full mb-6">
+                <PaymentBadges justify="center" />
+              </div>
+            </div>
+
+            <ul className="space-y-2 mt-2 w-full max-w-[280px] self-center lg:self-end">
               {benefits.map((benefit, i) => (
                 <li
                   key={i}
-                  className="flex items-center text-slate-300 text-sm"
+                  className="flex items-center text-slate-300 text-[13px]"
                 >
-                  <Check className="w-5 h-5 text-[#f42661] mr-3 shrink-0 stroke-[3]" />
+                  <Check className="w-4 h-4 text-[#f42661] mr-3 shrink-0 stroke-[3]" />
                   <span>{benefit}</span>
                 </li>
               ))}
             </ul>
           </div>
-
-          {/* Column 3: Button & Payments */}
-          <div className="lg:w-1/3 flex flex-col justify-center items-center lg:items-end">
-            {user?.status === "active" ? (
-              <button
-                onClick={openPricingModal}
-                className="cursor-pointer bg-[#f42661] hover:bg-[#d91950] text-white font-bold py-4 px-6 rounded-lg transition-colors shadow-lg shadow-[#f42661]/20 flex items-center justify-between group w-full text-base sm:text-lg mb-4 min-h-[56px]"
-              >
-                <span className="text-center w-full">
-                  Start Your Business
-                </span>
-                <div className="bg-white rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
-                  <ChevronRight className="w-5 h-5 text-[#f42661] stroke-[3]" />
-                </div>
-              </button>
-            ) : accessToken ? (
-              <button
-                onClick={openPricingModal}
-                className="cursor-pointer bg-[#f42661] hover:bg-[#d91950] text-white font-bold py-4 px-6 rounded-lg transition-colors shadow-lg shadow-[#f42661]/20 flex items-center justify-between group w-full text-base sm:text-lg mb-4 min-h-[56px]"
-              >
-                <span className="text-center w-full">
-                  Start My Private Airport Business™ — $495
-                </span>
-                <div className="bg-white rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
-                  <ChevronRight className="w-5 h-5 text-[#f42661] stroke-[3]" />
-                </div>
-              </button>
-            ) : (
-              <button
-                onClick={openPricingModal}
-                className="cursor-pointer bg-[#f42661] hover:bg-[#d91950] text-white font-bold py-4 px-6 rounded-lg transition-colors shadow-lg shadow-[#f42661]/20 flex items-center justify-between group w-full text-base sm:text-lg mb-4 min-h-[56px]"
-              >
-                <span className="text-center w-full">
-                  Start My Private Airport Business™ — $495
-                </span>
-                <div className="bg-white rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
-                  <ChevronRight className="w-5 h-5 text-[#f42661] stroke-[3]" />
-                </div>
-              </button>
-            )}
-
-            {/* Payment Badges */}
-            <PaymentBadges justify="center" />
-          </div>
         </div>
 
         {/* Bottom Trust Indicators & Copyright */}
-        <div className="pt-6 flex flex-col items-center">
-          <div className="flex flex-wrap justify-center gap-x-6 gap-y-4 mb-6">
-            {trustBadges.map((badge, idx) => (
-              <div key={idx} className="flex items-center gap-2 text-slate-400">
-                <badge.icon className="w-4 h-4 shrink-0" strokeWidth={1.5} />
-                <span className="text-xs">{badge.text}</span>
-              </div>
-            ))}
-          </div>
+        <div className="pt-8 flex flex-col items-center">
           <p className="text-slate-500 text-xs">
             © {new Date().getFullYear()} QuitTheApp. All Rights Reserved.
           </p>
