@@ -60,17 +60,26 @@ export function overwriteLastTouchAttribution(input: ExitIntentAttributionInput)
   return attribution;
 }
 
+export function normalizeUsPhone(value: string): string {
+  let digits = value.replace(/\D/g, "");
+
+  if (digits.length === 11 && digits.startsWith("1")) {
+    digits = digits.slice(1);
+  }
+
+  if (!/^[2-9]\d{2}[2-9]\d{6}$/.test(digits)) {
+    throw new Error("Enter a valid 10-digit US phone number.");
+  }
+
+  return digits;
+}
+
 export function normalizePhone(value: string): string | null {
-  const digits = value.replace(/\D/g, "");
-
-  const tenDigits =
-    digits.length === 11 && digits.startsWith("1")
-      ? digits.slice(1)
-      : digits;
-
-  const isValidUsPhone = /^[2-9]\d{2}[2-9]\d{6}$/.test(tenDigits);
-
-  return isValidUsPhone ? tenDigits : null;
+  try {
+    return normalizeUsPhone(value);
+  } catch {
+    return null;
+  }
 }
 
 export function normalizeCity(value: string): string {

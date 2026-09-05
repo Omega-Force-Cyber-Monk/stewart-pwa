@@ -7,6 +7,7 @@ import {
   normalizeCity,
   normalizeConsent,
   normalizePhone,
+  normalizeUsPhone,
   overwriteLastTouchAttribution,
 } from "../src/components/marketing/exitIntentLogic.ts";
 import {
@@ -66,11 +67,19 @@ test("doorway configuration contains the approved copy and locales", () => {
   assert.equal(exitIntentConfig["/spanish"].submitLabel, "Enviarme la Guía");
 });
 
-test("normalizes and validates US phone numbers", () => {
-  assert.equal(normalizePhone("(415) 555-0134"), "+14155550134");
-  assert.equal(normalizePhone("415.555.0134"), "+14155550134");
+test("normalizes and validates US phone numbers with normalizeUsPhone and normalizePhone", () => {
+  // Acceptance tests
+  assert.equal(normalizeUsPhone("5125555789"), "5125555789");
+  assert.equal(normalizeUsPhone("(512) 555-5789"), "5125555789");
+  assert.equal(normalizeUsPhone("+1 512 555 5789"), "5125555789");
+  assert.throws(() => normalizeUsPhone("1512555788"), /Enter a valid 10-digit US phone number\./);
+  assert.throws(() => normalizeUsPhone("123"), /Enter a valid 10-digit US phone number\./);
+
+  // normalizePhone wrapper tests
+  assert.equal(normalizePhone("(415) 555-0134"), "4155550134");
+  assert.equal(normalizePhone("415.555.0134"), "4155550134");
   assert.equal(normalizePhone("415-555-013"), null);
-  assert.equal(normalizePhone("+1 415 555 0134"), null);
+  assert.equal(normalizePhone("+1 415 555 0134"), "4155550134");
   assert.equal(normalizePhone("415-555-0134x9"), null);
 });
 

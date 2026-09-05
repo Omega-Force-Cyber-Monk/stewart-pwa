@@ -292,7 +292,9 @@ export function PricingModal({ onClose, upsellKitImageSrc }: PricingModalProps) 
                       title: "Upsell Kit",
                       url: window.location.origin + upsellKitImageSrc,
                     });
-                  } catch (err) { }
+                  } catch {
+                    // Ignore share cancellation
+                  }
                 } else {
                   navigator.clipboard.writeText(window.location.origin + upsellKitImageSrc);
                   alert("Link copied to clipboard!");

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { CheckCircle2, Gift, X, Phone, MapPin, User, Mail, Lock, Loader2 } from "lucide-react";
 import type { ExitIntentRouteConfig } from "./exitIntentConfig";
-import { ENGLISH_CONSENT_TEXT, SPANISH_CONSENT_TEXT, normalizeCity, normalizeConsent, normalizePhone, CONSENT_TEXT_VERSION } from "./exitIntentLogic";
+import { ENGLISH_CONSENT_TEXT, SPANISH_CONSENT_TEXT, normalizeCity, normalizeConsent, normalizeUsPhone, CONSENT_TEXT_VERSION } from "./exitIntentLogic";
 import { useCreatePublicLeadMutation } from "../../../store/api/Business/business.api";
+import { getOrCreateMarketingSessionId } from "../../../lib/storage";
 
 interface ExitIntentPopupProps {
   config: ExitIntentRouteConfig;
@@ -30,53 +31,67 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setValidationError(null);
-
+  const submitLead = async () => {
     const isSpanish = config.locale === "es";
+    const normalizedPhone = normalizeUsPhone(phone);
 
-    const normalizedPhone = normalizePhone(phone);
-    if (!normalizedPhone) {
-      setValidationError(isSpanish ? "Ingresa un número de teléfono válido de 10 dígitos." : "Enter a valid 10-digit phone number.");
-      return;
-    }
-    
     let normalizedCity = "";
     if (config.fields.includes("city")) {
       normalizedCity = normalizeCity(city);
       if (!normalizedCity) {
-        setValidationError(isSpanish ? "Se requiere la ciudad." : "City is required.");
-        return;
+        throw new Error(isSpanish ? "Se requiere la ciudad." : "City is required.");
       }
     }
 
     if (!normalizeConsent(consent)) {
-      setValidationError(isSpanish ? "Acepta recibir mensajes de texto." : "Please agree to receive text messages related to your request.");
-      return;
+      throw new Error(
+        isSpanish
+          ? "Acepta recibir mensajes de texto."
+          : "Please agree to receive text messages related to your request."
+      );
     }
 
+    const payload = {
+      phone: normalizedPhone,
+      city: config.fields.includes("city") ? normalizedCity : undefined,
+      name: config.fields.includes("name") ? name.trim() : undefined,
+      email: config.fields.includes("email") ? email.trim() : undefined,
+      sourcePage: config.sourcePage,
+      sessionId: getOrCreateMarketingSessionId() || crypto.randomUUID(),
+      smsConsent: true as const,
+      consentTextVersion: CONSENT_TEXT_VERSION,
+      referrer: document.referrer || null,
+      utmSource: null,
+      utmMedium: null,
+      utmCampaign: null,
+      utmTerm: null,
+      utmContent: null,
+    };
+
     try {
-      await createPublicLead({
-        name: config.fields.includes("name") ? name : undefined,
-        email: config.fields.includes("email") ? email : undefined,
-        phone: normalizedPhone,
-        city: config.fields.includes("city") ? normalizedCity : undefined,
-        sourcePage: config.sourcePage,
-        sessionId: crypto.randomUUID(), // Or get from your session management
-        utmSource: null,
-        utmMedium: null,
-        utmCampaign: null,
-        utmTerm: null,
-        utmContent: null,
-        referrer: document.referrer || null,
-        smsConsent: true,
-        consentTextVersion: CONSENT_TEXT_VERSION,
-      }).unwrap();
-      
+      await createPublicLead(payload).unwrap();
+    } catch (apiError: unknown) {
+      const errorData = (apiError as { data?: { message?: string | string[]; error?: string } })?.data || (apiError as { message?: string | string[]; error?: string });
+      const message = Array.isArray(errorData?.message)
+        ? errorData.message.join(" ")
+        : errorData?.message || errorData?.error || "Unable to submit the form.";
+      throw new Error(message, { cause: apiError });
+    }
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setValidationError(null);
+
+    try {
+      await submitLead();
       setSubmitted(true);
-    } catch (err) {
-      setValidationError(isSpanish ? "Ocurrió un error. Inténtalo de nuevo." : "An error occurred. Please try again.");
+    } catch (error) {
+      setValidationError(
+        error instanceof Error
+          ? error.message
+          : "Unable to submit the form."
+      );
     }
   };
 
@@ -149,10 +164,12 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
                       </div>
                       <input
                         type="tel"
+                        inputMode="tel"
+                        autoComplete="tel-national"
                         required
                         value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="(415) 555-0134"
+                        onChange={(event) => setPhone(event.target.value)}
+                        placeholder="(512) 555-5789"
                         className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-700"
                       />
                     </div>
