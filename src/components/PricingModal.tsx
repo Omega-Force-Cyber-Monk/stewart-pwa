@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAppSelector } from "../hooks/storeHooks";
 import { useCreateRiderCheckoutSessionMutation } from "../store/api/Payment/payment.api";
 import { writeStorageValue, storageKeys } from "../lib/storage";
+import { readMarketingOverlayState, setMarketingOverlayState } from "../lib/marketingOverlay";
 import { Loader2, X, Check, AlertTriangle, Rocket, Users, Download, Share, Eye, ZoomIn, ZoomOut } from "lucide-react";
 
 interface PricingModalProps {

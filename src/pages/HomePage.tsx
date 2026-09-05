@@ -26,12 +26,16 @@ import {
 } from "lucide-react";
 import { PaymentBadges } from "../components/common/PaymentBadges";
 import { PageContainer } from "../components/layout/PageContainer";
+import { ExperienceSection } from "../components/marketing/ExperienceSection";
+import standard1 from "../assets/experience/standard-1.jpg";
+import standard2 from "../assets/experience/standard-2.jpg";
+import standard3 from "../assets/experience/standard-3.jpg";
 import seniorBanner from "../assets/standardBanner.png";
 import coupleComparisonLeft from "../assets/coupleComparisonSectionLeft.png";
 import coupleComparisonRight from "../assets/coupleComparisonSectionRight.png";
-import timGImage from "../assets/Main_selling_Page_Tim_G.jpg";
-import tomRImage from "../assets/Main_Page_Tom_R.jpg";
-import williamRImage from "../assets/Main_Page_william_R.jpg";
+
+
+
 import standardHero from "../assets/standardHero.png";
 import upsellKit from "../assets/standard_upsell_kit.png";
 

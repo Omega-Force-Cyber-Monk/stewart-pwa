@@ -137,17 +137,6 @@ export const businessApi = baseApi.injectEndpoints({
         method: "POST",
       }),
     }),
-    getPublicLeadConfig: builder.query<PublicLeadConfigResponse, void>({
-      query: () => "/public/lead-config",
-    }),
-    createPublicLead: builder.mutation<CreatePublicLeadResponse, CreatePublicLeadRequest>({
-      query: (body) => ({
-        url: "/public/leads",
-        method: "POST",
-        body,
-      }),
-      invalidatesTags: ["Leads" as any], // Cast as any if Leads is not in tagTypes yet, or just omit if it complains
-    }),
   }),
   overrideExisting: false,
 });
@@ -174,6 +163,4 @@ export const {
   useGetLaunchReadinessQuery,
   useGetFinalReviewQuery,
   useCompleteLaunchMutation,
-  useGetPublicLeadConfigQuery,
-  useCreatePublicLeadMutation,
 } = businessApi;

@@ -22,6 +22,7 @@ import {
   Heart,
   TrendingUp,
   Car,
+  Star,
 } from "lucide-react";
 import { PageContainer } from "../components/layout/PageContainer";
 import { ProfileDropdown } from "../components/ProfileDropdown";
@@ -581,19 +582,15 @@ function HowItWorksSection() {
       number: 2,
       icon: ClipboardList,
       title: "Paso 2: Cuéntanos sobre tu negocio",
-      title: "Paso 2: Cuéntanos sobre tu negocio",
       description:
         "Agrega tu área de servicio, rutas, tarifas, horarios, preferencias de reserva y la información que quieres mostrar a tus clientes.",
-      "Agrega tu área de servicio, rutas, tarifas, horarios, preferencias de reserva y la información que quieres mostrar a tus clientes.",
     },
     {
       number: 3,
       icon: Rocket,
       title: "Paso 3: Configura y empieza",
-      title: "Paso 3: Configura y empieza",
       description:
         "Sigue las instrucciones para configurar tu sistema de reservas y tu página personalizada. Si quieres ayuda adicional, puedes agregar la opción \"Lo hacemos por ti\" por $199.",
-      "Sigue las instrucciones para configurar tu sistema de reservas y tu página personalizada. Si quieres ayuda adicional, puedes agregar la opción \"Lo hacemos por ti\" por $199.",
     },
   ];
 
@@ -730,7 +727,6 @@ function HowItWorksAndFaqSection({ openPricingModal }: { openPricingModal: () =>
   const faqs = [
     {
       question: "¿Los $495 son realmente un solo pago?",
-      question: "¿Los $495 son realmente un solo pago?",
       answer:
         "Sí. Pagas $495 una sola vez por el sistema DIY de Quit TheApp. No hay una cuota mensual de plataforma de Quit TheApp. También puedes agregar la opción \"Lo hacemos por ti\" por $199. Como en cualquier negocio, puedes tener otros gastos como procesamiento de pagos, seguro comercial, licencias, combustible, mantenimiento y otras herramientas que decidas usar.",
     },
@@ -746,7 +742,6 @@ function HowItWorksAndFaqSection({ openPricingModal }: { openPricingModal: () =>
     },
     {
       question: "¿Necesito saber de tecnología?",
-      question: "¿Necesito saber de tecnología?",
       answer:
         "No. El sistema te guía paso a paso para configurar la información de tu negocio, tus preferencias de reserva y tu página personalizada. Y si quieres más ayuda, puedes agregar la opción \"Lo hacemos por ti\" por $199.",
     },
@@ -756,7 +751,6 @@ function HowItWorksAndFaqSection({ openPricingModal }: { openPricingModal: () =>
         "Quit TheApp está basado en experiencia real operando un negocio de transporte privado al aeropuerto. Pero cada mercado es diferente. Tus resultados dependerán de factores como la demanda, tus tarifas, tus gastos, el servicio que ofrezcas y el esfuerzo que pongas en conseguir clientes. Nosotros te damos el sistema, las herramientas y el soporte para ayudarte a empezar.",
     },
     {
-      question: "¿Funcionará donde yo vivo?",
       question: "¿Funcionará donde yo vivo?",
       answer:
         "Puede funcionar en mercados donde hay viajeros que necesitan transporte confiable al aeropuerto. Tú decides dónde trabajar, cuánto cobrar, qué horarios ofrecer y qué áreas atender. Los resultados dependerán de tu mercado y de cómo promociones tu negocio.",

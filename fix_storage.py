@@ -1,17 +1,15 @@
-const storagePrefix = "quittheapp";
+with open("src/lib/storage.ts", "r") as f:
+    content = f.read()
 
-export const storageKeys = {
-  exitIntentShown: "exit_intent_shown",
-  appFlowState: `${storagePrefix}:appFlowState`,
-  abandonedCheckout: `${storagePrefix}:abandonedCheckout`,
+addition = """
   marketingSessionId: `stewart-pwa:marketingSessionId`,
   marketingAttribution: `stewart-pwa:marketingAttribution`,
   marketingConsumed: `stewart-pwa:marketingConsumed`,
   marketingSuppressed: `stewart-pwa:marketingSuppressed`,
+"""
+content = content.replace("abandonedCheckout: `${storagePrefix}:abandonedCheckout`,", "abandonedCheckout: `${storagePrefix}:abandonedCheckout`," + addition)
 
-};
-
-
+addition2 = """
 
 export type MarketingAttribution = {
   sourcePage: "main" | "senior" | "women" | "couple" | "spanish";
@@ -101,32 +99,10 @@ export function isMarketingSuppressed(): boolean {
 export function markMarketingSuppressed(): void {
   writeSessionStorageValue(storageKeys.marketingSuppressed, "1");
 }
-export function readStorageValue(key: string) {
-  if (typeof window === "undefined") return null;
+"""
 
-  try {
-    return window.localStorage.getItem(key);
-  } catch {
-    return null;
-  }
-}
+content = content.replace("export function readStorageValue", addition2 + "export function readStorageValue")
 
-export function writeStorageValue(key: string, value: string) {
-  if (typeof window === "undefined") return;
+with open("src/lib/storage.ts", "w") as f:
+    f.write(content)
 
-  try {
-    window.localStorage.setItem(key, value);
-  } catch {
-    // Persistence is helpful but non-critical for this frontend-only demo.
-  }
-}
-
-export function removeStorageValue(key: string) {
-  if (typeof window === "undefined") return;
-
-  try {
-    window.localStorage.removeItem(key);
-  } catch {
-    // Ignore storage failures so reset never blocks navigation.
-  }
-}

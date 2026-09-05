@@ -7,6 +7,11 @@ import {
   removeStorageValue,
   storageKeys,
 } from "../../lib/storage";
+import {
+  readMarketingOverlayState,
+  setMarketingOverlayState,
+  subscribeMarketingOverlayState,
+} from "../../lib/marketingOverlay";
 
 const MARKETING_PATHS = new Set(["/", "/women", "/couple", "/senior", "/spanish"]);
 const ABANDONED_AFTER_MS = 15 * 60 * 1000;
@@ -38,8 +43,6 @@ export function AbandonedCheckoutPrompt() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-<<<<<<< HEAD
-=======
     const currentOverlayState = readMarketingOverlayState();
     setMarketingOverlayState({ ...currentOverlayState, abandonedCheckoutVisible: false });
     const unsubscribePricing = subscribeMarketingOverlayState((state) => {
@@ -48,7 +51,7 @@ export function AbandonedCheckoutPrompt() {
         setMarketingOverlayState({ ...state, abandonedCheckoutVisible: false });
       }
     });
->>>>>>> cd42cdac3461e9ba373471a1363c9c2e1f0cdff4
+
     const host = resolveBusinessHost(
       window.location.hostname,
       import.meta.env.VITE_PUBLIC_BUSINESS_DOMAIN || "quittheapp.com",
@@ -56,35 +59,24 @@ export function AbandonedCheckoutPrompt() {
     const isMarketingPage = MARKETING_PATHS.has(location.pathname);
     if (host.kind !== "main" || !isMarketingPage) {
       setIsVisible(false);
-<<<<<<< HEAD
-      return;
-=======
       return unsubscribePricing;
->>>>>>> cd42cdac3461e9ba373471a1363c9c2e1f0cdff4
     }
 
     const marker = readMarker();
     if (!marker) {
       setIsVisible(false);
-<<<<<<< HEAD
-      return;
-=======
       return unsubscribePricing;
->>>>>>> cd42cdac3461e9ba373471a1363c9c2e1f0cdff4
     }
 
     const age = Date.now() - marker.startedAt;
     const cancelled = new URLSearchParams(location.search).get("checkout") === "cancelled";
     const isFreshEnough = age >= ABANDONED_AFTER_MS && age <= MARKER_MAX_AGE_MS;
-<<<<<<< HEAD
-    setIsVisible(cancelled || isFreshEnough);
-  }, [location.pathname, location.search]);
-
-=======
+    
     const visible = cancelled || isFreshEnough;
     setIsVisible(visible);
     const nextOverlayState = readMarketingOverlayState();
     setMarketingOverlayState({ ...nextOverlayState, abandonedCheckoutVisible: visible });
+    
     return unsubscribePricing;
   }, [location.pathname, location.search]);
 
@@ -93,7 +85,6 @@ export function AbandonedCheckoutPrompt() {
     setMarketingOverlayState({ ...current, abandonedCheckoutVisible: false });
   }, []);
 
->>>>>>> cd42cdac3461e9ba373471a1363c9c2e1f0cdff4
   const dismiss = () => {
     removeStorageValue(storageKeys.abandonedCheckout);
     setIsVisible(false);
