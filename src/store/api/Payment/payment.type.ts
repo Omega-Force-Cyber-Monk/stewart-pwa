@@ -45,7 +45,15 @@ export interface PaymentRecord {
   paidAt: string;
   createdAt: string;
   updatedAt: string;
+  orderNumber?: string | null;
+  paymentBrand?: string | null;
+  paymentLast4?: string | null;
   items: PaymentItem[];
+}
+
+export interface InvoiceDownloadResponse {
+  success: boolean;
+  invoiceUrl?: string;
 }
 
 export interface PaymentHistoryResponse {

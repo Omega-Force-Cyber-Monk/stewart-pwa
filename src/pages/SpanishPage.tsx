@@ -15,7 +15,6 @@ import {
   RefreshCcw,
   Rocket,
   ShieldCheck,
-  Star,
   Users,
   Clock,
   Check,
@@ -131,7 +130,7 @@ function SpanishNavbar({ openPricingModal }: { openPricingModal: () => void }) {
                   href="#reviews"
                   className="text-white hover:text-[#22c55e] text-sm font-semibold transition-colors"
                 >
-                  Casos de Éxito
+                  Experiencia Real
                 </a>
                 <a
                   href="#faq"
@@ -155,7 +154,7 @@ function SpanishNavbar({ openPricingModal }: { openPricingModal: () => void }) {
                     onClick={openPricingModal}
                     className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg"
                   >
-                    Empezar mi negocio privado de transporte — $495
+                    QUIERO EMPEZAR MI NEGOCIO DE TRANSPORTE PRIVADO $495
                   </button>
                 </>
               )}
@@ -197,7 +196,7 @@ function SpanishNavbar({ openPricingModal }: { openPricingModal: () => void }) {
             onClick={() => setMobileMenuOpen(false)}
             className="text-white hover:text-[#22c55e] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
           >
-            Casos de Éxito
+            Experiencia Real
           </a>
           <a
             href="#faq"
@@ -237,7 +236,7 @@ function SpanishNavbar({ openPricingModal }: { openPricingModal: () => void }) {
                 </button>
               )}
               <Link
-                to={user?.role === "admin" ? "/admin/settings" : "/profile"}
+                to={user?.role === "admin" ? "/admin/settings" : "/profile-settings"}
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-white hover:text-[#22c55e] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
               >
@@ -269,7 +268,7 @@ function SpanishNavbar({ openPricingModal }: { openPricingModal: () => void }) {
                 }}
                 className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-3 px-6 rounded-md transition-colors w-full mt-4 min-h-[52px]"
               >
-                Empezar mi negocio privado de transporte — $495
+                QUIERO EMPEZAR MI NEGOCIO DE TRANSPORTE PRIVADO $495
               </button>
             </>
           )}
@@ -294,12 +293,12 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
             alt="Spanish Banner"
             className="hidden lg:block w-full h-full object-cover object-[75%_top] sm:object-[80%_top] lg:object-[85%_center] pointer-events-none opacity-90"
           />
-      {/* Mobile Background Image */}
-      <img
-        src={spanishHero}
-        alt="Phone concept mobile"
-        className="block lg:hidden absolute inset-0 w-full h-full object-cover object-right-top pointer-events-none"
-      />
+          {/* Mobile Background Image */}
+          <img
+            src={spanishHero}
+            alt="Phone concept mobile"
+            className="block lg:hidden absolute inset-0 w-full h-full object-cover object-right-top pointer-events-none"
+          />
         </div>
       </div>
       {/* Dark gradient overlay */}
@@ -374,7 +373,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                 <div className="flex flex-col items-center gap-[clamp(0.75rem,1.5vw,1.5rem)] mb-3 w-full justify-center">
                   <Globe className="text-[#22c55e] w-[clamp(2.5rem,4.5vw,5.25rem)] h-[clamp(2.5rem,4.5vw,5.25rem)] shrink-0 opacity-90" strokeWidth={1.5} />
                   <h3 className="text-white font-bold text-[clamp(0.95rem,1.35vw,1.3rem)] leading-tight uppercase">
-                    PANEL Y MATERIALES<br/>DISPONIBLES EN ESPAÑOL
+                    PANEL Y MATERIALES<br />DISPONIBLES EN ESPAÑOL
                   </h3>
                 </div>
 
@@ -560,6 +559,7 @@ function AllYouNeedSection() {
                 También incluye:
               </strong>{" "}
               acceso al Panel de Lanzamiento™, herramientas del Panel del Operador™, alojamiento de tu página personalizada, capacitación, actualizaciones del sistema y soporte de personas reales.
+              acceso al Panel de Lanzamiento™, herramientas del Panel del Operador™, alojamiento de tu página personalizada, capacitación, actualizaciones del sistema y soporte de personas reales.
             </p>
           </div>
         </div>
@@ -581,15 +581,19 @@ function HowItWorksSection() {
       number: 2,
       icon: ClipboardList,
       title: "Paso 2: Cuéntanos sobre tu negocio",
+      title: "Paso 2: Cuéntanos sobre tu negocio",
       description:
         "Agrega tu área de servicio, rutas, tarifas, horarios, preferencias de reserva y la información que quieres mostrar a tus clientes.",
+      "Agrega tu área de servicio, rutas, tarifas, horarios, preferencias de reserva y la información que quieres mostrar a tus clientes.",
     },
     {
       number: 3,
       icon: Rocket,
       title: "Paso 3: Configura y empieza",
+      title: "Paso 3: Configura y empieza",
       description:
         "Sigue las instrucciones para configurar tu sistema de reservas y tu página personalizada. Si quieres ayuda adicional, puedes agregar la opción \"Lo hacemos por ti\" por $199.",
+      "Sigue las instrucciones para configurar tu sistema de reservas y tu página personalizada. Si quieres ayuda adicional, puedes agregar la opción \"Lo hacemos por ti\" por $199.",
     },
   ];
 
@@ -726,33 +730,36 @@ function HowItWorksAndFaqSection({ openPricingModal }: { openPricingModal: () =>
   const faqs = [
     {
       question: "¿Los $495 son realmente un solo pago?",
+      question: "¿Los $495 son realmente un solo pago?",
       answer:
-        "Sí. El sistema DIY de QuitTheApp cuesta $495 como pago único y no tiene una cuota mensual de plataforma de QuitTheApp. También está disponible la mejora opcional “Lo hacemos por ti” por $199. Pueden aplicarse gastos normales del negocio, como software de programación, procesamiento de pagos, seguro comercial, licencias, combustible, mantenimiento del vehículo y otros costos operativos.",
+        "Sí. Pagas $495 una sola vez por el sistema DIY de Quit TheApp. No hay una cuota mensual de plataforma de Quit TheApp. También puedes agregar la opción \"Lo hacemos por ti\" por $199. Como en cualquier negocio, puedes tener otros gastos como procesamiento de pagos, seguro comercial, licencias, combustible, mantenimiento y otras herramientas que decidas usar.",
     },
     {
       question: "¿Mi página personalizada y el alojamiento están incluidos?",
       answer:
-        "Sí. QuitTheApp crea y aloja tu página personalizada de ventas. El sistema DIY de $495 te guía para proporcionar la información de tu negocio, tus servicios, tus tarifas, tus preferencias de reserva y tus detalles de marca. La mejora opcional “Lo hacemos por ti”, por $199, ofrece asistencia adicional con la configuración.",
+        "Sí. QuitTheApp crea y aloja tu página personalizada. Tú nos das la información de tu negocio, servicios, tarifas y preferencias, y el sistema te guía durante la configuración.",
     },
     {
       question: "¿Cómo consigo mis primeros clientes?",
       answer:
-        "Utiliza el Centro de Adquisición de Clientes™ con tarjetas QR, herramientas de recomendación, plantillas de contacto y estrategias prácticas diseñadas para ayudarte a atraer posibles clientes y generar oportunidades de reserva directa.",
+        "El Centro de Adquisición de Clientes™ incluye tarjetas QR, herramientas para generar recomendaciones, plantillas de contacto y estrategias prácticas para ayudarte a encontrar personas interesadas en reservar directamente contigo.",
     },
     {
       question: "¿Necesito saber de tecnología?",
+      question: "¿Necesito saber de tecnología?",
       answer:
-        "No. El sistema DIY de $495 incluye instrucciones paso a paso para proporcionar la información de tu negocio, establecer tus preferencias de reserva y preparar el contenido de tu página personalizada. Si prefieres asistencia adicional, puedes agregar la mejora opcional “Lo hacemos por ti” por $199.",
+        "No. El sistema te guía paso a paso para configurar la información de tu negocio, tus preferencias de reserva y tu página personalizada. Y si quieres más ayuda, puedes agregar la opción \"Lo hacemos por ti\" por $199.",
     },
     {
       question: "¿Qué pasa si no funciona para mí?",
       answer:
-        "QuitTheApp fue creado a partir de la experiencia real de construir y operar un negocio privado de transporte al aeropuerto desde 2016. Los resultados dependen de tu mercado, tarifas, esfuerzo, gastos y de tu capacidad para atraer clientes. Nuestro equipo brinda soporte para ayudarte a comprender y utilizar el sistema.",
+        "Quit TheApp está basado en experiencia real operando un negocio de transporte privado al aeropuerto. Pero cada mercado es diferente. Tus resultados dependerán de factores como la demanda, tus tarifas, tus gastos, el servicio que ofrezcas y el esfuerzo que pongas en conseguir clientes. Nosotros te damos el sistema, las herramientas y el soporte para ayudarte a empezar.",
     },
     {
       question: "¿Funcionará donde yo vivo?",
+      question: "¿Funcionará donde yo vivo?",
       answer:
-        "El sistema puede utilizarse en mercados con aeropuerto y con viajeros que necesiten transporte confiable. Tú eliges tu área de servicio, tarifas, horarios y disponibilidad. Los resultados dependen de la demanda local, la competencia, los precios, los gastos y tus esfuerzos de promoción.",
+        "Puede funcionar en mercados donde hay viajeros que necesitan transporte confiable al aeropuerto. Tú decides dónde trabajar, cuánto cobrar, qué horarios ofrecer y qué áreas atender. Los resultados dependerán de tu mercado y de cómo promociones tu negocio.",
     },
   ];
 

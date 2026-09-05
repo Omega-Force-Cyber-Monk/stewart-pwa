@@ -12,7 +12,7 @@ export function useExitIntentPopup(): PopupState & { close: () => void } {
   const location = useLocation();
   const config = useMemo(() => getExitIntentConfig(location.pathname), [location.pathname]);
   const eligible = isExitIntentRoute(location.pathname);
-  
+
   const [popup, setPopup] = useState<PopupState>({ open: false, config: null });
 
   const canShow = useCallback(() => {

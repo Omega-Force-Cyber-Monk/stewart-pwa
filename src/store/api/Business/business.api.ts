@@ -11,7 +11,7 @@ import type {
   AirportSuggestionsResponse,
   ReferralCardResponse,
   BusinessResourcesResponse,
-  ChecklistItemsResponse,
+  GuideResourceResponse,
   LaunchReadinessResponse,
   FinalReviewResponse,
   CompleteLaunchResponse,
@@ -44,13 +44,24 @@ export const businessApi = baseApi.injectEndpoints({
     }),
     getRiderDashboard: builder.query<BusinessDashboardResponse, void>({
       query: () => "/business/dashboard",
-      providesTags: ["Business"],
+      providesTags: ["Dashboard"],
     }),
     getPublicBusinessFromHost: builder.query<PublicBusinessResponse, void>({
       query: () => "/public/business-from-host",
     }),
     getPublicBusinessBySlug: builder.query<PublicBusinessResponse, string>({
       query: (slug) => `/public/business/${slug}`,
+    }),
+    getPublicLeadConfig: builder.query<PublicLeadConfigResponse, void>({
+      query: () => "/public/lead-config",
+    }),
+    createPublicLead: builder.mutation<CreatePublicLeadResponse, CreatePublicLeadRequest>({
+      query: (body) => ({
+        url: "/public/leads",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Leads"],
     }),
     initializeSetup: builder.mutation<SetupStateResponse, void>({
       query: () => ({
@@ -68,7 +79,7 @@ export const businessApi = baseApi.injectEndpoints({
         method: "PATCH",
         body,
       }),
-      invalidatesTags: ["Setup", "LaunchReady"],
+      invalidatesTags: ["Setup", "LaunchReady", "Dashboard", "Business"],
     }),
     uploadBusinessLogo: builder.mutation<UploadLogoResponse, FormData>({
       query: (formData) => ({
@@ -76,6 +87,7 @@ export const businessApi = baseApi.injectEndpoints({
         method: "POST",
         body: formData,
       }),
+      invalidatesTags: ["Business", "Setup", "Dashboard"],
     }),
     getAirportSuggestions: builder.query<AirportSuggestionsResponse, { cityArea: string; limit?: number }>({
       query: ({ cityArea, limit = 5 }) => `/business/service-area/airports?cityArea=${encodeURIComponent(cityArea)}&limit=${limit}`,
@@ -91,19 +103,17 @@ export const businessApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["ReferralCard", "Setup", "LaunchReady"],
     }),
-    getBusinessResources: builder.query<BusinessResourcesResponse, { step?: string; type?: string; categoryId?: string } | void>({
+    getBusinessResources: builder.query<BusinessResourcesResponse, { type?: string; search?: string; page?: number; limit?: number } | void>({
       query: (params) => {
-        let url = "/business/resources";
-        if (params) {
-          const queryParams = new URLSearchParams();
-          if (params.step) queryParams.append("step", params.step);
-          if (params.type) queryParams.append("type", params.type);
-          if (params.categoryId) queryParams.append("categoryId", params.categoryId);
-          const queryString = queryParams.toString();
-          if (queryString) url += `?${queryString}`;
-        }
-        return url;
+        const queryParams = new URLSearchParams();
+        if (params?.type) queryParams.append("type", params.type);
+        if (params?.search) queryParams.append("search", params.search);
+        if (params?.page) queryParams.append("page", String(params.page));
+        if (params?.limit) queryParams.append("limit", String(params.limit));
+        const queryString = queryParams.toString();
+        return `/business/resources${queryString ? `?${queryString}` : ""}`;
       },
+      providesTags: ["Resources"],
     }),
     downloadBusinessResource: builder.query<Blob, string>({
       query: (id) => ({
@@ -111,23 +121,8 @@ export const businessApi = baseApi.injectEndpoints({
         responseHandler: (response) => response.blob(),
       }),
     }),
-    getChecklistItems: builder.query<ChecklistItemsResponse, { step?: string } | void>({
-      query: (params) => {
-        let url = "/business/checklist";
-        if (params && params.step) {
-          url += `?step=${encodeURIComponent(params.step)}`;
-        }
-        return url;
-      },
-      providesTags: ["ChecklistItems"],
-    }),
-    updateChecklistItem: builder.mutation<ChecklistItemsResponse, { id: string; completed: boolean }>({
-      query: ({ id, completed }) => ({
-        url: `/business/checklist/${id}`,
-        method: "PATCH",
-        body: { completed },
-      }),
-      invalidatesTags: ["ChecklistItems", "Setup", "LaunchReady"],
+    getGuide: builder.query<GuideResourceResponse, string>({
+      query: (id) => `/business/resources/${id}/guide`,
     }),
     getLaunchReadiness: builder.query<LaunchReadinessResponse, void>({
       query: () => "/business/launch-ready",
@@ -164,6 +159,8 @@ export const {
   useGetRiderDashboardQuery,
   useGetPublicBusinessFromHostQuery,
   useGetPublicBusinessBySlugQuery,
+  useGetPublicLeadConfigQuery,
+  useCreatePublicLeadMutation,
   useInitializeSetupMutation,
   useGetSetupStateQuery,
   useUpdateSetupStateMutation,
@@ -173,8 +170,7 @@ export const {
   useGenerateReferralCardMutation,
   useGetBusinessResourcesQuery,
   useLazyDownloadBusinessResourceQuery,
-  useGetChecklistItemsQuery,
-  useUpdateChecklistItemMutation,
+  useGetGuideQuery,
   useGetLaunchReadinessQuery,
   useGetFinalReviewQuery,
   useCompleteLaunchMutation,

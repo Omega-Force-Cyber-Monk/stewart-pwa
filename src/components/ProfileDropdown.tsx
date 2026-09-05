@@ -87,7 +87,7 @@ export function ProfileDropdown(_props: ProfileDropdownProps) {
               </Link>
             )}
             <Link
-              to={user?.role === "admin" ? "/admin/settings" : "/profile"}
+              to={user?.role === "admin" ? "/admin/settings" : "/profile-settings"}
               onClick={() => setDropdownOpen(false)}
               className="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-200 hover:bg-[#04B5A3]/10 hover:text-white transition"
             >

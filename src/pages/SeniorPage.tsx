@@ -232,7 +232,7 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
                 </button>
               )}
               <Link
-                to={user?.role === "admin" ? "/admin/settings" : "/profile"}
+                to={user?.role === "admin" ? "/admin/settings" : "/profile-settings"}
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-white hover:text-[#39b54a] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
               >
@@ -288,12 +288,12 @@ function HeroBanner() {
             alt="Senior couple"
             className="hidden lg:block w-full h-full object-cover object-[75%_top] sm:object-[80%_top] lg:object-[85%_center] pointer-events-none opacity-90"
           />
-      {/* Mobile Background Image */}
-      <img
-        src={seniorHero}
-        alt="Phone concept mobile"
-        className="block lg:hidden absolute inset-0 w-full h-full object-cover object-[center_top] pointer-events-none"
-      />
+          {/* Mobile Background Image */}
+          <img
+            src={seniorHero}
+            alt="Phone concept mobile"
+            className="block lg:hidden absolute inset-0 w-full h-full object-cover object-[center_top] pointer-events-none"
+          />
         </div>
       </div>
       {/* Dark gradient overlay */}

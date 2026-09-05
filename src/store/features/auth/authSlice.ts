@@ -11,6 +11,10 @@ export interface User {
   createdAt?: string;
   updatedAt?: string;
   avatarUrl?: string;
+  driverProfile?: {
+    category?: string;
+    driverCode?: string;
+  } | null;
 }
 
 interface AuthState {

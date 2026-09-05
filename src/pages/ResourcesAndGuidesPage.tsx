@@ -1,190 +1,98 @@
-import { useState } from "react";
-import { ChevronRight, ChevronDown, FileText, UserCheck, ShieldCheck, PlaneTakeoff, DollarSign, Copy, HelpCircle, Tag, Monitor, Download, Loader2 } from "lucide-react";
+import { Search, Loader2, Play, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ResourceCard } from "../components/resources/ResourceCard";
+import { normalizedType } from "../components/resources/resourceUtils";
+import { GuideModal } from "../components/resources/GuideModal";
 import { useGetBusinessResourcesQuery, useLazyDownloadBusinessResourceQuery } from "../store/api/Business/business.api";
 import type { BusinessResource } from "../store/api/Business/business.type";
 
+const filters = ["all", "video", "pdf", "link", "guide"] as const;
+type ResourceFilter = (typeof filters)[number];
+
+function downloadBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+}
+
 export default function ResourcesAndGuidesPage() {
-  const [openAccordion, setOpenAccordion] = useState<string | null>(null);
-  const { data: resourcesData, isLoading } = useGetBusinessResourcesQuery();
-  const [downloadResource, { isFetching: isDownloading }] = useLazyDownloadBusinessResourceQuery();
+  const [search, setSearch] = useState("");
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<ResourceFilter>("all");
+  const [selectedGuide, setSelectedGuide] = useState<BusinessResource | null>(null);
+  const [selectedVideo, setSelectedVideo] = useState<BusinessResource | null>(null);
+  const [downloadResource] = useLazyDownloadBusinessResourceQuery();
 
-  const resources: BusinessResource[] = resourcesData?.resources ?? [];
+  useEffect(() => {
+    const timeout = window.setTimeout(() => setQuery(search.trim()), 300);
+    return () => window.clearTimeout(timeout);
+  }, [search]);
 
-  const toggleAccordion = (id: string) => {
-    setOpenAccordion(openAccordion === id ? null : id);
-  };
+  const { data, isLoading, isError } = useGetBusinessResourcesQuery({
+    search: query || undefined,
+    type: filter === "all" ? undefined : filter,
+    limit: 50,
+  });
+  const resources = data?.resources ?? [];
 
-  const handleDownload = async (resource: BusinessResource) => {
+  const handleAction = async (resource: BusinessResource) => {
+    const type = normalizedType(resource);
+    if (type === "guide") {
+      setSelectedGuide(resource);
+      return;
+    }
+    if (type === "video") {
+      setSelectedVideo(resource);
+      return;
+    }
+    if (type === "link") {
+      if (resource.linkUrl || resource.fileUrl) window.open(resource.linkUrl || resource.fileUrl || "", "_blank", "noopener,noreferrer");
+      return;
+    }
     try {
       const blob = await downloadResource(resource.id).unwrap();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = resource.fileUrl.split("/").pop() || `${resource.title}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Download failed:", err);
+      downloadBlob(blob, `${resource.name || resource.title || "resource"}.pdf`);
+    } catch {
+      // The card remains available for retry if the download fails.
     }
   };
 
-  const customerFears = [
-    {
-      title: "Will the driver show up?",
-      subtitle: "Build confidence with reliable, on-time airport transportation.",
-      icon: <UserCheck className="w-5 h-5 text-green-500" />
-    },
-    {
-      title: "Is the driver safe?",
-      subtitle: "Highlight verified drivers, professionalism, and safety standards.",
-      icon: <ShieldCheck className="w-5 h-5 text-green-500" />
-    },
-    {
-      title: "Does the driver know the airport?",
-      subtitle: "Show local expertise with reliable airport pickup and drop-off experience.",
-      icon: <PlaneTakeoff className="w-5 h-5 text-green-500" />
-    },
-    {
-      title: "Will the price change?",
-      subtitle: "Provide transparent, upfront pricing with no hidden surprises.",
-      icon: <DollarSign className="w-5 h-5 text-green-500" />
-    }
-  ];
-
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto w-full">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-[24px] font-bold text-slate-900 mb-2">
-            Resources & Guides
-          </h1>
-          <p className="text-sm text-slate-500 max-w-3xl">
-            Access step-by-step guides, scripts, templates, and downloadable resources designed to help you attract more customers and increase direct bookings.
-          </p>
-        </div>
-      </div>
-
-      {/* Main Content Area (2 Columns) */}
-      <div className="flex flex-col xl:flex-row gap-6 mb-6">
-        
-        {/* Left Column: The Four Customer Fears */}
-        <div className="flex-1 bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 flex flex-col shadow-sm">
-          <h3 className="text-[17px] font-bold text-slate-900 mb-6">The Four Customer Fears</h3>
-          
-          <div className="flex flex-col gap-3">
-            {customerFears.map((fear, idx) => (
-              <div key={idx} className="flex items-center gap-4 border border-slate-100 rounded-xl p-4 bg-white shadow-sm hover:border-green-200 transition-colors">
-                <div className="w-10 h-10 rounded-full bg-green-50 border border-green-100 flex items-center justify-center shrink-0">
-                  {fear.icon}
-                </div>
-                <div>
-                  <h4 className="text-[14px] font-bold text-slate-900 mb-0.5">{fear.title}</h4>
-                  <p className="text-[12px] text-slate-500">{fear.subtitle}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Right Column: Copy & Resources */}
-        <div className="flex-1 bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 flex flex-col shadow-sm">
-          <h3 className="text-[17px] font-bold text-slate-900 mb-6">Copy & Resources</h3>
-          
-          {isLoading ? (
-            <div className="flex items-center justify-center py-8 text-slate-400">
-              <Loader2 className="w-5 h-5 animate-spin" />
-            </div>
-          ) : (
-          <div className="flex flex-col gap-3">
-            {resources.length === 0 && (
-              <p className="text-[13px] text-slate-500 text-center py-6">
-                No resources available yet.
-              </p>
-            )}
-            {resources.map((resource) => (
-              <div key={resource.id} className="border border-slate-200 rounded-xl overflow-hidden">
-                <button 
-                  onClick={() => toggleAccordion(resource.id)}
-                  className="w-full bg-white hover:bg-slate-50 transition-colors p-4 flex items-center justify-between text-left"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 shrink-0">
-                      <FileText className="w-4 h-4" />
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-[14px] font-bold text-slate-800">{resource.title}</span>
-                      <span className="text-[12px] text-slate-500">{resource.description}</span>
-                    </div>
-                  </div>
-                  <div className="shrink-0 ml-4">
-                    {openAccordion === resource.id ? (
-                      <ChevronDown className="w-5 h-5 text-slate-400" />
-                    ) : (
-                      <ChevronRight className="w-5 h-5 text-slate-400" />
-                    )}
-                  </div>
-                </button>
-                {openAccordion === resource.id && (
-                  <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-4">
-                    <p className="text-[13px] text-slate-600 leading-relaxed italic">
-                      {resource.type.replace(/_/g, " ").toLowerCase()} — {resource.step.replace(/_/g, " ").toLowerCase()}
-                    </p>
-                    <button
-                      onClick={() => handleDownload(resource)}
-                      disabled={isDownloading}
-                      className="shrink-0 bg-[#22c55e] hover:bg-[#1ea951] text-white px-4 py-2 rounded-lg font-bold text-[12px] transition-colors flex items-center gap-1.5 disabled:opacity-60"
-                    >
-                      {isDownloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-                      Download
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-          )}
-        </div>
-
-      </div>
-
-      {/* Quick Actions Section */}
+    <div className="space-y-6">
       <div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          
-          <div className="bg-white border border-slate-200 hover:border-blue-300 rounded-2xl p-6 flex flex-col items-start justify-center transition-colors cursor-pointer group shadow-sm h-32">
-            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 mb-4 group-hover:scale-110 transition-transform">
-              <Copy className="w-5 h-5" />
-            </div>
-            <h4 className="text-[14px] font-bold text-slate-900">Website Copy Blocks</h4>
-          </div>
-
-          <div className="bg-white border border-slate-200 hover:border-blue-300 rounded-2xl p-6 flex flex-col items-start justify-center transition-colors cursor-pointer group shadow-sm h-32">
-            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 mb-4 group-hover:scale-110 transition-transform">
-              <HelpCircle className="w-5 h-5" />
-            </div>
-            <h4 className="text-[14px] font-bold text-slate-900">FAQ Section</h4>
-          </div>
-
-          <div className="bg-white border border-slate-200 hover:border-blue-300 rounded-2xl p-6 flex flex-col items-start justify-center transition-colors cursor-pointer group shadow-sm h-32">
-            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 mb-4 group-hover:scale-110 transition-transform">
-              <Tag className="w-5 h-5" />
-            </div>
-            <h4 className="text-[14px] font-bold text-slate-900">Trust Badges</h4>
-          </div>
-
-          <div className="bg-white border border-slate-200 hover:border-blue-300 rounded-2xl p-6 flex flex-col items-start justify-center transition-colors cursor-pointer group shadow-sm h-32">
-            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 mb-4 group-hover:scale-110 transition-transform">
-              <Monitor className="w-5 h-5" />
-            </div>
-            <h4 className="text-[14px] font-bold text-slate-900">Social Captions</h4>
-          </div>
-
-        </div>
+        <h2 className="text-2xl font-bold tracking-tight text-slate-900">Resources &amp; Guides</h2>
+        <p className="mt-1 text-sm text-slate-500">Access step-by-step guides, scripts, templates, and downloadable resources designed to help you attract more customers and increase direct bookings.</p>
       </div>
-
+      <div className="relative">
+        <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+        <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search all lessons" className="h-11 w-full rounded-lg border border-slate-200 bg-white pl-12 pr-4 text-sm text-slate-900 outline-none focus:border-dashboard-rider focus:ring-2 focus:ring-green-100 placeholder:text-slate-400" />
+      </div>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-sm text-slate-500">Showing {data?.pagination?.total ?? resources.length} resources</p>
+        <select value={filter} onChange={(event) => setFilter(event.target.value as ResourceFilter)} className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 outline-none focus:border-dashboard-rider">
+          <option value="all">All resources</option>
+          {filters.slice(1).map((item) => <option key={item} value={item}>{item[0].toUpperCase() + item.slice(1)}</option>)}
+        </select>
+      </div>
+      {isLoading && <div className="grid place-items-center py-20 text-dashboard-rider"><Loader2 className="h-8 w-8 animate-spin" /></div>}
+      {isError && <div className="rounded-xl border border-red-100 bg-red-50 p-6 text-center text-sm text-red-700">Unable to load resources right now.</div>}
+      {!isLoading && !isError && resources.length === 0 && <div className="rounded-xl border border-dashed border-slate-300 bg-white p-12 text-center text-sm text-slate-500">No resources match your search.</div>}
+      {!isLoading && !isError && resources.length > 0 && <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{resources.map((resource) => <ResourceCard key={resource.id} resource={resource} onAction={handleAction} />)}</div>}
+      <GuideModal resource={selectedGuide} onClose={() => setSelectedGuide(null)} />
+      {selectedVideo && (
+        <div className="fixed inset-0 z-[90] grid place-items-center bg-slate-950/70 p-4" role="dialog" aria-modal="true">
+          <div className="w-full max-w-4xl overflow-hidden rounded-xl bg-white shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4"><div><p className="text-xs text-slate-500">Resources &amp; Guide &gt; Video</p><h2 className="font-semibold text-slate-900">{selectedVideo.name || selectedVideo.title}</h2></div><button type="button" onClick={() => setSelectedVideo(null)} aria-label="Close video"><X className="h-5 w-5 text-slate-500" /></button></div>
+            <div className="bg-slate-950"><video controls autoPlay className="max-h-[65vh] w-full" src={selectedVideo.fileUrl || undefined}><track kind="captions" /></video></div>
+            <div className="space-y-2 p-5"><h3 className="text-lg font-semibold text-slate-900">{selectedVideo.name || selectedVideo.title}</h3><p className="text-sm leading-6 text-slate-600">{selectedVideo.description}</p><span className="inline-flex items-center gap-2 text-xs text-slate-400"><Play className="h-3.5 w-3.5" /> Video resource</span></div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

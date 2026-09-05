@@ -79,12 +79,12 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
           alt="Launch a Women-Focused Private Airport Business"
           className="hidden lg:block w-full h-full object-cover object-[75%_top] sm:object-[80%_top] lg:object-[85%_center] pointer-events-none opacity-90"
         />
-      {/* Mobile Background Image */}
-      <img
-        src={womenHero}
-        alt="Phone concept mobile"
-        className="block lg:hidden absolute inset-0 w-full h-full object-cover object-[center_top] pointer-events-none"
-      />
+        {/* Mobile Background Image */}
+        <img
+          src={womenHero}
+          alt="Phone concept mobile"
+          className="block lg:hidden absolute inset-0 w-full h-full object-cover object-[center_top] pointer-events-none"
+        />
         {/* Mobile/tablet legibility overlay — the hero text sits on top of the photo */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f19]/85 via-[#0b0f19]/45 to-[#0b0f19]/30 lg:bg-gradient-to-r lg:from-[#0b0f19] lg:via-[#0b0f19]/80 lg:to-[#0b0f19]/30"></div>
       </div>
@@ -259,11 +259,11 @@ function BusinessBuiltAroundYourLifeSection() {
         </div>
 
         {/* Bottom Callout */}
-        <div 
+        <div
           className="border shadow-sm rounded-xl p-5 sm:p-6 flex items-center justify-center gap-4 sm:gap-6 mx-auto max-w-4xl"
-          style={{ 
-            backgroundColor: '#fef4f7', 
-            borderColor: 'rgba(244, 38, 97, 0.1)' 
+          style={{
+            backgroundColor: '#fef4f7',
+            borderColor: 'rgba(244, 38, 97, 0.1)'
           }}
         >
           <Heart className="w-8 h-8 sm:w-10 sm:h-10 text-[#f42661] shrink-0" strokeWidth={1.5} />
@@ -347,11 +347,11 @@ function OneClientFlowSection() {
   ];
 
   return (
-    <section 
+    <section
       className="py-1 border"
-      style={{ 
-        backgroundColor: '#fef4f7', 
-        borderColor: 'rgba(244, 38, 97, 0.1)' 
+      style={{
+        backgroundColor: '#fef4f7',
+        borderColor: 'rgba(244, 38, 97, 0.1)'
       }}
     >
       <PageContainer size="full">
@@ -852,7 +852,7 @@ function Navbar({ openPricingModal }: { openPricingModal: () => void }) {
                 </button>
               )}
               <Link
-                to={user?.role === "admin" ? "/admin/settings" : "/profile"}
+                to={user?.role === "admin" ? "/admin/settings" : "/profile-settings"}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="text-white hover:text-[#f42661] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
               >

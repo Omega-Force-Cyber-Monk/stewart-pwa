@@ -88,12 +88,12 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
               alt="Couple in a car"
               className="hidden lg:block w-full h-full object-cover object-[75%_top] sm:object-[80%_top] lg:object-[85%_center] pointer-events-none opacity-95"
             />
-      {/* Mobile Background Image */}
-      <img
-        src={coupleHero}
-        alt="Phone concept mobile"
-        className="block lg:hidden absolute inset-0 w-full h-full object-cover object-[center_top] pointer-events-none"
-      />
+            {/* Mobile Background Image */}
+            <img
+              src={coupleHero}
+              alt="Phone concept mobile"
+              className="block lg:hidden absolute inset-0 w-full h-full object-cover object-[center_top] pointer-events-none"
+            />
           </div>
         </div>
 
@@ -707,14 +707,14 @@ function LaunchKitAndFaqSection({ openPricingModal }: { openPricingModal: () => 
                 const isOpen = openFaq === idx;
                 return (
                   <div key={idx} className="flex flex-col border border-slate-200 rounded-lg overflow-hidden bg-white shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-colors hover:bg-slate-50">
-                    <div 
+                    <div
                       onClick={() => toggleFaq(idx)}
                       className="flex justify-between items-center p-3 cursor-pointer"
                     >
                       <span className="text-[#060D64] font-bold text-[13px]">{faq.question}</span>
                       <span className={cn("text-[#060D64] font-black text-lg opacity-60 leading-none transition-transform duration-300", isOpen ? "rotate-45" : "")}>+</span>
                     </div>
-                    <div 
+                    <div
                       className={cn(
                         "grid transition-all duration-300 ease-in-out",
                         isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
@@ -944,7 +944,7 @@ function Navbar({ openPricingModal }: { openPricingModal: () => void }) {
                   </button>
                 )}
                 <Link
-                  to={user?.role === "admin" ? "/admin/settings" : "/profile"}
+                  to={user?.role === "admin" ? "/admin/settings" : "/profile-settings"}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="text-[#0b0f19] hover:text-[#eab308] text-lg font-semibold py-4 border-b border-slate-100 transition-colors"
                 >

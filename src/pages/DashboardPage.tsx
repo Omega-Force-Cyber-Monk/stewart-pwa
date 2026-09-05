@@ -1,73 +1,138 @@
-import { LaunchProgressStepper } from "../components/dashboard/LaunchProgressStepper";
-import { LaunchToolkit } from "../components/dashboard/LaunchToolkit";
-import { QuickActions } from "../components/dashboard/QuickActions";
+import { useState } from "react";
+import { ArrowRight, Copy, Download, ExternalLink, QrCode, Share2, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ResourceCard } from "../components/resources/ResourceCard";
+import { GuideModal } from "../components/resources/GuideModal";
 import { useGetRiderProfileQuery } from "../store/api/Auth/auth.api";
-import { useGetSetupStateQuery } from "../store/api/Business/business.api";
-import { HeroSection } from "./PersonalizeWebsite/HeroSection";
+import { useGetBusinessResourcesQuery, useGetReferralCardQuery, useLazyDownloadBusinessResourceQuery } from "../store/api/Business/business.api";
+import type { BusinessResource } from "../store/api/Business/business.type";
+import { copyToClipboard } from "../utils/clipboard";
+
+function downloadUrl(url: string, filename: string) {
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.target = "_blank";
+  anchor.rel = "noopener noreferrer";
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+}
+
+function valueOrDash(value?: string | null) {
+  return value?.trim() || "-";
+}
 
 export default function DashboardPage() {
-  const { data: profileResponse } = useGetRiderProfileQuery();
-  const { data: setupResponse } = useGetSetupStateQuery();
+  const { data: profile } = useGetRiderProfileQuery();
+  const { data: resourcesResponse } = useGetBusinessResourcesQuery({ limit: 3 });
+  const { data: referral } = useGetReferralCardQuery();
+  const [downloadResource] = useLazyDownloadBusinessResourceQuery();
+  const [guide, setGuide] = useState<BusinessResource | null>(null);
+  const [showQr, setShowQr] = useState(false);
+  const [copied, setCopied] = useState(false);
 
-  // Real data only — never render placeholder/mock values.
-  const userName = profileResponse?.user?.name ?? profileResponse?.user?.email;
-  const slug = setupResponse?.data?.business?.slug;
+  const user = profile?.user;
+  const business = profile?.business;
+  const referralData = referral?.data;
+  const websiteUrl = referralData?.websiteUrl || (business?.slug ? `https://${business.slug}.quittheapp.com` : "");
+  const resources = resourcesResponse?.resources ?? [];
+  const launched = business?.status === "ACTIVE";
+  const firstName = (user?.name || user?.email || "").split(" ")[0];
+  const airports = referralData?.serviceArea?.airports ?? [];
+
+  const copyLink = async () => {
+    if (!websiteUrl) return;
+    if (await copyToClipboard(websiteUrl)) {
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    }
+  };
+
+  const downloadReferral = () => {
+    if (referralData?.printCardUrl) downloadUrl(referralData.printCardUrl, "referral-card.pdf");
+    else if (referralData?.qrCodeUrl) downloadUrl(referralData.qrCodeUrl, "referral-qr.png");
+  };
+
+  const resourceAction = async (resource: BusinessResource) => {
+    if (resource.type.toLowerCase().includes("guide")) {
+      setGuide(resource);
+      return;
+    }
+
+    if (resource.type.toLowerCase().includes("pdf")) {
+      const blob = await downloadResource(resource.id).unwrap();
+      const url = URL.createObjectURL(blob);
+      downloadUrl(url, `${resource.name}.pdf`);
+      URL.revokeObjectURL(url);
+    }
+  };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto w-full flex flex-col gap-8 animate-fade-in">
+    <div className="space-y-6">
       <div>
-        <h1 className="text-2xl sm:text-[28px] font-bold text-slate-900 tracking-tight mb-2">
-          {userName ? `Welcome back, ${userName}!` : "Welcome back!"}
-        </h1>
-        <p className="text-slate-500 text-[15px]">
-          Everything you need to launch and grow your direct booking business.
-        </p>
+        <h2 className="text-2xl font-bold tracking-tight text-slate-900">Welcome back, {firstName || "there"}!</h2>
+        <p className="mt-1 text-sm text-slate-500">Everything you need to launch and grow your direct booking business.</p>
       </div>
 
-      <LaunchProgressStepper />
+      <section className="flex flex-col gap-4 rounded-2xl border border-green-300 bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h3 className="font-semibold text-slate-900">{launched ? "Your website is live" : "Please set up your launch profile"}</h3>
+          <p className="mt-1 text-sm text-slate-500">{launched ? "Your direct booking business is ready to receive customers." : "Complete the next section to keep your business launch moving forward."}</p>
+          {!launched && <Link to="/launch-dashboard" className="mt-4 inline-flex items-center gap-2 rounded-lg bg-dashboard-rider px-4 py-2.5 text-sm font-semibold text-white">Continue Launch Setup <ArrowRight className="h-4 w-4" /></Link>}
+        </div>
+        {!launched && <div className="min-w-48 text-sm"><p className="font-semibold text-slate-700">Follow just four steps</p><ul className="mt-2 list-inside list-disc text-dashboard-rider"><li>Your info</li><li>Business info</li><li>Service area</li><li>Confirm</li></ul></div>}
+      </section>
 
-      {/* Personalized Website Banner Section */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col gap-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-lg font-bold text-slate-900 mb-1">
-              Your Personalized Website
-            </h2>
-            <p className="text-sm text-slate-500">
-              Preview your direct booking landing page, tailored to your service area and business brand.
-            </p>
+      {launched && (
+        <section className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p className="text-sm font-semibold text-dashboard-rider">Personalized website</p>
+                <h3 className="mt-1 text-lg font-bold text-slate-900">{valueOrDash(referralData?.businessName || business?.businessName)}</h3>
+                {websiteUrl && <a href={websiteUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 break-all text-sm font-semibold text-dashboard-rider">{websiteUrl}<ExternalLink className="h-3.5 w-3.5 shrink-0" /></a>}
+              </div>
+              <div className="flex gap-2">
+                <button type="button" onClick={copyLink} className="inline-flex items-center gap-2 rounded-lg border border-green-200 px-3 py-2 text-sm font-semibold text-dashboard-rider"><Copy className="h-4 w-4" />{copied ? "Copied" : "Copy"}</button>
+                <button type="button" onClick={() => setShowQr(true)} className="inline-flex items-center gap-2 rounded-lg bg-dashboard-rider px-3 py-2 text-sm font-semibold text-white"><QrCode className="h-4 w-4" />QR Code</button>
+              </div>
+            </div>
+            <dl className="mt-5 grid gap-4 border-t border-slate-100 pt-4 text-sm sm:grid-cols-2">
+              <div><dt className="font-semibold text-slate-800">Business phone</dt><dd className="mt-1 text-slate-500">{valueOrDash(referralData?.businessPhone)}</dd></div>
+              <div><dt className="font-semibold text-slate-800">Business email</dt><dd className="mt-1 text-slate-500">{valueOrDash(referralData?.businessEmail)}</dd></div>
+              <div><dt className="font-semibold text-slate-800">Service area</dt><dd className="mt-1 text-slate-500">{valueOrDash(referralData?.serviceArea?.cityArea)}</dd></div>
+              <div><dt className="font-semibold text-slate-800">Airports served</dt><dd className="mt-1 text-slate-500">{airports.length ? airports.join(", ") : "-"}</dd></div>
+            </dl>
           </div>
-          {slug ? (
-            <a
-              href={`https://${slug}.quittheapp.com`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-5 py-2.5 rounded-lg font-bold text-sm transition-colors text-center shrink-0 inline-block"
-            >
-              Open Website
-            </a>
-          ) : (
-            <span className="bg-slate-100 text-slate-400 px-5 py-2.5 rounded-lg font-bold text-sm text-center shrink-0">
-              Website not published yet
-            </span>
-          )}
-        </div>
-        <div className="overflow-hidden rounded-xl border border-slate-200 shadow-sm bg-slate-50 relative flex">
-          <div className="flex-1 w-full scale-[0.85] origin-top md:scale-[0.9] lg:scale-100 h-[700px] lg:h-auto -mb-[10%] lg:mb-0">
-            <HeroSection
-              businessName={setupResponse?.data?.business?.businessName || "Your Transportation Business"}
-              businessPhone={setupResponse?.data?.business?.phone || "Phone not set"}
-              businessInfo={setupResponse?.data?.business?.businessInfo || "Reliable and professional transportation."}
-              servingAreas={setupResponse?.data?.serviceArea?.airports || ["Local Airport"]}
-              bookingUrl={setupResponse?.data?.acuity?.bookingUrl || null}
-              logoUrl={setupResponse?.data?.business?.logoUrl || null}
-            />
+
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm">
+            <h3 className="text-sm font-semibold text-slate-900">Referral QR Code</h3>
+            {referralData?.qrCodeUrl ? <img src={referralData.qrCodeUrl} alt="Referral QR code" className="mx-auto mt-4 h-40 w-40" /> : <p className="mt-8 rounded-lg bg-slate-50 p-6 text-sm text-slate-500">QR code is not available yet.</p>}
+            <button type="button" disabled={!referralData?.qrCodeUrl} onClick={() => referralData?.qrCodeUrl && downloadUrl(referralData.qrCodeUrl, "referral-qr.png")} className="mt-4 inline-flex items-center gap-2 rounded-lg bg-dashboard-rider px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"><Download className="h-4 w-4" />Download QR Code</button>
           </div>
-        </div>
+        </section>
+      )}
+
+      <div className="grid gap-6 xl:grid-cols-[1fr_265px]">
+        <section>
+          <div className="mb-3 flex items-center justify-between"><h3 className="text-lg font-semibold text-slate-900">Resources &amp; Guide</h3><Link to="/resources-guide" className="text-sm font-semibold text-dashboard-rider">View all &gt;</Link></div>
+          <div className="grid gap-4 md:grid-cols-3">{resources.map((resource) => <ResourceCard key={resource.id} resource={resource} compact onAction={resourceAction} />)}</div>
+        </section>
+        <section>
+          <h3 className="mb-3 text-lg font-semibold text-slate-900">Quick Actions</h3>
+          <div className="space-y-2">
+            <Link to="/selling-page" className="flex items-center justify-between rounded-lg border border-green-100 bg-white p-3 text-sm text-slate-600 hover:border-green-300"><span className="flex items-center gap-2"><ExternalLink className="h-4 w-4 text-dashboard-rider" />Browse your selling page</span><ArrowRight className="h-4 w-4" /></Link>
+            <Link to="/resources-guide" className="flex items-center justify-between rounded-lg border border-green-100 bg-white p-3 text-sm text-slate-600 hover:border-green-300"><span className="flex items-center gap-2"><Sparkles className="h-4 w-4 text-dashboard-rider" />Read latest resources &amp; guide</span><ArrowRight className="h-4 w-4" /></Link>
+            <button type="button" onClick={downloadReferral} className="flex w-full items-center justify-between rounded-lg border border-green-100 bg-white p-3 text-left text-sm text-slate-600 hover:border-green-300"><span className="flex items-center gap-2"><Download className="h-4 w-4 text-dashboard-rider" />Download your referral card</span><ArrowRight className="h-4 w-4" /></button>
+            <button type="button" onClick={copyLink} className="flex w-full items-center justify-between rounded-lg border border-green-100 bg-white p-3 text-left text-sm text-slate-600 hover:border-green-300"><span className="flex items-center gap-2"><Share2 className="h-4 w-4 text-dashboard-rider" />{copied ? "Link copied" : "Share your landing page"}</span><Copy className="h-4 w-4" /></button>
+            <button type="button" onClick={() => setShowQr(true)} className="flex w-full items-center justify-between rounded-lg border border-green-100 bg-white p-3 text-left text-sm text-slate-600 hover:border-green-300"><span className="flex items-center gap-2"><QrCode className="h-4 w-4 text-dashboard-rider" />View QR code</span><ArrowRight className="h-4 w-4" /></button>
+          </div>
+        </section>
       </div>
 
-      <LaunchToolkit />
-      <QuickActions />
+      <GuideModal resource={guide} onClose={() => setGuide(null)} />
+      {showQr && <div className="fixed inset-0 z-[90] grid place-items-center bg-slate-950/60 p-4"><div className="rounded-xl bg-white p-6 text-center shadow-2xl"><div className="flex justify-end"><button type="button" onClick={() => setShowQr(false)} className="text-slate-500">x</button></div>{referralData?.qrCodeUrl ? <img src={referralData.qrCodeUrl} alt="Referral QR code" className="mx-auto h-56 w-56" /> : <p className="p-10 text-sm text-slate-500">QR code is not available yet.</p>}<button type="button" disabled={!referralData?.qrCodeUrl} onClick={() => referralData?.qrCodeUrl && downloadUrl(referralData.qrCodeUrl, "referral-qr.png")} className="mt-4 rounded-lg bg-dashboard-rider px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">Download QR Code</button></div></div>}
     </div>
   );
 }

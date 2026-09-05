@@ -93,8 +93,6 @@ export const baseApi = createApi({
     "Payment",
     "Resources",
     "Resource",
-    "ResourceCategories",
-    "ChecklistItems",
     "Tickets",
     "Ticket",
     "Settings",
@@ -104,6 +102,8 @@ export const baseApi = createApi({
     "Setup",
     "LaunchReady",
     "ReferralCard",
+    "Leads",
+    "Lead",
   ],
   endpoints: () => ({}),
 });

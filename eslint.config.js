@@ -4,10 +4,7 @@ import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 import { defineConfig, globalIgnores } from "eslint/config";
-import { createRequire } from "module";
 import { createRequire } from 'module';
-
-const require = createRequire(import.meta.url);
 
 const require = createRequire(import.meta.url);
 
@@ -23,6 +20,9 @@ export default defineConfig([
     ],
     languageOptions: {
       globals: globals.browser,
+    },
+    rules: {
+      "react-hooks/set-state-in-effect": "off",
     },
   },
 ]);

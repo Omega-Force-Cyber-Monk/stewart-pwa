@@ -1,4 +1,4 @@
-import { User, Wallet, RefreshCw, Eye, Trash2 } from "lucide-react";
+import { User, Wallet, Eye, Trash2 } from "lucide-react";
 import {
   LineChart,
   Line,
@@ -9,9 +9,10 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { cn } from "../lib/cn";
-import { useGetAdminDashboardQuery } from "../store/api/Admin/admin.api";
+import { useGetAdminDashboardQuery, useDeleteDriverMutation } from "../store/api/Admin/admin.api";
 import { Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useConfirmDialog } from "../hooks/useConfirmDialog";
 
 const StatusBadge = ({ status }: { status: string }) => {
   const styles: Record<string, string> = {
@@ -64,6 +65,26 @@ const formatMoney = (total: number) =>
 
 export default function AdminDashboardPage() {
   const { data, isLoading, isError, refetch } = useGetAdminDashboardQuery();
+  const [deleteDriver, { isLoading: isDeleting }] = useDeleteDriverMutation();
+  const { openConfirm, confirmDialog, showAlert, alertDialog } = useConfirmDialog();
+
+  const handleDelete = (driver: { id: string; name: string | null; email: string }) => {
+    openConfirm(
+      {
+        title: "Delete Driver",
+        message: "Are you sure you want to permanently delete this driver account?",
+        confirmText: "Yes, delete",
+      },
+      async () => {
+        try {
+          await deleteDriver(driver.id).unwrap();
+        } catch (err) {
+          console.error("Failed to delete driver:", err);
+          showAlert({ title: "Error", message: "Failed to delete driver.", type: "error" });
+        }
+      }
+    );
+  };
 
   const revenueData =
     data?.monthlyRevenue?.map((bucket) => ({
@@ -96,7 +117,7 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="flex flex-col xl:flex-row gap-8">
+    <div className="flex flex-col gap-8">
       {/* Left Column - Main Content */}
       <div className="flex-1 space-y-6">
         <div>
@@ -230,7 +251,12 @@ export default function AdminDashboardPage() {
                           >
                             <Eye className="w-4 h-4" />
                           </Link>
-                          <button className="text-red-400 hover:text-red-500 transition-colors p-1" title="Delete Driver">
+                          <button
+                            onClick={() => handleDelete(driver)}
+                            disabled={isDeleting}
+                            className="text-red-400 hover:text-red-500 transition-colors p-1 disabled:opacity-50"
+                            title="Delete Driver"
+                          >
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
@@ -243,36 +269,8 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       </div>
-
-      {/* Right Column - Platform Activity */}
-      <div className="xl:w-[350px] flex-shrink-0">
-        <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm h-full flex flex-col">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-bold text-slate-800">Platform Activity</h3>
-            <button onClick={refetch} className="text-slate-400 hover:text-slate-600 transition-colors">
-              <RefreshCw className="w-4 h-4" />
-            </button>
-          </div>
-
-          <div className="flex-1 overflow-y-auto pr-2 space-y-6">
-            {data.activity.length === 0 ? (
-              <p className="text-sm text-slate-500">No recent platform activity</p>
-            ) : (
-              data.activity.map((activity) => (
-                <div key={activity.id} className="flex gap-4 group">
-                  <div className="w-10 h-10 rounded-full bg-[#f0f4ff] text-[#1a56ff] flex-shrink-0 flex items-center justify-center font-bold text-xs transition-transform group-hover:scale-105">
-                    {(activity.metadata?.email as string | undefined)?.slice(0, 2).toUpperCase() || "ACT"}
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm text-slate-700 leading-snug">{activity.message}</p>
-                    <p className="text-xs text-slate-400 mt-1">{formatDate(activity.createdAt)}</p>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      </div>
+      {confirmDialog}
+      {alertDialog}
     </div>
   );
 }

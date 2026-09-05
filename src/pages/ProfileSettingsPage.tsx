@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Copy, Share2, Download, ImagePlus, X, Loader2, Pencil } from "lucide-react";
+import { Copy, Share2, Download, ImagePlus, X, Loader2, Pencil, Eye, EyeOff } from "lucide-react";
 import { useAppDispatch } from "../hooks/storeHooks";
 import { logOut } from "../store/features/auth/authSlice";
 import {
@@ -33,7 +33,7 @@ const getApiErrorMessage = (err: unknown, fallback: string): string => {
   return fallback;
 };
 
-export default function ProfilePage() {
+export default function ProfileSettingsPage() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -101,6 +101,7 @@ export default function ProfilePage() {
   const [businessLogoFile, setBusinessLogoFile] = useState<File | null>(null);
 
   const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
 
   const openBusinessEditModal = () => {
     const setup = setupResponse?.data;
@@ -310,7 +311,7 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8">
+            <div className="flex flex-col 2xl:flex-row items-center 2xl:items-start gap-8">
 
               <div className="relative shrink-0">
                 <img
@@ -326,25 +327,25 @@ export default function ProfilePage() {
                 </button>
               </div>
 
-              <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4 w-full">
+              <div className="flex-1 grid grid-cols-1 2xl:grid-cols-2 gap-y-6 gap-x-4 w-full min-w-0">
                 <div>
                   <p className="text-[12px] text-slate-400 mb-1">Full name</p>
-                  <p className="text-[14px] font-bold text-slate-800">{user?.name || "N/A"}</p>
+                  <p className="text-[14px] font-bold text-slate-800 break-words">{user?.name || "N/A"}</p>
                 </div>
                 <div>
                   <p className="text-[12px] text-slate-400 mb-1">Email address</p>
-                  <p className="text-[14px] font-bold text-slate-800">{user?.email || "N/A"}</p>
+                  <p className="text-[14px] font-bold text-slate-800 break-all">{user?.email || "N/A"}</p>
                 </div>
                 <div>
                   <p className="text-[12px] text-slate-400 mb-1">Phone number</p>
-                  <p className="text-[14px] font-bold text-slate-800">{user?.phone || "N/A"}</p>
+                  <p className="text-[14px] font-bold text-slate-800 break-words">{user?.phone || "N/A"}</p>
                 </div>
               </div>
 
-              <div className="shrink-0 mt-4 sm:mt-0 sm:absolute sm:bottom-8 sm:right-8">
+              <div className="shrink-0 mt-4 2xl:mt-0 2xl:absolute 2xl:bottom-8 2xl:right-8 w-full 2xl:w-auto">
                 <button
                   onClick={() => setIsEditInfoModalOpen(true)}
-                  className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-5 py-2.5 rounded-lg font-bold text-[13px] transition-colors shadow-sm w-full sm:w-auto"
+                  className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-5 py-2.5 rounded-lg font-bold text-[13px] transition-colors shadow-sm w-full 2xl:w-auto text-center"
                 >
                   Edit Information
                 </button>
@@ -353,7 +354,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Security System */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm flex items-center justify-between">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm flex flex-col xl:flex-row flex-wrap xl:items-center justify-between gap-6">
             <div>
               <h3 className="text-[16px] font-bold text-slate-900 mb-4">Security System</h3>
               <p className="text-[12px] text-slate-400 mb-1">Password</p>
@@ -361,7 +362,7 @@ export default function ProfilePage() {
             </div>
             <button
               onClick={() => setIsEditPasswordModalOpen(true)}
-              className="bg-green-100 hover:bg-green-200 text-green-700 px-5 py-2.5 rounded-lg font-bold text-[13px] transition-colors shadow-sm"
+              className="bg-green-100 hover:bg-green-200 text-green-700 px-5 py-2.5 rounded-lg font-bold text-[13px] transition-colors shadow-sm w-full xl:w-auto text-center"
             >
               Edit Password
             </button>
@@ -370,7 +371,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Right Column */}
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           {/* Business Information */}
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm h-full relative">
             <div className="flex items-center justify-between gap-4 mb-6 border-b border-slate-100 pb-4">
@@ -387,7 +388,7 @@ export default function ProfilePage() {
               </button>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8">
+            <div className="flex flex-col 2xl:flex-row items-center 2xl:items-start gap-8">
 
               <div className="relative shrink-0">
                 <img
@@ -397,38 +398,38 @@ export default function ProfilePage() {
                 />
               </div>
 
-              <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4 w-full">
+              <div className="flex-1 grid grid-cols-1 2xl:grid-cols-2 gap-y-6 gap-x-4 w-full min-w-0">
                 <div>
                   <p className="text-[12px] text-slate-400 mb-1">Business name</p>
-                  <p className="text-[14px] font-bold text-slate-800">
+                  <p className="text-[14px] font-bold text-slate-800 break-words">
                     {setupResponse?.data?.business?.businessName || "Not set"}
                   </p>
                 </div>
                 <div>
                   <p className="text-[12px] text-slate-400 mb-1">Email address</p>
-                  <p className="text-[14px] font-bold text-slate-800">
+                  <p className="text-[14px] font-bold text-slate-800 break-all">
                     {setupResponse?.data?.business?.email || "Not set"}
                   </p>
                 </div>
                 <div>
                   <p className="text-[12px] text-slate-400 mb-1">Driver ID</p>
-                  <p className="text-[14px] font-bold text-slate-800">
+                  <p className="text-[14px] font-bold text-slate-800 break-words">
                     #{user?.id ? user.id.slice(-6).toUpperCase() : "DR0001"}
                   </p>
                 </div>
                 <div>
                   <p className="text-[12px] text-slate-400 mb-1">Phone number</p>
-                  <p className="text-[14px] font-bold text-slate-800">
+                  <p className="text-[14px] font-bold text-slate-800 break-words">
                     {setupResponse?.data?.business?.phone || "Not set"}
                   </p>
                 </div>
                 <div>
                   <p className="text-[12px] text-slate-400 mb-1">Business area</p>
-                  <p className="text-[14px] font-bold text-slate-800">
+                  <p className="text-[14px] font-bold text-slate-800 break-words">
                     {setupResponse?.data?.serviceArea?.cityArea || "Not set"}
                   </p>
                 </div>
-                <div className="sm:col-span-2">
+                <div className="2xl:col-span-2">
                   <p className="text-[12px] text-slate-400 mb-1">Business details</p>
                   <p className="text-[13px] text-slate-800 leading-relaxed max-w-sm">
                     {setupResponse?.data?.business?.businessInfo || "An independent transportation business designed to help you earn more through direct customer bookings."}
@@ -441,28 +442,28 @@ export default function ProfilePage() {
       </div>
 
       {/* Referral Information */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-end justify-between gap-8">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-end justify-between gap-8 min-w-0">
 
-        <div className="flex-1 max-w-2xl border-t border-slate-100 pt-6 md:border-none md:pt-0">
+        <div className="flex-1 max-w-2xl border-t border-slate-100 pt-6 md:border-none md:pt-0 min-w-0">
           <h3 className="text-[16px] font-bold text-slate-900 mb-6">Referral Information</h3>
 
           <div className="flex flex-col sm:flex-row gap-6 mb-6">
             <div className="flex flex-col gap-2">
               <p className="text-[13px] font-bold text-slate-700">Your referral code</p>
-              <div className="bg-slate-100 rounded-lg px-4 py-3 text-[14px] font-bold text-slate-800 border border-slate-200">
+              <div className="bg-slate-100 rounded-lg px-4 py-3 text-[14px] font-bold text-slate-800 border border-slate-200 break-all">
                 {referralResponse?.data?.businessSlug || "CODE2026"}
               </div>
             </div>
 
-            <div className="flex flex-col gap-2 flex-1 max-w-xs">
+            <div className="flex flex-col gap-2 flex-1 max-w-xs md:max-w-none min-w-0">
               <p className="text-[13px] font-bold text-slate-700">Referral link</p>
-              <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-600 truncate">
+              <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-600 break-all">
                 {referralResponse?.data?.digitalCardUrl || (setupResponse?.data?.business?.slug ? `https://${setupResponse.data.business.slug}.quittheapp.com` : "Not set up yet")}
               </div>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3">
             <button
               onClick={async () => {
                 const url = referralResponse?.data?.digitalCardUrl || (setupResponse?.data?.business?.slug ? `https://${setupResponse.data.business.slug}.quittheapp.com` : "");
@@ -475,7 +476,7 @@ export default function ProfilePage() {
                   showAlert("Error", "Referral link is not available yet.", "error");
                 }
               }}
-              className="flex items-center justify-center gap-2 bg-green-100 hover:bg-green-200 text-green-700 px-5 py-2.5 rounded-lg font-bold text-[13px] transition-colors shadow-sm"
+              className="flex items-center justify-center gap-2 bg-green-100 hover:bg-green-200 text-green-700 px-5 py-2.5 rounded-lg font-bold text-[13px] transition-colors shadow-sm w-full sm:w-auto"
             >
               <Copy className="w-4 h-4" />
               Copy link
@@ -497,7 +498,7 @@ export default function ProfilePage() {
                   showAlert("Error", "Referral link is not available yet.", "error");
                 }
               }}
-              className="flex items-center justify-center gap-2 bg-green-100 hover:bg-green-200 text-green-700 px-5 py-2.5 rounded-lg font-bold text-[13px] transition-colors shadow-sm"
+              className="flex items-center justify-center gap-2 bg-green-100 hover:bg-green-200 text-green-700 px-5 py-2.5 rounded-lg font-bold text-[13px] transition-colors shadow-sm w-full sm:w-auto"
             >
               <Share2 className="w-4 h-4" />
               Share link
@@ -512,7 +513,7 @@ export default function ProfilePage() {
                   link.click();
                 }
               }}
-              className="flex items-center justify-center gap-2 bg-green-100 hover:bg-green-200 text-green-700 px-5 py-2.5 rounded-lg font-bold text-[13px] transition-colors shadow-sm"
+              className="flex items-center justify-center gap-2 bg-green-100 hover:bg-green-200 text-green-700 px-5 py-2.5 rounded-lg font-bold text-[13px] transition-colors shadow-sm w-full sm:w-auto"
             >
               <Download className="w-4 h-4" />
               Download QR Code
@@ -546,10 +547,11 @@ export default function ProfilePage() {
 
       {/* Edit Business Information Modal */}
       {isEditBusinessModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/40 p-4 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/40 p-4 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => { if (!isUpdatingBusiness && !isUploadingBusinessLogo) setIsEditBusinessModalOpen(false); }}>
           <form
             onSubmit={handleBusinessSubmit}
             className="relative my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-3xl flex-col overflow-hidden rounded-3xl bg-white shadow-xl zoom-in-95 animate-in duration-200"
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="flex shrink-0 items-center justify-between border-b border-slate-200 px-6 py-5 sm:px-8">
               <div>
@@ -704,8 +706,8 @@ export default function ProfilePage() {
 
       {/* Upload Image Modal */}
       {isUploadModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl w-full max-w-[500px] shadow-xl p-8 relative zoom-in-95 animate-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => !isUploadingAvatar && setIsUploadModalOpen(false)}>
+          <div className="bg-white rounded-3xl w-full max-w-[500px] shadow-xl p-8 relative zoom-in-95 animate-in duration-200" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={() => setIsUploadModalOpen(false)}
               className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 transition-colors"
@@ -761,10 +763,11 @@ export default function ProfilePage() {
 
       {/* Edit Information Modal */}
       {isEditInfoModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => !isUpdatingProfile && setIsEditInfoModalOpen(false)}>
           <form
             onSubmit={handleProfileSubmit}
             className="bg-white rounded-3xl w-full max-w-[500px] shadow-xl p-8 relative zoom-in-95 animate-in duration-200"
+            onClick={(e) => e.stopPropagation()}
           >
             <button
               type="button"
@@ -816,10 +819,11 @@ export default function ProfilePage() {
 
       {/* Edit Password Modal */}
       {isEditPasswordModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => { if (!isChangingPassword) { setIsEditPasswordModalOpen(false); setPasswordError(null); } }}>
           <form
             onSubmit={handlePasswordSubmit}
             className="bg-white rounded-3xl w-full max-w-[500px] shadow-xl p-8 relative zoom-in-95 animate-in duration-200"
+            onClick={(e) => e.stopPropagation()}
           >
             <button
               type="button"
@@ -842,36 +846,51 @@ export default function ProfilePage() {
             <div className="flex flex-col gap-6 mb-8">
               <div className="flex flex-col gap-2">
                 <label htmlFor="currentPassword" className="text-[13px] font-bold text-slate-700">Current Password</label>
-                <input
-                  type="password"
-                  id="currentPassword"
-                  value={passwordForm.currentPassword}
-                  onChange={(e) => setPasswordForm(prev => ({ ...prev, currentPassword: e.target.value }))}
-                  required
-                  className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-[14px] font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-colors"
-                />
+                <div className="relative">
+                  <input
+                    type={showPasswordModal ? "text" : "password"}
+                    id="currentPassword"
+                    value={passwordForm.currentPassword}
+                    onChange={(e) => setPasswordForm(prev => ({ ...prev, currentPassword: e.target.value }))}
+                    required
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 pr-10 text-[14px] font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-colors"
+                  />
+                  <button type="button" onClick={() => setShowPasswordModal(!showPasswordModal)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                    {showPasswordModal ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
               <div className="flex flex-col gap-2">
                 <label htmlFor="newPassword" className="text-[13px] font-bold text-slate-700">New Password</label>
-                <input
-                  type="password"
-                  id="newPassword"
-                  value={passwordForm.password}
-                  onChange={(e) => setPasswordForm(prev => ({ ...prev, password: e.target.value }))}
-                  required
-                  className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-[14px] font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-colors"
-                />
+                <div className="relative">
+                  <input
+                    type={showPasswordModal ? "text" : "password"}
+                    id="newPassword"
+                    value={passwordForm.password}
+                    onChange={(e) => setPasswordForm(prev => ({ ...prev, password: e.target.value }))}
+                    required
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 pr-10 text-[14px] font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-colors"
+                  />
+                  <button type="button" onClick={() => setShowPasswordModal(!showPasswordModal)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                    {showPasswordModal ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
               <div className="flex flex-col gap-2">
                 <label htmlFor="confirmPassword" className="text-[13px] font-bold text-slate-700">Confirm Password</label>
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  value={passwordForm.confirmPassword}
-                  onChange={(e) => setPasswordForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                  required
-                  className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-[14px] font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-colors"
-                />
+                <div className="relative">
+                  <input
+                    type={showPasswordModal ? "text" : "password"}
+                    id="confirmPassword"
+                    value={passwordForm.confirmPassword}
+                    onChange={(e) => setPasswordForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                    required
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 pr-10 text-[14px] font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-colors"
+                  />
+                  <button type="button" onClick={() => setShowPasswordModal(!showPasswordModal)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                    {showPasswordModal ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
             </div>
 

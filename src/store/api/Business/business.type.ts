@@ -131,7 +131,18 @@ export interface SetupStateResponse {
     business: BusinessInfo;
     acuity: AcuityInfo;
     serviceArea: ServiceAreaInfo;
+    referralCard?: {
+      websiteUrl: string | null;
+      qrCodeUrl: string | null;
+      digitalCardUrl: string | null;
+      printCardUrl: string | null;
+      ready: boolean;
+    };
     progress: ProgressInfo;
+    launchReady?: {
+      ready: boolean;
+      missingRequirements: string[];
+    };
     businessStatus: string;
   };
 }
@@ -179,6 +190,9 @@ export interface ReferralCardData {
   businessName: string;
   businessPhone: string;
   businessEmail: string;
+  businessInfo?: string | null;
+  logoUrl?: string | null;
+  serviceArea?: ServiceAreaInfo;
   businessSlug: string;
   websiteUrl: string;
   bookingUrl: string;
@@ -194,39 +208,50 @@ export interface ReferralCardResponse {
   data: ReferralCardData;
 }
 
+export type ResourceType = "video" | "pdf" | "link" | "guide";
+
 export interface BusinessResource {
   id: string;
-  categoryId: string;
+  categoryId?: string | null;
   name: string;
   title: string;
   description: string;
-  type: string;
-  step: string;
-  cardColor: string;
-  iconKey: string;
+  type: ResourceType | string;
+  step?: string;
+  cardColor?: string | null;
+  iconKey?: string | null;
   sortOrder: number;
   fileUrl: string;
-  isActive: boolean;
+  linkUrl?: string | null;
+  durationSec?: number | null;
+  hasFile?: boolean;
+  createdAt?: string;
+  isActive?: boolean;
+}
+
+export interface GuideResource {
+  name: string;
+  description: string | null;
+  body: string;
 }
 
 export interface BusinessResourcesResponse {
   success: boolean;
   resources: BusinessResource[];
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
-export interface ChecklistItem {
-  id: string;
-  step: string;
-  title: string;
-  description: string;
-  sortOrder: number;
-  completed: boolean;
-  completedAt: string | null;
-}
-
-export interface ChecklistItemsResponse {
-  success: boolean;
-  checklistItems: ChecklistItem[];
+export interface GuideResourceResponse {
+  success?: boolean;
+  data?: GuideResource;
+  name?: string;
+  description?: string | null;
+  body?: string;
 }
 
 export interface LaunchReadinessResponse {
