@@ -8,7 +8,7 @@ import {
   SPANISH_CONSENT_TEXT,
   normalizeCity,
   normalizeConsent,
-  normalizePhone,
+  normalizeUsPhone,
   overwriteLastTouchAttribution,
 } from "./exitIntentLogic";
 import { getOrCreateMarketingSessionId, readMarketingAttribution } from "../../lib/storage";
@@ -19,14 +19,7 @@ interface ExitIntentPopupProps {
   onClose: () => void;
 }
 
-function getSubmissionError(error: unknown): string {
-  if (error && typeof error === "object" && "data" in error) {
-    const data = (error as { data?: { message?: string | string[] } }).data;
-    if (Array.isArray(data?.message)) return data.message[0] || "Unable to submit your request.";
-    if (data?.message) return data.message;
-  }
-  return "Unable to submit your request. Please try again.";
-}
+
 
 export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
   const [phone, setPhone] = useState("");
@@ -46,24 +39,14 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setValidationError(null);
-    setSubmissionError(null);
-
-    const normalizedPhone = normalizePhone(phone);
+  const submitLeadAction = async () => {
+    const normalizedPhone = normalizeUsPhone(phone);
     const normalizedCity = normalizeCity(city);
-    if (!normalizedPhone) {
-      setValidationError("Enter a valid 10-digit phone number.");
-      return;
-    }
     if (!normalizedCity) {
-      setValidationError("City is required.");
-      return;
+      throw new Error("City is required.");
     }
     if (!normalizeConsent(consent)) {
-      setValidationError("Please agree to receive text messages related to your request.");
-      return;
+      throw new Error("Please agree to receive text messages related to your request.");
     }
 
     const attribution = readMarketingAttribution() || overwriteLastTouchAttribution({ sourcePage: config.sourcePage });
@@ -71,7 +54,7 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
       phone: normalizedPhone,
       city: normalizedCity,
       sourcePage: config.sourcePage,
-      sessionId: getOrCreateMarketingSessionId(),
+      sessionId: getOrCreateMarketingSessionId() || crypto.randomUUID(),
       utmSource: attribution.utmSource || null,
       utmMedium: attribution.utmMedium || null,
       utmCampaign: attribution.utmCampaign || null,
@@ -84,9 +67,29 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
 
     try {
       await submitLead(request).unwrap();
+    } catch (apiError: unknown) {
+      const errorData = (apiError as { data?: { message?: string | string[]; error?: string } })?.data || (apiError as { message?: string | string[]; error?: string });
+      const message = Array.isArray(errorData?.message)
+        ? errorData.message.join(" ")
+        : errorData?.message || errorData?.error || "Unable to submit the form.";
+      throw new Error(message, { cause: apiError });
+    }
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setValidationError(null);
+    setSubmissionError(null);
+
+    try {
+      await submitLeadAction();
       setSubmitted(true);
     } catch (error) {
-      setSubmissionError(getSubmissionError(error));
+      setSubmissionError(
+        error instanceof Error
+          ? error.message
+          : "Unable to submit the form."
+      );
     }
   };
 
@@ -138,11 +141,12 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
                 <span className="relative mt-1.5 block">
                   <Phone className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" strokeWidth={1.5} />
                   <input
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel-national"
                     value={phone}
                     onChange={(event) => setPhone(event.target.value)}
-                    inputMode="tel"
-                    autoComplete="tel"
-                    placeholder="(415) 555-0134"
+                    placeholder="(512) 555-5789"
                     aria-label="Phone number"
                     className="h-12 w-full rounded-lg border border-slate-200 pl-11 pr-4 text-sm outline-none transition focus:border-[#2aa84a] focus:ring-1 focus:ring-[#2aa84a]"
                   />
