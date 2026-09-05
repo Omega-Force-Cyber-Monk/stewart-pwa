@@ -61,9 +61,16 @@ export function overwriteLastTouchAttribution(input: ExitIntentAttributionInput)
 }
 
 export function normalizePhone(value: string): string | null {
-  if (!/^[\d\s().-]+$/.test(value)) return null;
-  const digits = value.replace(/[\s().-]/g, "");
-  return /^\d{10}$/.test(digits) ? `+1${digits}` : null;
+  const digits = value.replace(/\D/g, "");
+
+  const tenDigits =
+    digits.length === 11 && digits.startsWith("1")
+      ? digits.slice(1)
+      : digits;
+
+  const isValidUsPhone = /^[2-9]\d{2}[2-9]\d{6}$/.test(tenDigits);
+
+  return isValidUsPhone ? tenDigits : null;
 }
 
 export function normalizeCity(value: string): string {
