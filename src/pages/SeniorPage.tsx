@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Check, TrendingUp, Menu, X } from "lucide-react";
 import { cn } from "../lib/cn";
-import seniorLogo from "../assets/seniorLogo.png";
+import seniorLogo from "../assets/logo_standard.png";
 import {
   ArrowRight,
   CalendarDays,
@@ -31,6 +31,8 @@ import chrisImage from "../assets/50_Chris_S.jpg";
 import dougImage from "../assets/50_Doug_L.jpg";
 import naylinImage from "../assets/50_Naylin_H.jpg";
 import { PaymentBadges } from "../components/common/PaymentBadges";
+import seniorHero from "../assets/seniorHero.png";
+import upsellKit from "../assets/50_ Done-for-You_upsell_kit.png";
 
 export default function SeniorPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -51,7 +53,7 @@ export default function SeniorPage() {
   return (
     <>
       {showPricingModal && (
-        <PricingModal onClose={() => setShowPricingModal(false)} />
+        <PricingModal onClose={() => setShowPricingModal(false)} upsellKitImageSrc={upsellKit} />
       )}
       <SeniorNavbar openPricingModal={openPricingModal} />
       <HeroBanner />
@@ -274,7 +276,7 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
 
 function HeroBanner() {
   return (
-    <div className="relative w-full min-h-[100svh] lg:min-h-[90svh] pt-[clamp(64px,8vw,80px)] flex flex-col justify-between overflow-hidden bg-[#040a23]">
+    <div className="relative w-full data-exit-intent-hero min-h-[100svh] lg:min-h-[90svh] pt-[clamp(64px,8vw,80px)] flex flex-col justify-between overflow-hidden bg-[#040a23]">
       {/* Background Image on the right side */}
       {/* Background Image */}
       <div className="absolute inset-0 w-full h-full flex justify-end bg-[#040a23]">
@@ -284,8 +286,14 @@ function HeroBanner() {
           <img
             src={seniorBanner}
             alt="Senior couple"
-            className="w-full h-full object-cover object-[75%_top] sm:object-[80%_top] lg:object-[85%_center] pointer-events-none opacity-90"
+            className="hidden lg:block w-full h-full object-cover object-[75%_top] sm:object-[80%_top] lg:object-[85%_center] pointer-events-none opacity-90"
           />
+      {/* Mobile Background Image */}
+      <img
+        src={seniorHero}
+        alt="Phone concept mobile"
+        className="block lg:hidden absolute inset-0 w-full h-full object-cover object-[center_top] pointer-events-none"
+      />
         </div>
       </div>
       {/* Dark gradient overlay */}

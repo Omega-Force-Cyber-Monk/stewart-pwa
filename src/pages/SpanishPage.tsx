@@ -1,4 +1,4 @@
-import spanishLogo from "../assets/spanishLogo.png";
+import spanishLogo from "../assets/logo_standard.png";
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Menu, X, Plane } from "lucide-react";
@@ -32,6 +32,8 @@ import { logOut } from "../store/features/auth/authSlice";
 import { useLogoutUserMutation } from "../store/api/Auth/auth.api";
 import spanishBanner from "../assets/spanishBanner.png";
 import { PaymentBadges } from "../components/common/PaymentBadges";
+import spanishHero from "../assets/spanishHero.png";
+import upsellKit from "../assets/spanish_upsell_kit.png";
 
 export default function SpanishPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -52,7 +54,7 @@ export default function SpanishPage() {
   return (
     <>
       {showPricingModal && (
-        <PricingModal onClose={() => setShowPricingModal(false)} />
+        <PricingModal onClose={() => setShowPricingModal(false)} upsellKitImageSrc={upsellKit} />
       )}
       <SpanishNavbar openPricingModal={openPricingModal} />
       <HeroBanner openPricingModal={openPricingModal} />
@@ -281,7 +283,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
   const { accessToken } = useAppSelector((state) => state.auth);
 
   return (
-    <div className="relative w-full min-h-[100svh] lg:min-h-[90svh] pt-[clamp(64px,8vw,80px)] flex flex-col justify-between overflow-hidden bg-[#040a23]">
+    <div className="relative w-full data-exit-intent-hero min-h-[100svh] lg:min-h-[90svh] pt-[clamp(64px,8vw,80px)] flex flex-col justify-between overflow-hidden bg-[#040a23]">
       {/* Background Image on the right side */}
       <div className="absolute inset-0 w-full h-full flex justify-end bg-[#040a23]">
         <div className="relative w-full max-w-[1240px] h-full">
@@ -290,8 +292,14 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
           <img
             src={spanishBanner}
             alt="Spanish Banner"
-            className="w-full h-full object-cover object-[75%_top] sm:object-[80%_top] lg:object-[85%_center] pointer-events-none opacity-90"
+            className="hidden lg:block w-full h-full object-cover object-[75%_top] sm:object-[80%_top] lg:object-[85%_center] pointer-events-none opacity-90"
           />
+      {/* Mobile Background Image */}
+      <img
+        src={spanishHero}
+        alt="Phone concept mobile"
+        className="block lg:hidden absolute inset-0 w-full h-full object-cover object-right-top pointer-events-none"
+      />
         </div>
       </div>
       {/* Dark gradient overlay */}
@@ -362,26 +370,15 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
 
             {/* Right Side Floating Box — stacks below the content on mobile, side-by-side on lg */}
             <div className="w-full lg:w-[45%] flex justify-center lg:justify-end self-end z-10">
-              <div className="flex bg-[#040a23]/90 backdrop-blur-md border border-[#22c55e]/30 rounded-[clamp(1rem,1.5vw,1.5rem)] p-[clamp(0.9rem,1.5vw,1.5rem)] shadow-2xl w-full max-w-[clamp(225px,26vw,375px)] flex-col items-center sm:flex-row lg:flex-col lg:items-start text-center sm:text-left">
-                <div className="flex items-center gap-[clamp(0.75rem,1.5vw,1.5rem)] mb-0 sm:mb-0 lg:mb-[clamp(1rem,2vw,2rem)] w-full justify-center sm:justify-start lg:justify-start">
+              <div className="flex bg-[#040a23]/90 backdrop-blur-md border border-[#22c55e]/30 rounded-[clamp(1rem,1.5vw,1.5rem)] p-[clamp(0.9rem,1.5vw,1.5rem)] shadow-2xl w-full max-w-[clamp(225px,26vw,375px)] flex-col items-center text-center">
+                <div className="flex flex-col items-center gap-[clamp(0.75rem,1.5vw,1.5rem)] mb-3 w-full justify-center">
                   <Globe className="text-[#22c55e] w-[clamp(2.5rem,4.5vw,5.25rem)] h-[clamp(2.5rem,4.5vw,5.25rem)] shrink-0 opacity-90" strokeWidth={1.5} />
-                  <div className="text-left hidden lg:block">
-                    <h3 className="text-white font-bold text-[clamp(0.95rem,1.35vw,1.3rem)] leading-tight uppercase">
-                      PANEL Y<br/>
-                      MATERIALES<br/>
-                      DISPONIBLES<br/>
-                      EN ESPAÑOL
-                    </h3>
-                  </div>
+                  <h3 className="text-white font-bold text-[clamp(0.95rem,1.35vw,1.3rem)] leading-tight uppercase">
+                    PANEL Y MATERIALES<br/>DISPONIBLES EN ESPAÑOL
+                  </h3>
                 </div>
 
-                <div className="lg:hidden ml-4 sm:ml-0 flex flex-col justify-center text-center sm:text-left mt-3 sm:mt-0">
-                   <h3 className="text-white font-bold text-[clamp(0.95rem,1.35vw,1.3rem)] leading-tight uppercase">
-                      PANEL Y MATERIALES EN ESPAÑOL
-                    </h3>
-                </div>
-
-                <p className="text-[#22c55e] font-bold text-[clamp(0.85rem,1.1vw,1rem)] mt-2 sm:mt-0 lg:mt-[clamp(0.25rem,0.5vw,0.5rem)] ml-0 sm:ml-4 lg:ml-0">
+                <p className="text-[#22c55e] font-bold text-[clamp(0.85rem,1.1vw,1rem)] mt-2">
                   Cambia el idioma del sistema a español cuando lo necesites.
                 </p>
               </div>

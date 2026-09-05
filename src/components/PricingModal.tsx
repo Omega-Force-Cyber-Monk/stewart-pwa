@@ -2,19 +2,22 @@ import { useState } from "react";
 import { useAppSelector } from "../hooks/storeHooks";
 import { useCreateRiderCheckoutSessionMutation } from "../store/api/Payment/payment.api";
 import { writeStorageValue, storageKeys } from "../lib/storage";
-import { Loader2, X, Check, AlertTriangle, Rocket, Users } from "lucide-react";
+import { Loader2, X, Check, AlertTriangle, Rocket, Users, Download, Share, Eye, ZoomIn, ZoomOut } from "lucide-react";
 
 interface PricingModalProps {
   onClose: () => void;
+  upsellKitImageSrc?: string;
 }
 
 const BASE_VARIANT_ID = "base_variant";
 const ADDON_ID = "addon";
 
-export function PricingModal({ onClose }: PricingModalProps) {
+export function PricingModal({ onClose, upsellKitImageSrc }: PricingModalProps) {
   const [selectedPlan, setSelectedPlan] = useState<"base" | "bundle" | null>(null);
   const [guestEmail, setGuestEmail] = useState("");
   const [validationError, setValidationError] = useState("");
+  const [showUpsell, setShowUpsell] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(1);
   const { accessToken } = useAppSelector((state) => state.auth);
   const [createCheckoutSession, { isLoading, error }] = useCreateRiderCheckoutSessionMutation();
 
@@ -82,6 +85,7 @@ export function PricingModal({ onClose }: PricingModalProps) {
   const errorMessage = getErrorMessage();
 
   return (
+    <>
     <div
       className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-y-auto"
       onClick={(e) => e.target === e.currentTarget && onClose()}
@@ -247,6 +251,14 @@ export function PricingModal({ onClose }: PricingModalProps) {
               ) : null}
               Get Started — $694
             </button>
+            <button
+              onClick={() => setShowUpsell(true)}
+              className="w-full flex justify-center items-center gap-2 h-10 px-4 mb-4 rounded-lg text-sm font-semibold text-[#04B5A3] bg-[#04B5A3]/10 hover:bg-[#04B5A3]/20 transition"
+            >
+              <Eye className="size-4" />
+              View Add-on Details
+            </button>
+
           </div>
         </div>
 
@@ -257,5 +269,67 @@ export function PricingModal({ onClose }: PricingModalProps) {
         </div>
       </div>
     </div>
+
+      {/* Fullscreen Upsell Kit Preview */}
+      {showUpsell && upsellKitImageSrc && (
+        <div className="fixed inset-0 z-[10000] bg-black/95 flex flex-col items-center justify-center p-4">
+          <div className="w-full max-w-5xl flex justify-end mb-4 gap-4 flex-shrink-0">
+            <button
+              onClick={async () => {
+                if (navigator.share) {
+                  try {
+                    await navigator.share({
+                      title: "Upsell Kit",
+                      url: window.location.origin + upsellKitImageSrc,
+                    });
+                  } catch (err) {}
+                } else {
+                  navigator.clipboard.writeText(window.location.origin + upsellKitImageSrc);
+                  alert("Link copied to clipboard!");
+                }
+              }}
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition"
+            >
+              <Share className="size-4" />
+              <span className="hidden sm:inline">Share</span>
+            </button>
+            <a
+              href={upsellKitImageSrc}
+              download
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition"
+            >
+              <Download className="size-4" />
+              <span className="hidden sm:inline">Download</span>
+            </a>
+            <button
+              onClick={() => setShowUpsell(false)}
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition ml-auto sm:ml-0"
+            >
+              <X className="size-4" />
+              <span className="hidden sm:inline">Close</span>
+            </button>
+          </div>
+          {/* Zoom controls */}
+          <div className="w-full max-w-5xl flex justify-center mb-4 gap-2 flex-shrink-0 z-10">
+             <button onClick={() => setZoomLevel(prev => Math.max(0.5, prev - 0.25))} className="p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition" aria-label="Zoom Out">
+               <ZoomOut className="size-5" />
+             </button>
+             <span className="text-white font-mono flex items-center px-2">{Math.round(zoomLevel * 100)}%</span>
+             <button onClick={() => setZoomLevel(prev => Math.min(3, prev + 0.25))} className="p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition" aria-label="Zoom In">
+               <ZoomIn className="size-5" />
+             </button>
+          </div>
+          <div className="flex-1 w-full max-w-5xl overflow-auto flex">
+            <div className="m-auto flex-shrink-0" style={{ width: `${zoomLevel * 100}%`, transition: 'width 0.2s ease-out' }}>
+              <img
+                src={upsellKitImageSrc}
+                alt="Upsell Kit Preview"
+                className="w-full h-auto shadow-2xl rounded-lg"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

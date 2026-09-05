@@ -279,3 +279,42 @@ export interface CompleteLaunchResponse {
   progress: ProgressInfo;
   launchReady: boolean;
 }
+
+// --- Public Leads ---
+export type LeadSourcePage = "main" | "senior" | "women" | "couple" | "spanish";
+export type LeadConsentTextVersion = "sms-consent-v1";
+
+export interface PublicLeadConfigResponse {
+  success: true;
+  spanishPopupEnabled: boolean;
+}
+
+export interface CreatePublicLeadRequest {
+  phone?: string;
+  city?: string;
+  name?: string;
+  email?: string;
+  sourcePage: LeadSourcePage;
+  sessionId: string;
+  utmSource: string | null;
+  utmMedium: string | null;
+  utmCampaign: string | null;
+  utmTerm: string | null;
+  utmContent: string | null;
+  referrer: string | null;
+  smsConsent: true;
+  consentTextVersion: LeadConsentTextVersion;
+}
+
+export interface PublicLeadSubmission {
+  id: string;
+  status: "NEW";
+  sourcePage: LeadSourcePage;
+  submittedAt: string;
+}
+
+export interface CreatePublicLeadResponse {
+  success: true;
+  created: boolean;
+  lead: PublicLeadSubmission;
+}

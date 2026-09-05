@@ -1,6 +1,7 @@
 const storagePrefix = "quittheapp";
 
 export const storageKeys = {
+  exitIntentShown: "exit_intent_shown",
   appFlowState: `${storagePrefix}:appFlowState`,
   abandonedCheckout: `${storagePrefix}:abandonedCheckout`,
 };

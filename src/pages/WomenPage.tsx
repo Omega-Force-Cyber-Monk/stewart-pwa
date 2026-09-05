@@ -26,9 +26,11 @@ import { logOut } from "../store/features/auth/authSlice";
 import { useLogoutUserMutation } from "../store/api/Auth/auth.api";
 import womenBannerImage from "../assets/womenBannerImage.png";
 import womenMiddleSection from "../assets/womenMiddleSection.png";
-import womenLogo from "../assets/womenLogo.png";
+import womenLogo from "../assets/logo_women.png";
 import jessicaImage from "../assets/Women_Page_Jessica.jpg";
 import { PaymentBadges } from "../components/common/PaymentBadges";
+import womenHero from "../assets/womenHero.png";
+import upsellKit from "../assets/Women_Only_Brand_Upsell_Kit.png";
 
 export default function WomenPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -51,7 +53,7 @@ export default function WomenPage() {
   return (
     <>
       {showPricingModal && (
-        <PricingModal onClose={() => setShowPricingModal(false)} />
+        <PricingModal onClose={() => setShowPricingModal(false)} upsellKitImageSrc={upsellKit} />
       )}
       <Navbar openPricingModal={openPricingModal} />
       <HeroBanner openPricingModal={openPricingModal} />
@@ -69,14 +71,20 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
   const { accessToken } = useAppSelector((state) => state.auth);
 
   return (
-    <div className="relative w-full min-h-[100svh] lg:min-h-[90svh] pt-[clamp(64px,8vw,80px)] flex flex-col justify-between overflow-hidden bg-[#0b0f19]">
+    <div className="relative w-full data-exit-intent-hero min-h-[100svh] lg:min-h-[90svh] pt-[clamp(64px,8vw,80px)] flex flex-col justify-between overflow-hidden bg-[#0b0f19]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
           src={womenBannerImage}
           alt="Launch a Women-Focused Private Airport Business"
-          className="w-full h-full object-cover object-[75%_top] sm:object-[80%_top] lg:object-[85%_center] pointer-events-none opacity-90"
+          className="hidden lg:block w-full h-full object-cover object-[75%_top] sm:object-[80%_top] lg:object-[85%_center] pointer-events-none opacity-90"
         />
+      {/* Mobile Background Image */}
+      <img
+        src={womenHero}
+        alt="Phone concept mobile"
+        className="block lg:hidden absolute inset-0 w-full h-full object-cover object-[center_top] pointer-events-none"
+      />
         {/* Mobile/tablet legibility overlay — the hero text sits on top of the photo */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f19]/85 via-[#0b0f19]/45 to-[#0b0f19]/30 lg:bg-gradient-to-r lg:from-[#0b0f19] lg:via-[#0b0f19]/80 lg:to-[#0b0f19]/30"></div>
       </div>

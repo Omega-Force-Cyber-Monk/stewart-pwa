@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Menu, X, Headset } from "lucide-react";
 import { cn } from "../lib/cn";
-import coupleLogo from "../assets/coupleLogo.png";
+import coupleLogo from "../assets/logo_couple.png";
 import {
   ArrowRight,
   CalendarDays,
@@ -35,6 +35,8 @@ import coupleBanner from "../assets/coupleBanner.png";
 import card1 from "../assets/1st card.jpg";
 import card2 from "../assets/2nd card.jpg";
 import card4 from "../assets/4th card.jpg";
+import coupleHero from "../assets/coupleHero.png";
+import upsellKit from "../assets/Couples_upsell_kit.png";
 
 export default function CouplePage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -55,7 +57,7 @@ export default function CouplePage() {
   return (
     <>
       {showPricingModal && (
-        <PricingModal onClose={() => setShowPricingModal(false)} />
+        <PricingModal onClose={() => setShowPricingModal(false)} upsellKitImageSrc={upsellKit} />
       )}
       <Navbar openPricingModal={openPricingModal} />
       <HeroBanner openPricingModal={openPricingModal} />
@@ -72,7 +74,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
   const { accessToken } = useAppSelector((state) => state.auth);
 
   return (
-    <div className="relative w-full flex flex-col justify-between bg-white border-b border-gray-100">
+    <div className="relative w-full data-exit-intent-hero flex flex-col justify-between bg-white border-b border-gray-100">
       {/* Background Image and Main Content container */}
       <div className="relative w-full min-h-[70svh] pt-[clamp(56px,7vw,72px)] flex flex-col justify-between overflow-hidden bg-[#f8fafc] pb-0 lg:pb-0">
 
@@ -84,19 +86,23 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
             <img
               src={coupleBanner}
               alt="Couple in a car"
-              className="w-full h-full object-cover object-[75%_top] sm:object-[80%_top] lg:object-[85%_center] pointer-events-none opacity-95"
+              className="hidden lg:block w-full h-full object-cover object-[75%_top] sm:object-[80%_top] lg:object-[85%_center] pointer-events-none opacity-95"
             />
+      {/* Mobile Background Image */}
+      <img
+        src={coupleHero}
+        alt="Phone concept mobile"
+        className="block lg:hidden absolute inset-0 w-full h-full object-cover object-[center_top] pointer-events-none"
+      />
           </div>
         </div>
 
-        {/* Light gradient overlay for mobile readability */}
-        <div className="absolute inset-0 w-full h-full bg-gradient-to-t from-white/95 via-white/80 to-transparent lg:hidden z-0"></div>
 
         <div className="relative z-10 w-full flex-grow flex items-center py-4 lg:py-0">
           <PageContainer size="full">
             <div className="flex flex-col lg:flex-row w-full justify-between items-start lg:items-center gap-8 xl:gap-12">
               {/* Left Side Content */}
-              <div className="w-full lg:w-1/2 text-left z-10 relative bg-white/40 lg:bg-transparent backdrop-blur-sm lg:backdrop-blur-none p-4 sm:p-6 lg:p-0 rounded-2xl lg:rounded-none border border-white/50 lg:border-none shadow-sm lg:shadow-none">
+              <div className="w-full lg:w-1/2 text-left z-10 relative p-4 sm:p-6 lg:p-0">
                 <h1 className="text-[clamp(1.75rem,3vw,2.75rem)] font-extrabold text-[#060D64] leading-[1.05] mb-[clamp(0.75rem,1vw,1rem)] tracking-tight uppercase">
                   BUILD SOMETHING
                   <br />

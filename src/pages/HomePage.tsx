@@ -7,7 +7,7 @@ import { PricingModal } from "../components/PricingModal";
 import { ProfileDropdown } from "../components/ProfileDropdown";
 import { Headset, Check, TrendingUp, Menu, X } from "lucide-react";
 import { cn } from "../lib/cn";
-import standardLogo from "../assets/standardLogo.png";
+import standardLogo from "../assets/logo_standard.png";
 import {
   ArrowRight,
   CalendarDays,
@@ -33,6 +33,8 @@ import coupleComparisonRight from "../assets/coupleComparisonSectionRight.png";
 import timGImage from "../assets/Main_selling_Page_Tim_G.jpg";
 import tomRImage from "../assets/Main_Page_Tom_R.jpg";
 import williamRImage from "../assets/Main_Page_william_R.jpg";
+import standardHero from "../assets/standardHero.png";
+import upsellKit from "../assets/standard_upsell_kit.png";
 
 export default function HomePage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -70,7 +72,7 @@ export default function HomePage() {
   return (
     <>
       {showPricingModal && (
-        <PricingModal onClose={() => setShowPricingModal(false)} />
+        <PricingModal onClose={() => setShowPricingModal(false)} upsellKitImageSrc={upsellKit} />
       )}
       <SeniorNavbar openPricingModal={openPricingModal} />
       <HeroBanner />
@@ -292,12 +294,18 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
 
 function HeroBanner() {
   return (
-    <div className="relative w-full min-h-[100svh] lg:min-h-[90svh] pt-[clamp(64px,8vw,80px)] flex flex-col justify-between overflow-hidden bg-[#040a23]">
-      {/* Background Image */}
+    <div className="relative w-full data-exit-intent-hero min-h-[100svh] lg:min-h-[90svh] pt-[clamp(64px,8vw,80px)] flex flex-col justify-between overflow-hidden bg-[#040a23]">
+      {/* Desktop Background Image */}
       <img
         src={seniorBanner}
         alt="Phone concept"
-        className="absolute inset-0 w-full h-full object-cover object-[75%_top] sm:object-[80%_top] lg:object-[85%_center] pointer-events-none"
+        className="hidden lg:block absolute inset-0 w-full h-full object-cover object-[75%_top] sm:object-[80%_top] lg:object-[85%_center] pointer-events-none"
+      />
+      {/* Mobile Background Image */}
+      <img
+        src={standardHero}
+        alt="Phone concept mobile"
+        className="block lg:hidden absolute inset-0 w-full h-full object-cover object-right-top pointer-events-none"
       />
       {/* Dark gradient overlay */}
       <div className="absolute inset-0 w-full h-full bg-gradient-to-t from-[#040a23]/95 via-[#040a23]/50 to-[#040a23]/20 lg:bg-gradient-to-r lg:from-[#040a23] lg:via-[#040a23]/80 lg:to-transparent z-0"></div>
