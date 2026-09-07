@@ -1,6 +1,8 @@
 # QuitTheApp Frontend PWA
 
-QuitTheApp is a frontend-only React single-page PWA for a transportation business launch system. It includes four marketing funnels, a mock checkout, onboarding intake, DIY dashboard modules, a Done-For-You delivery pipeline, a resource toolbox, client-side persistence, and installable/offline PWA behavior.
+> 📘 **Developer Handover Guide**: Please refer to [HANDOVER.md](file:///Users/marjan/Documents/projects/stewart-pwa/HANDOVER.md) for the complete, up-to-date developer onboarding and handover documentation, including multi-tenant routing, RTK Query API layer, authentication, and deployment guides.
+
+QuitTheApp is a React single-page PWA for a transportation business launch system. It includes marketing funnels, Stripe checkout integration, onboarding intake, an interactive driver dashboard, personalized public rider websites, an admin backoffice, and installable/offline PWA behavior.
 
 ## Features
 
