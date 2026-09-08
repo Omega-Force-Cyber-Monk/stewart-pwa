@@ -1,17 +1,17 @@
 import type { ExitIntentRoute } from "./exitIntentConfig";
 import { isExitIntentRoute } from "./exitIntentConfig";
-import { readStorageValue, writeStorageValue, storageKeys } from "../../../lib/storage";
+import { readSessionStorageValue, writeSessionStorageValue, storageKeys } from "../../../lib/storage";
 
 export const CONSENT_TEXT_VERSION = "sms-consent-v1" as const;
 export const ENGLISH_CONSENT_TEXT = "I agree to receive text messages related to my request.";
 export const SPANISH_CONSENT_TEXT = "Acepto recibir mensajes de texto relacionados con mi solicitud.";
 
 export function canShowExitIntent(): boolean {
-  return !readStorageValue(storageKeys.exitIntentShown);
+  return !readSessionStorageValue(storageKeys.exitIntentShown);
 }
 
 export function consumeExitIntent(): void {
-  writeStorageValue(storageKeys.exitIntentShown, "true");
+  writeSessionStorageValue(storageKeys.exitIntentShown, "true");
 }
 
 export function isEligibleExitIntentPath(pathname: string): pathname is ExitIntentRoute {
