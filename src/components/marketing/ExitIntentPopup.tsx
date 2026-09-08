@@ -103,7 +103,7 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <div className="relative w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 sm:p-8 shadow-2xl">
+      <div className="relative w-full max-w-md overflow-y-auto rounded-2xl bg-white p-5 sm:p-6 shadow-2xl">
         <button
           type="button"
           onClick={onClose}
@@ -114,28 +114,28 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
         </button>
 
         {submitted ? (
-          <div className="flex min-h-[300px] flex-col items-center justify-center text-center">
-            <CheckCircle2 className="mb-4 h-14 w-14 text-[#2aa84a]" strokeWidth={1.5} />
-            <h2 className="text-2xl font-bold leading-tight text-[#121212] sm:text-3xl">
+          <div className="flex min-h-[260px] flex-col items-center justify-center text-center">
+            <CheckCircle2 className="mb-4 h-12 w-12 text-[#2aa84a]" strokeWidth={1.5} />
+            <h2 className="text-xl font-bold leading-tight text-[#121212] sm:text-2xl">
               Thanks — your request was received.
             </h2>
-            <p className="mt-3 text-base leading-relaxed text-slate-500">
+            <p className="mt-3 text-sm leading-relaxed text-slate-500">
               We’ll send the requested checklist or guide to the phone number provided.
             </p>
-            <button type="button" onClick={onClose} className="mt-7 rounded-lg bg-[#2aa84a] px-8 py-2.5 text-sm font-semibold text-white hover:bg-[#23913f] transition-colors">
+            <button type="button" onClick={onClose} className="mt-6 rounded-lg bg-[#2aa84a] px-7 py-2.5 text-sm font-semibold text-white hover:bg-[#23913f] transition-colors">
               Close
             </button>
           </div>
         ) : (
           <>
-            <h2 id="exit-intent-title" className="pr-6 text-2xl font-bold leading-tight tracking-tight text-[#121212] sm:text-[28px]">
+            <h2 id="exit-intent-title" className="pr-6 text-xl font-bold leading-tight tracking-tight text-[#121212] sm:text-2xl">
               {config.headline}
             </h2>
-            <p className="mt-3 text-base leading-relaxed text-[#666]">
+            <p className="mt-2.5 text-sm leading-relaxed text-[#666]">
               {config.subhead}
             </p>
 
-            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <form onSubmit={handleSubmit} className="mt-5 space-y-3.5">
               <label className="block text-sm font-semibold text-[#171717]">
                 {config.locale === "es" ? "Número de teléfono" : "Phone Number"}<span className="text-red-500">*</span>
                 <span className="relative mt-1.5 block">
@@ -148,7 +148,7 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
                     onChange={(event) => setPhone(event.target.value)}
                     placeholder="(512) 555-5789"
                     aria-label="Phone number"
-                    className="h-12 w-full rounded-lg border border-slate-200 pl-11 pr-4 text-sm outline-none transition focus:border-[#2aa84a] focus:ring-1 focus:ring-[#2aa84a]"
+                    className="h-11 w-full rounded-lg border border-slate-200 pl-11 pr-4 text-sm outline-none transition focus:border-[#2aa84a] focus:ring-1 focus:ring-[#2aa84a]"
                   />
                 </span>
               </label>
@@ -162,7 +162,7 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
                     autoComplete="address-level2"
                     placeholder="San Francisco"
                     aria-label="City"
-                    className="h-12 w-full rounded-lg border border-slate-200 pl-11 pr-4 text-sm outline-none transition focus:border-[#2aa84a] focus:ring-1 focus:ring-[#2aa84a]"
+                    className="h-11 w-full rounded-lg border border-slate-200 pl-11 pr-4 text-sm outline-none transition focus:border-[#2aa84a] focus:ring-1 focus:ring-[#2aa84a]"
                   />
                 </span>
               </label>
@@ -176,12 +176,12 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
                 <span>{consentText}</span>
               </label>
               {(validationError || submissionError) && <p className="text-sm font-medium text-red-500">{validationError || submissionError}</p>}
-              <button type="submit" disabled={isLoading} className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#2aa84a] text-sm font-semibold text-white transition hover:bg-[#23913f] disabled:cursor-not-allowed disabled:opacity-60 shadow-sm">
+              <button type="submit" disabled={isLoading} className="mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-[#2aa84a] text-sm font-semibold text-white transition hover:bg-[#23913f] disabled:cursor-not-allowed disabled:opacity-60 shadow-sm">
                 {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
                 {config.submitLabel}
               </button>
             </form>
-            <p className="mt-6 text-center text-sm text-slate-400">{config.microcopy}</p>
+            <p className="mt-5 text-center text-sm text-slate-400">{config.microcopy}</p>
           </>
         )}
       </div>

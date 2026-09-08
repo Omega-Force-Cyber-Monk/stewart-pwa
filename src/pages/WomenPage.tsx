@@ -29,6 +29,8 @@ import womenMiddleSection from "../assets/womenMiddleSection.png";
 import womenLogo from "../assets/logo_women.png";
 import jessicaImage from "../assets/Women_Page_Jessica.jpg";
 import { PaymentBadges } from "../components/common/PaymentBadges";
+import { LaunchPrice } from "../components/marketing/LaunchPrice";
+import { LAUNCH_PRICING } from "../components/marketing/pricing";
 import womenHero from "../assets/womenHero.png";
 import upsellKit from "../assets/Women_Only_Brand_Upsell_Kit.png";
 
@@ -83,7 +85,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
         <img
           src={womenHero}
           alt="Phone concept mobile"
-          className="block lg:hidden absolute inset-0 w-full h-full object-cover object-[center_top] pointer-events-none"
+          className="block lg:hidden absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
         />
         {/* Mobile/tablet legibility overlay — the hero text sits on top of the photo */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f19]/85 via-[#0b0f19]/45 to-[#0b0f19]/30 lg:bg-gradient-to-r lg:from-[#0b0f19] lg:via-[#0b0f19]/80 lg:to-[#0b0f19]/30"></div>
@@ -130,7 +132,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                   className="cursor-pointer bg-[#f42661] hover:bg-[#d91950] text-white font-bold py-[clamp(0.875rem,1.2vw,1rem)] px-[clamp(1.25rem,2vw,2rem)] rounded-[clamp(0.375rem,0.5vw,0.5rem)] transition-colors shadow-lg shadow-[#f42661]/30 flex items-center justify-between group w-full sm:w-auto text-[clamp(0.875rem,1.1vw,1.125rem)] min-h-[52px]"
                 >
                   <span className="text-left leading-snug">
-                    Start My Transportation Business™ — $495
+                    Start My Transportation Business™ — $295
                   </span>
                   <div className="bg-white rounded-full p-[clamp(0.2rem,0.3vw,0.3rem)] ml-[clamp(0.75rem,1vw,1rem)] group-hover:translate-x-1 transition-transform shrink-0">
                     <ChevronRight className="text-[#f42661] w-[clamp(1.1rem,1.2vw,1.3rem)] h-[clamp(1.1rem,1.2vw,1.3rem)]" />
@@ -142,7 +144,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                   className="cursor-pointer bg-[#f42661] hover:bg-[#d91950] text-white font-bold py-[clamp(0.875rem,1.2vw,1rem)] px-[clamp(1.25rem,2vw,2rem)] rounded-[clamp(0.375rem,0.5vw,0.5rem)] transition-colors shadow-lg shadow-[#f42661]/30 flex items-center justify-between group w-full sm:w-auto text-[clamp(0.875rem,1.1vw,1.125rem)] min-h-[52px]"
                 >
                   <span className="text-left leading-snug">
-                    Start My Transportation Business™ — $495
+                    Start My Transportation Business™ — $295
                   </span>
                   <div className="bg-white rounded-full p-[clamp(0.2rem,0.3vw,0.3rem)] ml-[clamp(0.75rem,1vw,1rem)] group-hover:translate-x-1 transition-transform shrink-0">
                     <ChevronRight className="text-[#f42661] w-[clamp(1.1rem,1.2vw,1.3rem)] h-[clamp(1.1rem,1.2vw,1.3rem)]" />
@@ -296,7 +298,7 @@ function WhyWinSection() {
     {
       icon: RefreshCcw,
       title: "Repeat Transportation Clients",
-      description: "A safe, professional experience turns one ride into repeat bookings across many and referrals.",
+      description: "A safe, professional experience can turn one ride into repeat bookings and referrals.",
     },
   ];
 
@@ -418,7 +420,7 @@ function ProvenModelSection() {
               <Rocket className="w-8 h-8" strokeWidth={1.5} />
             </div>
             <h3 className="text-[#f42661] font-bold text-xl lg:text-2xl leading-tight mb-4 text-balance">
-              Get Access with just 3 bookings.
+              Started with just 3 bookings
             </h3>
             <p className="text-[#0b0f19] font-medium text-[13px] leading-relaxed">
               What began as a handful of private airport rides became the foundation of a real transportation business.
@@ -471,7 +473,7 @@ function HowItWorksAndFaqSection() {
       number: 1,
       icon: Lock,
       title: "Get Access",
-      description: "Purchase the $495 DIY system and get instant access to your launch resources.",
+      description: "Purchase the $295 DIY system and get instant access to your launch resources.",
     },
     {
       number: 2,
@@ -483,7 +485,7 @@ function HowItWorksAndFaqSection() {
       number: 3,
       icon: Rocket,
       title: "Build & Launch",
-      description: "Follow the guided process to create and launch your personalized selling page. Need help? Add the optional $199 We Do It for You upgrade.",
+      description: "Follow the guided process to create and launch your personalized selling page. Need help? Add the optional $99 We Do It for You upgrade.",
     },
   ];
 
@@ -505,12 +507,12 @@ function HowItWorksAndFaqSection() {
       answer: "Use the included Client Acquisition Center™ with QR cards, outreach templates, and local strategies to attract initial clients.",
     },
     {
-      question: "Is the $495 really a one-time payment?",
-      answer: "Yes. The $495 DIY system is a one-time payment with no monthly platform fees.",
+      question: "Is the $295 really a one-time payment?",
+      answer: "Yes. The $295 DIY system is a one-time payment with no monthly platform fees.",
     },
     {
       question: "I'm not tech savvy. Can I still do this?",
-      answer: "Absolutely. The system includes step-by-step guidance. If you prefer, you can add the $199 'We Do It for You' upgrade for additional setup assistance.",
+      answer: "Absolutely. The system includes step-by-step guidance. If you prefer, you can add the $99 'We Do It for You' upgrade for additional setup assistance.",
     },
     {
       question: "What if it doesn't work for me?",
@@ -635,14 +637,18 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
           <div className="lg:w-1/3 flex flex-col justify-center">
             <div className="flex flex-col mb-4">
               <div className="flex items-baseline gap-3 flex-wrap">
-                <span className="text-[clamp(2.5rem,4vw,3rem)] font-bold text-[#f42661]">$495</span>
+                <LaunchPrice
+                  priceClassName="text-[clamp(2.5rem,4vw,3rem)] text-[#f42661]"
+                  oldClassName="text-slate-400"
+                  labelClassName="text-[#f42661]"
+                />
                 <span className="text-white font-bold text-sm uppercase tracking-wide mt-2">
                   One-time payment
                 </span>
               </div>
               <span className="text-slate-300 text-xs mt-2 leading-snug max-w-[280px]">
                 Includes the complete QuitTheApp DIY launch system and personalized driver selling page.<br />
-                <span className="mt-2 block opacity-80">Optional $199 We Do It for You upgrade available.</span>
+                <span className="mt-2 block opacity-80">Optional {LAUNCH_PRICING.addon} We Do It for You upgrade available.</span>
               </span>
             </div>
           </div>
@@ -786,7 +792,7 @@ function Navbar({ openPricingModal }: { openPricingModal: () => void }) {
                         btnClass,
                       )}
                     >
-                      Start My Business — $495
+                      Start My Business — $295
                     </button>
                   </>
                 )}
@@ -887,7 +893,7 @@ function Navbar({ openPricingModal }: { openPricingModal: () => void }) {
                   btnClass,
                 )}
               >
-                Start My Business — $495
+                Start My Business — $295
               </button>
             </>
           )}

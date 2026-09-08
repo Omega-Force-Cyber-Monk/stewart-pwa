@@ -97,41 +97,41 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
 
   return (
     <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/70 p-3 sm:p-5 backdrop-blur-sm" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="relative w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 sm:p-8 shadow-2xl animate-in fade-in zoom-in duration-200">
+      <div className="relative w-full max-w-xl overflow-y-auto rounded-2xl bg-white p-5 sm:p-6 shadow-2xl animate-in fade-in zoom-in duration-200">
         <button type="button" onClick={onClose} className="absolute right-4 top-4 rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition">
           <X className="h-5 w-5" />
         </button>
 
         {submitted ? (
-          <div className="flex min-h-[300px] flex-col items-center justify-center text-center">
-            <CheckCircle2 className="mb-4 h-16 w-16 text-green-500" />
-            <h2 className="text-2xl font-bold text-slate-800">
+          <div className="flex min-h-[260px] flex-col items-center justify-center text-center">
+            <CheckCircle2 className="mb-4 h-12 w-12 text-green-500" />
+            <h2 className="text-xl font-bold text-slate-800">
               {config.locale === "es" ? "¡Gracias! Recibimos tu solicitud." : "Thanks — your request was received."}
             </h2>
-            <button type="button" onClick={onClose} className="mt-7 rounded-lg bg-green-500 hover:bg-green-600 px-8 py-3 text-white font-bold transition">
+            <button type="button" onClick={onClose} className="mt-6 rounded-lg bg-green-500 hover:bg-green-600 px-7 py-2.5 text-white font-bold transition">
               {config.locale === "es" ? "Cerrar" : "Close"}
             </button>
           </div>
         ) : (
           <>
             {/* Header Section */}
-            <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 flex flex-col md:flex-row items-center gap-4 mb-6 text-center md:text-left">
-              <div className={`${config.theme.iconBg} text-white rounded-full p-4 shrink-0 shadow-md`}>
-                <Gift className="size-10" strokeWidth={1.5} />
+            <div className="bg-slate-50 border border-slate-100 rounded-xl p-3.5 flex flex-col md:flex-row items-center gap-3 mb-5 text-center md:text-left">
+              <div className={`${config.theme.iconBg} text-white rounded-full p-3 shrink-0 shadow-md`}>
+                <Gift className="size-8" strokeWidth={1.5} />
               </div>
               <div>
-                <h2 className="text-xl md:text-2xl font-bold text-slate-800 leading-tight">
+                <h2 className="text-lg md:text-xl font-bold text-slate-800 leading-tight">
                   {config.headline}
                 </h2>
-                <p className="text-slate-600 font-medium text-sm md:text-base mt-1">
+                <p className="text-slate-600 font-medium text-sm mt-1">
                   {config.subhead}
                 </p>
               </div>
             </div>
 
             {/* Form Section */}
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="space-y-3.5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                 {config.fields.includes("name") && (
                   <div className="col-span-1">
                     <label className="block text-sm font-semibold text-slate-700 mb-1">
@@ -147,7 +147,7 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder={config.locale === "es" ? "Tu nombre" : "Your name"}
-                        className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-700"
+                        className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-700"
                       />
                     </div>
                   </div>
@@ -170,7 +170,7 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
                         value={phone}
                         onChange={(event) => setPhone(event.target.value)}
                         placeholder="(512) 555-5789"
-                        className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-700"
+                        className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-700"
                       />
                     </div>
                   </div>
@@ -191,7 +191,7 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
                         placeholder="San Francisco"
-                        className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-700"
+                        className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-700"
                       />
                     </div>
                   </div>
@@ -212,7 +212,7 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder={config.locale === "es" ? "tu@email.com" : "you@email.com"}
-                        className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-700"
+                        className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-700"
                       />
                     </div>
                   </div>
@@ -238,7 +238,7 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full mt-4 py-4 rounded-xl flex items-center justify-center gap-2 text-white font-bold text-lg shadow-lg transition-all ${config.theme.buttonBg} ${isLoading ? "opacity-75 cursor-not-allowed" : ""}`}
+                className={`w-full mt-4 py-3 rounded-xl flex items-center justify-center gap-2 text-white font-bold text-base shadow-lg transition-all ${config.theme.buttonBg} ${isLoading ? "opacity-75 cursor-not-allowed" : ""}`}
               >
                 {isLoading ? (
                   <Loader2 className="size-6 animate-spin" />

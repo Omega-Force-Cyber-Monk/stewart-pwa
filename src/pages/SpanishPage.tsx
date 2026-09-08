@@ -32,6 +32,8 @@ import { logOut } from "../store/features/auth/authSlice";
 import { useLogoutUserMutation } from "../store/api/Auth/auth.api";
 import spanishBanner from "../assets/spanishBanner.png";
 import { PaymentBadges } from "../components/common/PaymentBadges";
+import { LaunchPrice } from "../components/marketing/LaunchPrice";
+import { LAUNCH_PRICING } from "../components/marketing/pricing";
 import spanishHero from "../assets/spanishHero.png";
 import upsellKit from "../assets/spanish_upsell_kit.png";
 
@@ -155,7 +157,7 @@ function SpanishNavbar({ openPricingModal }: { openPricingModal: () => void }) {
                     onClick={openPricingModal}
                     className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg"
                   >
-                    QUIERO EMPEZAR MI NEGOCIO DE TRANSPORTE PRIVADO $495
+                    QUIERO EMPEZAR MI NEGOCIO POR $295
                   </button>
                 </>
               )}
@@ -269,7 +271,7 @@ function SpanishNavbar({ openPricingModal }: { openPricingModal: () => void }) {
                 }}
                 className="cursor-pointer bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-3 px-6 rounded-md transition-colors w-full mt-4 min-h-[52px]"
               >
-                QUIERO EMPEZAR MI NEGOCIO DE TRANSPORTE PRIVADO $495
+                QUIERO EMPEZAR MI NEGOCIO POR $295
               </button>
             </>
           )}
@@ -298,7 +300,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
           <img
             src={spanishHero}
             alt="Phone concept mobile"
-            className="block lg:hidden absolute inset-0 w-full h-full object-cover object-right-top pointer-events-none"
+            className="block lg:hidden absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
           />
         </div>
       </div>
@@ -347,7 +349,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                   className="cursor-pointer bg-[#22c55e] hover:bg-[#16a34a] text-[#040a23] font-bold py-[clamp(0.875rem,1.2vw,1rem)] px-[clamp(1.25rem,2vw,2rem)] rounded-[clamp(0.375rem,0.5vw,0.5rem)] transition-colors shadow-lg shadow-[#22c55e]/30 flex items-center justify-between group w-full sm:w-auto text-[clamp(0.875rem,1.1vw,1.125rem)] min-h-[52px]"
                 >
                   <span className="text-left leading-snug pr-4 uppercase">
-                    QUIERO EMPEZAR MI NEGOCIO POR $495
+                    QUIERO EMPEZAR MI NEGOCIO POR $295
                   </span>
                   <div className="bg-[#040a23] rounded-full p-[clamp(0.2rem,0.3vw,0.3rem)] ml-[clamp(0.75rem,1vw,1rem)] group-hover:translate-x-1 transition-transform shrink-0">
                     <ChevronRight className="text-[#22c55e] w-[clamp(1.1rem,1.2vw,1.3rem)] h-[clamp(1.1rem,1.2vw,1.3rem)]" />
@@ -359,7 +361,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                   className="cursor-pointer bg-[#22c55e] hover:bg-[#16a34a] text-[#040a23] font-bold py-[clamp(0.875rem,1.2vw,1rem)] px-[clamp(1.25rem,2vw,2rem)] rounded-[clamp(0.375rem,0.5vw,0.5rem)] transition-colors shadow-lg shadow-[#22c55e]/30 flex items-center justify-between group w-full sm:w-auto text-[clamp(0.875rem,1.1vw,1.125rem)] min-h-[52px]"
                 >
                   <span className="text-left leading-snug pr-4 uppercase">
-                    QUIERO EMPEZAR MI NEGOCIO POR $495
+                    QUIERO EMPEZAR MI NEGOCIO POR $295
                   </span>
                   <div className="bg-[#040a23] rounded-full p-[clamp(0.2rem,0.3vw,0.3rem)] ml-[clamp(0.75rem,1vw,1rem)] group-hover:translate-x-1 transition-transform shrink-0">
                     <ChevronRight className="text-[#22c55e] w-[clamp(1.1rem,1.2vw,1.3rem)] h-[clamp(1.1rem,1.2vw,1.3rem)]" />
@@ -560,7 +562,6 @@ function AllYouNeedSection() {
                 También incluye:
               </strong>{" "}
               acceso al Panel de Lanzamiento™, herramientas del Panel del Operador™, alojamiento de tu página personalizada, capacitación, actualizaciones del sistema y soporte de personas reales.
-              acceso al Panel de Lanzamiento™, herramientas del Panel del Operador™, alojamiento de tu página personalizada, capacitación, actualizaciones del sistema y soporte de personas reales.
             </p>
           </div>
         </div>
@@ -576,7 +577,7 @@ function HowItWorksSection() {
       icon: Lock,
       title: "Paso 1: Obtén acceso",
       description:
-        "Compra el sistema DIY por $495 y entra de inmediato al Panel de Lanzamiento™ y a todos los recursos para comenzar.",
+        "Compra el sistema DIY por $295 y entra de inmediato al Panel de Lanzamiento™ y a todos los recursos para comenzar.",
     },
     {
       number: 2,
@@ -590,7 +591,7 @@ function HowItWorksSection() {
       icon: Rocket,
       title: "Paso 3: Configura y empieza",
       description:
-        "Sigue las instrucciones para configurar tu sistema de reservas y tu página personalizada. Si quieres ayuda adicional, puedes agregar la opción \"Lo hacemos por ti\" por $199.",
+        "Sigue las instrucciones para configurar tu sistema de reservas y tu página personalizada. Si quieres ayuda adicional, puedes agregar la opción \"Lo hacemos por ti\" por $99.",
     },
   ];
 
@@ -726,9 +727,9 @@ function HowItWorksAndFaqSection({ openPricingModal }: { openPricingModal: () =>
 
   const faqs = [
     {
-      question: "¿Los $495 son realmente un solo pago?",
+      question: "¿Los $295 son realmente un solo pago?",
       answer:
-        "Sí. Pagas $495 una sola vez por el sistema DIY de Quit TheApp. No hay una cuota mensual de plataforma de Quit TheApp. También puedes agregar la opción \"Lo hacemos por ti\" por $199. Como en cualquier negocio, puedes tener otros gastos como procesamiento de pagos, seguro comercial, licencias, combustible, mantenimiento y otras herramientas que decidas usar.",
+        "Sí. Pagas $295 una sola vez por el sistema DIY de Quit TheApp. No hay una cuota mensual de plataforma de Quit TheApp. También puedes agregar la opción \"Lo hacemos por ti\" por $99. Como en cualquier negocio, puedes tener otros gastos como procesamiento de pagos, seguro comercial, licencias, combustible, mantenimiento y otras herramientas que decidas usar.",
     },
     {
       question: "¿Mi página personalizada y el alojamiento están incluidos?",
@@ -743,7 +744,7 @@ function HowItWorksAndFaqSection({ openPricingModal }: { openPricingModal: () =>
     {
       question: "¿Necesito saber de tecnología?",
       answer:
-        "No. El sistema te guía paso a paso para configurar la información de tu negocio, tus preferencias de reserva y tu página personalizada. Y si quieres más ayuda, puedes agregar la opción \"Lo hacemos por ti\" por $199.",
+        "No. El sistema te guía paso a paso para configurar la información de tu negocio, tus preferencias de reserva y tu página personalizada. Y si quieres más ayuda, puedes agregar la opción \"Lo hacemos por ti\" por $99.",
     },
     {
       question: "¿Qué pasa si no funciona para mí?",
@@ -802,13 +803,16 @@ function HowItWorksAndFaqSection({ openPricingModal }: { openPricingModal: () =>
                   </h3>
 
                   <div className="flex flex-row items-center gap-4 lg:gap-5 mt-4 mb-6">
-                    <span className="text-[3.5rem] lg:text-[4.5rem] font-extrabold text-[#22c55e] leading-none tracking-tight">
-                      $495
-                    </span>
+                    <LaunchPrice
+                      label="PRECIO DE LANZAMIENTO"
+                      priceClassName="text-[3.5rem] lg:text-[4.5rem] text-[#22c55e] tracking-tight"
+                      oldClassName="text-white/50"
+                      labelClassName="text-[#22c55e]"
+                    />
                     <div className="text-white/80 text-[10px] lg:text-[11px] font-medium leading-[1.3] border-l border-white/20 pl-4 py-1">
                       <strong className="text-white font-bold block mb-1">Un solo pago.</strong>
                       Incluye el sistema completo DIY de Quit TheApp<br />y tu página personalizada.<br />
-                      También puedes agregar "Lo hacemos por ti"<br />por $199.
+                      También puedes agregar "Lo hacemos por ti"<br />por {LAUNCH_PRICING.addon}.
                     </div>
                   </div>
                 </div>
@@ -826,7 +830,7 @@ function HowItWorksAndFaqSection({ openPricingModal }: { openPricingModal: () =>
                     className="cursor-pointer bg-[#22c55e] hover:bg-[#16a34a] text-white font-bold py-4 px-5 rounded-xl transition-colors flex items-center justify-between group w-full text-left shadow-lg mb-6"
                   >
                     <span className="text-[1.1rem] lg:text-[1.2rem] uppercase leading-tight w-full pr-2">
-                      IR AL PANEL<br />DE CONTROL
+                      EMPEZAR MI<br />NEGOCIO
                     </span>
                     <ArrowRight className="w-6 h-6 shrink-0 group-hover:translate-x-1 transition-transform" />
                   </Link>
@@ -836,7 +840,7 @@ function HowItWorksAndFaqSection({ openPricingModal }: { openPricingModal: () =>
                     className="cursor-pointer bg-[#22c55e] hover:bg-[#16a34a] text-white font-bold py-4 px-5 rounded-xl transition-colors flex items-center justify-between group w-full text-left shadow-lg mb-6"
                   >
                     <span className="text-[1.1rem] lg:text-[1.2rem] uppercase leading-tight w-full pr-2">
-                      QUIERO EMPEZAR<br />MI NEGOCIO<br />$495
+                      QUIERO EMPEZAR<br />MI NEGOCIO<br />$295
                     </span>
                     <ArrowRight className="w-6 h-6 shrink-0 group-hover:translate-x-1 transition-transform" />
                   </button>
@@ -846,7 +850,7 @@ function HowItWorksAndFaqSection({ openPricingModal }: { openPricingModal: () =>
                     className="cursor-pointer bg-[#22c55e] hover:bg-[#16a34a] text-white font-bold py-4 px-5 rounded-xl transition-colors flex items-center justify-between group w-full text-left shadow-lg mb-6"
                   >
                     <span className="text-[1.1rem] lg:text-[1.2rem] uppercase leading-tight w-full pr-2">
-                      QUIERO EMPEZAR<br />MI NEGOCIO<br />$495
+                      QUIERO EMPEZAR<br />MI NEGOCIO<br />$295
                     </span>
                     <ArrowRight className="w-6 h-6 shrink-0 group-hover:translate-x-1 transition-transform" />
                   </button>

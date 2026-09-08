@@ -92,7 +92,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
             <img
               src={coupleHero}
               alt="Phone concept mobile"
-              className="block lg:hidden absolute inset-0 w-full h-full object-cover object-[center_top] pointer-events-none"
+              className="block lg:hidden absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
             />
           </div>
         </div>
@@ -143,7 +143,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                     className="cursor-pointer bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(0.75rem,0.9vw,1rem)] px-[clamp(1rem,1.2vw,1.5rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/30 flex items-center justify-between group w-full sm:w-auto mb-[clamp(1.5rem,2vw,3rem)] border border-[#eab308]"
                   >
                     <span className="text-left leading-snug pr-3 text-[clamp(0.9rem,1vw,1.125rem)] font-extrabold">
-                      Start My Private Transportation Business™ — $495
+                      Start My Private Transportation Business™ — $295
                     </span>
                     <div className="bg-[#0b0f19]/10 rounded-full p-1 border border-[#0b0f19]/20 group-hover:bg-[#0b0f19]/20 transition-colors">
                       <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 stroke-[2.5]" />
@@ -155,7 +155,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                     className="cursor-pointer bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-[clamp(0.75rem,0.9vw,1rem)] px-[clamp(1rem,1.2vw,1.5rem)] rounded-xl transition-all shadow-xl shadow-[#eab308]/30 flex items-center justify-between group w-full sm:w-auto mb-[clamp(1.5rem,2vw,3rem)] border border-[#eab308]"
                   >
                     <span className="text-left leading-snug pr-3 text-[clamp(0.9rem,1vw,1.125rem)] font-extrabold">
-                      Start My Private Transportation Business™ — $495
+                      Start My Private Transportation Business™ — $295
                     </span>
                     <div className="bg-[#0b0f19]/10 rounded-full p-1 border border-[#0b0f19]/20 group-hover:bg-[#0b0f19]/20 transition-colors">
                       <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 stroke-[2.5]" />
@@ -249,9 +249,9 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
             <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left justify-center border-l-0 md:border-l border-slate-200">
               <Clock className="w-8 h-8 text-[#060D64] shrink-0" strokeWidth={1.5} />
               <div className="text-[13px] sm:text-sm font-bold text-[#060D64] leading-tight">
-                Launch in 48-72 hours
+                Launch at Your Pace
                 <br />
-                <span className="font-medium text-slate-600">We build, you start</span>
+                <span className="font-medium text-slate-600">Follow the system. Start your way.</span>
               </div>
             </div>
 
@@ -616,8 +616,8 @@ function LaunchKitAndFaqSection({ openPricingModal }: { openPricingModal: () => 
     { question: "Will this work in our city?", answer: "Yes. As long as you have a local airport and people who travel, this model can work. The demand for reliable airport transportation is universal." },
     { question: "How is this different from rideshare apps?", answer: "You own the business. You set your own prices, keep 100% of the profits, and build a network of repeat, loyal clients instead of relying on an algorithm." },
     { question: "How do we get our first clients?", answer: "The launch kit includes a Relationship & Referral Strategy to help you leverage your existing network and community to get your very first bookings." },
-    { question: "Is the $495 really a one-time payment?", answer: "Yes! There are no monthly platform fees or ongoing subscriptions. You pay once for lifetime access to the system." },
-    { question: "What if we're not tech-savvy?", answer: "No problem. The system is designed to be plug-and-play, and if you want us to handle the technical setup, we offer a 'We Do It For You' upgrade for $199." },
+    { question: "Is the $295 really a one-time payment?", answer: "Yes! There are no monthly platform fees or ongoing subscriptions. You pay once for lifetime access to the system." },
+    { question: "What if we're not tech-savvy?", answer: "No problem. The system is designed to be plug-and-play, and if you want us to handle the technical setup, we offer a 'We Do It For You' upgrade for $99." },
   ];
 
   return (
@@ -632,7 +632,7 @@ function LaunchKitAndFaqSection({ openPricingModal }: { openPricingModal: () => 
               <div className="w-8 h-8 rounded-full bg-[#060D64] text-white flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">1</div>
               <div className="flex-1">
                 <h4 className="font-extrabold text-[#060D64] text-[15px] mb-1">Get Access</h4>
-                <p className="text-[#060D64] text-[12px] font-medium leading-relaxed pr-2">Purchase the $495 DIY system and receive immediate access to the launch resources.</p>
+                <p className="text-[#060D64] text-[12px] font-medium leading-relaxed pr-2">Purchase the $295 DIY system and receive immediate access to the launch resources.</p>
               </div>
               <Lock className="w-8 h-8 text-[#060D64] shrink-0 opacity-80" strokeWidth={1.5} />
             </div>
@@ -641,7 +641,7 @@ function LaunchKitAndFaqSection({ openPricingModal }: { openPricingModal: () => 
               <div className="w-8 h-8 rounded-full bg-[#060D64] text-white flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">2</div>
               <div className="flex-1">
                 <h4 className="font-extrabold text-[#060D64] text-[15px] mb-1">Submit Your Details</h4>
-                <p className="text-[#060D64] text-[12px] font-medium leading-relaxed pr-2">Provide your business information and branding details. We handle the setup.</p>
+                <p className="text-[#060D64] text-[12px] font-medium leading-relaxed pr-2">Provide your business information, service area, pricing and branding details.</p>
               </div>
               <ClipboardList className="w-8 h-8 text-[#060D64] shrink-0 opacity-80" strokeWidth={1.5} />
             </div>
@@ -650,7 +650,7 @@ function LaunchKitAndFaqSection({ openPricingModal }: { openPricingModal: () => 
               <div className="w-8 h-8 rounded-full bg-[#060D64] text-white flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">3</div>
               <div className="flex-1">
                 <h4 className="font-extrabold text-[#060D64] text-[15px] mb-1">Both Build & You Start</h4>
-                <p className="text-[#060D64] text-[12px] font-medium leading-relaxed pr-2">We build your booking flow and selling page. You start getting customers.</p>
+                <p className="text-[#060D64] text-[12px] font-medium leading-relaxed pr-2">Follow the guided process to set up your booking flow and personalized selling page. Want help? Add the optional We Do It For You upgrade.</p>
               </div>
               <Rocket className="w-8 h-8 text-[#060D64] shrink-0 opacity-80" strokeWidth={1.5} />
             </div>
@@ -693,7 +693,7 @@ function LaunchKitAndFaqSection({ openPricingModal }: { openPricingModal: () => 
             </div>
 
             <button onClick={openPricingModal} className="mt-4 w-full text-left bg-[#eab308] rounded-xl p-4 flex items-center justify-between shadow-sm cursor-pointer hover:bg-[#ca8a04] transition-colors group">
-              <span className="text-[#060D64] font-extrabold text-[14px]">Optional Upgrade: We Do It For You — $199</span>
+              <span className="text-[#060D64] font-extrabold text-[14px]">Optional Upgrade: We Do It For You — $99</span>
               <Users className="w-6 h-6 text-[#060D64] opacity-80 group-hover:opacity-100 transition-opacity" />
             </button>
           </div>
@@ -757,7 +757,7 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
 
           {/* Middle Block */}
           <div className="flex-1 flex flex-col justify-center w-full lg:w-auto items-center lg:items-start text-center lg:text-left">
-            <h4 className="text-white font-extrabold text-[13px] uppercase mb-4 tracking-wider">THIS $495 SYSTEM INCLUDES:</h4>
+            <h4 className="text-white font-extrabold text-[13px] uppercase mb-4 tracking-wider">THIS $295 SYSTEM INCLUDES:</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
               {[
                 "Complete DIY launch system",
@@ -778,7 +778,7 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
           {/* Right Block */}
           <div className="flex flex-col items-center justify-center shrink-0 w-full lg:w-auto lg:min-w-[320px]">
             <button onClick={openPricingModal} className="w-full bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-4 px-5 rounded-xl flex items-center justify-between mb-1 cursor-pointer shadow-lg transition-colors group">
-              <span className="text-left w-full text-[14px] lg:text-[15px] leading-tight">Start My Private Transportation<br />Business™ — $495</span>
+              <span className="text-left w-full text-[14px] lg:text-[15px] leading-tight">Start My Private Transportation<br />Business™ — $295</span>
               <div className="w-8 h-8 rounded-full border-2 border-[#0b0f19] flex items-center justify-center shrink-0 group-hover:bg-[#0b0f19] group-hover:text-[#eab308] transition-colors ml-3">
                 <ArrowRight className="w-4 h-4" strokeWidth={3} />
               </div>
@@ -878,7 +878,7 @@ function Navbar({ openPricingModal }: { openPricingModal: () => void }) {
                     btnClass,
                   )}
                 >
-                  Start Our Private Airport Business™ — $495
+                  Start Our Private Airport Business™ — $295
                 </button>
               </>
             )}
@@ -982,7 +982,7 @@ function Navbar({ openPricingModal }: { openPricingModal: () => void }) {
                     btnClass,
                   )}
                 >
-                  Start Our Private Airport Business™ — $495
+                  Start Our Private Airport Business™ — $295
                 </button>
               </>
             )}

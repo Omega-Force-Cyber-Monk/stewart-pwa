@@ -27,6 +27,8 @@ import {
 import { PaymentBadges } from "../components/common/PaymentBadges";
 import { PageContainer } from "../components/layout/PageContainer";
 import { ExperienceSection } from "../components/marketing/ExperienceSection";
+import { LaunchPrice } from "../components/marketing/LaunchPrice";
+import { LAUNCH_PRICING } from "../components/marketing/pricing";
 import standard1 from "../assets/experience/standard-1.jpg";
 import standard2 from "../assets/experience/standard-2.jpg";
 import standard3 from "../assets/experience/standard-3.jpg";
@@ -170,7 +172,7 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
                     onClick={openPricingModal}
                     className="cursor-pointer bg-[#15803d] hover:bg-[#166534] text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg"
                   >
-                    Start My Business — $495
+                    Start My Business — $295
                   </button>
                 </>
               )}
@@ -285,7 +287,7 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
                 }}
                 className="cursor-pointer bg-[#15803d] hover:bg-[#166534] text-white font-bold py-3 px-6 rounded-md transition-colors w-full mt-4 min-h-[52px]"
               >
-                Start My Business — $495
+                Start My Business — $295
               </button>
             </>
           )}
@@ -308,7 +310,7 @@ function HeroBanner() {
       <img
         src={standardHero}
         alt="Phone concept mobile"
-        className="block lg:hidden absolute inset-0 w-full h-full object-cover object-right-top pointer-events-none"
+        className="block lg:hidden absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
       />
       {/* Dark gradient overlay */}
       <div className="absolute inset-0 w-full h-full bg-gradient-to-t from-[#040a23]/95 via-[#040a23]/50 to-[#040a23]/20 lg:bg-gradient-to-r lg:from-[#040a23] lg:via-[#040a23]/80 lg:to-transparent z-0"></div>
@@ -787,7 +789,7 @@ function HowItWorksSection() {
       number: 1,
       icon: Lock,
       title: "Get Access",
-      description: "Purchase the $495 DIY system\nand receive immediate access\nto the launch resources.",
+      description: "Purchase the $295 DIY system\nand receive immediate access\nto the launch resources.",
     },
     {
       number: 2,
@@ -799,7 +801,7 @@ function HowItWorksSection() {
       number: 3,
       icon: Rocket,
       title: "Build and Launch",
-      description: "Follow the step-by-step guidance\nto provide the information, service\ndetails, pricing, and branding needed\nfor your booking flow and personalized\nselling page. Prefer additional\nassistance? Add the optional $199\nWe Do It for You upgrade.",
+      description: "Follow the step-by-step guidance\nto provide the information, service\ndetails, pricing, and branding needed\nfor your booking flow and personalized\nselling page. Prefer additional\nassistance? Add the optional $99\nWe Do It for You upgrade.",
     },
   ];
 
@@ -897,22 +899,22 @@ function FaqSection() {
     {
       question: "Do I need experience with websites or technology?",
       answer:
-        "No. The $495 QuitTheApp DIY system includes step-by-step guidance for submitting your business information, setting up your booking preferences, and preparing the content needed for your personalized selling page. Prefer additional assistance? Add the optional $199 We Do It for You upgrade, and our team will handle the additional setup work for you.",
+        "No. The $295 QuitTheApp DIY system includes step-by-step guidance for submitting your business information, setting up your booking preferences, and preparing the content needed for your personalized selling page. Prefer additional assistance? Add the optional $99 We Do It for You upgrade, and our team will handle the additional setup work for you.",
     },
     {
       question: "How quickly can I get my system?",
       answer:
-        "Launch timing depends on how quickly you complete the setup steps and provide the required business information. Customers who purchase the optional $199 We Do It for You upgrade will receive a separate setup timeline after all required information is submitted.",
+        "Launch timing depends on how quickly you complete the setup steps and provide the required business information. Customers who purchase the optional $99 We Do It for You upgrade will receive a separate setup timeline after all required information is submitted.",
     },
     {
-      question: "Is the $495 really a one-time payment?",
+      question: "Is the $295 really a one-time payment?",
       answer:
-        "Yes. The $495 QuitTheApp DIY system is a one-time payment with no monthly QuitTheApp platform fee. An optional $199 We Do It for You upgrade is available. Normal business expenses such as scheduling software, domain registration, payment processing, commercial insurance, licensing, fuel, vehicle maintenance, and other operating costs may still apply.",
+        "Yes. The $295 QuitTheApp DIY system is a one-time payment with no monthly QuitTheApp platform fee. An optional $99 We Do It for You upgrade is available. Normal business expenses such as scheduling software, domain registration, payment processing, commercial insurance, licensing, fuel, vehicle maintenance, and other operating costs may still apply.",
     },
     {
       question: "Is my personalized webpage and hosting included?",
       answer:
-        "Yes. QuitTheApp builds and hosts your personalized selling page. Customers using the $495 DIY system provide their business information and follow the guided setup process. Customers who purchase the optional $199 We Do It for You upgrade receive additional setup assistance from our team. Separate third-party business expenses may still apply.",
+        "Yes. QuitTheApp builds and hosts your personalized selling page. Customers using the $295 DIY system provide their business information and follow the guided setup process. Customers who purchase the optional $99 We Do It for You upgrade receive additional setup assistance from our team. Separate third-party business expenses may still apply.",
     },
     // Row 2
     {
@@ -1029,14 +1031,18 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
           <div className="lg:w-1/3 flex flex-col justify-center">
             <div className="flex flex-col mb-4">
               <div className="flex items-baseline gap-3 flex-wrap">
-                <span className="text-[clamp(2.5rem,4vw,3rem)] font-bold text-[#39b54a]">$495</span>
+                <LaunchPrice
+                  priceClassName="text-[clamp(2.5rem,4vw,3rem)] text-[#39b54a]"
+                  oldClassName="text-slate-400"
+                  labelClassName="text-[#39b54a]"
+                />
                 <span className="text-white font-bold text-lg">
                   One-time payment
                 </span>
               </div>
               <span className="text-slate-300 text-sm mt-2 leading-snug max-w-[280px]">
                 Includes the complete QuitTheApp DIY launch system and personalized driver selling page.<br />
-                <span className="mt-2 block font-medium">Optional $199 We Do It for You upgrade available.</span>
+                <span className="mt-2 block font-medium">Optional {LAUNCH_PRICING.addon} We Do It for You upgrade available.</span>
               </span>
             </div>
             <ul className="space-y-2 mt-2">
@@ -1072,7 +1078,7 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
                 className="cursor-pointer w-full bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-4 px-6 rounded-lg transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-between group text-base sm:text-lg mb-4 min-h-[56px]"
               >
                 <span className="text-center w-full">
-                  Start My Private Airport Business™ — $495
+                  Start My Private Airport Business™ — $295
                 </span>
                 <div className="bg-white rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
                   <ArrowRight className="w-5 h-5 text-[#16a34a] stroke-[3]" />
@@ -1084,7 +1090,7 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
                 className="cursor-pointer w-full bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-4 px-6 rounded-lg transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-between group text-base sm:text-lg mb-4 min-h-[56px]"
               >
                 <span className="text-center w-full">
-                  Start My Private Airport Business™ — $495
+                  Start My Private Airport Business™ — $295
                 </span>
                 <div className="bg-white rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
                   <ArrowRight className="w-5 h-5 text-[#16a34a] stroke-[3]" />

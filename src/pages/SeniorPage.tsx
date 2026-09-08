@@ -31,6 +31,8 @@ import chrisImage from "../assets/50_Chris_S.jpg";
 import dougImage from "../assets/50_Doug_L.jpg";
 import naylinImage from "../assets/50_Naylin_H.jpg";
 import { PaymentBadges } from "../components/common/PaymentBadges";
+import { LaunchPrice } from "../components/marketing/LaunchPrice";
+import { LAUNCH_PRICING } from "../components/marketing/pricing";
 import seniorHero from "../assets/seniorHero.png";
 import upsellKit from "../assets/50_ Done-for-You_upsell_kit.png";
 
@@ -148,7 +150,7 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
                     onClick={openPricingModal}
                     className="cursor-pointer bg-[#15803d] hover:bg-[#166534] text-white font-bold py-2.5 px-6 rounded-md transition-colors text-sm shadow-lg"
                   >
-                    Start My Private Airport Business™ — $495
+                    Start My Private Transportation Business™ — $295
                   </button>
                 </>
               )}
@@ -264,7 +266,7 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
                 }}
                 className="cursor-pointer bg-[#15803d] hover:bg-[#166534] text-white font-bold py-3 px-6 rounded-md transition-colors w-full mt-4 min-h-[52px]"
               >
-                Start My Private Airport Business™ — $495
+                Start My Private Transportation Business™ — $295
               </button>
             </>
           )}
@@ -292,7 +294,7 @@ function HeroBanner() {
           <img
             src={seniorHero}
             alt="Phone concept mobile"
-            className="block lg:hidden absolute inset-0 w-full h-full object-cover object-[center_top] pointer-events-none"
+            className="block lg:hidden absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
           />
         </div>
       </div>
@@ -305,7 +307,7 @@ function HeroBanner() {
             {/* Left Content */}
             <div className="w-full lg:w-[50%] text-center lg:text-left">
               <h1 className="text-[clamp(1.75rem,3vw,2.5rem)] font-extrabold text-white leading-[1.1] mb-5 tracking-tight uppercase">
-                START A PRIVATE AIRPORT
+                START A PRIVATE TRANSPORTATION
                 <br />
                 BUSINESS THAT WORKS
                 <br />
@@ -314,7 +316,7 @@ function HeroBanner() {
                 <span className="text-[#39b54a] block mt-1">NOT SOMEONE ELSE'S.</span>
               </h1>
               <p className="text-[clamp(0.95rem,1.1vw,1.1rem)] text-white font-medium mb-6 max-w-[650px] leading-relaxed tracking-wide mx-auto lg:mx-0">
-                QuitTheApp helps experienced drivers launch their own private airport transportation business, accept direct bookings, build trusted client relationships, and create repeat riders and referrals.
+                QuitTheApp helps people 50+ launch their own private transportation business, accept direct bookings, build trusted client relationships, and create repeat riders and referrals.
               </p>
               <ul className="space-y-3 max-w-[500px] mx-auto lg:mx-0">
                 {[
@@ -440,7 +442,7 @@ const features = [
     icon: CalendarDays,
     title: "Quick Launch Booking System™",
     description:
-      "Create a professional booking flow that allows clients to request private airport transportation directly from your business.",
+      "Create a professional booking flow that allows clients to request private transportation directly from your business.",
   },
   {
     icon: Users,
@@ -458,7 +460,7 @@ const features = [
     icon: RefreshCcw,
     title: "Repeat Rider Engine™",
     description:
-      "Follow up, request reviews, encourage referrals, and turn successful airport rides into repeat bookings.",
+      "Follow up, request reviews, encourage referrals, and turn successful rides into repeat bookings.",
   },
 ];
 
@@ -595,7 +597,7 @@ function HowItWorksSection() {
       number: 1,
       icon: Lock,
       title: "Get Access",
-      description: "Purchase the $495 DIY system\nand receive immediate access\nto the launch resources.",
+      description: "Purchase the $295 DIY system\nand receive immediate access\nto the launch resources.",
     },
     {
       number: 2,
@@ -609,7 +611,7 @@ function HowItWorksSection() {
       icon: Rocket,
       title: "Build and Launch",
       description:
-        "Follow the step-by-step guidance\nto create your booking flow and\npersonalized selling page. Want\nhelp getting launch ready? Add\nthe optional $199 Done For You\nLaunch Upgrade.",
+        "Follow the step-by-step guidance\nto create your booking flow and\npersonalized selling page. Want\nhelp getting launch ready? Add\nthe optional $99 Done For You\nLaunch Upgrade.",
     },
   ];
 
@@ -695,19 +697,19 @@ function ProvenModelAndFaqSection() {
   const faqs = [
     {
       question: "Do I need rideshare or transportation experience?",
-      answer: "No. The $495 QuitTheApp system includes step-by-step guidance so you can complete the setup yourself. Prefer to have everything handled for you? Add the optional $199 We Do It for You upgrade, and our team will complete the setup."
+      answer: "No. The $295 QuitTheApp system includes step-by-step guidance so you can complete the setup yourself. Prefer to have everything handled for you? Add the optional $99 We Do It for You upgrade, and our team will complete the setup."
     },
     {
       question: "Do I need experience with websites or technology?",
-      answer: "No. The $495 QuitTheApp system includes step-by-step guidance so you can complete the setup yourself. Prefer to have everything handled for you? Add the optional $199 We Do It for You upgrade, and our team will complete the setup."
+      answer: "No. The $295 QuitTheApp system includes step-by-step guidance so you can complete the setup yourself. Prefer to have everything handled for you? Add the optional $99 We Do It for You upgrade, and our team will complete the setup."
     },
     {
       question: "How quickly can I get my system?",
-      answer: "Launch timing depends on how quickly you complete the setup steps and provide the required business information. Customers who purchase the optional $199 We Do It for You upgrade will receive a separate setup timeline after all required details are submitted."
+      answer: "Launch timing depends on how quickly you complete the setup steps and provide the required business information. Customers who purchase the optional $99 We Do It for You upgrade will receive a separate setup timeline after all required details are submitted."
     },
     {
-      question: "Is the $495 really a one-time payment?",
-      answer: "Yes. The $495 QuitTheApp DIY system is a one-time payment with no monthly QuitTheApp platform fee. An optional $199 We Do It for You upgrade is available. Normal business expenses such as scheduling software, payment processing, commercial insurance, licensing, fuel, vehicle maintenance, and other operating costs may still apply."
+      question: "Is the $295 really a one-time payment?",
+      answer: "Yes. The $295 QuitTheApp DIY system is a one-time payment with no monthly QuitTheApp platform fee. An optional $99 We Do It for You upgrade is available. Normal business expenses such as scheduling software, payment processing, commercial insurance, licensing, fuel, vehicle maintenance, and other operating costs may still apply."
     },
     {
       question: "What if I'm not in a major city?",
@@ -719,7 +721,7 @@ function ProvenModelAndFaqSection() {
     },
     {
       question: "What if it doesn't work for me?",
-      answer: "QuitTheApp was created from real experience building and operating a private airport transportation business since 2016. Results depend on your market, pricing, effort, expenses, and ability to attract clients. Our team provides support to help you understand and use the system."
+      answer: "QuitTheApp was created from real experience building and operating a private transportation business since 2016. Results depend on your market, pricing, effort, expenses, and ability to attract clients. Our team provides support to help you understand and use the system."
     }
   ];
 
@@ -731,7 +733,7 @@ function ProvenModelAndFaqSection() {
           {/* Left Side: Proven Model */}
           <div className="w-full lg:w-[65%] border border-slate-200 rounded-[1.5rem] p-6 lg:p-8 shadow-sm flex flex-col">
             <h2 className="text-[1.1rem] sm:text-lg font-extrabold text-[#1a1f71] mb-6 uppercase tracking-wide leading-snug">
-              START WITH A PROVEN <br className="hidden sm:block" /> AIRPORT TRANSPORTATION MODEL
+              START WITH A PROVEN <br className="hidden sm:block" /> PRIVATE TRANSPORTATION MODEL
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-6">
               {models.map((model, idx) => (
@@ -810,14 +812,18 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
           {/* Middle Column */}
           <div className="flex flex-col justify-center lg:border-l border-slate-800 lg:pl-10">
             <div className="flex items-baseline gap-3 mb-2">
-              <span className="text-[2.5rem] font-bold text-[#39b54a] tracking-tight">$495</span>
+              <LaunchPrice
+                priceClassName="text-[2.5rem] text-[#39b54a] tracking-tight"
+                oldClassName="text-slate-400"
+                labelClassName="text-[#39b54a]"
+              />
               <span className="text-white font-bold text-base">One-time payment</span>
             </div>
             <p className="text-slate-300 text-sm mb-1 font-medium">
               Includes the complete QuitTheApp DIY launch system.
             </p>
             <p className="text-slate-300 text-sm mb-5 font-medium">
-              Want help getting launch ready? Add the <span className="text-[#39b54a] font-bold">$199 Done For You Launch Upgrade.</span>
+              Want help getting launch ready? Add the <span className="text-[#39b54a] font-bold">{LAUNCH_PRICING.addon} Done For You Launch Upgrade.</span>
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4">
               {benefits.map((benefit, i) => (
@@ -844,9 +850,6 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
             </button>
             <div className="w-full flex justify-center lg:justify-end mb-2">
               <PaymentBadges justify="center" />
-            </div>
-            <div className="w-full text-center lg:text-right mt-1">
-              <span className="text-slate-500 text-[11px] font-medium">Secure payment processed by <strong className="text-slate-400 font-bold">stripe</strong></span>
             </div>
           </div>
         </div>

@@ -4,6 +4,8 @@ import { useCreateRiderCheckoutSessionMutation } from "../store/api/Payment/paym
 import { writeStorageValue, storageKeys } from "../lib/storage";
 import { readMarketingOverlayState, setMarketingOverlayState } from "../lib/marketingOverlay";
 import { Loader2, X, Check, AlertTriangle, Rocket, Users, Download, Share, Eye, ZoomIn, ZoomOut } from "lucide-react";
+import { LaunchPrice } from "./marketing/LaunchPrice";
+import { LAUNCH_PRICING } from "./marketing/pricing";
 
 interface PricingModalProps {
   onClose: () => void;
@@ -170,7 +172,11 @@ export function PricingModal({ onClose, upsellKitImageSrc }: PricingModalProps) 
               </div>
 
               <div className="mb-4">
-                <span className="text-4xl font-extrabold text-white">$495</span>
+                <LaunchPrice
+                  priceClassName="text-4xl text-white"
+                  oldClassName="text-slate-400"
+                  labelClassName="text-cyan-400"
+                />
                 <span className="text-slate-400 text-sm ml-1">one-time</span>
               </div>
 
@@ -200,7 +206,7 @@ export function PricingModal({ onClose, upsellKitImageSrc }: PricingModalProps) 
                 {isLoading && selectedPlan === "base" ? (
                   <Loader2 className="size-4 animate-spin" />
                 ) : null}
-                Get Started — $495
+                Get Started — {LAUNCH_PRICING.base}
               </button>
             </div>
 
@@ -228,10 +234,16 @@ export function PricingModal({ onClose, upsellKitImageSrc }: PricingModalProps) 
               </div>
 
               <div className="mb-1">
-                <span className="text-4xl font-extrabold text-white">$694</span>
+                <LaunchPrice
+                  oldPrice={LAUNCH_PRICING.bundleOld}
+                  price={LAUNCH_PRICING.bundle}
+                  priceClassName="text-4xl text-white"
+                  oldClassName="text-slate-400"
+                  labelClassName="text-[#04B5A3]"
+                />
                 <span className="text-slate-400 text-sm ml-1">one-time</span>
               </div>
-              <p className="text-xs text-slate-500 mb-4">$495 base + $199 add-on</p>
+              <p className="text-xs text-slate-500 mb-4">{LAUNCH_PRICING.base} base + {LAUNCH_PRICING.addon} add-on</p>
 
               <ul className="space-y-2 mb-6 flex-1">
                 {[
@@ -259,7 +271,7 @@ export function PricingModal({ onClose, upsellKitImageSrc }: PricingModalProps) 
                 {isLoading && selectedPlan === "bundle" ? (
                   <Loader2 className="size-4 animate-spin" />
                 ) : null}
-                Get Started — $694
+                Get Started — {LAUNCH_PRICING.bundle}
               </button>
               <button
                 onClick={() => setShowUpsell(true)}
@@ -268,6 +280,9 @@ export function PricingModal({ onClose, upsellKitImageSrc }: PricingModalProps) 
                 <Eye className="size-4" />
                 View Add-on Details
               </button>
+              <p className="text-center text-xs font-semibold uppercase tracking-wide text-[#04B5A3]">
+                Upsell Kit
+              </p>
 
             </div>
           </div>
