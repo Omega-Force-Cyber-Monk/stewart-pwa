@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { CheckCircle2, Gift, X, Phone, MapPin, User, Mail, Lock, Loader2 } from "lucide-react";
 import type { ExitIntentRouteConfig } from "./exitIntentConfig";
 import { ENGLISH_CONSENT_TEXT, SPANISH_CONSENT_TEXT, normalizeCity, normalizeConsent, normalizeUsPhone, CONSENT_TEXT_VERSION } from "./exitIntentLogic";
+import { ENGLISH_CONSENT_TEXT, SPANISH_CONSENT_TEXT, normalizeCity, normalizeConsent, normalizeUsPhone, CONSENT_TEXT_VERSION } from "./exitIntentLogic";
 import { useCreatePublicLeadMutation } from "../../../store/api/Business/business.api";
+import { getOrCreateMarketingSessionId } from "../../../lib/storage";
 import { getOrCreateMarketingSessionId } from "../../../lib/storage";
 
 interface ExitIntentPopupProps {
@@ -32,7 +34,10 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
   }, [onClose]);
 
   const submitLead = async () => {
+  const submitLead = async () => {
     const isSpanish = config.locale === "es";
+    const normalizedPhone = normalizeUsPhone(phone);
+
     const normalizedPhone = normalizeUsPhone(phone);
 
     let normalizedCity = "";
@@ -40,10 +45,16 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
       normalizedCity = normalizeCity(city);
       if (!normalizedCity) {
         throw new Error(isSpanish ? "Se requiere la ciudad." : "City is required.");
+        throw new Error(isSpanish ? "Se requiere la ciudad." : "City is required.");
       }
     }
 
     if (!normalizeConsent(consent)) {
+      throw new Error(
+        isSpanish
+          ? "Acepta recibir mensajes de texto."
+          : "Please agree to receive text messages related to your request."
+      );
       throw new Error(
         isSpanish
           ? "Acepta recibir mensajes de texto."
@@ -85,7 +96,47 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
 
     try {
       await submitLead();
+    const payload = {
+      phone: normalizedPhone,
+      city: config.fields.includes("city") ? normalizedCity : undefined,
+      name: config.fields.includes("name") ? name.trim() : undefined,
+      email: config.fields.includes("email") ? email.trim() : undefined,
+      sourcePage: config.sourcePage,
+      sessionId: getOrCreateMarketingSessionId() || crypto.randomUUID(),
+      smsConsent: true as const,
+      consentTextVersion: CONSENT_TEXT_VERSION,
+      referrer: document.referrer || null,
+      utmSource: null,
+      utmMedium: null,
+      utmCampaign: null,
+      utmTerm: null,
+      utmContent: null,
+    };
+
+    try {
+      await createPublicLead(payload).unwrap();
+    } catch (apiError: unknown) {
+      const errorData = (apiError as { data?: { message?: string | string[]; error?: string } })?.data || (apiError as { message?: string | string[]; error?: string });
+      const message = Array.isArray(errorData?.message)
+        ? errorData.message.join(" ")
+        : errorData?.message || errorData?.error || "Unable to submit the form.";
+      throw new Error(message, { cause: apiError });
+    }
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setValidationError(null);
+
+    try {
+      await submitLead();
       setSubmitted(true);
+    } catch (error) {
+      setValidationError(
+        error instanceof Error
+          ? error.message
+          : "Unable to submit the form."
+      );
     } catch (error) {
       setValidationError(
         error instanceof Error
@@ -164,6 +215,8 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
                       </div>
                       <input
                         type="tel"
+                        inputMode="tel"
+                        autoComplete="tel-national"
                         inputMode="tel"
                         autoComplete="tel-national"
                         required
