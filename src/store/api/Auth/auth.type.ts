@@ -58,6 +58,7 @@ export interface RefreshTokenResponse {
     success: boolean;
     accessToken: string;
     refreshToken: string;
+    user?: User;
 }
 
 export interface LogoutResponse {
@@ -107,7 +108,7 @@ export interface MeResponse {
 
 export interface UpdateProfileRequest {
     name?: string;
-    phone?: string;
+    phone?: string | null;
 }
 
 export interface ChangeEmailRequest {
@@ -138,6 +139,7 @@ export interface ConfirmEmailChangeResponse {
 export interface UploadAvatarResponse {
     success: boolean;
     avatarUrl: string;
+    user?: User;
 }
 
 export interface ChangePasswordRequest {
@@ -150,4 +152,3 @@ export interface ChangePasswordResponse {
     success: boolean;
     message: string;
 }
-

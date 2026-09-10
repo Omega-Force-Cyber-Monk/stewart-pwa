@@ -1,10 +1,32 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useLoginUserMutation } from "../../store/api/Auth/auth.api";
 import { useAppDispatch } from "../../hooks/storeHooks";
 import { setCredentials } from "../../store/features/auth/authSlice";
 import { AuthLayout } from "../../components/layout/AuthLayout";
 import { Loader2, Mail, Lock, Eye, EyeOff, AlertTriangle } from "lucide-react";
+
+function getSafeRedirect(value: string | null) {
+  if (!value || !value.startsWith("/") || value.startsWith("//")) {
+    return "/dashboard";
+  }
+
+  if (value === "/login" || value.startsWith("/login?")) {
+    return "/dashboard";
+  }
+
+  return value;
+}
+
+function isUnverifiedAccountError(error: unknown) {
+  if (!error || typeof error !== "object" || !("data" in error)) {
+    return false;
+  }
+
+  const data = (error as { data?: { message?: string | string[] } }).data;
+  const message = Array.isArray(data?.message) ? data.message[0] : data?.message;
+  return message === "Account is not verified.";
+}
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -14,6 +36,7 @@ export default function LoginPage() {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [loginUser, { isLoading, error }] = useLoginUserMutation();
 
@@ -36,16 +59,19 @@ export default function LoginPage() {
             user: result.user,
           })
         );
-        // Admins go to the admin dashboard; riders are routed by the
-        // DashboardLayout guard (purchase state comes from the backend),
-        // so send everyone to /dashboard and let the guard decide.
+        // Admins go to the admin dashboard; riders are routed by the shared
+        // rider guard using backend-owned payment and onboarding state.
         if (result.user?.role === "admin") {
           navigate("/admin");
         } else {
-          navigate("/dashboard");
+          navigate(getSafeRedirect(searchParams.get("redirect")));
         }
       }
     } catch (err) {
+      if (isUnverifiedAccountError(err)) {
+        navigate(`/signup?step=verify-otp&email=${encodeURIComponent(email.trim().toLowerCase())}`);
+        return;
+      }
       console.error("Login failed:", err);
     }
   };

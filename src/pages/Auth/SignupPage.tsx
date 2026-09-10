@@ -13,17 +13,20 @@ import { removeStorageValue, storageKeys } from "../../lib/storage";
 type SignupStep = "register" | "verify-otp" | "success";
 
 export default function SignupPage() {
-  const [step, setStep] = useState<SignupStep>("register");
-
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id");
+  const emailParam = searchParams.get("email")?.trim().toLowerCase() || "";
+  const requestedStep = searchParams.get("step");
+  const [step, setStep] = useState<SignupStep>(
+    requestedStep === "verify-otp" && emailParam ? "verify-otp" : "register",
+  );
 
   useEffect(() => {
     if (sessionId) removeStorageValue(storageKeys.abandonedCheckout);
   }, [sessionId]);
 
   // Registration form state
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(emailParam);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -40,6 +43,14 @@ export default function SignupPage() {
   const [registerRider, { isLoading: isRegistering, error: registerError }] = useRegisterRiderMutation();
   const [verifyOtp, { isLoading: isVerifying, error: verifyError }] = useVerifyRegistrationOtpMutation();
   const [resendOtp, { isLoading: isResending, error: resendError }] = useResendRegistrationOtpMutation();
+
+  useEffect(() => {
+    if (!emailParam) return;
+    setEmail(emailParam);
+    if (requestedStep === "verify-otp") {
+      setStep("verify-otp");
+    }
+  }, [emailParam, requestedStep]);
 
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,6 +104,10 @@ export default function SignupPage() {
 
   const handleResendOtp = async () => {
     setValidationError("");
+    if (!email.trim()) {
+      setValidationError("Please enter your email address before requesting a new OTP.");
+      return;
+    }
     try {
       const result = await resendOtp({ email }).unwrap();
       if (result.success) {

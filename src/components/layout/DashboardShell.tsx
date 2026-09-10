@@ -21,7 +21,6 @@ import { cn } from "../../lib/cn";
 import { useAppDispatch, useAppSelector } from "../../hooks/storeHooks";
 import { logOut } from "../../store/features/auth/authSlice";
 import { useLogoutUserMutation } from "../../store/api/Auth/auth.api";
-import { useGetRiderDashboardQuery } from "../../store/api/Business/business.api";
 import { LogoutModal } from "../admin/LogoutModal";
 
 export type DashboardShellVariant = "rider" | "admin";
@@ -40,6 +39,7 @@ const riderSections: Array<{ title: string; items: NavigationItem[] }> = [
       { name: "Booking & Referral Card", path: "/booking-referral-card", icon: CalendarDays },
       { name: "Selling Page", path: "/selling-page", icon: Globe },
       { name: "Resources & Guide", path: "/resources-guide", icon: BookOpen },
+      { name: "Support", path: "/support", icon: LifeBuoy },
     ],
   },
   {
@@ -89,15 +89,7 @@ export function DashboardShell({ children, title = "Dashboard Overview", variant
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [logoutUser] = useLogoutUserMutation();
-  const { user, accessToken } = useAppSelector((state) => state.auth);
-  const riderDashboard = useGetRiderDashboardQuery(undefined, { skip: variant !== "rider" || !accessToken });
-
-  useEffect(() => {
-    if (variant !== "rider" || !accessToken || riderDashboard.isLoading) return;
-    if (riderDashboard.error && location.pathname !== "/launch-dashboard") {
-      navigate("/?showPricing=true", { replace: true });
-    }
-  }, [accessToken, location.pathname, navigate, riderDashboard.error, riderDashboard.isLoading, variant]);
+  const { user } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     setIsMobileMenuOpen(false);

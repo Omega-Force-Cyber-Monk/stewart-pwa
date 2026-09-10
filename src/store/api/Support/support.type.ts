@@ -3,6 +3,11 @@ export interface CreateSupportTicketRequest {
   message: string;
 }
 
+export interface ReplySupportTicketRequest {
+  id: string;
+  message: string;
+}
+
 export interface SupportMessage {
   id: string;
   ticketId: string;
@@ -29,4 +34,14 @@ export interface CreateSupportTicketResponse {
 export interface MyTicketsResponse {
   success: boolean;
   tickets: RiderTicket[];
+}
+
+export interface MyTicketResponse {
+  success: boolean;
+  ticket: RiderTicket;
+}
+
+export interface ReplySupportTicketResponse {
+  success: boolean;
+  message: SupportMessage;
 }

@@ -85,6 +85,7 @@ export const authApi = baseApi.injectEndpoints({
     }),
     getRiderProfile: builder.query<MeResponse, void>({
       query: () => "/auth/me",
+      providesTags: ["User"],
     }),
     updateRiderProfile: builder.mutation<MeResponse, UpdateProfileRequest>({
       query: (body) => ({
@@ -92,6 +93,7 @@ export const authApi = baseApi.injectEndpoints({
         method: "PATCH",
         body,
       }),
+      invalidatesTags: ["User"],
     }),
     requestRiderEmailChange: builder.mutation<ChangeEmailResponse, ChangeEmailRequest>({
       query: (body) => ({
@@ -113,6 +115,7 @@ export const authApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
+      invalidatesTags: ["User"],
     }),
     changeRiderPassword: builder.mutation<ChangePasswordResponse, ChangePasswordRequest>({
       query: (body) => ({

@@ -1,8 +1,8 @@
-import { useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Copy, Share2, Download, ImagePlus, X, Loader2, Pencil, Eye, EyeOff } from "lucide-react";
-import { useAppDispatch } from "../hooks/storeHooks";
-import { logOut } from "../store/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "../hooks/storeHooks";
+import { logOut, updateUser } from "../store/features/auth/authSlice";
 import {
   useGetRiderProfileQuery,
   useUpdateRiderProfileMutation,
@@ -33,9 +33,21 @@ const getApiErrorMessage = (err: unknown, fallback: string): string => {
   return fallback;
 };
 
+const formatMemberSince = (iso?: string | null) => {
+  if (!iso) return "Not available";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "Not available";
+  return date.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+};
+
 export default function ProfileSettingsPage() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const authUser = useAppSelector((state) => state.auth.user);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const businessLogoInputRef = useRef<HTMLInputElement>(null);
 
@@ -80,8 +92,8 @@ export default function ProfileSettingsPage() {
 
   // Form States
   const [profileForm, setProfileForm] = useState(() => ({
-    name: profileResponse?.user?.name || "",
-    phone: profileResponse?.user?.phone || "",
+    name: "",
+    phone: "",
   }));
 
   const [passwordForm, setPasswordForm] = useState({
@@ -102,6 +114,23 @@ export default function ProfileSettingsPage() {
 
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const user = profileResponse?.user ?? authUser;
+
+  useEffect(() => {
+    if (!user || isEditInfoModalOpen) return;
+    setProfileForm({
+      name: user.name || "",
+      phone: user.phone || "",
+    });
+  }, [isEditInfoModalOpen, user]);
+
+  const openProfileEditModal = () => {
+    setProfileForm({
+      name: user?.name || "",
+      phone: user?.phone || "",
+    });
+    setIsEditInfoModalOpen(true);
+  };
 
   const openBusinessEditModal = () => {
     const setup = setupResponse?.data;
@@ -210,8 +239,14 @@ export default function ProfileSettingsPage() {
       formData.append("file", file);
       const res = await uploadAvatar(formData).unwrap();
       if (res.success) {
+        if (res.user) {
+          dispatch(updateUser(res.user));
+        } else if (user) {
+          dispatch(updateUser({ ...user, avatarUrl: res.avatarUrl }));
+        }
         setIsUploadModalOpen(false);
         refetchProfile();
+        showAlert("Profile Image Updated", "Your profile image was updated successfully.", "success");
       }
     } catch (err) {
       console.error(err);
@@ -221,14 +256,29 @@ export default function ProfileSettingsPage() {
 
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const name = profileForm.name.trim();
+    const phone = profileForm.phone.trim();
+
+    if (!name) {
+      showAlert("Missing Information", "Full name is required.", "error");
+      return;
+    }
+
+    if (phone && !/^[+\d][\d\s().-]{6,39}$/.test(phone)) {
+      showAlert("Invalid Phone Number", "Enter a valid phone number.", "error");
+      return;
+    }
+
     try {
       const res = await updateProfile({
-        name: profileForm.name,
-        phone: profileForm.phone,
+        name,
+        phone: phone || null,
       }).unwrap();
       if (res.success) {
+        dispatch(updateUser(res.user));
         setIsEditInfoModalOpen(false);
         refetchProfile();
+        showAlert("Profile Updated", "Your personal information was updated successfully.", "success");
       }
     } catch (err) {
       console.error(err);
@@ -277,15 +327,13 @@ export default function ProfileSettingsPage() {
     }
   };
 
-  if (isLoadingProfile) {
+  if (isLoadingProfile && !user) {
     return (
       <div className="flex h-[50svh] items-center justify-center">
         <Loader2 className="w-8 h-8 text-green-500 animate-spin" />
       </div>
     );
   }
-
-  const user = profileResponse?.user;
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto w-full relative animate-fade-in">
@@ -307,13 +355,13 @@ export default function ProfileSettingsPage() {
               <h3 className="text-[16px] font-bold text-slate-900">Personal Information</h3>
               <div className="text-right">
                 <p className="text-[12px] text-slate-400 mb-0.5">Member since</p>
-                <p className="text-[14px] font-medium text-slate-700">5 April, 2026</p>
+                <p className="text-[14px] font-medium text-slate-700">{formatMemberSince(user?.createdAt)}</p>
               </div>
             </div>
 
             <div className="flex flex-col 2xl:flex-row items-center 2xl:items-start gap-8">
 
-              <div className="relative shrink-0">
+	              <div className="relative shrink-0">
                 <img
                   src={user?.avatarUrl || eleanorAvatar}
                   alt={user?.name ?? "Profile avatar"}
@@ -343,10 +391,10 @@ export default function ProfileSettingsPage() {
               </div>
 
               <div className="shrink-0 mt-4 2xl:mt-0 2xl:absolute 2xl:bottom-8 2xl:right-8 w-full 2xl:w-auto">
-                <button
-                  onClick={() => setIsEditInfoModalOpen(true)}
-                  className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-5 py-2.5 rounded-lg font-bold text-[13px] transition-colors shadow-sm w-full 2xl:w-auto text-center"
-                >
+	                <button
+	                  onClick={openProfileEditModal}
+	                  className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-5 py-2.5 rounded-lg font-bold text-[13px] transition-colors shadow-sm w-full 2xl:w-auto text-center"
+	                >
                   Edit Information
                 </button>
               </div>
@@ -795,11 +843,10 @@ export default function ProfileSettingsPage() {
                 <input
                   type="tel"
                   id="editPhone"
-                  value={profileForm.phone}
-                  onChange={(e) => setProfileForm(prev => ({ ...prev, phone: e.target.value }))}
-                  required
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-[14px] font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-colors"
-                />
+	                  value={profileForm.phone}
+	                  onChange={(e) => setProfileForm(prev => ({ ...prev, phone: e.target.value }))}
+	                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-[14px] font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-colors"
+	                />
               </div>
             </div>
 
