@@ -1,4 +1,5 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { useEffect } from "react";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import HomePage from "../pages/HomePage";
 import SpanishPage from "../pages/SpanishPage";
 import WomenPage from "../pages/WomenPage";
@@ -10,6 +11,7 @@ import SellingPage from "../pages/SellingPage";
 import ResourcesAndGuidesPage from "../pages/ResourcesAndGuidesPage";
 import ProfileSettingsPage from "../pages/ProfileSettingsPage";
 import PaymentBillingPage from "../pages/PaymentBillingPage";
+import SupportPage from "../pages/SupportPage";
 import DashboardPage from "../pages/DashboardPage";
 import { DashboardLayout } from "../components/layout/DashboardLayout";
 import { AdminDashboardLayout } from "../components/layout/AdminDashboardLayout";
@@ -27,8 +29,14 @@ import SignupPage from "../pages/Auth/SignupPage";
 import ForgotPasswordPage from "../pages/Auth/ForgotPasswordPage";
 import ResetPasswordPage from "../pages/Auth/ResetPasswordPage";
 import PaymentSuccessPage from "../pages/PaymentSuccessPage";
+import NotFoundPage from "../pages/NotFoundPage";
 import RiderWebsitePage from "../pages/PersonalizeWebsite/RiderWebsitePage";
 import { resolveBusinessHost } from "../lib/businessHost";
+import { useAppDispatch, useAppSelector } from "../hooks/storeHooks";
+import { useGetRiderProfileQuery } from "../store/api/Auth/auth.api";
+import { useGetRiderDashboardQuery } from "../store/api/Business/business.api";
+import { updateUser } from "../store/features/auth/authSlice";
+import { LoadingScreen } from "../components/ui/LoadingScreen";
 
 const publicBusinessDomain =
   import.meta.env.VITE_PUBLIC_BUSINESS_DOMAIN || "quittheapp.com";
@@ -45,7 +53,7 @@ export function AppRouter() {
     return (
       <Routes>
         <Route path="/" element={<RiderWebsitePage slug={slug} />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     );
   }
@@ -56,13 +64,14 @@ export function AppRouter() {
       <Route path="/couple" element={<CouplePage />} />
       <Route path="/senior" element={<SeniorPage />} />
 
-      <Route path="/dashboard" element={<DashboardLayout><DashboardPage /></DashboardLayout>} />
-      <Route path="/booking-referral-card" element={<DashboardLayout title="Booking & Referral Card"><BookingReferralCardPage /></DashboardLayout>} />
-      <Route path="/selling-page" element={<DashboardLayout title="Selling Page"><SellingPage /></DashboardLayout>} />
-      <Route path="/resources-guide" element={<DashboardLayout title="Resources & Guide"><ResourcesAndGuidesPage /></DashboardLayout>} />
-      <Route path="/payment-billing" element={<DashboardLayout title="Payment & Billing"><PaymentBillingPage /></DashboardLayout>} />
-      <Route path="/profile-settings" element={<DashboardLayout title="Profile & Settings"><ProfileSettingsPage /></DashboardLayout>} />
-      <Route path="/launch-dashboard" element={<DashboardLayout title="Launch Setup Form"><LaunchDashboardPage /></DashboardLayout>} />
+      <Route path="/dashboard" element={<RiderRoute><DashboardLayout><DashboardPage /></DashboardLayout></RiderRoute>} />
+      <Route path="/booking-referral-card" element={<RiderRoute><DashboardLayout title="Booking & Referral Card"><BookingReferralCardPage /></DashboardLayout></RiderRoute>} />
+      <Route path="/selling-page" element={<RiderRoute><DashboardLayout title="Selling Page"><SellingPage /></DashboardLayout></RiderRoute>} />
+      <Route path="/resources-guide" element={<RiderRoute><DashboardLayout title="Resources & Guide"><ResourcesAndGuidesPage /></DashboardLayout></RiderRoute>} />
+      <Route path="/support" element={<RiderRoute><DashboardLayout title="Support"><SupportPage /></DashboardLayout></RiderRoute>} />
+      <Route path="/payment-billing" element={<RiderRoute><DashboardLayout title="Payment & Billing"><PaymentBillingPage /></DashboardLayout></RiderRoute>} />
+      <Route path="/profile-settings" element={<RiderRoute><DashboardLayout title="Profile & Settings"><ProfileSettingsPage /></DashboardLayout></RiderRoute>} />
+      <Route path="/launch-dashboard" element={<RiderRoute><DashboardLayout title="Launch Setup Form"><LaunchDashboardPage /></DashboardLayout></RiderRoute>} />
 
       {/* Legacy rider paths intentionally redirect to the redesigned destinations. */}
       <Route path="/booking-system" element={<Navigate to="/booking-referral-card" replace />} />
@@ -99,8 +108,9 @@ export function AppRouter() {
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/spanish" element={<SpanishPage />} />
+      <Route path="/settings" element={<SettingsRoute />} />
       <Route path="/" element={<HomePage />} />
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
@@ -108,5 +118,78 @@ export function AppRouter() {
 function AdminRoute({ children }: { children: React.ReactNode }) {
   const isAdmin = useRequireAdmin();
   if (!isAdmin) return null;
+  return <>{children}</>;
+}
+
+function SettingsRoute() {
+  const { accessToken, user } = useAppSelector((state) => state.auth);
+
+  if (!accessToken) {
+    return <Navigate to="/login?redirect=%2Fsettings" replace />;
+  }
+
+  return <Navigate to={user?.role === "admin" ? "/admin/settings" : "/profile-settings"} replace />;
+}
+
+function RiderRoute({ children }: { children: React.ReactNode }) {
+  const location = useLocation();
+  const dispatch = useAppDispatch();
+  const { accessToken, user } = useAppSelector((state) => state.auth);
+  const isLaunchRoute = location.pathname === "/launch-dashboard";
+  const profile = useGetRiderProfileQuery(undefined, {
+    skip: !accessToken,
+  });
+  const dashboard = useGetRiderDashboardQuery(undefined, {
+    skip: !accessToken || user?.role === "admin" || user?.isVerified === false,
+  });
+  const effectiveUser = profile.data?.user ?? user;
+
+  useEffect(() => {
+    if (profile.data?.user) {
+      dispatch(updateUser(profile.data.user));
+    }
+  }, [dispatch, profile.data?.user]);
+
+  if (!accessToken) {
+    const redirect = encodeURIComponent(`${location.pathname}${location.search}`);
+    return <Navigate to={`/login?redirect=${redirect}`} replace />;
+  }
+
+  if (effectiveUser?.role === "admin") {
+    return <Navigate to="/admin" replace />;
+  }
+
+  if (effectiveUser?.isVerified === false) {
+    const email = effectiveUser.email ? `&email=${encodeURIComponent(effectiveUser.email)}` : "";
+    return <Navigate to={`/signup?step=verify-otp${email}`} replace />;
+  }
+
+  if (profile.isLoading || dashboard.isLoading) {
+    return <LoadingScreen />;
+  }
+
+  if (profile.error || dashboard.error) {
+    return <Navigate to="/login" replace />;
+  }
+
+  const purchase = dashboard.data?.purchase ?? profile.data?.purchase;
+  if (!purchase?.baseVariant) {
+    return <Navigate to="/?showPricing=true" replace />;
+  }
+
+  const businessStatus = dashboard.data?.business?.status ?? profile.data?.business?.status;
+  const onboardingComplete =
+    dashboard.data?.launchReady === true ||
+    dashboard.data?.setupProgress?.completed === true ||
+    businessStatus === "ACTIVE";
+
+  if (!onboardingComplete && !isLaunchRoute) {
+    return <Navigate to="/launch-dashboard" replace />;
+  }
+
+  if (onboardingComplete && isLaunchRoute) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   return <>{children}</>;
 }

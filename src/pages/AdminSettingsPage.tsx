@@ -54,33 +54,64 @@ function AccountSettings() {
   const fallback = useAppSelector((state) => state.auth.user);
   const { data, isLoading } = useGetRiderProfileQuery();
   const [updateProfile, { isLoading: saving }] = useUpdateRiderProfileMutation();
-  const [uploadAvatar] = useUploadAvatarMutation();
+  const [uploadAvatar, { isLoading: uploadingAvatar }] = useUploadAvatarMutation();
   const [changePassword, { isLoading: changing }] = useChangeRiderPasswordMutation();
 
   const profile = data?.user || fallback;
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   useEffect(() => {
     if (profile) {
       setName(profile.name || "");
       setEmail(profile.email || "");
+      setPhone(profile.phone || "");
     }
   }, [profile]);
 
   const saveProfile = async () => {
-    const response = await updateProfile({ name, phone: profile?.phone }).unwrap();
-    if (response.user) dispatch(updateUser(response.user));
+    setMessage(null);
+    const trimmedName = name.trim();
+    const trimmedPhone = phone.trim();
+
+    if (!trimmedName) {
+      setMessage({ type: "error", text: "Full name is required." });
+      return;
+    }
+
+    try {
+      const response = await updateProfile({
+        name: trimmedName,
+        phone: trimmedPhone || null,
+      }).unwrap();
+      if (response.user) dispatch(updateUser(response.user));
+      setMessage({ type: "success", text: "Profile information updated." });
+    } catch {
+      setMessage({ type: "error", text: "Unable to update profile information." });
+    }
   };
 
   const avatar = async (file: File) => {
+    setMessage(null);
     const form = new FormData();
     form.append("file", file);
-    await uploadAvatar(form).unwrap();
+    try {
+      const response = await uploadAvatar(form).unwrap();
+      if (response.user) {
+        dispatch(updateUser(response.user));
+      } else if (profile) {
+        dispatch(updateUser({ ...profile, avatarUrl: response.avatarUrl }));
+      }
+      setMessage({ type: "success", text: "Profile image updated." });
+    } catch {
+      setMessage({ type: "error", text: "Unable to upload profile image." });
+    }
   };
 
   if (isLoading) return <Loader2 className="mx-auto my-12 h-7 w-7 animate-spin text-blue-600" />;
@@ -123,16 +154,30 @@ function AccountSettings() {
                 className="mt-1 h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-500"
               />
             </label>
+            <label className="text-sm text-slate-500">
+              Phone Number
+              <input
+                value={phone}
+                onChange={(event) => setPhone(event.target.value)}
+                className="mt-1 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800"
+                placeholder="+1 555 123 4567"
+              />
+            </label>
           </div>
         </div>
+        {message && (
+          <p className={`mt-4 rounded-lg px-3 py-2 text-sm font-medium ${message.type === "success" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`}>
+            {message.text}
+          </p>
+        )}
         <button
           type="button"
           onClick={saveProfile}
-          disabled={saving}
-          className="mt-5 rounded-lg border border-blue-600 px-4 py-2 text-sm font-semibold text-blue-600"
+          disabled={saving || uploadingAvatar}
+          className="mt-5 rounded-lg border border-blue-600 px-4 py-2 text-sm font-semibold text-blue-600 disabled:opacity-50"
         >
-          <Save className="mr-2 inline h-4 w-4" />
-          Edit Profile
+          {saving ? <Loader2 className="mr-2 inline h-4 w-4 animate-spin" /> : <Save className="mr-2 inline h-4 w-4" />}
+          Save Profile
         </button>
       </section>
 
@@ -216,12 +261,12 @@ function AccountSettings() {
 function JsonSettings({ settingKey, label }: { settingKey: SettingKey; label: string }) {
   const { data, isLoading } = useGetAdminSettingsQuery();
   const [save, { isLoading: saving }] = useUpdateAdminSettingMutation();
-  const source = data?.settings?.[settingKey] || {};
   const [form, setForm] = useState<Record<string, string>>({});
 
   useEffect(() => {
+    const source = data?.settings?.[settingKey] || {};
     setForm(Object.fromEntries(Object.entries(source).map(([key, value]) => [key, String(value)])));
-  }, [settingKey, data, source]);
+  }, [settingKey, data]);
 
   if (isLoading) return <Loader2 className="mx-auto my-12 h-7 w-7 animate-spin text-blue-600" />;
 

@@ -37,7 +37,6 @@ export default function DashboardPage() {
   const referralData = referral?.data;
   const websiteUrl = referralData?.websiteUrl || (business?.slug ? `https://${business.slug}.quittheapp.com` : "");
   const resources = resourcesResponse?.resources ?? [];
-  const launched = business?.status === "ACTIVE";
   const firstName = (user?.name || user?.email || "").split(" ")[0];
   const airports = referralData?.serviceArea?.airports ?? [];
 
@@ -75,17 +74,7 @@ export default function DashboardPage() {
         <p className="mt-1 text-sm text-slate-500">Everything you need to launch and grow your direct booking business.</p>
       </div>
 
-      <section className="flex flex-col gap-4 rounded-2xl border border-green-300 bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h3 className="font-semibold text-slate-900">{launched ? "Your website is live" : "Please set up your launch profile"}</h3>
-          <p className="mt-1 text-sm text-slate-500">{launched ? "Your direct booking business is ready to receive customers." : "Complete the next section to keep your business launch moving forward."}</p>
-          {!launched && <Link to="/launch-dashboard" className="mt-4 inline-flex items-center gap-2 rounded-lg bg-dashboard-rider px-4 py-2.5 text-sm font-semibold text-white">Continue Launch Setup <ArrowRight className="h-4 w-4" /></Link>}
-        </div>
-        {!launched && <div className="min-w-48 text-sm"><p className="font-semibold text-slate-700">Follow just four steps</p><ul className="mt-2 list-inside list-disc text-dashboard-rider"><li>Your info</li><li>Business info</li><li>Service area</li><li>Confirm</li></ul></div>}
-      </section>
-
-      {launched && (
-        <section className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
+      <section className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
@@ -111,8 +100,7 @@ export default function DashboardPage() {
             {referralData?.qrCodeUrl ? <img src={referralData.qrCodeUrl} alt="Referral QR code" className="mx-auto mt-4 h-40 w-40" /> : <p className="mt-8 rounded-lg bg-slate-50 p-6 text-sm text-slate-500">QR code is not available yet.</p>}
             <button type="button" disabled={!referralData?.qrCodeUrl} onClick={() => referralData?.qrCodeUrl && downloadUrl(referralData.qrCodeUrl, "referral-qr.png")} className="mt-4 inline-flex items-center gap-2 rounded-lg bg-dashboard-rider px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"><Download className="h-4 w-4" />Download QR Code</button>
           </div>
-        </section>
-      )}
+      </section>
 
       <div className="grid gap-6 xl:grid-cols-[1fr_265px]">
         <section>

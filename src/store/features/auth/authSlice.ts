@@ -4,13 +4,13 @@ export interface User {
   id: string;
   email: string;
   role: string;
-  name?: string;
-  phone?: string;
+  name?: string | null;
+  phone?: string | null;
   isVerified?: boolean;
   status?: string;
   createdAt?: string;
   updatedAt?: string;
-  avatarUrl?: string;
+  avatarUrl?: string | null;
   driverProfile?: {
     category?: string;
     driverCode?: string;
@@ -75,6 +75,14 @@ const authSlice = createSlice({
         console.error("Failed to update user in localStorage:", error);
       }
     },
+    hydrateCredentials(
+      state,
+      action: PayloadAction<{ accessToken: string | null; refreshToken: string | null; user: User | null }>
+    ) {
+      state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
+      state.user = action.payload.user;
+    },
     logOut(state) {
       state.accessToken = null;
       state.refreshToken = null;
@@ -91,5 +99,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { setCredentials, updateUser, logOut } = authSlice.actions;
+export const { setCredentials, updateUser, hydrateCredentials, logOut } = authSlice.actions;
 export default authSlice.reducer;

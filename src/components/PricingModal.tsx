@@ -61,7 +61,7 @@ export function PricingModal({ onClose, upsellKitImageSrc }: PricingModalProps) 
       const result = await createCheckoutSession({
         items,
         ...(accessToken ? {} : { email }),
-        successUrl: `${window.location.origin}${accessToken ? "/payment/success" : "/signup"}?session_id={CHECKOUT_SESSION_ID}`,
+        successUrl: `${window.location.origin}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
         cancelUrl: currentUrl.toString(),
       }).unwrap();
       if (result.checkoutUrl) {

@@ -153,7 +153,7 @@ export default function LaunchDashboardPage() {
     try {
       await completeLaunch().unwrap();
       setShowSuccess(true);
-      window.setTimeout(() => navigate("/dashboard", { replace: true }), 1200);
+      window.setTimeout(() => navigate("/dashboard?onboarding=completed", { replace: true }), 1200);
     } catch (cause) {
       setError(errorMessage(cause));
     }

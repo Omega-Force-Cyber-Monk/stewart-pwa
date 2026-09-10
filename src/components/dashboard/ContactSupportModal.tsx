@@ -10,10 +10,19 @@ interface ContactSupportModalProps {
 export default function ContactSupportModal({ isOpen, onClose }: ContactSupportModalProps) {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
-  const [createTicket, { isLoading, isSuccess, isError }] =
+  const [createTicket, { isLoading, isSuccess, isError, reset }] =
     useCreateRiderSupportTicketMutation();
 
   if (!isOpen) return null;
+
+  const handleClose = () => {
+    if (!isLoading) {
+      reset();
+      setSubject("");
+      setMessage("");
+      onClose();
+    }
+  };
 
   const handleSubmit = async () => {
     if (!subject.trim() || !message.trim()) return;
@@ -47,7 +56,7 @@ export default function ContactSupportModal({ isOpen, onClose }: ContactSupportM
               <p className="text-[15px] font-semibold text-slate-900">Support ticket submitted</p>
               <p className="text-sm text-slate-500">Our team will get back to you shortly.</p>
               <button
-                onClick={() => { onClose(); }}
+                onClick={handleClose}
                 className="mt-2 px-6 py-3 rounded-xl bg-[#2ea043] hover:bg-[#238636] text-white font-bold text-[15px] transition-colors"
               >
                 Done
@@ -88,7 +97,7 @@ export default function ContactSupportModal({ isOpen, onClose }: ContactSupportM
           {!isSuccess && (
             <div className="flex items-center gap-4 mt-2">
               <button 
-                onClick={onClose}
+                onClick={handleClose}
                 disabled={isLoading}
                 className="flex-1 py-3.5 rounded-xl border border-red-400 text-red-500 font-bold text-[15px] hover:bg-red-50 transition-colors"
               >
