@@ -8,6 +8,7 @@ import { updateUser } from "../store/features/auth/authSlice";
 import standardLogo from "../assets/standardLogo.png";
 import standardBanner from "../assets/standardBanner.png";
 import { removeStorageValue, storageKeys } from "../lib/storage";
+import { trackPurchaseCompleted } from "../lib/gtmEvents";
 
 export default function PaymentSuccessPage() {
   const dispatch = useAppDispatch();
@@ -15,15 +16,17 @@ export default function PaymentSuccessPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const stripeSessionId = searchParams.get("session_id");
+  const checkoutPlan = searchParams.get("plan");
   const [confirmCheckoutSession] = useConfirmRiderCheckoutSessionMutation();
 
   useEffect(() => {
     if (!stripeSessionId) return;
+    trackPurchaseCompleted(stripeSessionId, checkoutPlan);
     removeStorageValue(storageKeys.abandonedCheckout);
 
     if (!accessToken) return;
     void confirmCheckoutSession({ stripeSessionId }).catch(() => undefined);
-  }, [accessToken, stripeSessionId, confirmCheckoutSession]);
+  }, [accessToken, stripeSessionId, checkoutPlan, confirmCheckoutSession]);
 
   useEffect(() => {
     if (!stripeSessionId || accessToken) return;

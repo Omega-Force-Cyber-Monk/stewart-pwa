@@ -24,6 +24,7 @@ import {
   useUploadBusinessLogoMutation,
 } from "../store/api/Business/business.api";
 import type { AirportSuggestion } from "../store/api/Business/business.type";
+import { trackOnboardingCompleted } from "../lib/gtmEvents";
 
 const stepTitles = ["Buyer Information", "Business Information", "Service Area", "Final Review"];
 
@@ -152,6 +153,7 @@ export default function LaunchDashboardPage() {
     setError(null);
     try {
       await completeLaunch().unwrap();
+      trackOnboardingCompleted(profile?.user?.id);
       setShowSuccess(true);
       window.setTimeout(() => navigate("/dashboard?onboarding=completed", { replace: true }), 1200);
     } catch (cause) {
