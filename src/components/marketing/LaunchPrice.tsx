@@ -12,7 +12,7 @@ interface LaunchPriceProps {
 }
 
 export function LaunchPrice({
-  oldPrice = LAUNCH_PRICING.baseOld,
+  oldPrice,
   price = LAUNCH_PRICING.base,
   label = "LAUNCH PRICE",
   className,
@@ -22,9 +22,11 @@ export function LaunchPrice({
 }: LaunchPriceProps) {
   return (
     <span className={cn("inline-flex flex-col leading-none", className)}>
-      <span className={cn("text-sm font-bold line-through opacity-60", oldClassName)}>
-        {oldPrice}
-      </span>
+      {oldPrice && (
+        <span className={cn("text-sm font-bold line-through opacity-60", oldClassName)}>
+          {oldPrice}
+        </span>
+      )}
       <span className={cn("font-bold", priceClassName)}>{price}</span>
       <span className={cn("mt-1 text-xs font-extrabold uppercase tracking-wide", labelClassName)}>
         {label}

@@ -8,6 +8,8 @@ export interface CreateCheckoutSessionRequest {
   email?: string;
   successUrl?: string;
   cancelUrl?: string;
+  funnelCategory?: string;
+  sourcePage?: string;
 }
 
 export interface CreateCheckoutSessionResponse {

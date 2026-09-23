@@ -1,4 +1,5 @@
 import { skipToken } from "@reduxjs/toolkit/query";
+import type { CSSProperties } from "react";
 import { useGetPublicBusinessBySlugQuery } from "../../store/api/Business/business.api";
 import { WebsiteNavbar } from "./WebsiteNavbar";
 
@@ -33,6 +34,11 @@ export default function RiderWebsitePage({ slug }: RiderWebsitePageProps) {
   const airports = serviceArea?.airports ?? [];
 
   const servingAreas = cityArea ? [cityArea].concat(airports) : [];
+  const isWomenTheme = business?.themeKey === "WOMEN" || business?.category === "WOMEN";
+  const themeStyle = {
+    "--qta-public-accent": isWomenTheme ? "#f42661" : "#22c55e",
+    "--qta-public-accent-hover": isWomenTheme ? "#d91950" : "#16a34a",
+  } as CSSProperties;
 
   if (isLoading) {
     return (
@@ -57,7 +63,7 @@ export default function RiderWebsitePage({ slug }: RiderWebsitePageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[#070809] text-white flex flex-col font-sans relative">
+    <div className="min-h-screen bg-[#070809] text-white flex flex-col font-sans relative" style={themeStyle}>
       <InstallPrompt personalized />
 
       {/* 1. Header Navigation */}

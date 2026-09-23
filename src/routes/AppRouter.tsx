@@ -12,6 +12,7 @@ import ResourcesAndGuidesPage from "../pages/ResourcesAndGuidesPage";
 import ProfileSettingsPage from "../pages/ProfileSettingsPage";
 import PaymentBillingPage from "../pages/PaymentBillingPage";
 import SupportPage from "../pages/SupportPage";
+import DoneForYouMarketingKitPage from "../pages/DoneForYouMarketingKitPage";
 import DashboardPage from "../pages/DashboardPage";
 import { DashboardLayout } from "../components/layout/DashboardLayout";
 import { AdminDashboardLayout } from "../components/layout/AdminDashboardLayout";
@@ -23,6 +24,8 @@ import AdminDriverDetailsPage from "../pages/AdminDriverDetailsPage";
 import AdminResourcesUploadPage from "../pages/AdminResourcesUploadPage";
 import AdminBillingsPage from "../pages/AdminBillingsPage";
 import AdminSupportPage from "../pages/AdminSupportPage";
+import AdminDoneForYouPage from "../pages/AdminDoneForYouPage";
+import AdminDoneForYouDetailPage from "../pages/AdminDoneForYouDetailPage";
 import AdminSettingsPage from "../pages/AdminSettingsPage";
 import LoginPage from "../pages/Auth/LoginPage";
 import SignupPage from "../pages/Auth/SignupPage";
@@ -69,6 +72,7 @@ export function AppRouter() {
       <Route path="/selling-page" element={<RiderRoute><DashboardLayout title="Selling Page"><SellingPage /></DashboardLayout></RiderRoute>} />
       <Route path="/resources-guide" element={<RiderRoute><DashboardLayout title="Resources & Guide"><ResourcesAndGuidesPage /></DashboardLayout></RiderRoute>} />
       <Route path="/support" element={<RiderRoute><DashboardLayout title="Support"><SupportPage /></DashboardLayout></RiderRoute>} />
+      <Route path="/done-for-you" element={<RiderRoute><DashboardLayout title="Done For You Marketing Kit"><DoneForYouMarketingKitPage /></DashboardLayout></RiderRoute>} />
       <Route path="/payment-billing" element={<RiderRoute><DashboardLayout title="Payment & Billing"><PaymentBillingPage /></DashboardLayout></RiderRoute>} />
       <Route path="/profile-settings" element={<RiderRoute><DashboardLayout title="Profile & Settings"><ProfileSettingsPage /></DashboardLayout></RiderRoute>} />
       <Route path="/launch-dashboard" element={<RiderRoute><DashboardLayout title="Launch Setup Form"><LaunchDashboardPage /></DashboardLayout></RiderRoute>} />
@@ -91,6 +95,8 @@ export function AppRouter() {
       <Route path="/admin/drivers/:id" element={<AdminRoute><AdminDashboardLayout title="Drivers Management"><AdminDriverDetailsPage /></AdminDashboardLayout></AdminRoute>} />
       <Route path="/admin/resources-upload" element={<AdminRoute><AdminDashboardLayout title="Resources Upload"><AdminResourcesUploadPage /></AdminDashboardLayout></AdminRoute>} />
       <Route path="/admin/billings" element={<AdminRoute><AdminDashboardLayout title="Billings"><AdminBillingsPage /></AdminDashboardLayout></AdminRoute>} />
+      <Route path="/admin/done-for-you" element={<AdminRoute><AdminDashboardLayout title="Done For You Fulfillment"><AdminDoneForYouPage /></AdminDashboardLayout></AdminRoute>} />
+      <Route path="/admin/done-for-you/:id" element={<AdminRoute><AdminDashboardLayout title="Done For You Fulfillment"><AdminDoneForYouDetailPage /></AdminDashboardLayout></AdminRoute>} />
       <Route path="/admin/support" element={<AdminRoute><AdminDashboardLayout title="Support"><AdminSupportPage /></AdminDashboardLayout></AdminRoute>} />
       <Route path="/admin/settings" element={<AdminRoute><AdminDashboardLayout title="Settings"><AdminSettingsPage /></AdminDashboardLayout></AdminRoute>} />
 

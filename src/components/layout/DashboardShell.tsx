@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   BookOpen,
   CalendarDays,
+  ClipboardCheck,
   ClipboardList,
   CreditCard,
   Globe,
@@ -38,6 +39,7 @@ const riderSections: Array<{ title: string; items: NavigationItem[] }> = [
       { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
       { name: "Booking & Referral Card", path: "/booking-referral-card", icon: CalendarDays },
       { name: "Selling Page", path: "/selling-page", icon: Globe },
+      { name: "Done For You Marketing Kit", path: "/done-for-you", icon: ClipboardCheck },
       { name: "Resources & Guide", path: "/resources-guide", icon: BookOpen },
       { name: "Support", path: "/support", icon: LifeBuoy },
     ],
@@ -58,6 +60,7 @@ const adminSections: Array<{ title: string; items: NavigationItem[] }> = [
       { name: "Dashboard", path: "/admin", icon: LayoutDashboard },
       { name: "Lead Submissions", path: "/admin/leads", icon: ClipboardList },
       { name: "Drivers Management", path: "/admin/drivers", icon: Users },
+      { name: "Done For You", path: "/admin/done-for-you", icon: ClipboardCheck },
       { name: "Resources Upload", path: "/admin/resources-upload", icon: Upload },
       { name: "Billings", path: "/admin/billings", icon: CreditCard },
       { name: "Support", path: "/admin/support", icon: LifeBuoy },

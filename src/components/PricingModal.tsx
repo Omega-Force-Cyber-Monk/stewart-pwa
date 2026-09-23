@@ -10,12 +10,14 @@ import { LAUNCH_PRICING } from "./marketing/pricing";
 interface PricingModalProps {
   onClose: () => void;
   upsellKitImageSrc?: string;
+  funnelCategory?: string;
+  sourcePage?: string;
 }
 
 const BASE_VARIANT_ID = "base_variant";
 const ADDON_ID = "addon";
 
-export function PricingModal({ onClose, upsellKitImageSrc }: PricingModalProps) {
+export function PricingModal({ onClose, upsellKitImageSrc, funnelCategory, sourcePage }: PricingModalProps) {
   const [selectedPlan, setSelectedPlan] = useState<"base" | "bundle" | null>(null);
 
   useEffect(() => {
@@ -61,6 +63,8 @@ export function PricingModal({ onClose, upsellKitImageSrc }: PricingModalProps) 
       const result = await createCheckoutSession({
         items,
         ...(accessToken ? {} : { email }),
+        ...(funnelCategory ? { funnelCategory } : {}),
+        ...(sourcePage ? { sourcePage } : {}),
         successUrl: `${window.location.origin}/payment/success?session_id={CHECKOUT_SESSION_ID}&plan=${plan}`,
         cancelUrl: currentUrl.toString(),
       }).unwrap();
@@ -225,25 +229,25 @@ export function PricingModal({ onClose, upsellKitImageSrc }: PricingModalProps) 
                 </div>
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-widest text-[#04B5A3]">
-                    Done For You
+                    Done For You Upgrade
                   </p>
                   <h3 className="text-lg font-bold text-white leading-tight">
-                    Premium Launch Kit
+                    Marketing Kit
                   </h3>
                 </div>
               </div>
 
               <div className="mb-1">
                 <LaunchPrice
-                  oldPrice={LAUNCH_PRICING.bundleOld}
-                  price={LAUNCH_PRICING.bundle}
+                  price={LAUNCH_PRICING.addon}
+                  label="UPGRADE PRICE"
                   priceClassName="text-4xl text-white"
                   oldClassName="text-slate-400"
                   labelClassName="text-[#04B5A3]"
                 />
                 <span className="text-slate-400 text-sm ml-1">one-time</span>
               </div>
-              <p className="text-xs text-slate-500 mb-4">{LAUNCH_PRICING.base} base + {LAUNCH_PRICING.addon} add-on</p>
+              <p className="text-xs text-slate-500 mb-4">Add to your {LAUNCH_PRICING.base} Launch Kit</p>
 
               <ul className="space-y-2 mb-6 flex-1">
                 {[
@@ -271,7 +275,7 @@ export function PricingModal({ onClose, upsellKitImageSrc }: PricingModalProps) 
                 {isLoading && selectedPlan === "bundle" ? (
                   <Loader2 className="size-4 animate-spin" />
                 ) : null}
-                Get Started — {LAUNCH_PRICING.bundle}
+                YES, DO IT FOR ME +{LAUNCH_PRICING.addon}
               </button>
               <button
                 onClick={() => setShowUpsell(true)}

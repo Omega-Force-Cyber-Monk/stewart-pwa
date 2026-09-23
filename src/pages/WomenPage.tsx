@@ -55,7 +55,12 @@ export default function WomenPage() {
   return (
     <>
       {showPricingModal && (
-        <PricingModal onClose={() => setShowPricingModal(false)} upsellKitImageSrc={upsellKit} />
+        <PricingModal
+          onClose={() => setShowPricingModal(false)}
+          upsellKitImageSrc={upsellKit}
+          funnelCategory="WOMEN"
+          sourcePage="WOMEN"
+        />
       )}
       <Navbar openPricingModal={openPricingModal} />
       <HeroBanner openPricingModal={openPricingModal} />

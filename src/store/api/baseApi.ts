@@ -104,6 +104,11 @@ export const baseApi = createApi({
     "ReferralCard",
     "Leads",
     "Lead",
+    "DoneForYou",
+    "DoneForYouOrders",
+    "DoneForYouOrder",
+    "DoneForYouLogoStyles",
+    "DoneForYouTemplateSets",
   ],
   endpoints: () => ({}),
 });

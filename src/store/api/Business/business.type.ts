@@ -64,6 +64,8 @@ export interface PublicBusinessProfile {
   phone: string | null;
   logoUrl: string | null;
   websiteUrl: string;
+  category?: string;
+  themeKey?: string;
 }
 
 export interface PublicServiceArea {

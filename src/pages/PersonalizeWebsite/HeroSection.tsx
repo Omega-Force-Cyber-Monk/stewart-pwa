@@ -32,7 +32,7 @@ export function HeroSection({
           <div className="flex flex-col gap-2">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight tracking-tight text-white">
               Premium Private <br />
-              <span className="text-green-500 font-black uppercase">{businessName}</span> <br />
+              <span className="text-[var(--qta-public-accent)] font-black uppercase">{businessName}</span> <br />
               <span className="italic font-medium text-slate-200 text-2xl sm:text-3xl tracking-wide block mt-1">
                 On Time. Every Time.
               </span>
@@ -44,13 +44,13 @@ export function HeroSection({
           </p>
 
           <div className="flex flex-col gap-3">
-            <div className="text-sm font-bold text-green-500 uppercase tracking-wider">
+            <div className="text-sm font-bold text-[var(--qta-public-accent)] uppercase tracking-wider">
               Serving:
             </div>
             <div className="grid grid-cols-2 gap-x-6 gap-y-3">
               {servingAreas.map((area, idx) => (
                 <div key={idx} className="flex items-center gap-2.5">
-                  <MapPin className="w-5 h-5 text-green-500 shrink-0" />
+                  <MapPin className="w-5 h-5 text-[var(--qta-public-accent)] shrink-0" />
                   <span className="text-sm sm:text-base font-semibold text-slate-200 truncate">
                     {area}
                   </span>
@@ -64,7 +64,7 @@ export function HeroSection({
               href={bookingUrl || "#"}
               target="_blank"
               rel="noreferrer"
-              className="flex-1 bg-green-500 hover:bg-green-600 text-white py-3.5 px-6 rounded-xl text-sm font-bold transition-all shadow-md flex items-center justify-center gap-2 tracking-wide whitespace-nowrap"
+              className="flex-1 bg-[var(--qta-public-accent)] hover:bg-[var(--qta-public-accent-hover)] text-white py-3.5 px-6 rounded-xl text-sm font-bold transition-all shadow-md flex items-center justify-center gap-2 tracking-wide whitespace-nowrap"
             >
               <span>BOOK YOUR RIDE NOW</span>
               <ChevronRight className="w-4 h-4 shrink-0" />
@@ -83,7 +83,7 @@ export function HeroSection({
         <div className="w-full max-w-md shrink-0 z-10 relative mt-16 lg:mt-0 flex justify-end pl-8 sm:pl-0">
           
           {/* Floating 5-star rating card (Horizontal, overlapping left side of rotated phone) */}
-          <div className="absolute -left-8 sm:-left-24 top-1/2 -translate-y-1/2 bg-[#0f0f10]/95 backdrop-blur-md border border-[#22c55e]/40 rounded-2xl p-5 shadow-2xl z-30 w-[240px]">
+          <div className="absolute -left-8 sm:-left-24 top-1/2 -translate-y-1/2 bg-[#0f0f10]/95 backdrop-blur-md border border-[var(--qta-public-accent)] rounded-2xl p-5 shadow-2xl z-30 w-[240px]">
             <div className="flex items-center gap-1.5 mb-5">
               {[1, 2, 3, 4, 5].map((i) => (
                 <svg key={i} className="w-6 h-6 text-yellow-400 fill-yellow-400" viewBox="0 0 20 20">
@@ -93,19 +93,19 @@ export function HeroSection({
             </div>
             <div className="flex flex-col gap-3.5">
               <div className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-full bg-[#22c55e] flex items-center justify-center shrink-0">
+                <div className="w-5 h-5 rounded-full bg-[var(--qta-public-accent)] flex items-center justify-center shrink-0">
                   <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                 </div>
                 <span className="text-[13px] font-bold text-slate-200">Rated Service</span>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-full bg-[#22c55e] flex items-center justify-center shrink-0">
+                <div className="w-5 h-5 rounded-full bg-[var(--qta-public-accent)] flex items-center justify-center shrink-0">
                   <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                 </div>
                 <span className="text-[13px] font-bold text-slate-200">English Speaking Drivers</span>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-full bg-[#22c55e] flex items-center justify-center shrink-0">
+                <div className="w-5 h-5 rounded-full bg-[var(--qta-public-accent)] flex items-center justify-center shrink-0">
                   <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                 </div>
                 <span className="text-[13px] font-bold text-slate-200">Flat Rate Pricing</span>
@@ -168,7 +168,7 @@ export function HeroSection({
                 </div>
 
                 {/* Continue to Book Button */}
-                <div className="w-full bg-[#5fa64a] text-white py-3.5 rounded-xl text-sm font-bold tracking-wide uppercase text-center shadow-md shadow-green-500/20">
+                <div className="w-full bg-[var(--qta-public-accent)] text-white py-3.5 rounded-xl text-sm font-bold tracking-wide uppercase text-center shadow-md">
                   CONTINUE TO BOOK
                 </div>
               </div>
