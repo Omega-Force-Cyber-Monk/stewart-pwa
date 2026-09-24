@@ -179,7 +179,7 @@ export default function AdminDoneForYouDetailPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <Link to="/admin/done-for-you" className="inline-flex items-center gap-2 text-sm font-semibold text-dashboard-admin"><ArrowLeft className="h-4 w-4" />Back to queue</Link>
+          <Link to="/admin/done-for-you" className="cursor-pointer inline-flex items-center gap-2 text-sm font-semibold text-dashboard-admin hover:underline"><ArrowLeft className="h-4 w-4" />Back to queue</Link>
           <h2 className="mt-3 text-2xl font-bold text-slate-800">{order.business.businessName}</h2>
           <p className="mt-1 text-sm text-slate-500">{order.user.email} • {formatCategory(order.audience)}</p>
         </div>
@@ -189,7 +189,7 @@ export default function AdminDoneForYouDetailPage() {
             onClick={publishReadyOrder}
             disabled={!order.readiness.ready}
             isLoading={isPublishing}
-            className="bg-dashboard-admin hover:bg-dashboard-admin-dark"
+            className="cursor-pointer bg-dashboard-admin hover:bg-dashboard-admin-dark"
           >
             Publish & Notify
           </Button>
@@ -219,9 +219,13 @@ export default function AdminDoneForYouDetailPage() {
               value={order.status}
               onChange={(event) => void changeOrderStatus(event.target.value)}
               disabled={isUpdatingOrder}
-              className="mt-2 h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm"
+              className="mt-2 h-10 w-full cursor-pointer rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-dashboard-admin focus:ring-1 focus:ring-dashboard-admin disabled:cursor-not-allowed disabled:opacity-60 [color-scheme:light]"
             >
-              {orderStatuses.map((status) => <option key={status} value={status}>{status.replaceAll("_", " ")}</option>)}
+              {orderStatuses.map((status) => (
+                <option key={status} value={status} className="bg-white text-slate-900">
+                  {status.replaceAll("_", " ")}
+                </option>
+              ))}
             </select>
           </label>
         </div>
@@ -261,10 +265,16 @@ export default function AdminDoneForYouDetailPage() {
                 value={order.templateSet?.id || ""}
                 onChange={(event) => void changeTemplateSet(event.target.value)}
                 disabled={isUpdatingOrder || applicableTemplateSets.length === 0}
-                className="mt-2 h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm"
+                className="mt-2 h-10 w-full cursor-pointer rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-dashboard-admin focus:ring-1 focus:ring-dashboard-admin disabled:cursor-not-allowed disabled:opacity-60 [color-scheme:light]"
               >
-                <option value="">{applicableTemplateSets.length === 0 ? "No active templates for this audience" : "Select template set"}</option>
-                {applicableTemplateSets.map((set) => <option key={set.id} value={set.id}>{set.name}</option>)}
+                <option value="" className="bg-white text-slate-900">
+                  {applicableTemplateSets.length === 0 ? "No active templates for this audience" : "Select template set"}
+                </option>
+                {applicableTemplateSets.map((set) => (
+                  <option key={set.id} value={set.id} className="bg-white text-slate-900">
+                    {set.name}
+                  </option>
+                ))}
               </select>
             </label>
             {order.templateSet?.templates?.length ? (
@@ -275,7 +285,16 @@ export default function AdminDoneForYouDetailPage() {
                       <p className="text-sm font-semibold text-slate-900">{template.name}</p>
                       <p className="text-xs text-slate-500">{template.type} • {template.deliverableKey}</p>
                     </div>
-                    {(template.sourceUrl || template.previewUrl) && <a href={template.sourceUrl || template.previewUrl || "#"} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-dashboard-admin">Open reference <ExternalLink className="h-3.5 w-3.5" /></a>}
+                    {(template.sourceUrl || template.previewUrl) && (
+                      <a
+                        href={template.sourceUrl || template.previewUrl || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="cursor-pointer inline-flex items-center gap-1 text-xs font-semibold text-dashboard-admin hover:underline"
+                      >
+                        Open reference <ExternalLink className="h-3.5 w-3.5" />
+                      </a>
+                    )}
                   </div>
                 ))}
               </div>
@@ -293,15 +312,27 @@ export default function AdminDoneForYouDetailPage() {
                       <h4 className="font-semibold text-slate-900">{deliverable.title}</h4>
                       {deliverable.description && <p className="mt-1 text-sm text-slate-500">{deliverable.description}</p>}
                     </div>
-	                    <select
-	                      value={deliverable.status}
-	                      onChange={(event) => {
-	                        void updateDeliverable({ orderId: id, deliverableId: deliverable.id, status: event.target.value }).unwrap().catch((error: unknown) => showAlert({ title: "Status not changed", message: mutationMessage(error, "The backend rejected this status transition."), type: "error" }));
-	                      }}
+                    <select
+                      value={deliverable.status}
+                      onChange={(event) => {
+                        void updateDeliverable({ orderId: id, deliverableId: deliverable.id, status: event.target.value })
+                          .unwrap()
+                          .catch((error: unknown) =>
+                            showAlert({
+                              title: "Status not changed",
+                              message: mutationMessage(error, "The backend rejected this status transition."),
+                              type: "error",
+                            })
+                          );
+                      }}
                       disabled={isUpdatingDeliverable}
-                      className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm"
+                      className="h-10 cursor-pointer rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-dashboard-admin focus:ring-1 focus:ring-dashboard-admin disabled:cursor-not-allowed disabled:opacity-60 [color-scheme:light]"
                     >
-                      {deliverableStatuses.map((status) => <option key={status} value={status}>{status.replaceAll("_", " ")}</option>)}
+                      {deliverableStatuses.map((status) => (
+                        <option key={status} value={status} className="bg-white text-slate-900">
+                          {status.replaceAll("_", " ")}
+                        </option>
+                      ))}
                     </select>
                   </div>
 
@@ -310,23 +341,57 @@ export default function AdminDoneForYouDetailPage() {
                   <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
                     <h5 className="text-sm font-semibold text-slate-900">Add finished asset</h5>
                     <div className="mt-3 grid gap-3 lg:grid-cols-[1fr_170px]">
-                      <input value={draft.title} onChange={(event) => setDraft(deliverable.id, { title: event.target.value })} placeholder="Asset title" className="h-10 rounded-lg border border-slate-200 px-3 text-sm" />
-                      <select value={draft.assetType} onChange={(event) => setDraft(deliverable.id, { assetType: event.target.value as DfyAssetType })} className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm">
-                        {assetTypes.map((type) => <option key={type} value={type}>{type}</option>)}
+                      <input
+                        value={draft.title}
+                        onChange={(event) => setDraft(deliverable.id, { title: event.target.value })}
+                        placeholder="Asset title"
+                        className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-dashboard-admin focus:ring-1 focus:ring-dashboard-admin"
+                      />
+                      <select
+                        value={draft.assetType}
+                        onChange={(event) => setDraft(deliverable.id, { assetType: event.target.value as DfyAssetType })}
+                        className="h-10 cursor-pointer rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-dashboard-admin focus:ring-1 focus:ring-dashboard-admin [color-scheme:light]"
+                      >
+                        {assetTypes.map((type) => (
+                          <option key={type} value={type} className="bg-white text-slate-900">
+                            {type}
+                          </option>
+                        ))}
                       </select>
                     </div>
                     {draft.assetType === "LINK" ? (
-                      <input value={draft.linkUrl} onChange={(event) => setDraft(deliverable.id, { linkUrl: event.target.value })} placeholder="https://" className="mt-3 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" />
+                      <input
+                        value={draft.linkUrl}
+                        onChange={(event) => setDraft(deliverable.id, { linkUrl: event.target.value })}
+                        placeholder="https://"
+                        className="mt-3 h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-dashboard-admin focus:ring-1 focus:ring-dashboard-admin"
+                      />
                     ) : draft.assetType === "TEXT" ? (
-                      <textarea value={draft.textContent} onChange={(event) => setDraft(deliverable.id, { textContent: event.target.value })} rows={4} placeholder="Caption or template text" className="mt-3 w-full rounded-lg border border-slate-200 p-3 text-sm" />
+                      <textarea
+                        value={draft.textContent}
+                        onChange={(event) => setDraft(deliverable.id, { textContent: event.target.value })}
+                        rows={4}
+                        placeholder="Caption or template text"
+                        className="mt-3 w-full rounded-lg border border-slate-200 bg-white p-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-dashboard-admin focus:ring-1 focus:ring-dashboard-admin"
+                      />
                     ) : (
-                      <label className="mt-3 flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-500">
+                      <label className="mt-3 flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-700 hover:bg-slate-50">
                         <UploadCloud className="h-5 w-5 text-dashboard-admin" />
-                        <span className="truncate">{draft.file?.name || "Choose file"}</span>
-                        <input type="file" className="hidden" onChange={(event) => setDraft(deliverable.id, { file: event.target.files?.[0] || null })} />
+                        <span className="truncate text-slate-700">{draft.file?.name || "Choose file"}</span>
+                        <input
+                          type="file"
+                          className="hidden cursor-pointer"
+                          onChange={(event) => setDraft(deliverable.id, { file: event.target.files?.[0] || null })}
+                        />
                       </label>
                     )}
-                    <Button onClick={() => void submitAsset(deliverable)} isLoading={isUploadingAsset} className="mt-3 bg-dashboard-admin hover:bg-dashboard-admin-dark">Save asset</Button>
+                    <Button
+                      onClick={() => void submitAsset(deliverable)}
+                      isLoading={isUploadingAsset}
+                      className="mt-3 cursor-pointer bg-dashboard-admin hover:bg-dashboard-admin-dark"
+                    >
+                      Save asset
+                    </Button>
                   </div>
                 </DashboardCard>
               );
@@ -339,16 +404,38 @@ export default function AdminDoneForYouDetailPage() {
           <DashboardCard>
             <h3 className="text-lg font-semibold text-slate-900">Brand identity</h3>
             <p className="mt-2 text-sm text-slate-500">Selected style: {order.brandProfile?.selectedLogoStyle?.name || "Not selected"}</p>
-            <label className="mt-4 flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-slate-300 p-4 text-sm text-slate-500">
+            <label className="mt-4 flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-700 hover:bg-slate-50">
               <UploadCloud className="h-5 w-5 text-dashboard-admin" />
-              <span className="truncate">{logoFile?.name || "Upload final logo"}</span>
-              <input type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={(event) => setLogoFile(event.target.files?.[0] || null)} />
+              <span className="truncate text-slate-700">{logoFile?.name || "Upload final logo"}</span>
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                className="hidden cursor-pointer"
+                onChange={(event) => setLogoFile(event.target.files?.[0] || null)}
+              />
             </label>
-            <Button onClick={() => void submitLogo()} disabled={!logoFile} isLoading={isUploadingLogo} className="mt-3 w-full bg-dashboard-admin hover:bg-dashboard-admin-dark">Upload final logo</Button>
+            <Button
+              onClick={() => void submitLogo()}
+              disabled={!logoFile}
+              isLoading={isUploadingLogo}
+              className="mt-3 w-full cursor-pointer bg-dashboard-admin hover:bg-dashboard-admin-dark"
+            >
+              Upload final logo
+            </Button>
             {brandAssets.length > 0 && (
               <div className="mt-4 space-y-2">
                 {brandAssets.map((asset) => (
-                  <button key={asset.id} type="button" onClick={() => void approveLogo({ orderId: id, assetId: asset.id }).unwrap().catch(() => showAlert({ title: "Approval failed", message: "Unable to approve this logo.", type: "error" }))} disabled={isApprovingLogo} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-left text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50">
+                  <button
+                    key={asset.id}
+                    type="button"
+                    onClick={() =>
+                      void approveLogo({ orderId: id, assetId: asset.id })
+                        .unwrap()
+                        .catch(() => showAlert({ title: "Approval failed", message: "Unable to approve this logo.", type: "error" }))
+                    }
+                    disabled={isApprovingLogo}
+                    className="w-full cursor-pointer rounded-lg border border-slate-200 bg-white px-3 py-2 text-left text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
                     Approve {asset.title}
                   </button>
                 ))}

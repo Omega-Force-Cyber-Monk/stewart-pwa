@@ -74,7 +74,7 @@ export default function ForgotPasswordPage() {
           </label>
           <div className="mt-2 relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Mail className="size-5 text-slate-500" />
+              <Mail className="size-5 text-slate-400" />
             </div>
             <input
               id="email"
@@ -85,7 +85,7 @@ export default function ForgotPasswordPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="name@example.com"
-              className="block w-full pl-10 pr-3 py-2.5 bg-brand-input border border-brand-border rounded-md text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition"
+              className="block w-full pl-10 pr-3 py-2.5 bg-brand-input border border-brand-border rounded-md text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition"
             />
           </div>
         </div>

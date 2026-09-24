@@ -89,11 +89,66 @@ export async function registerCustomerViaUi(page: Page) {
   return { email, password: customerPassword };
 }
 
+export async function registerWithSessionViaUi(page: Page, email: string, sessionId: string) {
+  // Post-payment redirect lands on /signup?session_id=...
+  await expect(page).toHaveURL(new RegExp(`/signup.*session_id=${sessionId}`));
+  await page.getByLabel("Email address").fill(email);
+  await page.getByLabel("Password", { exact: true }).fill(customerPassword);
+  await page.getByLabel("Confirm Password").fill(customerPassword);
+  await page.getByRole("button", { name: "Sign up" }).click();
+  await expect(page.getByText("Verify your email")).toBeVisible({ timeout: 30_000 });
+  const otpText = await page.getByText(/Development OTP:/).textContent({ timeout: 5000 }).catch(() => "");
+  const otp = otpText?.match(/\d{6}/)?.[0] || runFixture<{ otp: string }>("latest-otp", email).otp;
+  if (!otp) throw new Error("Development OTP was not found for post-payment registration.");
+  await page.getByLabel("Verification Code").fill(otp);
+  await page.getByRole("button", { name: "Confirm Verification" }).click();
+  await expect(page.getByText("Your account has been verified successfully.")).toBeVisible({ timeout: 20_000 });
+  await page.getByRole("button", { name: /Proceed to Login/i }).click();
+  await expect(page).toHaveURL(/\/login/);
+  await page.getByLabel("Email address").fill(email);
+  await page.getByLabel("Password").fill(customerPassword);
+  await page.getByRole("button", { name: "Sign in" }).click();
+}
+
+export async function completeOnboardingViaUi(page: Page, businessName: string, email: string) {
+  await expect(page).toHaveURL(/\/launch-dashboard/, { timeout: 30_000 });
+  // Step 1: Buyer Information
+  await page.getByLabel("Full Name", { exact: false }).fill("Jane Stewart");
+  await page.getByLabel("Email Address", { exact: false }).fill(email);
+  await page.getByLabel("Phone Number", { exact: false }).fill("+1 555-019-2831");
+  await page.getByRole("button", { name: /Save & Continue/i }).click();
+
+  // Step 2: Business Information
+  await expect(page.getByRole("heading", { name: "Business Information" })).toBeVisible({ timeout: 30_000 });
+  await page.getByLabel("Business Name", { exact: false }).fill(businessName);
+  await page.getByLabel("Phone Number", { exact: false }).fill("+1 555-019-2831");
+  await page.getByLabel("Email Address", { exact: false }).fill(email);
+  await page.locator("textarea").fill("Executive airport transportation service for professional women.");
+  await page.getByRole("button", { name: /Save & Continue/i }).click();
+
+  // Step 3: Service Area
+  await expect(page.getByRole("heading", { name: "Service Area" })).toBeVisible({ timeout: 30_000 });
+  await page.getByPlaceholder("Enter the city or metro area you serve").fill("Austin, TX");
+  const airportInput = page.getByPlaceholder("Type airport code and press Enter");
+  await airportInput.fill("AUS");
+  await airportInput.press("Enter");
+  await expect(page.getByText("AUS")).toBeVisible({ timeout: 30_000 });
+  await page.getByRole("button", { name: /Save & Continue/i }).click();
+
+  // Step 4: Final Review & Launch
+  await expect(page.getByRole("heading", { name: "Final Review" })).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByText(businessName)).toBeVisible();
+  const launchBtn = page.getByRole("button", { name: /Confirm & Launch/i });
+  await expect(launchBtn).toBeEnabled({ timeout: 30_000 });
+  await launchBtn.click();
+  await expect(page).toHaveURL(/\/dashboard/, { timeout: 60_000 });
+}
+
 export function adminCredentials() {
   const env = backendEnv();
   return {
     email: env.SEED_ADMIN_EMAIL || "admin@stewart.local",
-    password: env.SEED_ADMIN_PASSWORD || "admin123456",
+    password: env.SEED_ADMIN_PASSWORD || "Admin@12345",
   };
 }
 
@@ -123,16 +178,30 @@ export function makeTestFiles() {
 
 export async function closeModalIfVisible(page: Page) {
   const okay = page.getByRole("button", { name: "Okay" });
-  if (await okay.isVisible().catch(() => false)) await okay.click();
+  if (await okay.isVisible().catch(() => false)) {
+    await okay.click();
+    await page.locator(".fixed.inset-0.z-50").waitFor({ state: "hidden", timeout: 10_000 }).catch(() => null);
+  }
 }
 
 export function deliverableCard(page: Page, title: string): Locator {
-  return page.locator("section").filter({ hasText: "Deliverables" }).locator("div").filter({ hasText: title }).first();
+  return page.getByRole("heading", { level: 4, name: title, exact: true }).locator("xpath=ancestor::div[contains(@class, 'rounded-') and contains(@class, 'border')][1]");
 }
 
 export async function setDeliverableStatus(page: Page, title: string, status: string) {
   const card = deliverableCard(page, title);
-  await card.locator("select").first().selectOption(status);
+  const select = card.locator("select").first();
+  await expect(select).toBeEnabled({ timeout: 45_000 });
+  const currentValue = await select.inputValue();
+  if (currentValue === status) return;
+  const responsePromise = page.waitForResponse(
+    (res) => res.url().includes("/deliverables/") && (res.status() === 200 || res.status() === 400 || res.status() === 409),
+    { timeout: 45_000 }
+  ).catch(() => null);
+  await select.selectOption(status);
+  await responsePromise;
+  await expect(select).toBeEnabled({ timeout: 45_000 });
+  await page.waitForTimeout(300);
 }
 
 export async function uploadFinishedAsset(page: Page, title: string, assetTitle: string, assetType: string, file: { name: string; mimeType: string; buffer: Buffer }) {
@@ -140,9 +209,12 @@ export async function uploadFinishedAsset(page: Page, title: string, assetTitle:
   await card.getByPlaceholder("Asset title").fill(assetTitle);
   await card.locator("select").nth(1).selectOption(assetType);
   await card.locator('input[type="file"]').setInputFiles(file);
-  await card.getByRole("button", { name: "Save asset" }).click();
+  const saveBtn = card.getByRole("button", { name: "Save asset" });
+  await expect(saveBtn).toBeEnabled({ timeout: 20_000 });
+  await saveBtn.click();
   await expect(page.getByText("Asset uploaded")).toBeVisible({ timeout: 60_000 });
   await closeModalIfVisible(page);
+  await page.waitForTimeout(300);
 }
 
 export function signWebhookPayload(payload: unknown) {

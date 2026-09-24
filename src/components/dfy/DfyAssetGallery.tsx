@@ -49,25 +49,25 @@ export function DfyAssetGallery({ assets, onDelete, admin = false }: DfyAssetGal
               {asset.textContent && <p className="mt-2 line-clamp-4 whitespace-pre-wrap rounded-md bg-slate-50 p-3 text-xs leading-5 text-slate-600">{asset.textContent}</p>}
               <div className="mt-3 flex flex-wrap gap-2">
                 {url && (
-                  <a href={url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+                  <a href={url} target="_blank" rel="noopener noreferrer" className="cursor-pointer inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50">
                     {isVideoAsset(asset) ? <Play className="h-3.5 w-3.5" /> : <ExternalLink className="h-3.5 w-3.5" />}
                     Open
                   </a>
                 )}
                 {url && (
-                  <button type="button" onClick={() => downloadAsset(asset)} className="inline-flex items-center gap-1 rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+                  <button type="button" onClick={() => downloadAsset(asset)} className="cursor-pointer inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50">
                     <Download className="h-3.5 w-3.5" />
                     Download
                   </button>
                 )}
                 {canCopy && (
-                  <button type="button" onClick={() => copyText(asset)} className="inline-flex items-center gap-1 rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+                  <button type="button" onClick={() => copyText(asset)} className="cursor-pointer inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50">
                     {copiedId === asset.id ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
                     {copiedId === asset.id ? "Caption copied" : "Copy"}
                   </button>
                 )}
                 {admin && onDelete && (
-                  <button type="button" onClick={() => onDelete(asset)} className="inline-flex items-center rounded-md border border-red-200 px-2.5 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50">
+                  <button type="button" onClick={() => onDelete(asset)} className="cursor-pointer inline-flex items-center rounded-md border border-red-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50">
                     Remove
                   </button>
                 )}

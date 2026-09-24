@@ -20,13 +20,13 @@ export function LogoutModal({ isOpen, onClose, onConfirm }: LogoutModalProps) {
         <div className="flex items-center gap-4">
           <button 
             onClick={onClose}
-            className="w-1/2 py-3 rounded-lg bg-[#ef4444] hover:bg-red-600 text-white font-semibold transition-colors shadow-sm"
+            className="cursor-pointer w-1/2 py-3 rounded-lg bg-[#ef4444] hover:bg-red-600 text-white font-semibold transition-colors shadow-sm"
           >
             No
           </button>
           <button 
             onClick={onConfirm}
-            className="w-1/2 py-3 rounded-lg bg-[#22c55e] hover:bg-green-600 text-white font-semibold transition-colors shadow-sm"
+            className="cursor-pointer w-1/2 py-3 rounded-lg bg-[#22c55e] hover:bg-green-600 text-white font-semibold transition-colors shadow-sm"
           >
             Yes
           </button>

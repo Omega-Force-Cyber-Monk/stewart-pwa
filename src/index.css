@@ -58,11 +58,14 @@ select {
 }
 
 button:not(:disabled),
-[role="button"]:not([aria-disabled="true"]) {
+[role="button"]:not([aria-disabled="true"]),
+select:not(:disabled),
+input[type="file"]::file-selector-button {
   cursor: pointer;
 }
 
 button:disabled,
-[aria-disabled="true"] {
+[aria-disabled="true"],
+select:disabled {
   cursor: not-allowed;
 }

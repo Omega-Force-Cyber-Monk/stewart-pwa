@@ -32,13 +32,26 @@ export default function AdminDoneForYouPage() {
         <div className="flex flex-col gap-3 sm:flex-row">
           <label className="relative block">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <input value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} placeholder="Search orders" className="h-10 rounded-lg border border-slate-200 pl-9 pr-3 text-sm outline-none focus:border-dashboard-admin" />
+            <input
+              value={search}
+              onChange={(event) => { setSearch(event.target.value); setPage(1); }}
+              placeholder="Search orders"
+              className="h-10 rounded-lg border border-slate-200 bg-white pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-dashboard-admin focus:ring-1 focus:ring-dashboard-admin"
+            />
           </label>
           <label className="relative block">
             <Filter className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <select value={status} onChange={(event) => { setStatus(event.target.value); setPage(1); }} className="h-10 rounded-lg border border-slate-200 bg-white pl-9 pr-8 text-sm outline-none focus:border-dashboard-admin">
-              <option value="">All statuses</option>
-              {statuses.map((item) => <option key={item} value={item}>{item.replaceAll("_", " ")}</option>)}
+            <select
+              value={status}
+              onChange={(event) => { setStatus(event.target.value); setPage(1); }}
+              className="h-10 cursor-pointer rounded-lg border border-slate-200 bg-white pl-9 pr-8 text-sm text-slate-900 outline-none focus:border-dashboard-admin focus:ring-1 focus:ring-dashboard-admin [color-scheme:light]"
+            >
+              <option value="" className="bg-white text-slate-900">All statuses</option>
+              {statuses.map((item) => (
+                <option key={item} value={item} className="bg-white text-slate-900">
+                  {item.replaceAll("_", " ")}
+                </option>
+              ))}
             </select>
           </label>
         </div>
@@ -50,7 +63,13 @@ export default function AdminDoneForYouPage() {
         ) : isError ? (
           <div className="grid place-items-center gap-3 py-20 text-sm text-slate-500">
             <p>Unable to load DFY orders.</p>
-            <button type="button" onClick={() => refetch()} className="rounded-lg bg-dashboard-admin px-4 py-2 font-semibold text-white">Retry</button>
+            <button
+              type="button"
+              onClick={() => refetch()}
+              className="cursor-pointer rounded-lg bg-dashboard-admin px-4 py-2 font-semibold text-white hover:bg-dashboard-admin-dark"
+            >
+              Retry
+            </button>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -85,7 +104,10 @@ export default function AdminDoneForYouPage() {
                       <td className="px-5 py-4 text-slate-600">{formatDate(order.createdAt)}</td>
                       <td className="px-5 py-4 text-slate-600">{formatDate(order.updatedAt)}</td>
                       <td className="px-5 py-4 text-right">
-                        <Link to={`/admin/done-for-you/${order.id}`} className="inline-flex items-center gap-1 rounded-lg bg-blue-50 px-3 py-2 text-xs font-semibold text-dashboard-admin hover:bg-blue-100">
+                        <Link
+                          to={`/admin/done-for-you/${order.id}`}
+                          className="cursor-pointer inline-flex items-center gap-1 rounded-lg bg-blue-50 px-3 py-2 text-xs font-semibold text-dashboard-admin hover:bg-blue-100"
+                        >
                           <Eye className="h-3.5 w-3.5" />
                           View
                         </Link>
@@ -101,8 +123,22 @@ export default function AdminDoneForYouPage() {
           <div className="flex items-center justify-between border-t border-slate-100 px-5 py-4 text-sm text-slate-500">
             <span>Page {pagination.page} of {pagination.totalPages}</span>
             <div className="flex gap-2">
-              <button type="button" disabled={page <= 1} onClick={() => setPage((value) => Math.max(1, value - 1))} className="rounded-lg border border-slate-200 px-3 py-1.5 disabled:opacity-50">Previous</button>
-              <button type="button" disabled={page >= pagination.totalPages} onClick={() => setPage((value) => Math.min(pagination.totalPages, value + 1))} className="rounded-lg border border-slate-200 px-3 py-1.5 disabled:opacity-50">Next</button>
+              <button
+                type="button"
+                disabled={page <= 1}
+                onClick={() => setPage((value) => Math.max(1, value - 1))}
+                className="cursor-pointer rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                disabled={page >= pagination.totalPages}
+                onClick={() => setPage((value) => Math.min(pagination.totalPages, value + 1))}
+                className="cursor-pointer rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Next
+              </button>
             </div>
           </div>
         )}
