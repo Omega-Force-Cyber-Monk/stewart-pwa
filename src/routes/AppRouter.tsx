@@ -174,8 +174,33 @@ function RiderRoute({ children }: { children: React.ReactNode }) {
     return <LoadingScreen />;
   }
 
+  const isUnauthorized = (err: unknown) => {
+    const status = (err as { status?: number | string })?.status;
+    const originalStatus = (err as { originalStatus?: number | string })?.originalStatus;
+    return status === 401 || status === "401" || originalStatus === 401 || originalStatus === "401";
+  };
+
   if (profile.error || dashboard.error) {
-    return <Navigate to="/login" replace />;
+    if (isUnauthorized(profile.error) || isUnauthorized(dashboard.error)) {
+      return <Navigate to="/login" replace />;
+    }
+    if (!profile.data && !dashboard.data) {
+      return (
+        <div className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-4">
+          <p className="text-red-400 mb-4">Unable to load your business dashboard. Please check your connection.</p>
+          <button
+            type="button"
+            onClick={() => {
+              profile.refetch();
+              dashboard.refetch();
+            }}
+            className="px-4 py-2 bg-pink-500 rounded text-white font-medium hover:bg-pink-600"
+          >
+            Retry
+          </button>
+        </div>
+      );
+    }
   }
 
   const purchase = dashboard.data?.purchase ?? profile.data?.purchase;
@@ -184,7 +209,9 @@ function RiderRoute({ children }: { children: React.ReactNode }) {
   }
 
   const businessStatus = dashboard.data?.business?.status ?? profile.data?.business?.status;
+  const onboardingJustCompleted = location.search.includes("onboarding=completed");
   const onboardingComplete =
+    onboardingJustCompleted ||
     dashboard.data?.launchReady === true ||
     dashboard.data?.setupProgress?.completed === true ||
     businessStatus === "ACTIVE";
@@ -193,7 +220,7 @@ function RiderRoute({ children }: { children: React.ReactNode }) {
     return <Navigate to="/launch-dashboard" replace />;
   }
 
-  if (onboardingComplete && isLaunchRoute) {
+  if (onboardingComplete && isLaunchRoute && !onboardingJustCompleted) {
     return <Navigate to="/dashboard" replace />;
   }
 

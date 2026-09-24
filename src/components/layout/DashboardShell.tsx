@@ -171,7 +171,7 @@ export function DashboardShell({ children, title = "Dashboard Overview", variant
           <button
             type="button"
             onClick={() => setIsLogoutModalOpen(true)}
-            className="flex w-full items-center gap-3 rounded-lg bg-red-500/20 px-3 py-2.5 text-sm font-medium text-red-400 transition-colors hover:bg-red-500/30"
+            className="cursor-pointer flex w-full items-center gap-3 rounded-lg bg-red-500/20 px-3 py-2.5 text-sm font-medium text-red-400 transition-colors hover:bg-red-500/30"
           >
             <LogOut className="h-[18px] w-[18px]" />
             Log Out

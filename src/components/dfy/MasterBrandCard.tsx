@@ -23,7 +23,7 @@ export function MasterBrandCard({ brand, businessName }: MasterBrandCardProps) {
       {logo?.fileUrl ? (
         <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
           <img src={logo.fileUrl} alt="Approved master brand logo" className="max-h-44 w-full object-contain" />
-          <button type="button" onClick={() => downloadAsset(logo)} className="mt-4 inline-flex items-center gap-2 rounded-lg bg-dashboard-rider px-3 py-2 text-sm font-semibold text-white">
+          <button type="button" onClick={() => downloadAsset(logo)} className="mt-4 cursor-pointer inline-flex items-center gap-2 rounded-lg bg-dashboard-rider px-3 py-2 text-sm font-semibold text-white hover:bg-dashboard-rider-dark transition-colors">
             <Download className="h-4 w-4" />
             Download logo
           </button>

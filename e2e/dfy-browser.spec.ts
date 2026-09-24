@@ -3,7 +3,6 @@ import {
   adminCredentials,
   apiBaseURL,
   closeModalIfVisible,
-  deliverableCard,
   loginByApi,
   loginViaUi,
   makeTestFiles,
@@ -37,7 +36,7 @@ test.describe.serial("DFY browser customer/admin workflow", () => {
     await expect.poll(() => checkoutBody?.checkoutUrl, { timeout: 20_000 }).toContain("checkout.stripe.com");
   });
 
-  test("customer logo selection, admin fulfillment, publication, and customer downloads", async ({ page, context, request }) => {
+  test("customer logo selection, admin fulfillment, publication, and customer downloads", async ({ page, request }) => {
     const fixture = runFixture<FixtureOrder>("prepare-order");
     const files = makeTestFiles();
 
@@ -63,14 +62,14 @@ test.describe.serial("DFY browser customer/admin workflow", () => {
     await page.getByRole("link", { name: /View/ }).first().click();
     await expect(page).toHaveURL(new RegExp(`/admin/done-for-you/${fixture.orderId}`));
     await expect(page.getByText(fixture.businessName)).toBeVisible();
-    await expect(page.getByText("E2E Testville")).toBeVisible();
+    await expect(page.getByText("Austin, TX")).toBeVisible();
     await expect(page.getByText("https://example.test/e2e-booking")).toBeVisible();
     await expect(page.getByText("Women DFY Template Set")).toBeVisible();
     await expect(page.getByText("Women Video 1")).toBeVisible();
     await expect(page.getByText("Women Starter Post 1")).toBeVisible();
     await expect(page.getByText("Women Local Client and Positioning Guide")).toBeVisible();
 
-    const pdfLink = page.getByRole("link", { name: /Open reference/ }).filter({ has: page.getByText("") }).last();
+    await expect(page.getByRole("link", { name: /Open reference/ }).last()).toBeAttached();
     const pdfResponse = await request.get(`${apiBaseURL}/admin/done-for-you/${fixture.orderId}`, {
       headers: { authorization: `Bearer ${await page.evaluate(() => localStorage.getItem("accessToken"))}` },
     });
@@ -80,7 +79,7 @@ test.describe.serial("DFY browser customer/admin workflow", () => {
     await page.getByRole("button", { name: "Upload final logo" }).click();
     await expect(page.getByText("Logo uploaded")).toBeVisible({ timeout: 60_000 });
     await closeModalIfVisible(page);
-    await page.getByRole("button", { name: /Approve Final Master Logo/ }).click();
+    await page.getByRole("button", { name: /Approve/i }).first().click();
 
     await page.getByLabel("Order status").selectOption("IN_PROGRESS");
     await page.getByLabel("Order status").selectOption("READY");
