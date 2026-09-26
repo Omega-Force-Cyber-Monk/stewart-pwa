@@ -36,7 +36,7 @@ import card1 from "../assets/1st card.jpg";
 import card2 from "../assets/2nd card.jpg";
 import card4 from "../assets/4th card.jpg";
 import coupleHero from "../assets/coupleHero.png";
-import upsellKit from "../assets/Couples_upsell_kit.png";
+import { getDfyUpgradeAsset } from "../config/dfyMapping";
 
 export default function CouplePage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -57,7 +57,7 @@ export default function CouplePage() {
   return (
     <>
       {showPricingModal && (
-        <PricingModal onClose={() => setShowPricingModal(false)} upsellKitImageSrc={upsellKit} />
+        <PricingModal onClose={() => setShowPricingModal(false)} upsellKitImageSrc={getDfyUpgradeAsset("couples")} />
       )}
       <Navbar openPricingModal={openPricingModal} />
       <HeroBanner openPricingModal={openPricingModal} />
@@ -649,7 +649,7 @@ function LaunchKitAndFaqSection({ openPricingModal }: { openPricingModal: () => 
             <div className="flex items-start gap-4">
               <div className="w-8 h-8 rounded-full bg-[#060D64] text-white flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">3</div>
               <div className="flex-1">
-                <h4 className="font-extrabold text-[#060D64] text-[15px] mb-1">Both Build & You Start</h4>
+                <h4 className="font-extrabold text-[#060D64] text-[15px] mb-1">Build and Launch Together</h4>
                 <p className="text-[#060D64] text-[12px] font-medium leading-relaxed pr-2">Follow the guided process to set up your booking flow and personalized selling page. Want help? Add the optional We Do It For You upgrade.</p>
               </div>
               <Rocket className="w-8 h-8 text-[#060D64] shrink-0 opacity-80" strokeWidth={1.5} />

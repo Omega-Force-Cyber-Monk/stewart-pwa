@@ -91,10 +91,10 @@ export function AppRouter() {
       {/* Admin routes */}
       <Route path="/admin" element={<AdminRoute><AdminDashboardLayout><AdminDashboardPage /></AdminDashboardLayout></AdminRoute>} />
       <Route path="/admin/leads" element={<AdminRoute><AdminDashboardLayout title="Lead Submissions"><AdminLeadsPage /></AdminDashboardLayout></AdminRoute>} />
-      <Route path="/admin/drivers" element={<AdminRoute><AdminDashboardLayout title="Drivers Management"><AdminDriversPage /></AdminDashboardLayout></AdminRoute>} />
-      <Route path="/admin/drivers/:id" element={<AdminRoute><AdminDashboardLayout title="Drivers Management"><AdminDriverDetailsPage /></AdminDashboardLayout></AdminRoute>} />
-      <Route path="/admin/resources-upload" element={<AdminRoute><AdminDashboardLayout title="Resources Upload"><AdminResourcesUploadPage /></AdminDashboardLayout></AdminRoute>} />
-      <Route path="/admin/billings" element={<AdminRoute><AdminDashboardLayout title="Billings"><AdminBillingsPage /></AdminDashboardLayout></AdminRoute>} />
+      <Route path="/admin/drivers" element={<AdminRoute><AdminDashboardLayout title="Driver Management"><AdminDriversPage /></AdminDashboardLayout></AdminRoute>} />
+      <Route path="/admin/drivers/:id" element={<AdminRoute><AdminDashboardLayout title="Driver Management"><AdminDriverDetailsPage /></AdminDashboardLayout></AdminRoute>} />
+      <Route path="/admin/resources-upload" element={<AdminRoute><AdminDashboardLayout title="Resource Upload"><AdminResourcesUploadPage /></AdminDashboardLayout></AdminRoute>} />
+      <Route path="/admin/billings" element={<AdminRoute><AdminDashboardLayout title="Billing"><AdminBillingsPage /></AdminDashboardLayout></AdminRoute>} />
       <Route path="/admin/done-for-you" element={<AdminRoute><AdminDashboardLayout title="Done For You Fulfillment"><AdminDoneForYouPage /></AdminDashboardLayout></AdminRoute>} />
       <Route path="/admin/done-for-you/:id" element={<AdminRoute><AdminDashboardLayout title="Done For You Fulfillment"><AdminDoneForYouDetailPage /></AdminDashboardLayout></AdminRoute>} />
       <Route path="/admin/support" element={<AdminRoute><AdminDashboardLayout title="Support"><AdminSupportPage /></AdminDashboardLayout></AdminRoute>} />

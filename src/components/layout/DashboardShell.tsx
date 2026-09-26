@@ -59,10 +59,10 @@ const adminSections: Array<{ title: string; items: NavigationItem[] }> = [
     items: [
       { name: "Dashboard", path: "/admin", icon: LayoutDashboard },
       { name: "Lead Submissions", path: "/admin/leads", icon: ClipboardList },
-      { name: "Drivers Management", path: "/admin/drivers", icon: Users },
+      { name: "Driver Management", path: "/admin/drivers", icon: Users },
       { name: "Done For You", path: "/admin/done-for-you", icon: ClipboardCheck },
-      { name: "Resources Upload", path: "/admin/resources-upload", icon: Upload },
-      { name: "Billings", path: "/admin/billings", icon: CreditCard },
+      { name: "Resource Upload", path: "/admin/resources-upload", icon: Upload },
+      { name: "Billing", path: "/admin/billings", icon: CreditCard },
       { name: "Support", path: "/admin/support", icon: LifeBuoy },
       { name: "Settings", path: "/admin/settings", icon: Settings },
     ],

@@ -34,7 +34,7 @@ import { PaymentBadges } from "../components/common/PaymentBadges";
 import { LaunchPrice } from "../components/marketing/LaunchPrice";
 import { LAUNCH_PRICING } from "../components/marketing/pricing";
 import seniorHero from "../assets/seniorHero.png";
-import upsellKit from "../assets/50_ Done-for-You_upsell_kit.png";
+import { getDfyUpgradeAsset } from "../config/dfyMapping";
 
 export default function SeniorPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -55,7 +55,7 @@ export default function SeniorPage() {
   return (
     <>
       {showPricingModal && (
-        <PricingModal onClose={() => setShowPricingModal(false)} upsellKitImageSrc={upsellKit} />
+        <PricingModal onClose={() => setShowPricingModal(false)} upsellKitImageSrc={getDfyUpgradeAsset("50+")} />
       )}
       <SeniorNavbar openPricingModal={openPricingModal} />
       <HeroBanner />
@@ -611,7 +611,7 @@ function HowItWorksSection() {
       icon: Rocket,
       title: "Build and Launch",
       description:
-        "Follow the step-by-step guidance\nto create your booking flow and\npersonalized selling page. Want\nhelp getting launch ready? Add\nthe optional $99 Done For You\nLaunch Upgrade.",
+        "Follow the step-by-step guidance\nto create your booking flow and\npersonalized selling page. Want\nhelp getting ready to launch? Add\nthe optional $99 Done For You\nLaunch Upgrade.",
     },
   ];
 
@@ -823,7 +823,7 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
               Includes the complete QuitTheApp DIY launch system.
             </p>
             <p className="text-slate-300 text-sm mb-5 font-medium">
-              Want help getting launch ready? Add the <span className="text-[#39b54a] font-bold">{LAUNCH_PRICING.addon} Done For You Launch Upgrade.</span>
+              Want help getting ready to launch? Add the <span className="text-[#39b54a] font-bold">{LAUNCH_PRICING.addon} Done For You Launch Upgrade.</span>
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4">
               {benefits.map((benefit, i) => (

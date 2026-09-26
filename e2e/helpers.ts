@@ -147,7 +147,7 @@ export async function completeOnboardingViaUi(page: Page, businessName: string, 
 export function adminCredentials() {
   const env = backendEnv();
   return {
-    email: env.SEED_ADMIN_EMAIL || "admin@stewart.local",
+    email: env.SEED_ADMIN_EMAIL || "mark@quittheapp.com",
     password: env.SEED_ADMIN_PASSWORD || "Admin@12345",
   };
 }

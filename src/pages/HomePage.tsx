@@ -39,7 +39,7 @@ import coupleComparisonRight from "../assets/coupleComparisonSectionRight.png";
 
 
 import standardHero from "../assets/standardHero.png";
-import upsellKit from "../assets/standard_upsell_kit.png";
+import { getDfyUpgradeAsset } from "../config/dfyMapping";
 
 export default function HomePage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -77,7 +77,7 @@ export default function HomePage() {
   return (
     <>
       {showPricingModal && (
-        <PricingModal onClose={() => setShowPricingModal(false)} upsellKitImageSrc={upsellKit} />
+        <PricingModal onClose={() => setShowPricingModal(false)} upsellKitImageSrc={getDfyUpgradeAsset("main")} />
       )}
       <SeniorNavbar openPricingModal={openPricingModal} />
       <HeroBanner />
@@ -1022,7 +1022,7 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
               <Users className="w-10 h-10 text-[#39b54a] shrink-0 stroke-[1.5]" />
               <p className="text-slate-300 text-sm leading-relaxed">
                 Build a trusted, professional business that puts you in
-                control—and your clients keep coming back.
+                control and keeps your clients coming back.
               </p>
             </div>
           </div>

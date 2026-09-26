@@ -159,7 +159,13 @@ export default function AdminDriverDetailsPage() {
           )}
         >
           {verified ? <CheckCircle2 className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
-          {driver.verificationStatus}
+          {driver.verificationStatus === "PENDING"
+            ? "Approval Status: Pending"
+            : driver.verificationStatus === "APPROVED"
+              ? "Approval Status: Approved"
+              : driver.verificationStatus === "REJECTED"
+                ? "Approval Status: Rejected"
+                : `Approval Status: ${driver.verificationStatus}`}
         </span>
       </div>
 
@@ -208,7 +214,7 @@ export default function AdminDriverDetailsPage() {
                 <span className="text-sm font-medium text-slate-800 text-right capitalize">{driver.user.status}</span>
               </div>
               <div className="flex justify-between items-start">
-                <span className="text-sm text-slate-500">Joined Date</span>
+                <span className="text-sm text-slate-500">Date Joined</span>
                 <span className="text-sm font-medium text-slate-800 text-right">{formatDate(driver.createdAt)}</span>
               </div>
             </div>
@@ -283,7 +289,9 @@ export default function AdminDriverDetailsPage() {
           />
         </div>
         <p className="text-xs text-slate-500 mt-2">
-          Current step {driver.setup?.currentStep ?? 1} of 8 · {driver.setup?.completedSteps?.length ?? 0} steps completed
+          {(driver.setup?.completedSteps?.length ?? 0) >= 4 || (driver.setup?.percentage ?? 0) >= 100
+            ? "4 of 4 steps completed"
+            : `Current step ${driver.setup?.currentStep ?? 1} of 4 · ${driver.setup?.completedSteps?.length ?? 0} of 4 steps completed`}
         </p>
       </div>
 

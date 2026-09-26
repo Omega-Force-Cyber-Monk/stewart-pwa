@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Camera, Edit, Loader2, Monitor, Save, ShieldCheck, User, Eye, EyeOff } from "lucide-react";
+import { Camera, Edit, Loader2, Save, ShieldCheck, Eye, EyeOff } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../hooks/storeHooks";
 import { updateUser } from "../store/features/auth/authSlice";
 import {
@@ -8,43 +8,23 @@ import {
   useUpdateRiderProfileMutation,
   useUploadAvatarMutation
 } from "../store/api/Auth/auth.api";
-import { useGetAdminSettingsQuery, useUpdateAdminSettingMutation } from "../store/api/Admin/admin.api";
-import type { SettingKey } from "../store/api/Admin/admin.type";
 
-const tabs: Array<{ key: "account" | SettingKey; label: string; icon: typeof User }> = [
-  { key: "account", label: "Account Settings", icon: User },
-  { key: "platform", label: "Platform Settings", icon: Monitor }
-];
+function getInitials(name: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+  return "MN";
+}
 
 export default function AdminSettingsPage() {
-  const [active, setActive] = useState<"account" | SettingKey>("account");
-
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-slate-900">Settings</h2>
-        <p className="mt-1 text-sm text-slate-500">Manage your platform settings, preferences, and system configuration.</p>
+        <p className="mt-1 text-sm text-slate-500">Manage your profile, preferences, and account security.</p>
       </div>
-      <div className="flex gap-5 overflow-x-auto border-b border-slate-200">
-        {tabs.map((tab) => (
-          <button
-            type="button"
-            key={tab.key}
-            onClick={() => setActive(tab.key)}
-            className={`flex items-center gap-2 whitespace-nowrap border-b-2 px-1 pb-3 text-sm ${
-              active === tab.key ? "border-blue-600 text-blue-600" : "border-transparent text-slate-500"
-            }`}
-          >
-            <tab.icon className="h-4 w-4" />
-            {tab.label}
-          </button>
-        ))}
-      </div>
-      {active === "account" ? (
-        <AccountSettings />
-      ) : (
-        <JsonSettings settingKey={active} label={tabs.find((tab) => tab.key === active)?.label || active} />
-      )}
+      <AccountSettings />
     </div>
   );
 }
@@ -125,7 +105,7 @@ function AccountSettings() {
             {profile?.avatarUrl ? (
               <img src={profile.avatarUrl} alt="Profile" className="h-full w-full rounded-full object-cover" />
             ) : (
-              (name || "A").slice(0, 2).toUpperCase()
+              getInitials(name || profile?.name || "Mark Nelson")
             )}
             <span className="absolute bottom-0 right-0 grid h-8 w-8 place-items-center rounded-full bg-blue-500">
               <Camera className="h-4 w-4" />
@@ -258,49 +238,3 @@ function AccountSettings() {
   );
 }
 
-function JsonSettings({ settingKey, label }: { settingKey: SettingKey; label: string }) {
-  const { data, isLoading } = useGetAdminSettingsQuery();
-  const [save, { isLoading: saving }] = useUpdateAdminSettingMutation();
-  const [form, setForm] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    const source = data?.settings?.[settingKey] || {};
-    setForm(Object.fromEntries(Object.entries(source).map(([key, value]) => [key, String(value)])));
-  }, [settingKey, data]);
-
-  if (isLoading) return <Loader2 className="mx-auto my-12 h-7 w-7 animate-spin text-blue-600" />;
-
-  return (
-    <section className="max-w-4xl rounded-xl bg-white p-6 shadow-sm">
-      <h3 className="text-lg font-semibold text-slate-900">{label}</h3>
-      <div className="mt-5 grid gap-4 sm:grid-cols-2">
-        {Object.entries(form).map(([key, value]) => (
-          <label key={key} className="text-sm capitalize text-slate-500">
-            {key.replace(/([A-Z])/g, " $1")}
-            <input
-              value={value}
-              onChange={(event) => setForm((current) => ({ ...current, [key]: event.target.value }))}
-              className="mt-1 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800"
-            />
-          </label>
-        ))}
-      </div>
-      <button
-        type="button"
-        disabled={saving}
-        onClick={() =>
-          save({
-            key: settingKey,
-            value: Object.fromEntries(
-              Object.entries(form).map(([key, value]) => [key, value === "true" ? true : value === "false" ? false : value])
-            )
-          })
-        }
-        className="mt-5 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white"
-      >
-        <Save className="mr-2 inline h-4 w-4" />
-        Save changes
-      </button>
-    </section>
-  );
-}

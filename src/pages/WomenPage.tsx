@@ -32,7 +32,7 @@ import { PaymentBadges } from "../components/common/PaymentBadges";
 import { LaunchPrice } from "../components/marketing/LaunchPrice";
 import { LAUNCH_PRICING } from "../components/marketing/pricing";
 import womenHero from "../assets/womenHero.png";
-import upsellKit from "../assets/Women_Only_Brand_Upsell_Kit.png";
+import { getDfyUpgradeAsset } from "../config/dfyMapping";
 
 export default function WomenPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -57,7 +57,7 @@ export default function WomenPage() {
       {showPricingModal && (
         <PricingModal
           onClose={() => setShowPricingModal(false)}
-          upsellKitImageSrc={upsellKit}
+          upsellKitImageSrc={getDfyUpgradeAsset("women")}
           funnelCategory="WOMEN"
           sourcePage="WOMEN"
         />
@@ -633,7 +633,7 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
             <div className="flex items-start gap-4">
               <Heart className="w-8 h-8 text-[#f42661] shrink-0 stroke-[1.5]" />
               <p className="text-slate-300 text-sm leading-relaxed">
-                Build a trusted, professional business that fits your life—and your clients keep coming back.
+                Build a trusted, professional business that fits your life and keeps your clients coming back.
               </p>
             </div>
           </div>

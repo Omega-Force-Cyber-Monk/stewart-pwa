@@ -251,14 +251,13 @@ export function PricingModal({ onClose, upsellKitImageSrc, funnelCategory, sourc
 
               <ul className="space-y-2 mb-6 flex-1">
                 {[
-                  "Everything in the Launch Kit",
-                  "Done-for-you setup assistance",
-                  "Custom business page setup",
-                  "Priority onboarding support",
-                  "Professional review & feedback",
-                  "Referral card custom design",
-                  "Personalized selling page setup",
-                  "Hands-on implementation support",
+                  "Complete Business Setup",
+                  "All Marketing Materials",
+                  "Acuity Scheduling Setup",
+                  "Personalized Selling Page",
+                  "QR Code & Referral Assets",
+                  "3 Launch Videos",
+                  "Ongoing Support",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-2 text-sm text-slate-300">
                     <Check className="size-4 text-[#04B5A3] shrink-0 mt-0.5 stroke-[3]" />
@@ -284,10 +283,6 @@ export function PricingModal({ onClose, upsellKitImageSrc, funnelCategory, sourc
                 <Eye className="size-4" />
                 View Add-on Details
               </button>
-              <p className="text-center text-xs font-semibold uppercase tracking-wide text-[#04B5A3]">
-                Upsell Kit
-              </p>
-
             </div>
           </div>
 
@@ -299,7 +294,7 @@ export function PricingModal({ onClose, upsellKitImageSrc, funnelCategory, sourc
         </div>
       </div>
 
-      {/* Fullscreen Upsell Kit Preview */}
+      {/* Fullscreen Done For You Upgrade Preview */}
       {showUpsell && upsellKitImageSrc && (
         <div className="fixed inset-0 z-[10000] bg-black/95 flex flex-col items-center justify-center p-4">
           <div className="w-full max-w-5xl flex justify-end mb-4 gap-4 flex-shrink-0">
@@ -308,7 +303,7 @@ export function PricingModal({ onClose, upsellKitImageSrc, funnelCategory, sourc
                 if (navigator.share) {
                   try {
                     await navigator.share({
-                      title: "Upsell Kit",
+                      title: "QuitTheApp Done For You Upgrade",
                       url: window.location.origin + upsellKitImageSrc,
                     });
                   } catch {
@@ -354,7 +349,7 @@ export function PricingModal({ onClose, upsellKitImageSrc, funnelCategory, sourc
             <div className="m-auto flex-shrink-0" style={{ width: `${zoomLevel * 100}%`, transition: 'width 0.2s ease-out' }}>
               <img
                 src={upsellKitImageSrc}
-                alt="Upsell Kit Preview"
+                alt="QuitTheApp Done For You Upgrade"
                 className="w-full h-auto shadow-2xl rounded-lg"
               />
             </div>
