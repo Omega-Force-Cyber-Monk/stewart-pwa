@@ -12,7 +12,23 @@ export function PWAUpdatePrompt() {
     offlineReady: [offlineReady, setOfflineReady],
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker,
-  } = useRegisterSW();
+  } = useRegisterSW({
+    onRegistered(r) {
+      if (!r) return;
+      
+      // Periodically check for updates every 60 minutes
+      setInterval(() => {
+        r.update();
+      }, 60 * 60 * 1000);
+
+      // Check for updates when the app comes back to the foreground
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") {
+          r.update();
+        }
+      });
+    },
+  });
 
   const currentNotice: NoticeType | null = needRefresh
     ? "refresh"
