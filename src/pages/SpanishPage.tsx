@@ -35,28 +35,58 @@ import { PaymentBadges } from "../components/common/PaymentBadges";
 import { LaunchPrice } from "../components/marketing/LaunchPrice";
 import { LAUNCH_PRICING } from "../components/marketing/pricing";
 import spanishHero from "../assets/spanishHero.png";
-import upsellKit from "../assets/spanish_upsell_kit.png";
+import { getDfyUpgradeAsset } from "../config/dfyMapping";
 
 export default function SpanishPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  // Auto-open the pricing modal when redirected here with ?showPricing=true.
+  // Auto-open the pricing modal when redirected here with ?showPricing=true or ?dfy=true
+  const isDfyParam =
+    searchParams.get("dfy") === "true" ||
+    searchParams.get("showDfy") === "true";
   const [showPricingModal, setShowPricingModal] = useState(
-    () => searchParams.get("showPricing") === "true"
+    () => searchParams.get("showPricing") === "true" || isDfyParam
   );
+  const [initialShowUpsell, setInitialShowUpsell] = useState(() => isDfyParam);
 
-  // Clear the ?showPricing=true query param once considered
+  // Clear the ?showPricing=true or ?dfy=true query param once considered
   useEffect(() => {
-    if (searchParams.get("showPricing") === "true") {
+    if (
+      searchParams.get("showPricing") === "true" ||
+      searchParams.get("dfy") === "true" ||
+      searchParams.get("showDfy") === "true"
+    ) {
       setSearchParams({}, { replace: true });
     }
   }, [searchParams, setSearchParams]);
 
-  const openPricingModal = () => setShowPricingModal(true);
+  const [initialPlan, setInitialPlan] = useState<"base" | "bundle" | undefined>(
+    () => (isDfyParam ? "bundle" : undefined)
+  );
+
+  const openPricingModal = () => {
+    setInitialShowUpsell(false);
+    setInitialPlan(undefined);
+    setShowPricingModal(true);
+  };
+
+  const openDfyModal = () => {
+    setInitialShowUpsell(false);
+    setInitialPlan("bundle");
+    setShowPricingModal(true);
+  };
 
   return (
     <>
       {showPricingModal && (
-        <PricingModal onClose={() => setShowPricingModal(false)} upsellKitImageSrc={upsellKit} />
+        <PricingModal
+          onClose={() => setShowPricingModal(false)}
+          upsellKitImageSrc={getDfyUpgradeAsset("spanish")}
+          funnelCategory="SPANISH"
+          sourcePage="SPANISH"
+          isSpanish={true}
+          initialShowUpsell={initialShowUpsell}
+          initialPlan={initialPlan}
+        />
       )}
       <SpanishNavbar openPricingModal={openPricingModal} />
       <HeroBanner openPricingModal={openPricingModal} />
@@ -64,7 +94,7 @@ export default function SpanishPage() {
       <AllYouNeedSection />
       <HowItWorksSection />
       <ProvenModelSection />
-      <HowItWorksAndFaqSection openPricingModal={openPricingModal} />
+      <HowItWorksAndFaqSection openPricingModal={openPricingModal} openDfyModal={openDfyModal} />
     </>
   );
 }
@@ -285,7 +315,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
   const { accessToken } = useAppSelector((state) => state.auth);
 
   return (
-    <div className="relative w-full data-exit-intent-hero min-h-[100svh] lg:min-h-[90svh] pt-[clamp(64px,8vw,80px)] flex flex-col justify-between overflow-hidden bg-[#040a23]">
+    <div data-exit-intent-hero="" className="relative w-full data-exit-intent-hero min-h-[100svh] lg:min-h-[90svh] pt-[clamp(64px,8vw,80px)] flex flex-col justify-between overflow-hidden bg-[#040a23]">
       {/* Background Image on the right side */}
       <div className="absolute inset-0 w-full h-full flex justify-end bg-[#040a23]">
         <div className="relative w-full max-w-[1240px] h-full">
@@ -722,7 +752,13 @@ function ProvenModelSection() {
   );
 }
 
-function HowItWorksAndFaqSection({ openPricingModal }: { openPricingModal: () => void }) {
+function HowItWorksAndFaqSection({
+  openPricingModal,
+  openDfyModal,
+}: {
+  openPricingModal: () => void;
+  openDfyModal?: () => void;
+}) {
   const { accessToken, user } = useAppSelector((state) => state.auth);
 
   const faqs = [
@@ -836,21 +872,21 @@ function HowItWorksAndFaqSection({ openPricingModal }: { openPricingModal: () =>
                   </Link>
                 ) : accessToken ? (
                   <button
-                    onClick={openPricingModal}
+                    onClick={openDfyModal || openPricingModal}
                     className="cursor-pointer bg-[#22c55e] hover:bg-[#16a34a] text-white font-bold py-4 px-5 rounded-xl transition-colors flex items-center justify-between group w-full text-left shadow-lg mb-6"
                   >
                     <span className="text-[1.1rem] lg:text-[1.2rem] uppercase leading-tight w-full pr-2">
-                      QUIERO EMPEZAR<br />MI NEGOCIO<br />$295
+                      AGREGA LA MEJORA HECHA PARA TI DE $99
                     </span>
                     <ArrowRight className="w-6 h-6 shrink-0 group-hover:translate-x-1 transition-transform" />
                   </button>
                 ) : (
                   <button
-                    onClick={openPricingModal}
+                    onClick={openDfyModal || openPricingModal}
                     className="cursor-pointer bg-[#22c55e] hover:bg-[#16a34a] text-white font-bold py-4 px-5 rounded-xl transition-colors flex items-center justify-between group w-full text-left shadow-lg mb-6"
                   >
                     <span className="text-[1.1rem] lg:text-[1.2rem] uppercase leading-tight w-full pr-2">
-                      QUIERO EMPEZAR<br />MI NEGOCIO<br />$295
+                      AGREGA LA MEJORA HECHA PARA TI DE $99
                     </span>
                     <ArrowRight className="w-6 h-6 shrink-0 group-hover:translate-x-1 transition-transform" />
                   </button>

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { getExitIntentConfig, isExitIntentRoute, type ExitIntentRouteConfig } from "../components/marketing/exit-intent/exitIntentConfig";
 import { isMobileExitIntentVisible, canShowExitIntent, consumeExitIntent } from "../components/marketing/exit-intent/exitIntentLogic";
+import { areMarketingOverlaysVisible } from "../lib/marketingOverlay";
 
 type PopupState = {
   open: boolean;
@@ -10,14 +11,19 @@ type PopupState = {
 
 export function useExitIntentPopup(): PopupState & { close: () => void } {
   const location = useLocation();
-  const config = useMemo(() => getExitIntentConfig(location.pathname), [location.pathname]);
-  const eligible = isExitIntentRoute(location.pathname);
+  const normalizedPath =
+    location.pathname.length > 1 && location.pathname.endsWith("/")
+      ? location.pathname.slice(0, -1)
+      : location.pathname;
+  const config = useMemo(() => getExitIntentConfig(normalizedPath), [normalizedPath]);
+  const eligible = isExitIntentRoute(normalizedPath);
 
   const [popup, setPopup] = useState<PopupState>({ open: false, config: null });
 
   const canShow = useCallback(() => {
     if (!eligible || !config) return false;
     if (!canShowExitIntent()) return false;
+    if (areMarketingOverlaysVisible()) return false;
     return true;
   }, [config, eligible]);
 
@@ -43,7 +49,7 @@ export function useExitIntentPopup(): PopupState & { close: () => void } {
       document.addEventListener("mouseleave", handleMouseLeave);
       cleanup = () => document.removeEventListener("mouseleave", handleMouseLeave);
     } else {
-      const hero = document.querySelector<HTMLElement>("[data-exit-intent-hero]");
+      const hero = document.querySelector<HTMLElement>("[data-exit-intent-hero], .data-exit-intent-hero");
       if (!hero || !("IntersectionObserver" in window)) return undefined;
       let intersectionRatio = 0;
       const observer = new IntersectionObserver((entries) => {

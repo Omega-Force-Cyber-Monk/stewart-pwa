@@ -47,11 +47,13 @@ export default function HomePage() {
   const { accessToken } = useAppSelector((state) => state.auth);
 
   // Auto-open the pricing modal when redirected here with ?showPricing=true.
-  // LoginPage only sends non-active riders here, and the modal closes on
-  // explicit user action — so no status re-check is needed at render time.
+  const isDfyParam =
+    searchParams.get("dfy") === "true" ||
+    searchParams.get("showDfy") === "true";
   const [showPricingModal, setShowPricingModal] = useState(
-    () => searchParams.get("showPricing") === "true"
+    () => searchParams.get("showPricing") === "true" || isDfyParam
   );
+  const [initialShowUpsell, setInitialShowUpsell] = useState(() => isDfyParam);
 
   // Fetch the latest user profile details (status, verification, etc.) on landing
   const { data: profileData } = useGetRiderProfileQuery(undefined, {
@@ -65,19 +67,44 @@ export default function HomePage() {
     }
   }, [profileData, dispatch]);
 
-  // Clear the ?showPricing=true query param once the modal has been considered
+  // Clear query params once the modal has been considered
   useEffect(() => {
-    if (searchParams.get("showPricing") === "true") {
+    if (
+      searchParams.get("showPricing") === "true" ||
+      searchParams.get("dfy") === "true" ||
+      searchParams.get("showDfy") === "true"
+    ) {
       setSearchParams({}, { replace: true });
     }
   }, [searchParams, setSearchParams]);
 
-  const openPricingModal = () => setShowPricingModal(true);
+  const [initialPlan, setInitialPlan] = useState<"base" | "bundle" | undefined>(
+    () => (isDfyParam ? "bundle" : undefined)
+  );
+
+  const openPricingModal = () => {
+    setInitialShowUpsell(false);
+    setInitialPlan(undefined);
+    setShowPricingModal(true);
+  };
+
+  const openDfyModal = () => {
+    setInitialShowUpsell(false);
+    setInitialPlan("bundle");
+    setShowPricingModal(true);
+  };
 
   return (
     <>
       {showPricingModal && (
-        <PricingModal onClose={() => setShowPricingModal(false)} upsellKitImageSrc={getDfyUpgradeAsset("main")} />
+        <PricingModal
+          onClose={() => setShowPricingModal(false)}
+          upsellKitImageSrc={getDfyUpgradeAsset("main")}
+          funnelCategory="STANDARD"
+          sourcePage="MAIN"
+          initialShowUpsell={initialShowUpsell}
+          initialPlan={initialPlan}
+        />
       )}
       <SeniorNavbar openPricingModal={openPricingModal} />
       <HeroBanner />
@@ -87,7 +114,7 @@ export default function HomePage() {
       <HowItWorksSection />
       <ExperienceSectionWrapper />
       <FaqSection />
-      <FooterCTASection openPricingModal={openPricingModal} />
+      <FooterCTASection openDfyModal={openDfyModal} />
     </>
   );
 }
@@ -299,7 +326,7 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
 
 function HeroBanner() {
   return (
-    <div className="relative w-full data-exit-intent-hero min-h-[100svh] lg:min-h-[90svh] pt-[clamp(64px,8vw,80px)] flex flex-col justify-between overflow-hidden bg-[#040a23]">
+    <div data-exit-intent-hero="" className="relative w-full data-exit-intent-hero min-h-[100svh] lg:min-h-[90svh] pt-[clamp(64px,8vw,80px)] flex flex-col justify-between overflow-hidden bg-[#040a23]">
       {/* Desktop Background Image */}
       <img
         src={seniorBanner}
@@ -969,7 +996,7 @@ function FaqSection() {
   );
 }
 
-function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }) {
+function FooterCTASection({ openDfyModal }: { openDfyModal: () => void }) {
   const { accessToken, user } = useAppSelector((state) => state.auth);
 
   const trustBadges = [
@@ -1062,11 +1089,11 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
           <div className="lg:w-1/3 flex flex-col justify-center items-center lg:items-end">
             {user?.status === "active" ? (
               <button
-                onClick={openPricingModal}
+                onClick={openDfyModal}
                 className="cursor-pointer w-full bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-4 px-6 rounded-lg transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-between group text-base sm:text-lg mb-4 min-h-[56px]"
               >
                 <span className="text-center w-full">
-                  Start Your Business
+                  ADD THE $99 DONE FOR YOU UPGRADE
                 </span>
                 <div className="bg-white rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
                   <ArrowRight className="w-5 h-5 text-[#16a34a] stroke-[3]" />
@@ -1074,11 +1101,11 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
               </button>
             ) : accessToken ? (
               <button
-                onClick={openPricingModal}
+                onClick={openDfyModal}
                 className="cursor-pointer w-full bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-4 px-6 rounded-lg transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-between group text-base sm:text-lg mb-4 min-h-[56px]"
               >
                 <span className="text-center w-full">
-                  Start My Private Airport Business™ — $295
+                  ADD THE $99 DONE FOR YOU UPGRADE
                 </span>
                 <div className="bg-white rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
                   <ArrowRight className="w-5 h-5 text-[#16a34a] stroke-[3]" />
@@ -1086,11 +1113,11 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
               </button>
             ) : (
               <button
-                onClick={openPricingModal}
+                onClick={openDfyModal}
                 className="cursor-pointer w-full bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-4 px-6 rounded-lg transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-between group text-base sm:text-lg mb-4 min-h-[56px]"
               >
                 <span className="text-center w-full">
-                  Start My Private Airport Business™ — $295
+                  ADD THE $99 DONE FOR YOU UPGRADE
                 </span>
                 <div className="bg-white rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
                   <ArrowRight className="w-5 h-5 text-[#16a34a] stroke-[3]" />

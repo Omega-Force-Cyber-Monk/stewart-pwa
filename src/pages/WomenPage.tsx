@@ -37,20 +37,40 @@ import { getDfyUpgradeAsset } from "../config/dfyMapping";
 export default function WomenPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   // Auto-open the pricing modal when redirected here with ?showPricing=true.
-  // LoginPage only sends non-active riders here, and the modal closes on
-  // explicit user action — so no status re-check is needed at render time.
+  const isDfyParam =
+    searchParams.get("dfy") === "true" ||
+    searchParams.get("showDfy") === "true";
   const [showPricingModal, setShowPricingModal] = useState(
-    () => searchParams.get("showPricing") === "true"
+    () => searchParams.get("showPricing") === "true" || isDfyParam
   );
+  const [initialShowUpsell, setInitialShowUpsell] = useState(() => isDfyParam);
 
-  // Clear the ?showPricing=true query param once considered
+  // Clear query params once considered
   useEffect(() => {
-    if (searchParams.get("showPricing") === "true") {
+    if (
+      searchParams.get("showPricing") === "true" ||
+      searchParams.get("dfy") === "true" ||
+      searchParams.get("showDfy") === "true"
+    ) {
       setSearchParams({}, { replace: true });
     }
   }, [searchParams, setSearchParams]);
 
-  const openPricingModal = () => setShowPricingModal(true);
+  const [initialPlan, setInitialPlan] = useState<"base" | "bundle" | undefined>(
+    () => (isDfyParam ? "bundle" : undefined)
+  );
+
+  const openPricingModal = () => {
+    setInitialShowUpsell(false);
+    setInitialPlan(undefined);
+    setShowPricingModal(true);
+  };
+
+  const openDfyModal = () => {
+    setInitialShowUpsell(false);
+    setInitialPlan("bundle");
+    setShowPricingModal(true);
+  };
 
   return (
     <>
@@ -60,6 +80,8 @@ export default function WomenPage() {
           upsellKitImageSrc={getDfyUpgradeAsset("women")}
           funnelCategory="WOMEN"
           sourcePage="WOMEN"
+          initialShowUpsell={initialShowUpsell}
+          initialPlan={initialPlan}
         />
       )}
       <Navbar openPricingModal={openPricingModal} />
@@ -69,7 +91,7 @@ export default function WomenPage() {
       <OneClientFlowSection />
       <ProvenModelSection />
       <HowItWorksAndFaqSection />
-      <FooterCTASection openPricingModal={openPricingModal} />
+      <FooterCTASection openDfyModal={openDfyModal} />
     </>
   );
 }
@@ -78,7 +100,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
   const { accessToken } = useAppSelector((state) => state.auth);
 
   return (
-    <div className="relative w-full data-exit-intent-hero min-h-[100svh] lg:min-h-[90svh] pt-[clamp(64px,8vw,80px)] flex flex-col justify-between overflow-hidden bg-[#0b0f19]">
+    <div data-exit-intent-hero="" className="relative w-full data-exit-intent-hero min-h-[100svh] lg:min-h-[90svh] pt-[clamp(64px,8vw,80px)] flex flex-col justify-between overflow-hidden bg-[#0b0f19]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
@@ -214,7 +236,8 @@ function BusinessBuiltAroundYourLifeSection() {
   ];
 
   return (
-    <section className="bg-white py-1 border-b border-slate-100" id="business-built-around-your-life">
+    <section className="bg-white py-1 border-b border-slate-100 scroll-mt-20" id="how-it-works">
+      <span id="business-built-around-your-life" className="relative -top-24 block pointer-events-none" />
       <PageContainer size="full">
         <div className="text-center mb-10">
           <h2 className="text-[clamp(1.375rem,3vw,1.75rem)] font-bold text-[#0b0f19] tracking-tight">
@@ -412,7 +435,7 @@ function OneClientFlowSection() {
 
 function ProvenModelSection() {
   return (
-    <section className="bg-white py-1">
+    <section className="bg-white py-1 scroll-mt-20" id="reviews">
       <PageContainer size="full">
         <h2 className="text-[clamp(1.1rem,2vw,1.25rem)] font-bold text-[#f42661] text-center mb-8 uppercase tracking-wide">
           START WITH A PROVEN AIRPORT TRANSPORTATION MODEL
@@ -541,7 +564,7 @@ function HowItWorksAndFaqSection() {
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
 
           {/* Left Side: How It Works */}
-          <div className="w-full lg:w-1/2">
+          <div className="w-full lg:w-1/2 scroll-mt-20" id="how-it-works-steps">
             <h2 className="text-[clamp(1.25rem,2.5vw,1.75rem)] font-bold text-[#0b0f19] mb-8 lg:mb-10 text-balance">
               How It Works
             </h2>
@@ -577,7 +600,7 @@ function HowItWorksAndFaqSection() {
           </div>
 
           {/* Right Side: FAQ */}
-          <div className="w-full lg:w-1/2">
+          <div className="w-full lg:w-1/2 scroll-mt-20" id="faq">
             <h2 className="text-[clamp(1.25rem,2.5vw,1.75rem)] font-bold text-[#0b0f19] mb-8 lg:mb-10 text-balance">
               Frequently <span className="text-[#f42661]">Asked Questions</span>
             </h2>
@@ -611,7 +634,7 @@ function HowItWorksAndFaqSection() {
   );
 }
 
-function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }) {
+function FooterCTASection({ openDfyModal }: { openDfyModal: () => void }) {
   const benefits = [
     "One-time payment",
     "No monthly platform fees",
@@ -620,7 +643,7 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
   ];
 
   return (
-    <section className="bg-[#0b0f19] py-1">
+    <section className="bg-[#0b0f19] py-1" id="footer-cta">
       <PageContainer size="full">
         {/* Main 3-Column Layout */}
         <div className="flex flex-col lg:flex-row justify-between gap-10 lg:gap-8 pb-10 border-b border-slate-800">
@@ -662,10 +685,10 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
           <div className="lg:w-1/3 flex flex-col justify-center items-start lg:items-end">
             <div className="w-full sm:w-auto">
               <button
-                onClick={openPricingModal}
+                onClick={openDfyModal}
                 className="cursor-pointer bg-[#f42661] hover:bg-[#d91950] text-white font-bold py-4 px-8 rounded-[0.5rem] transition-colors shadow-lg shadow-[#f42661]/20 flex items-center justify-center gap-4 w-full text-base sm:text-lg mb-4 min-h-[56px]"
               >
-                <span>Start Your Business</span>
+                <span>ADD THE $99 DONE FOR YOU UPGRADE</span>
                 <div className="bg-white rounded-full p-1 shrink-0">
                   <ChevronRight className="w-5 h-5 text-[#f42661] stroke-[3]" />
                 </div>
