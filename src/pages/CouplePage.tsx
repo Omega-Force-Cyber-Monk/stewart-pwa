@@ -40,32 +40,60 @@ import { getDfyUpgradeAsset } from "../config/dfyMapping";
 
 export default function CouplePage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  // Auto-open the pricing modal when redirected here with ?showPricing=true.
+  const isDfyParam =
+    searchParams.get("dfy") === "true" ||
+    searchParams.get("showDfy") === "true";
   const [showPricingModal, setShowPricingModal] = useState(
-    () => searchParams.get("showPricing") === "true"
+    () => searchParams.get("showPricing") === "true" || isDfyParam
   );
+  const [initialShowUpsell, setInitialShowUpsell] = useState(() => isDfyParam);
 
-  // Clear the ?showPricing=true query param once considered
+  // Clear query params once considered
   useEffect(() => {
-    if (searchParams.get("showPricing") === "true") {
+    if (
+      searchParams.get("showPricing") === "true" ||
+      searchParams.get("dfy") === "true" ||
+      searchParams.get("showDfy") === "true"
+    ) {
       setSearchParams({}, { replace: true });
     }
   }, [searchParams, setSearchParams]);
 
-  const openPricingModal = () => setShowPricingModal(true);
+  const [initialPlan, setInitialPlan] = useState<"base" | "bundle" | undefined>(
+    () => (isDfyParam ? "bundle" : undefined)
+  );
+
+  const openPricingModal = () => {
+    setInitialShowUpsell(false);
+    setInitialPlan(undefined);
+    setShowPricingModal(true);
+  };
+
+  const openDfyModal = () => {
+    setInitialShowUpsell(false);
+    setInitialPlan("bundle");
+    setShowPricingModal(true);
+  };
 
   return (
     <>
       {showPricingModal && (
-        <PricingModal onClose={() => setShowPricingModal(false)} upsellKitImageSrc={getDfyUpgradeAsset("couples")} />
+        <PricingModal
+          onClose={() => setShowPricingModal(false)}
+          upsellKitImageSrc={getDfyUpgradeAsset("couples")}
+          funnelCategory="COUPLE"
+          sourcePage="COUPLE"
+          initialShowUpsell={initialShowUpsell}
+          initialPlan={initialPlan}
+        />
       )}
       <Navbar openPricingModal={openPricingModal} />
       <HeroBanner openPricingModal={openPricingModal} />
       <AllYouNeedSection />
       <TwoPeopleStrengthsSection />
       <ProvenModelSection />
-      <LaunchKitAndFaqSection openPricingModal={openPricingModal} />
-      <FooterCTASection openPricingModal={openPricingModal} />
+      <LaunchKitAndFaqSection openPricingModal={openPricingModal} openDfyModal={openDfyModal} />
+      <FooterCTASection openDfyModal={openDfyModal} />
     </>
   );
 }
@@ -74,7 +102,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
   const { accessToken } = useAppSelector((state) => state.auth);
 
   return (
-    <div className="relative w-full data-exit-intent-hero flex flex-col justify-between bg-white border-b border-gray-100">
+    <div data-exit-intent-hero="" className="relative w-full data-exit-intent-hero flex flex-col justify-between bg-white border-b border-gray-100">
       {/* Background Image and Main Content container */}
       <div className="relative w-full min-h-[70svh] pt-[clamp(56px,7vw,72px)] flex flex-col justify-between overflow-hidden bg-[#f8fafc] pb-0 lg:pb-0">
 
@@ -604,7 +632,13 @@ function ProvenModelSection() {
   );
 }
 
-function LaunchKitAndFaqSection({ openPricingModal }: { openPricingModal: () => void }) {
+function LaunchKitAndFaqSection({
+  openPricingModal,
+  openDfyModal,
+}: {
+  openPricingModal: () => void;
+  openDfyModal?: () => void;
+}) {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const toggleFaq = (idx: number) => {
@@ -692,7 +726,7 @@ function LaunchKitAndFaqSection({ openPricingModal }: { openPricingModal: () => 
               </div>
             </div>
 
-            <button onClick={openPricingModal} className="mt-4 w-full text-left bg-[#eab308] rounded-xl p-4 flex items-center justify-between shadow-sm cursor-pointer hover:bg-[#ca8a04] transition-colors group">
+            <button onClick={openDfyModal || openPricingModal} className="mt-4 w-full text-left bg-[#eab308] rounded-xl p-4 flex items-center justify-between shadow-sm cursor-pointer hover:bg-[#ca8a04] transition-colors group">
               <span className="text-[#060D64] font-extrabold text-[14px]">Optional Upgrade: We Do It For You — $99</span>
               <Users className="w-6 h-6 text-[#060D64] opacity-80 group-hover:opacity-100 transition-opacity" />
             </button>
@@ -737,7 +771,7 @@ function LaunchKitAndFaqSection({ openPricingModal }: { openPricingModal: () => 
   );
 }
 
-function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }) {
+function FooterCTASection({ openDfyModal }: { openDfyModal: () => void }) {
   return (
     <section className="bg-white py-1" id="footer-cta">
       <PageContainer size="full">
@@ -777,8 +811,8 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
 
           {/* Right Block */}
           <div className="flex flex-col items-center justify-center shrink-0 w-full lg:w-auto lg:min-w-[320px]">
-            <button onClick={openPricingModal} className="w-full bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-4 px-5 rounded-xl flex items-center justify-between mb-1 cursor-pointer shadow-lg transition-colors group">
-              <span className="text-left w-full text-[14px] lg:text-[15px] leading-tight">Start My Private Transportation<br />Business™ — $295</span>
+            <button onClick={openDfyModal} className="w-full bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-4 px-5 rounded-xl flex items-center justify-between mb-1 cursor-pointer shadow-lg transition-colors group">
+              <span className="text-left w-full text-[14px] lg:text-[15px] leading-tight">ADD THE $99 DONE FOR YOU UPGRADE</span>
               <div className="w-8 h-8 rounded-full border-2 border-[#0b0f19] flex items-center justify-center shrink-0 group-hover:bg-[#0b0f19] group-hover:text-[#eab308] transition-colors ml-3">
                 <ArrowRight className="w-4 h-4" strokeWidth={3} />
               </div>

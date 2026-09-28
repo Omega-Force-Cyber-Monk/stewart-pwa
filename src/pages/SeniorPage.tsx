@@ -38,24 +38,52 @@ import { getDfyUpgradeAsset } from "../config/dfyMapping";
 
 export default function SeniorPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  // Auto-open the pricing modal when redirected here with ?showPricing=true.
+  const isDfyParam =
+    searchParams.get("dfy") === "true" ||
+    searchParams.get("showDfy") === "true";
   const [showPricingModal, setShowPricingModal] = useState(
-    () => searchParams.get("showPricing") === "true"
+    () => searchParams.get("showPricing") === "true" || isDfyParam
   );
+  const [initialShowUpsell, setInitialShowUpsell] = useState(() => isDfyParam);
 
-  // Clear the ?showPricing=true query param once considered
+  // Clear query params once considered
   useEffect(() => {
-    if (searchParams.get("showPricing") === "true") {
+    if (
+      searchParams.get("showPricing") === "true" ||
+      searchParams.get("dfy") === "true" ||
+      searchParams.get("showDfy") === "true"
+    ) {
       setSearchParams({}, { replace: true });
     }
   }, [searchParams, setSearchParams]);
 
-  const openPricingModal = () => setShowPricingModal(true);
+  const [initialPlan, setInitialPlan] = useState<"base" | "bundle" | undefined>(
+    () => (isDfyParam ? "bundle" : undefined)
+  );
+
+  const openPricingModal = () => {
+    setInitialShowUpsell(false);
+    setInitialPlan(undefined);
+    setShowPricingModal(true);
+  };
+
+  const openDfyModal = () => {
+    setInitialShowUpsell(false);
+    setInitialPlan("bundle");
+    setShowPricingModal(true);
+  };
 
   return (
     <>
       {showPricingModal && (
-        <PricingModal onClose={() => setShowPricingModal(false)} upsellKitImageSrc={getDfyUpgradeAsset("50+")} />
+        <PricingModal
+          onClose={() => setShowPricingModal(false)}
+          upsellKitImageSrc={getDfyUpgradeAsset("50+")}
+          funnelCategory="FIFTY_PLUS"
+          sourcePage="SENIOR"
+          initialShowUpsell={initialShowUpsell}
+          initialPlan={initialPlan}
+        />
       )}
       <SeniorNavbar openPricingModal={openPricingModal} />
       <HeroBanner />
@@ -63,7 +91,7 @@ export default function SeniorPage() {
       <YouMayAlreadyHaveSection />
       <HowItWorksSection />
       <ProvenModelAndFaqSection />
-      <FooterCTASection openPricingModal={openPricingModal} />
+      <FooterCTASection openDfyModal={openDfyModal} />
     </>
   );
 }
@@ -278,7 +306,7 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
 
 function HeroBanner() {
   return (
-    <div className="relative w-full data-exit-intent-hero min-h-[100svh] lg:min-h-[90svh] pt-[clamp(64px,8vw,80px)] flex flex-col justify-between overflow-hidden bg-[#040a23]">
+    <div data-exit-intent-hero="" className="relative w-full data-exit-intent-hero min-h-[100svh] lg:min-h-[90svh] pt-[clamp(64px,8vw,80px)] flex flex-col justify-between overflow-hidden bg-[#040a23]">
       {/* Background Image on the right side */}
       {/* Background Image */}
       <div className="absolute inset-0 w-full h-full flex justify-end bg-[#040a23]">
@@ -781,7 +809,7 @@ function ProvenModelAndFaqSection() {
   );
 }
 
-function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }) {
+function FooterCTASection({ openDfyModal }: { openDfyModal: () => void }) {
   const benefits = [
     "One-time payment",
     "No monthly platform fees",
@@ -840,10 +868,10 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
           {/* Right Column */}
           <div className="flex flex-col items-center lg:items-end w-full lg:pl-6">
             <button
-              onClick={openPricingModal}
+              onClick={openDfyModal}
               className="cursor-pointer w-full bg-[#39b54a] hover:bg-[#2e9c3c] text-white font-extrabold py-3 px-5 rounded-md transition-colors flex items-center justify-between group text-sm mb-6"
             >
-              <span className="text-center w-full">Start Your Business</span>
+              <span className="text-center w-full">ADD THE $99 DONE FOR YOU UPGRADE</span>
               <div className="bg-white rounded-full p-1 ml-3 shrink-0 transition-transform group-hover:translate-x-1">
                 <ArrowRight className="w-4 h-4 text-[#39b54a] stroke-[3]" />
               </div>
@@ -856,8 +884,8 @@ function FooterCTASection({ openPricingModal }: { openPricingModal: () => void }
 
         {/* Bottom Trust Indicators & Copyright */}
         <div className="pt-6 flex flex-col items-center">
-          <p className="text-slate-500 text-[11px]">
-            No spam. Just practical information to help you decide.
+          <p className="text-slate-500 text-xs">
+            © 2026 QuitTheApp. All Rights Reserved.
           </p>
         </div>
       </PageContainer>

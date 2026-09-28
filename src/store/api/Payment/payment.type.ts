@@ -10,6 +10,7 @@ export interface CreateCheckoutSessionRequest {
   cancelUrl?: string;
   funnelCategory?: string;
   sourcePage?: string;
+  locale?: string;
 }
 
 export interface CreateCheckoutSessionResponse {
