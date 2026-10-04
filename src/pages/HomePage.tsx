@@ -111,10 +111,10 @@ export default function HomePage() {
       <FeaturesSection />
       <ComparisonSection />
       <WhyWinSection />
-      <HowItWorksSection />
+      <HowItWorksSection openDfyModal={openDfyModal} />
       <ExperienceSectionWrapper />
       <FaqSection />
-      <FooterCTASection openDfyModal={openDfyModal} />
+      <FooterCTASection openPricingModal={openPricingModal} openDfyModal={openDfyModal} />
     </>
   );
 }
@@ -174,7 +174,7 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
                 What's Included
               </a>
               <a
-                href="#reviews"
+                href="#experience"
                 className="text-white font-medium hover:text-[#39b54a] transition-colors text-sm"
               >
                 Success Stories
@@ -239,7 +239,7 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
             What's Included
           </a>
           <a
-            href="#reviews"
+            href="#experience"
             onClick={() => setMobileMenuOpen(false)}
             className="text-white hover:text-[#39b54a] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
           >
@@ -810,7 +810,7 @@ function WhyWinSection() {
   );
 }
 
-function HowItWorksSection() {
+function HowItWorksSection({ openDfyModal }: { openDfyModal: () => void }) {
   const steps = [
     {
       number: 1,
@@ -870,6 +870,15 @@ function HowItWorksSection() {
                     <p className="text-[#1a1f71] text-xs sm:text-[13px] leading-relaxed font-medium mt-1 whitespace-pre-line">
                       {step.description}
                     </p>
+                    {idx === 2 && (
+                      <button
+                        type="button"
+                        onClick={openDfyModal}
+                        className="mt-3 rounded-lg bg-[#15803d] px-3 py-2 text-xs font-extrabold uppercase tracking-wide text-white transition-colors hover:bg-[#166534]"
+                      >
+                        OPTIONAL UPGRADE: WE DO IT FOR YOU — ONLY $99
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -996,34 +1005,33 @@ function FaqSection() {
   );
 }
 
-function FooterCTASection({ openDfyModal }: { openDfyModal: () => void }) {
-  const { accessToken, user } = useAppSelector((state) => state.auth);
-
+function FooterCTASection({
+  openPricingModal,
+  openDfyModal,
+}: {
+  openPricingModal: () => void;
+  openDfyModal: () => void;
+}) {
   const trustBadges = [
     {
       icon: Users,
-      title: "Built for Independent",
-      subtitle: "Drivers Across the U.S.",
+      title: "Built for Independent Drivers",
     },
     {
       icon: Lock,
       title: "Secure Checkout",
-      subtitle: "SSL Encrypted",
     },
     {
       icon: CreditCard,
-      title: "One-Time Payment",
-      subtitle: "No Monthly QuitTheApp Platform Fees",
+      title: "One Time Payment",
     },
     {
       icon: Headset,
       title: "Real Human Support",
-      subtitle: "Help From People Who Understand the Business",
     },
     {
       icon: ShieldCheck,
-      title: "Built From Real",
-      subtitle: "Transportation Experience",
+      title: "Built From Real Transportation Experience",
     },
   ];
 
@@ -1087,43 +1095,30 @@ function FooterCTASection({ openDfyModal }: { openDfyModal: () => void }) {
 
           {/* Column 3: Button & Payments */}
           <div className="lg:w-1/3 flex flex-col justify-center items-center lg:items-end">
-            {user?.status === "active" ? (
+            <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2">
               <button
-                onClick={openDfyModal}
+                onClick={openPricingModal}
                 className="cursor-pointer w-full bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-4 px-6 rounded-lg transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-between group text-base sm:text-lg mb-4 min-h-[56px]"
               >
                 <span className="text-center w-full">
-                  ADD THE $99 DONE FOR YOU UPGRADE
+                  START MY BUSINESS — $295
                 </span>
                 <div className="bg-white rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
                   <ArrowRight className="w-5 h-5 text-[#16a34a] stroke-[3]" />
                 </div>
               </button>
-            ) : accessToken ? (
               <button
                 onClick={openDfyModal}
-                className="cursor-pointer w-full bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-4 px-6 rounded-lg transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-between group text-base sm:text-lg mb-4 min-h-[56px]"
+                className="cursor-pointer w-full bg-[#0f172a] hover:bg-[#111827] border border-[#39b54a] text-white font-extrabold py-4 px-6 rounded-lg transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-between group text-base sm:text-lg mb-4 min-h-[56px]"
               >
                 <span className="text-center w-full">
-                  ADD THE $99 DONE FOR YOU UPGRADE
+                  DO IT FOR ME — $394 TOTAL
                 </span>
                 <div className="bg-white rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
                   <ArrowRight className="w-5 h-5 text-[#16a34a] stroke-[3]" />
                 </div>
               </button>
-            ) : (
-              <button
-                onClick={openDfyModal}
-                className="cursor-pointer w-full bg-gradient-to-b from-[#4ade80] to-[#16a34a] hover:from-[#22c55e] hover:to-[#15803d] text-white font-extrabold py-4 px-6 rounded-lg transition-all shadow-lg shadow-[#16a34a]/20 flex items-center justify-between group text-base sm:text-lg mb-4 min-h-[56px]"
-              >
-                <span className="text-center w-full">
-                  ADD THE $99 DONE FOR YOU UPGRADE
-                </span>
-                <div className="bg-white rounded-full p-1 ml-4 shrink-0 transition-transform group-hover:translate-x-1">
-                  <ArrowRight className="w-5 h-5 text-[#16a34a] stroke-[3]" />
-                </div>
-              </button>
-            )}
+            </div>
 
             {/* Payment Badges */}
             <PaymentBadges justify="center" />
@@ -1136,7 +1131,7 @@ function FooterCTASection({ openDfyModal }: { openDfyModal: () => void }) {
             {trustBadges.map((badge, idx) => (
               <div key={idx} className="flex items-center gap-2 text-slate-400">
                 <badge.icon className="w-4 h-4 shrink-0" strokeWidth={1.5} />
-                <span className="text-xs">{badge.title}</span>
+                <span className="max-w-[160px] text-center text-xs leading-snug sm:max-w-none">{badge.title}</span>
               </div>
             ))}
           </div>

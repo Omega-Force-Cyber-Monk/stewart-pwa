@@ -11,6 +11,7 @@ export type ExitIntentRouteConfig = {
   subhead: string;
   submitLabel: string;
   microcopy: string;
+  guidePath: string;
   fields: ("name" | "email" | "phone" | "city")[];
   theme: {
     iconBg: string;
@@ -26,6 +27,7 @@ export const exitIntentConfig: Record<ExitIntentRoute, ExitIntentRouteConfig> = 
     subhead: "Get the free private transportation launch checklist for your city before you spend a dollar.",
     submitLabel: "Send Me The Checklist",
     microcopy: "No spam. Just the real requirements, straight to your phone.",
+    guidePath: "/guides/QuitTheApp_Main_Local_Client_and_Positioning_Guide_FIXED.pdf",
     fields: ["phone", "city"],
     theme: {
       iconBg: "bg-[#04B5A3]",
@@ -39,6 +41,7 @@ export const exitIntentConfig: Record<ExitIntentRoute, ExitIntentRouteConfig> = 
     subhead: "Setup steps, insurance notes, and a realistic transition timeline.",
     submitLabel: "Send Me the FREE 50+ Guide",
     microcopy: "No spam. Just real help to start your business.",
+    guidePath: "/guides/QuitTheApp_50Plus_Local_Client_and_Positioning_Guide_FIXED.pdf",
     fields: ["phone", "city"],
     theme: {
       iconBg: "bg-[#39b54a]",
@@ -52,6 +55,7 @@ export const exitIntentConfig: Record<ExitIntentRoute, ExitIntentRouteConfig> = 
     subhead: "Split roles, set a shared schedule, and start at your pace.",
     submitLabel: "Send Us the FREE Couples Guide",
     microcopy: "No spam. Just real help to build your business together.",
+    guidePath: "/guides/QuitTheApp_Couples_Local_Client_and_Positioning_Guide.pdf",
     fields: ["phone", "city"],
     theme: {
       iconBg: "bg-[#005deb]",
@@ -65,6 +69,7 @@ export const exitIntentConfig: Record<ExitIntentRoute, ExitIntentRouteConfig> = 
     subhead: "Practical steps to build a professional, safe operation from day one.",
     submitLabel: "Send Me the Free Women's Guide",
     microcopy: "No spam. Just real help to get you started.",
+    guidePath: "/guides/QuitTheApp_Women_Local_Client_and_Positioning_Guide_FIXED.pdf",
     fields: ["phone", "city"],
     theme: {
       iconBg: "bg-[#005deb]",
@@ -78,7 +83,8 @@ export const exitIntentConfig: Record<ExitIntentRoute, ExitIntentRouteConfig> = 
     subhead: "Pasos prácticos para empezar tu negocio de transporte privado.",
     submitLabel: "ENVÍAME LA GUÍA GRATIS",
     microcopy: "Tu información está segura. No enviamos spam.",
-    fields: ["name", "phone", "email"],
+    guidePath: "/guides/QuitTheApp_Spanish_Local_Client_and_Positioning_Guide.pdf",
+    fields: ["name", "phone", "city", "email"],
     theme: {
       iconBg: "bg-[#2e8a38]",
       buttonBg: "bg-[#2e8a38] hover:bg-[#236e2b]",

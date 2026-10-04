@@ -90,8 +90,8 @@ export default function WomenPage() {
       <WhyWinSection />
       <OneClientFlowSection />
       <ProvenModelSection />
-      <HowItWorksAndFaqSection />
-      <FooterCTASection openDfyModal={openDfyModal} />
+      <HowItWorksAndFaqSection openDfyModal={openDfyModal} />
+      <FooterCTASection openPricingModal={openPricingModal} openDfyModal={openDfyModal} />
     </>
   );
 }
@@ -495,7 +495,7 @@ function ProvenModelSection() {
   );
 }
 
-function HowItWorksAndFaqSection() {
+function HowItWorksAndFaqSection({ openDfyModal }: { openDfyModal: () => void }) {
   const steps = [
     {
       number: 1,
@@ -593,6 +593,15 @@ function HowItWorksAndFaqSection() {
                     <p className="text-slate-600 text-[12px] sm:text-[13px] leading-relaxed">
                       {step.description}
                     </p>
+                    {idx === 2 && (
+                      <button
+                        type="button"
+                        onClick={openDfyModal}
+                        className="mt-3 rounded-lg bg-[#f42661] px-3 py-2 text-xs font-extrabold uppercase tracking-wide text-white transition-colors hover:bg-[#d91950]"
+                      >
+                        OPTIONAL UPGRADE: WE DO IT FOR YOU — ONLY $99
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
@@ -634,12 +643,25 @@ function HowItWorksAndFaqSection() {
   );
 }
 
-function FooterCTASection({ openDfyModal }: { openDfyModal: () => void }) {
+function FooterCTASection({
+  openPricingModal,
+  openDfyModal,
+}: {
+  openPricingModal: () => void;
+  openDfyModal: () => void;
+}) {
   const benefits = [
     "One-time payment",
     "No monthly platform fees",
     "Built for private transportation",
     "Real humans. Real support.",
+  ];
+  const trustBadges = [
+    "Built for Independent Drivers",
+    "Secure Checkout",
+    "One Time Payment",
+    "Real Human Support",
+    "Built From Real Transportation Experience",
   ];
 
   return (
@@ -683,16 +705,27 @@ function FooterCTASection({ openDfyModal }: { openDfyModal: () => void }) {
 
           {/* Column 3: Button & Payments */}
           <div className="lg:w-1/3 flex flex-col justify-center items-start lg:items-end">
-            <div className="w-full sm:w-auto">
+            <div className="w-full">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <button
+                  onClick={openPricingModal}
+                  className="cursor-pointer bg-[#f42661] hover:bg-[#d91950] text-white font-bold py-4 px-5 rounded-[0.5rem] transition-colors shadow-lg shadow-[#f42661]/20 flex items-center justify-center gap-4 w-full text-base sm:text-lg mb-4 min-h-[56px]"
+                >
+                  <span>START MY BUSINESS — $295</span>
+                  <div className="bg-white rounded-full p-1 shrink-0">
+                    <ChevronRight className="w-5 h-5 text-[#f42661] stroke-[3]" />
+                  </div>
+                </button>
               <button
                 onClick={openDfyModal}
-                className="cursor-pointer bg-[#f42661] hover:bg-[#d91950] text-white font-bold py-4 px-8 rounded-[0.5rem] transition-colors shadow-lg shadow-[#f42661]/20 flex items-center justify-center gap-4 w-full text-base sm:text-lg mb-4 min-h-[56px]"
+                className="cursor-pointer bg-[#0f172a] hover:bg-[#111827] border border-[#f42661] text-white font-bold py-4 px-5 rounded-[0.5rem] transition-colors shadow-lg shadow-[#f42661]/20 flex items-center justify-center gap-4 w-full text-base sm:text-lg mb-4 min-h-[56px]"
               >
-                <span>ADD THE $99 DONE FOR YOU UPGRADE</span>
+                <span>DO IT FOR ME — $394 TOTAL</span>
                 <div className="bg-white rounded-full p-1 shrink-0">
                   <ChevronRight className="w-5 h-5 text-[#f42661] stroke-[3]" />
                 </div>
               </button>
+              </div>
               {/* Payment Badges */}
               <div className="flex justify-center w-full mb-6">
                 <PaymentBadges justify="center" />
@@ -715,6 +748,11 @@ function FooterCTASection({ openDfyModal }: { openDfyModal: () => void }) {
 
         {/* Bottom Trust Indicators & Copyright */}
         <div className="pt-8 flex flex-col items-center">
+          <div className="mb-6 flex flex-wrap justify-center gap-x-6 gap-y-3 text-center text-xs leading-snug text-slate-400">
+            {trustBadges.map((label) => (
+              <span key={label} className="max-w-[170px] sm:max-w-none">{label}</span>
+            ))}
+          </div>
           <p className="text-slate-500 text-xs">
             © {new Date().getFullYear()} QuitTheApp. All Rights Reserved.
           </p>

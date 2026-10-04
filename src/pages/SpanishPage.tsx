@@ -92,7 +92,7 @@ export default function SpanishPage() {
       <HeroBanner openPricingModal={openPricingModal} />
       <BusinessBuiltAroundYourLifeSection />
       <AllYouNeedSection />
-      <HowItWorksSection />
+      <HowItWorksSection openDfyModal={openDfyModal} />
       <ProvenModelSection />
       <HowItWorksAndFaqSection openPricingModal={openPricingModal} openDfyModal={openDfyModal} />
     </>
@@ -148,7 +148,7 @@ function SpanishNavbar({ openPricingModal }: { openPricingModal: () => void }) {
             <div className="hidden lg:flex items-center gap-8">
               <nav className="flex items-center gap-8">
                 <a
-                  href="#how-it-works"
+                  href="#how-it-works-steps"
                   className="text-white hover:text-[#22c55e] text-sm font-semibold transition-colors"
                 >
                   Cómo Funciona
@@ -160,7 +160,7 @@ function SpanishNavbar({ openPricingModal }: { openPricingModal: () => void }) {
                   Qué Incluye
                 </a>
                 <a
-                  href="#reviews"
+                  href="#proven-model"
                   className="text-white hover:text-[#22c55e] text-sm font-semibold transition-colors"
                 >
                   Experiencia Real
@@ -211,7 +211,7 @@ function SpanishNavbar({ openPricingModal }: { openPricingModal: () => void }) {
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-40 bg-[#040a23] pt-24 px-6 flex flex-col lg:hidden overflow-y-auto">
           <a
-            href="#how-it-works"
+            href="#how-it-works-steps"
             onClick={() => setMobileMenuOpen(false)}
             className="text-white hover:text-[#22c55e] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
           >
@@ -225,7 +225,7 @@ function SpanishNavbar({ openPricingModal }: { openPricingModal: () => void }) {
             Qué Incluye
           </a>
           <a
-            href="#reviews"
+            href="#proven-model"
             onClick={() => setMobileMenuOpen(false)}
             className="text-white hover:text-[#22c55e] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
           >
@@ -600,7 +600,7 @@ function AllYouNeedSection() {
   );
 }
 
-function HowItWorksSection() {
+function HowItWorksSection({ openDfyModal }: { openDfyModal: () => void }) {
   const steps = [
     {
       number: 1,
@@ -661,6 +661,15 @@ function HowItWorksSection() {
                     <p className="text-[#1a1f71] text-[11px] sm:text-[12px] leading-snug font-medium mt-1">
                       {step.description}
                     </p>
+                    {idx === 2 && (
+                      <button
+                        type="button"
+                        onClick={openDfyModal}
+                        className="mt-3 rounded-md bg-[#22c55e] px-3 py-2 text-xs font-extrabold uppercase tracking-wide text-white transition-colors hover:bg-[#16a34a]"
+                      >
+                        MEJORA OPCIONAL: LO HACEMOS POR TI — SOLO $99
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -759,8 +768,6 @@ function HowItWorksAndFaqSection({
   openPricingModal: () => void;
   openDfyModal?: () => void;
 }) {
-  const { accessToken, user } = useAppSelector((state) => state.auth);
-
   const faqs = [
     {
       question: "¿Los $295 son realmente un solo pago?",
@@ -792,6 +799,13 @@ function HowItWorksAndFaqSection({
       answer:
         "Puede funcionar en mercados donde hay viajeros que necesitan transporte confiable al aeropuerto. Tú decides dónde trabajar, cuánto cobrar, qué horarios ofrecer y qué áreas atender. Los resultados dependerán de tu mercado y de cómo promociones tu negocio.",
     },
+  ];
+  const trustBadges = [
+    "Diseñado para Conductores Independientes",
+    "Pago Seguro",
+    "Un Solo Pago",
+    "Soporte Humano Real",
+    "Creado con Experiencia Real en Transporte",
   ];
 
   return (
@@ -860,37 +874,26 @@ function HowItWorksAndFaqSection({
 
               {/* CTA Right Action */}
               <div className="w-full md:w-[40%] flex flex-col justify-center">
-                {user?.status === "active" ? (
-                  <Link
-                    to="/dashboard"
-                    className="cursor-pointer bg-[#22c55e] hover:bg-[#16a34a] text-white font-bold py-4 px-5 rounded-xl transition-colors flex items-center justify-between group w-full text-left shadow-lg mb-6"
-                  >
-                    <span className="text-[1.1rem] lg:text-[1.2rem] uppercase leading-tight w-full pr-2">
-                      EMPEZAR MI<br />NEGOCIO
-                    </span>
-                    <ArrowRight className="w-6 h-6 shrink-0 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                ) : accessToken ? (
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <button
-                    onClick={openDfyModal || openPricingModal}
+                    onClick={openPricingModal}
                     className="cursor-pointer bg-[#22c55e] hover:bg-[#16a34a] text-white font-bold py-4 px-5 rounded-xl transition-colors flex items-center justify-between group w-full text-left shadow-lg mb-6"
                   >
-                    <span className="text-[1.1rem] lg:text-[1.2rem] uppercase leading-tight w-full pr-2">
-                      AGREGA LA MEJORA HECHA PARA TI DE $99
+                    <span className="text-[1rem] lg:text-[1.05rem] uppercase leading-tight w-full pr-2">
+                      QUIERO EMPEZAR MI NEGOCIO — $295
                     </span>
                     <ArrowRight className="w-6 h-6 shrink-0 group-hover:translate-x-1 transition-transform" />
                   </button>
-                ) : (
                   <button
                     onClick={openDfyModal || openPricingModal}
-                    className="cursor-pointer bg-[#22c55e] hover:bg-[#16a34a] text-white font-bold py-4 px-5 rounded-xl transition-colors flex items-center justify-between group w-full text-left shadow-lg mb-6"
+                    className="cursor-pointer bg-[#0b1021] hover:bg-[#111827] border border-[#22c55e] text-white font-bold py-4 px-5 rounded-xl transition-colors flex items-center justify-between group w-full text-left shadow-lg mb-6"
                   >
-                    <span className="text-[1.1rem] lg:text-[1.2rem] uppercase leading-tight w-full pr-2">
-                      AGREGA LA MEJORA HECHA PARA TI DE $99
+                    <span className="text-[1rem] lg:text-[1.05rem] uppercase leading-tight w-full pr-2">
+                      LO HACEMOS POR TI — $394 TOTAL
                     </span>
                     <ArrowRight className="w-6 h-6 shrink-0 group-hover:translate-x-1 transition-transform" />
                   </button>
-                )}
+                </div>
 
                 <ul className="space-y-2.5">
                   <li className="flex items-center text-white text-[11px] lg:text-[12px] font-medium">
@@ -911,6 +914,11 @@ function HowItWorksAndFaqSection({
                   </li>
                 </ul>
               </div>
+            </div>
+            <div className="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-3 text-center text-xs leading-snug text-slate-500">
+              {trustBadges.map((label) => (
+                <span key={label} className="max-w-[180px] sm:max-w-none">{label}</span>
+              ))}
             </div>
 
             <p className="text-slate-500 font-medium text-[10px] text-center mt-6">

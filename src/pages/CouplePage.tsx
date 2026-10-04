@@ -93,7 +93,7 @@ export default function CouplePage() {
       <TwoPeopleStrengthsSection />
       <ProvenModelSection />
       <LaunchKitAndFaqSection openPricingModal={openPricingModal} openDfyModal={openDfyModal} />
-      <FooterCTASection openDfyModal={openDfyModal} />
+      <FooterCTASection openPricingModal={openPricingModal} openDfyModal={openDfyModal} />
     </>
   );
 }
@@ -656,6 +656,7 @@ function LaunchKitAndFaqSection({
 
   return (
     <section className="bg-white py-1" id="faq">
+      <span id="how-it-works-steps" className="relative -top-24 block pointer-events-none" />
       <PageContainer size="full">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 border border-slate-200 rounded-3xl bg-white shadow-sm p-3">
           {/* Column 1 */}
@@ -727,7 +728,7 @@ function LaunchKitAndFaqSection({
             </div>
 
             <button onClick={openDfyModal || openPricingModal} className="mt-4 w-full text-left bg-[#eab308] rounded-xl p-4 flex items-center justify-between shadow-sm cursor-pointer hover:bg-[#ca8a04] transition-colors group">
-              <span className="text-[#060D64] font-extrabold text-[14px]">Optional Upgrade: We Do It For You — $99</span>
+              <span className="text-[#060D64] font-extrabold text-[14px]">OPTIONAL UPGRADE: WE DO IT FOR YOU — ONLY $99</span>
               <Users className="w-6 h-6 text-[#060D64] opacity-80 group-hover:opacity-100 transition-opacity" />
             </button>
           </div>
@@ -771,7 +772,21 @@ function LaunchKitAndFaqSection({
   );
 }
 
-function FooterCTASection({ openDfyModal }: { openDfyModal: () => void }) {
+function FooterCTASection({
+  openPricingModal,
+  openDfyModal,
+}: {
+  openPricingModal: () => void;
+  openDfyModal: () => void;
+}) {
+  const trustBadges = [
+    "Built for Independent Drivers",
+    "Secure Checkout",
+    "One Time Payment",
+    "Real Human Support",
+    "Built From Real Transportation Experience",
+  ];
+
   return (
     <section className="bg-white py-1" id="footer-cta">
       <PageContainer size="full">
@@ -811,15 +826,28 @@ function FooterCTASection({ openDfyModal }: { openDfyModal: () => void }) {
 
           {/* Right Block */}
           <div className="flex flex-col items-center justify-center shrink-0 w-full lg:w-auto lg:min-w-[320px]">
-            <button onClick={openDfyModal} className="w-full bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-4 px-5 rounded-xl flex items-center justify-between mb-1 cursor-pointer shadow-lg transition-colors group">
-              <span className="text-left w-full text-[14px] lg:text-[15px] leading-tight">ADD THE $99 DONE FOR YOU UPGRADE</span>
-              <div className="w-8 h-8 rounded-full border-2 border-[#0b0f19] flex items-center justify-center shrink-0 group-hover:bg-[#0b0f19] group-hover:text-[#eab308] transition-colors ml-3">
-                <ArrowRight className="w-4 h-4" strokeWidth={3} />
-              </div>
-            </button>
+            <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2">
+              <button onClick={openPricingModal} className="w-full bg-[#eab308] hover:bg-[#ca8a04] text-[#0b0f19] font-extrabold py-4 px-5 rounded-xl flex items-center justify-between mb-1 cursor-pointer shadow-lg transition-colors group">
+                <span className="text-left w-full text-[14px] lg:text-[15px] leading-tight">START MY BUSINESS — $295</span>
+                <div className="w-8 h-8 rounded-full border-2 border-[#0b0f19] flex items-center justify-center shrink-0 group-hover:bg-[#0b0f19] group-hover:text-[#eab308] transition-colors ml-3">
+                  <ArrowRight className="w-4 h-4" strokeWidth={3} />
+                </div>
+              </button>
+              <button onClick={openDfyModal} className="w-full bg-[#0b0f19] hover:bg-[#111827] border border-[#eab308] text-[#eab308] font-extrabold py-4 px-5 rounded-xl flex items-center justify-between mb-1 cursor-pointer shadow-lg transition-colors group">
+                <span className="text-left w-full text-[14px] lg:text-[15px] leading-tight">DO IT FOR ME — $394 TOTAL</span>
+                <div className="w-8 h-8 rounded-full border-2 border-[#eab308] flex items-center justify-center shrink-0 group-hover:bg-[#eab308] group-hover:text-[#0b0f19] transition-colors ml-3">
+                  <ArrowRight className="w-4 h-4" strokeWidth={3} />
+                </div>
+              </button>
+            </div>
             <PaymentBadges justify="center" paymentLabel="Secure checkout powered by" />
           </div>
 
+        </div>
+        <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 px-3 py-6 text-center text-xs leading-snug text-slate-500">
+          {trustBadges.map((label) => (
+            <span key={label} className="max-w-[170px] sm:max-w-none">{label}</span>
+          ))}
         </div>
       </PageContainer>
     </section>
@@ -853,7 +881,7 @@ function Navbar({ openPricingModal }: { openPricingModal: () => void }) {
   const navLinks = [
     { label: "How It Works", href: "#how-it-works" },
     { label: "What's Included", href: "#how-it-works-steps" },
-    { label: "Success Stories", href: "#reviews" },
+    { label: "Success Stories", href: "#proven-model" },
     { label: "FAQ", href: "#faq" },
   ];
 

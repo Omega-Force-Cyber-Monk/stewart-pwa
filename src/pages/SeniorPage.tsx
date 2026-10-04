@@ -89,9 +89,9 @@ export default function SeniorPage() {
       <HeroBanner />
       <FeaturesSection />
       <YouMayAlreadyHaveSection />
-      <HowItWorksSection />
+      <HowItWorksSection openDfyModal={openDfyModal} />
       <ProvenModelAndFaqSection />
-      <FooterCTASection openDfyModal={openDfyModal} />
+      <FooterCTASection openPricingModal={openPricingModal} openDfyModal={openDfyModal} />
     </>
   );
 }
@@ -153,7 +153,7 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
                 What's Included
               </a>
               <a
-                href="#reviews"
+                href="#proven-model-and-faq"
                 className="text-white font-medium hover:text-[#39b54a] transition-colors text-sm"
               >
                 Success Stories
@@ -218,7 +218,7 @@ function SeniorNavbar({ openPricingModal }: { openPricingModal: () => void }) {
             What's Included
           </a>
           <a
-            href="#reviews"
+            href="#proven-model-and-faq"
             onClick={() => setMobileMenuOpen(false)}
             className="text-white hover:text-[#39b54a] text-lg font-semibold py-4 border-b border-white/10 transition-colors"
           >
@@ -619,7 +619,7 @@ function YouMayAlreadyHaveSection() {
   );
 }
 
-function HowItWorksSection() {
+function HowItWorksSection({ openDfyModal }: { openDfyModal: () => void }) {
   const steps = [
     {
       number: 1,
@@ -679,6 +679,15 @@ function HowItWorksSection() {
                     <p className="text-[#1a1f71] text-xs sm:text-[13px] leading-relaxed font-medium mt-1 whitespace-pre-line">
                       {step.description}
                     </p>
+                    {idx === 2 && (
+                      <button
+                        type="button"
+                        onClick={openDfyModal}
+                        className="mt-3 rounded-md bg-[#39b54a] px-3 py-2 text-xs font-extrabold uppercase tracking-wide text-white transition-colors hover:bg-[#2e9c3c]"
+                      >
+                        OPTIONAL UPGRADE: WE DO IT FOR YOU — ONLY $99
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -776,6 +785,7 @@ function ProvenModelAndFaqSection() {
 
           {/* Right Side: FAQ */}
           <div className="w-full lg:w-[35%] flex flex-col pt-2 lg:pt-6 lg:pl-2">
+            <span id="faq" className="relative -top-24 block pointer-events-none" />
             <h2 className="text-[1.1rem] sm:text-lg font-extrabold text-[#1a1f71] mb-6 uppercase tracking-wide">
               FREQUENTLY ASKED QUESTIONS
             </h2>
@@ -809,12 +819,25 @@ function ProvenModelAndFaqSection() {
   );
 }
 
-function FooterCTASection({ openDfyModal }: { openDfyModal: () => void }) {
+function FooterCTASection({
+  openPricingModal,
+  openDfyModal,
+}: {
+  openPricingModal: () => void;
+  openDfyModal: () => void;
+}) {
   const benefits = [
     "One-time payment",
     "No monthly platform fees",
     "Built for 50+ drivers",
     "Real human support",
+  ];
+  const trustBadges = [
+    "Built for Independent Drivers",
+    "Secure Checkout",
+    "One Time Payment",
+    "Real Human Support",
+    "Built From Real Transportation Experience",
   ];
 
   return (
@@ -867,15 +890,26 @@ function FooterCTASection({ openDfyModal }: { openDfyModal: () => void }) {
 
           {/* Right Column */}
           <div className="flex flex-col items-center lg:items-end w-full lg:pl-6">
-            <button
-              onClick={openDfyModal}
-              className="cursor-pointer w-full bg-[#39b54a] hover:bg-[#2e9c3c] text-white font-extrabold py-3 px-5 rounded-md transition-colors flex items-center justify-between group text-sm mb-6"
-            >
-              <span className="text-center w-full">ADD THE $99 DONE FOR YOU UPGRADE</span>
-              <div className="bg-white rounded-full p-1 ml-3 shrink-0 transition-transform group-hover:translate-x-1">
-                <ArrowRight className="w-4 h-4 text-[#39b54a] stroke-[3]" />
-              </div>
-            </button>
+            <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2">
+              <button
+                onClick={openPricingModal}
+                className="cursor-pointer w-full bg-[#39b54a] hover:bg-[#2e9c3c] text-white font-extrabold py-3 px-5 rounded-md transition-colors flex items-center justify-between group text-sm mb-6 min-h-[52px]"
+              >
+                <span className="text-center w-full">START MY BUSINESS — $295</span>
+                <div className="bg-white rounded-full p-1 ml-3 shrink-0 transition-transform group-hover:translate-x-1">
+                  <ArrowRight className="w-4 h-4 text-[#39b54a] stroke-[3]" />
+                </div>
+              </button>
+              <button
+                onClick={openDfyModal}
+                className="cursor-pointer w-full bg-[#0f172a] hover:bg-[#111827] border border-[#39b54a] text-white font-extrabold py-3 px-5 rounded-md transition-colors flex items-center justify-between group text-sm mb-6 min-h-[52px]"
+              >
+                <span className="text-center w-full">DO IT FOR ME — $394 TOTAL</span>
+                <div className="bg-white rounded-full p-1 ml-3 shrink-0 transition-transform group-hover:translate-x-1">
+                  <ArrowRight className="w-4 h-4 text-[#39b54a] stroke-[3]" />
+                </div>
+              </button>
+            </div>
             <div className="w-full flex justify-center lg:justify-end mb-2">
               <PaymentBadges justify="center" />
             </div>
@@ -884,6 +918,11 @@ function FooterCTASection({ openDfyModal }: { openDfyModal: () => void }) {
 
         {/* Bottom Trust Indicators & Copyright */}
         <div className="pt-6 flex flex-col items-center">
+          <div className="mb-6 flex flex-wrap justify-center gap-x-6 gap-y-3 text-center text-xs leading-snug text-slate-400">
+            {trustBadges.map((label) => (
+              <span key={label} className="max-w-[170px] sm:max-w-none">{label}</span>
+            ))}
+          </div>
           <p className="text-slate-500 text-xs">
             © 2026 QuitTheApp. All Rights Reserved.
           </p>

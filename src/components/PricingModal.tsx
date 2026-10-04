@@ -130,6 +130,10 @@ export function PricingModal({
           "Soporte Continuo",
         ],
         plan2Cta: `SÍ, HÁGANLO POR MÍ +${LAUNCH_PRICING.addon}`,
+        dfyServiceBadge: "SERVICIO COMPLETO",
+        dfyBaseLine: "Kit de Lanzamiento",
+        dfyAddonLine: "Mejora Lo Hacemos Por Ti",
+        dfyCheckoutCta: "SÍ, HÁGANLO POR MÍ — $394 EN TOTAL",
         plan2ViewDetails: "Ver Detalles del Paquete Adicional",
         stripeNote:
           "Pago seguro a través de Stripe. No se te cobrará hasta que confirmes en la página siguiente.",
@@ -141,6 +145,7 @@ export function PricingModal({
         dfyCheckoutSubtitle:
           "Pago único. Kit de Lanzamiento Base ($295) + Mejora Hecha Para Ti ($99).",
         dfySwitchPlan: "← Ver todas las opciones de paquetes",
+        dfyReturnLink: "Volver a los ejemplos de marketing",
         share: "Compartir",
         download: "Descargar",
         close: "Cerrar",
@@ -189,6 +194,10 @@ export function PricingModal({
           "Ongoing Support",
         ],
         plan2Cta: `YES, DO IT FOR ME +${LAUNCH_PRICING.addon}`,
+        dfyServiceBadge: "FULL SERVICE",
+        dfyBaseLine: "Launch Kit",
+        dfyAddonLine: "Done For You Upgrade",
+        dfyCheckoutCta: "YES, DO IT FOR ME — $394 TOTAL",
         plan2ViewDetails: "View Add-on Details",
         stripeNote:
           "Secure payment via Stripe. You won't be charged until you confirm on the next page.",
@@ -200,6 +209,7 @@ export function PricingModal({
         dfyCheckoutSubtitle:
           "One-time payment. Base Launch Kit ($295) + Done For You Upgrade ($99).",
         dfySwitchPlan: "← View all package options",
+        dfyReturnLink: "Back to marketing examples",
         share: "Share",
         download: "Download",
         close: "Close",
@@ -289,6 +299,17 @@ export function PricingModal({
   };
 
   const errorMessage = getErrorMessage();
+  const returnTargets: Record<string, string> = {
+    MAIN: "/#experience",
+    STANDARD: "/#experience",
+    WOMEN: "/women#reviews",
+    SENIOR: "/senior#proven-model-and-faq",
+    FIFTY_PLUS: "/senior#proven-model-and-faq",
+    COUPLE: "/couple#proven-model",
+    SPANISH: "/spanish#proven-model",
+  };
+  const dfyReturnTarget =
+    returnTargets[sourcePage ?? ""] || returnTargets[funnelCategory ?? ""] || "/#experience";
 
   return (
     <>
@@ -357,7 +378,7 @@ export function PricingModal({
                 {/* Popular badge */}
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                   <span className="bg-[#04B5A3] text-white text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wider whitespace-nowrap shadow-lg">
-                    {content.plan2Badge}
+                    {content.dfyServiceBadge}
                   </span>
                 </div>
 
@@ -377,12 +398,12 @@ export function PricingModal({
 
                 <div className="mb-4 bg-[#12143A]/80 border border-[#00E5FF22] rounded-lg p-3">
                   <div className="flex justify-between items-baseline mb-1 text-sm">
-                    <span className="text-slate-300">{content.plan1Title}</span>
+                    <span className="text-slate-300">{content.dfyBaseLine}:</span>
                     <span className="font-semibold text-white">{LAUNCH_PRICING.base}</span>
                   </div>
                   <div className="flex justify-between items-baseline mb-2 text-sm">
-                    <span className="text-[#04B5A3] font-medium">{content.plan2Tag}</span>
-                    <span className="font-semibold text-[#04B5A3]">+{LAUNCH_PRICING.addon}</span>
+                    <span className="text-[#04B5A3] font-medium">{content.dfyAddonLine}:</span>
+                    <span className="font-semibold text-[#04B5A3]">{LAUNCH_PRICING.addon}</span>
                   </div>
                   <div className="border-t border-[#00E5FF33] pt-2 flex justify-between items-baseline">
                     <span className="text-sm font-bold text-white">{content.totalLabel}</span>
@@ -410,7 +431,18 @@ export function PricingModal({
                   ) : (
                     <Rocket className="size-5" />
                   )}
-                  <span>{content.plan2Cta}</span>
+                  <span>{content.dfyCheckoutCta}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsDfyCheckout(false);
+                    setSelectedPlan("base");
+                    setValidationError("");
+                  }}
+                  className="mt-4 text-sm font-semibold text-[#04B5A3] hover:text-[#67f4e5]"
+                >
+                  {content.dfySwitchPlan}
                 </button>
               </div>
             </div>
@@ -667,6 +699,12 @@ export function PricingModal({
               />
             </div>
           </div>
+          <a
+            href={dfyReturnTarget}
+            className="mt-3 rounded-lg bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
+          >
+            {content.dfyReturnLink}
+          </a>
         </div>
       )}
     </>

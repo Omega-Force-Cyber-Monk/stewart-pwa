@@ -108,7 +108,15 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
             <h2 className="text-xl font-bold text-slate-800">
               {config.locale === "es" ? "¡Gracias! Recibimos tu solicitud." : "Thanks — your request was received."}
             </h2>
-            <button type="button" onClick={onClose} className="mt-6 rounded-lg bg-green-500 hover:bg-green-600 px-7 py-2.5 text-white font-bold transition">
+            <a
+              href={config.guidePath}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 rounded-lg bg-green-500 hover:bg-green-600 px-7 py-2.5 text-white font-bold transition"
+            >
+              {config.locale === "es" ? "VER TU GUÍA GRATIS" : "VIEW YOUR FREE GUIDE"}
+            </a>
+            <button type="button" onClick={onClose} className="mt-3 rounded-lg border border-slate-200 px-7 py-2.5 font-bold text-slate-600 transition hover:bg-slate-50">
               {config.locale === "es" ? "Cerrar" : "Close"}
             </button>
           </div>
@@ -179,7 +187,7 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
                 {config.fields.includes("city") && (
                   <div className="col-span-1">
                     <label className="block text-sm font-semibold text-slate-700 mb-1">
-                      City<span className="text-red-500">*</span>
+                      {config.locale === "es" ? "Ciudad" : "City"}<span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -190,7 +198,7 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
                         required
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
-                        placeholder="San Francisco"
+                        placeholder={config.locale === "es" ? "Miami" : "San Francisco"}
                         className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-700"
                       />
                     </div>
