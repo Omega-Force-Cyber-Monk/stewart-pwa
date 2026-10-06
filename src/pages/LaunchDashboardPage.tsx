@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   AlertCircle,
   Check,
@@ -10,6 +10,7 @@ import {
   Pencil,
   Plane,
   Rocket,
+  X,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { LaunchProgressStepper } from "../components/dashboard/LaunchProgressStepper";
@@ -79,6 +80,7 @@ export default function LaunchDashboardPage() {
   const [airportSearch, setAirportSearch] = useState("");
   const [suggestions, setSuggestions] = useState<AirportSuggestion[]>([]);
   const [logoFile, setLogoFile] = useState<File | null>(null);
+  const logoInputRef = useRef<HTMLInputElement | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [getAirportSuggestions] = useLazyGetAirportSuggestionsQuery();
@@ -129,8 +131,12 @@ export default function LaunchDashboardPage() {
         formData.append("file", logoFile);
         logoUrl = (await uploadLogo(formData).unwrap()).logoUrl;
       }
+      setBusiness((current) => ({ ...current, logoUrl: logoUrl || "" }));
+      setLogoFile(null);
+      if (logoInputRef.current) logoInputRef.current.value = "";
+      const nextBusiness = { ...business, logoUrl: logoUrl || "" };
       await save({
-        business: { ...business, logoUrl: logoUrl?.trim() ? logoUrl.trim() : null },
+        business: { ...nextBusiness, logoUrl: logoUrl?.trim() ? logoUrl.trim() : null },
         ...(addonOwned ? {} : { acuity: { connected: acuity.connected, bookingUrl: acuity.connected && acuity.bookingUrl?.trim() ? acuity.bookingUrl.trim() : null } })
       });
     } catch (cause) {
@@ -140,11 +146,26 @@ export default function LaunchDashboardPage() {
 
   const submitService = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!serviceArea.cityArea.trim() || serviceArea.airports.length === 0) {
+    const pendingAirport = airportSearch.trim().toUpperCase();
+    const normalizedServiceArea = {
+      cityArea: serviceArea.cityArea.trim(),
+      airports: Array.from(
+        new Set(
+          [...serviceArea.airports, ...(pendingAirport ? [pendingAirport] : [])]
+            .map((airport) => airport.trim().toUpperCase())
+            .filter(Boolean),
+        ),
+      ),
+    };
+
+    if (!normalizedServiceArea.cityArea || normalizedServiceArea.airports.length === 0) {
       setError("City and at least one airport are required.");
       return;
     }
-    await save({ serviceArea });
+    setAirportSearch("");
+    setSuggestions([]);
+    setServiceArea(normalizedServiceArea);
+    await save({ serviceArea: normalizedServiceArea });
   };
 
   const chooseCity = (suggestion: AirportSuggestion) => {
@@ -164,6 +185,12 @@ export default function LaunchDashboardPage() {
     } catch {
       setSuggestions([]);
     }
+  };
+
+  const removeLogo = () => {
+    setLogoFile(null);
+    setBusiness((current) => ({ ...current, logoUrl: "" }));
+    if (logoInputRef.current) logoInputRef.current.value = "";
   };
 
   const launch = async (event: React.FormEvent) => {
@@ -239,11 +266,25 @@ export default function LaunchDashboardPage() {
                 <label className="text-sm font-medium text-slate-700">
                   Upload Business Logo (optional)
                   <input
+                    ref={logoInputRef}
                     type="file"
                     accept="image/png,image/jpeg,image/webp"
                     onChange={(event) => setLogoFile(event.target.files?.[0] || null)}
                     className="mt-2 block w-full cursor-pointer rounded-lg border border-dashed border-slate-300 bg-white p-3 text-xs text-slate-700"
                   />
+                  {(business.logoUrl || logoFile) && (
+                    <div className="mt-2 flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-600">
+                      <span className="truncate">{logoFile ? logoFile.name : "Saved logo"}</span>
+                      <button
+                        type="button"
+                        onClick={removeLogo}
+                        className="cursor-pointer inline-flex items-center gap-1 font-semibold text-slate-500 hover:text-red-600"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                        <span>Remove</span>
+                      </button>
+                    </div>
+                  )}
                 </label>
               </div>
               <label className="block text-sm font-medium text-slate-700">

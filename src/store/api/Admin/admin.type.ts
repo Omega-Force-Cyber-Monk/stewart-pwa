@@ -223,6 +223,7 @@ export interface PaymentRider {
 export interface PaymentListItem {
   id: string;
   rider: PaymentRider | null;
+  buyer: { fullName: string | null; phone: string | null } | null;
   status: string;
   amount: Amount;
   lineItems: PaymentLineItem[];
@@ -234,6 +235,7 @@ export interface PaymentDetail extends PaymentListItem {
   rider: (PaymentRider & {
     business: { id: string; businessName: string; slug: string; status: string } | null;
   }) | null;
+  buyer: { fullName: string | null; phone: string | null } | null;
   receipt: { id: string; receiptNo: string | null; fileUrl: string | null; createdAt: string } | null;
   stripeCheckoutSessionId: string | null;
   stripePaymentIntentId: string | null;

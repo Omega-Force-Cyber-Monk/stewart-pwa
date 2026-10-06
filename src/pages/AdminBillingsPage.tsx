@@ -293,7 +293,7 @@ export default function AdminBillingsPage() {
                     <div className="grid grid-cols-2 gap-3 text-sm">
                       <div>
                         <span className="text-slate-500 block text-xs">Name</span>
-                        <span className="font-medium text-slate-800">{payment.rider.name || "—"}</span>
+                        <span className="font-medium text-slate-800">{payment.rider.name || payment.buyer?.fullName || "—"}</span>
                       </div>
                       <div>
                         <span className="text-slate-500 block text-xs">Email</span>
@@ -301,7 +301,7 @@ export default function AdminBillingsPage() {
                       </div>
                       <div>
                         <span className="text-slate-500 block text-xs">Phone</span>
-                        <span className="font-medium text-slate-800">{payment.rider.phone || "—"}</span>
+                        <span className="font-medium text-slate-800">{payment.rider.phone || payment.buyer?.phone || "—"}</span>
                       </div>
                       <div>
                         <span className="text-slate-500 block text-xs">Driver Code</span>
