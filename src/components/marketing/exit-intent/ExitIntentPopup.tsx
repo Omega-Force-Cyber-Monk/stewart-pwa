@@ -1,9 +1,20 @@
 import { useEffect, useState } from "react";
 import { CheckCircle2, Gift, X, Phone, MapPin, User, Mail, Lock, Loader2 } from "lucide-react";
+import { Link } from "react-router-dom";
 import type { ExitIntentRouteConfig } from "./exitIntentConfig";
-import { ENGLISH_CONSENT_TEXT, SPANISH_CONSENT_TEXT, normalizeCity, normalizeConsent, normalizeUsPhone, CONSENT_TEXT_VERSION } from "./exitIntentLogic";
+import {
+  CONSENT_TEXT_VERSION,
+  ENGLISH_GUIDE_CONSENT_TEXT,
+  ENGLISH_MARKETING_CONSENT_TEXT,
+  SPANISH_GUIDE_CONSENT_TEXT,
+  SPANISH_MARKETING_CONSENT_TEXT,
+  normalizeCity,
+  normalizeConsent,
+  normalizeUsPhone,
+} from "./exitIntentLogic";
 import { useCreatePublicLeadMutation } from "../../../store/api/Business/business.api";
 import { getOrCreateMarketingSessionId } from "../../../lib/storage";
+import type { LeadFunnelSource } from "../../../store/api/Business/business.type";
 
 interface ExitIntentPopupProps {
   config: ExitIntentRouteConfig;
@@ -15,13 +26,15 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
-  const [consent, setConsent] = useState(true);
+  const [guideSmsConsent, setGuideSmsConsent] = useState(false);
+  const [marketingSmsConsent, setMarketingSmsConsent] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   
   const [createPublicLead, { isLoading }] = useCreatePublicLeadMutation();
 
-  const consentText = config.locale === "es" ? SPANISH_CONSENT_TEXT : ENGLISH_CONSENT_TEXT;
+  const guideConsentText = config.locale === "es" ? SPANISH_GUIDE_CONSENT_TEXT : ENGLISH_GUIDE_CONSENT_TEXT;
+  const marketingConsentText = config.locale === "es" ? SPANISH_MARKETING_CONSENT_TEXT : ENGLISH_MARKETING_CONSENT_TEXT;
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -43,14 +56,21 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
       }
     }
 
-    if (!normalizeConsent(consent)) {
+    if (!normalizeConsent(guideSmsConsent)) {
       throw new Error(
         isSpanish
-          ? "Acepta recibir mensajes de texto."
-          : "Please agree to receive text messages related to your request."
+          ? "Acepta recibir la guia solicitada por texto."
+          : "Please agree to receive the requested guide by text."
       );
     }
 
+    const funnelSourceByPage: Record<ExitIntentRouteConfig["sourcePage"], LeadFunnelSource> = {
+      main: "MAIN",
+      women: "WOMEN",
+      senior: "SENIOR",
+      couple: "COUPLES",
+      spanish: "SPANISH",
+    };
     const payload = {
       phone: normalizedPhone,
       city: config.fields.includes("city") ? normalizedCity : undefined,
@@ -59,6 +79,11 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
       sourcePage: config.sourcePage,
       sessionId: getOrCreateMarketingSessionId() || crypto.randomUUID(),
       smsConsent: true as const,
+      // TODO: Confirm the public leads backend persists these A2P consent audit fields.
+      guideSmsConsent: true,
+      marketingSmsConsent,
+      consentTimestamp: new Date().toISOString(),
+      funnelSource: funnelSourceByPage[config.sourcePage],
       consentTextVersion: CONSENT_TEXT_VERSION,
       referrer: document.referrer || null,
       utmSource: null,
@@ -96,9 +121,15 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/70 p-3 sm:p-5 backdrop-blur-sm" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="relative w-full max-w-xl overflow-y-auto rounded-2xl bg-white p-5 sm:p-6 shadow-2xl animate-in fade-in zoom-in duration-200">
-        <button type="button" onClick={onClose} className="absolute right-4 top-4 rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition">
+    <div
+      className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/70 p-3 sm:p-5 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="exit-intent-title"
+      onMouseDown={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <div className="relative max-h-[calc(100svh-1.5rem)] w-full max-w-xl overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl animate-in fade-in zoom-in duration-200 sm:max-h-[calc(100svh-2.5rem)] sm:p-6">
+        <button type="button" onClick={onClose} aria-label="Close popup" className="absolute right-4 top-4 rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
           <X className="h-5 w-5" />
         </button>
 
@@ -128,7 +159,7 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
                 <Gift className="size-8" strokeWidth={1.5} />
               </div>
               <div>
-                <h2 className="text-lg md:text-xl font-bold text-slate-800 leading-tight">
+                <h2 id="exit-intent-title" className="text-lg md:text-xl font-bold text-slate-800 leading-tight">
                   {config.headline}
                 </h2>
                 <p className="text-slate-600 font-medium text-sm mt-1">
@@ -227,21 +258,45 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
                 )}
               </div>
 
-              <label className="flex items-center gap-2 mt-4 cursor-pointer">
-                <div
-                  className={`w-5 h-5 rounded flex items-center justify-center border transition-colors ${
-                    consent ? "bg-blue-600 border-blue-600" : "bg-white border-gray-300"
-                  }`}
-                  onClick={() => setConsent(!consent)}
-                >
-                  {consent && <CheckCircle2 className="text-white size-3.5" strokeWidth={3} />}
-                </div>
-                <span className="text-sm font-medium text-slate-700 select-none">
-                  {consentText}
-                </span>
-              </label>
+              <div className="space-y-2.5 rounded-lg border border-slate-200 bg-slate-50 p-3">
+                <label className="flex cursor-pointer items-start gap-2.5 text-sm leading-snug text-slate-700">
+                  <input
+                    type="checkbox"
+                    checked={guideSmsConsent}
+                    onChange={(event) => setGuideSmsConsent(event.target.checked)}
+                    aria-describedby={validationError ? "exit-intent-error" : undefined}
+                    className="mt-0.5 size-4 shrink-0 rounded border-slate-300 accent-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <span className="font-medium">{guideConsentText}</span>
+                </label>
 
-              {validationError && <p className="text-red-500 text-sm mt-2 font-semibold">{validationError}</p>}
+                <label className="flex cursor-pointer items-start gap-2.5 text-sm leading-snug text-slate-700">
+                  <input
+                    type="checkbox"
+                    checked={marketingSmsConsent}
+                    onChange={(event) => setMarketingSmsConsent(event.target.checked)}
+                    className="mt-0.5 size-4 shrink-0 rounded border-slate-300 accent-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <span>{marketingConsentText}</span>
+                </label>
+
+                <p className="text-xs leading-relaxed text-slate-500">
+                  Message and data rates may apply. Message frequency may vary. Reply STOP to opt out.
+                </p>
+                <p className="text-xs leading-relaxed text-slate-500">
+                  By submitting, you acknowledge our{" "}
+                  <Link to="/privacy-policy" className="font-semibold text-blue-700 underline underline-offset-2">
+                    Privacy Policy
+                  </Link>{" "}
+                  and{" "}
+                  <Link to="/terms" className="font-semibold text-blue-700 underline underline-offset-2">
+                    Terms & Conditions
+                  </Link>
+                  .
+                </p>
+              </div>
+
+              {validationError && <p id="exit-intent-error" className="text-red-500 text-sm mt-2 font-semibold">{validationError}</p>}
 
               <button
                 type="submit"

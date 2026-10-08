@@ -34,6 +34,7 @@ import ResetPasswordPage from "../pages/Auth/ResetPasswordPage";
 import PaymentSuccessPage from "../pages/PaymentSuccessPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import RiderWebsitePage from "../pages/PersonalizeWebsite/RiderWebsitePage";
+import { PrivacyPolicyPage, TermsPage } from "../pages/LegalPage";
 import { resolveBusinessHost } from "../lib/businessHost";
 import { useAppDispatch, useAppSelector } from "../hooks/storeHooks";
 import { useGetRiderProfileQuery } from "../store/api/Auth/auth.api";
@@ -66,6 +67,8 @@ export function AppRouter() {
       <Route path="/women" element={<WomenPage />} />
       <Route path="/couple" element={<CouplePage />} />
       <Route path="/senior" element={<SeniorPage />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+      <Route path="/terms" element={<TermsPage />} />
 
       <Route path="/dashboard" element={<RiderRoute><DashboardLayout><DashboardPage /></DashboardLayout></RiderRoute>} />
       <Route path="/booking-referral-card" element={<RiderRoute><DashboardLayout title="Booking & Referral Card"><BookingReferralCardPage /></DashboardLayout></RiderRoute>} />

@@ -309,6 +309,7 @@ export interface CompleteLaunchResponse {
 
 // --- Public Leads ---
 export type LeadSourcePage = "main" | "senior" | "women" | "couple" | "spanish";
+export type LeadFunnelSource = "MAIN" | "WOMEN" | "SENIOR" | "COUPLES" | "SPANISH";
 export type LeadConsentTextVersion = "sms-consent-v1";
 
 export interface PublicLeadConfigResponse {
@@ -330,6 +331,10 @@ export interface CreatePublicLeadRequest {
   utmContent: string | null;
   referrer: string | null;
   smsConsent: true;
+  guideSmsConsent?: boolean;
+  marketingSmsConsent?: boolean;
+  consentTimestamp?: string;
+  funnelSource?: LeadFunnelSource;
   consentTextVersion: LeadConsentTextVersion;
 }
 
