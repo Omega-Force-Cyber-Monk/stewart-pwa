@@ -182,6 +182,7 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
               </button>
             </form>
             <p className="mt-5 text-center text-sm text-slate-400">{config.microcopy}</p>
+            <p className="mt-3 text-center text-xs text-slate-500"><a href="https://quittheapp.com/privacy-policy" className="underline underline-offset-2">Privacy Policy</a></p>
           </>
         )}
       </div>
