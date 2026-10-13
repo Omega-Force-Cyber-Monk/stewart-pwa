@@ -285,9 +285,9 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
                 </p>
                 <p className="text-xs leading-relaxed text-slate-500">
                   By submitting, you acknowledge our{" "}
-                  <Link to="/privacy-policy" className="font-semibold text-blue-700 underline underline-offset-2">
+                  <a href="https://quittheapp.com/privacy-policy" className="font-semibold text-blue-700 underline underline-offset-2">
                     Privacy Policy
-                  </Link>{" "}
+                  </a>{" "}
                   and{" "}
                   <Link to="/terms" className="font-semibold text-blue-700 underline underline-offset-2">
                     Terms & Conditions

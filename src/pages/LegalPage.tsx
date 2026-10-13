@@ -55,9 +55,17 @@ function LegalPage({ title, lastUpdated, sections }: LegalPageProps) {
   );
 }
 
-const lastUpdated = "October 8, 2026";
+const privacyLastUpdated = "October 13, 2026";
+const termsLastUpdated = "October 8, 2026";
 
 const privacySections: LegalSection[] = [
+  {
+    title: "About Us",
+    body: [
+      "QUITTHEAPP LLC, operating as QuitTheApp.",
+      "This Privacy Policy explains how we collect, use, and protect information when you use our website and services.",
+    ],
+  },
   {
     title: "Information We Collect",
     body: [
@@ -88,15 +96,15 @@ const privacySections: LegalSection[] = [
   {
     title: "Consent and Opt-Out",
     body: [
-      "You can opt out of SMS messages by replying STOP. You may also contact us using the information below for help with communication preferences.",
-      "If you opt out, we may still send non-marketing messages when reasonably necessary to complete transactions, respond to requests, or provide service-related information where permitted.",
+      "Sending STOP opts you out of subsequent campaign messages. After STOP, only an opt-out confirmation message may be sent.",
+      "Marketing or campaign messages will not resume unless you provide fresh explicit consent. For help, reply HELP or contact support@quittheapp.com.",
     ],
   },
   {
     title: "Data Sharing",
     body: [
-      "We may share information with service providers that help us operate the website, process payments, deliver SMS messages, host services, provide analytics, support users, and maintain security.",
-      "We do not sell SMS consent or phone number information. We may disclose information when required by law or to protect our rights, users, or services.",
+      "We may share other information with service providers that help us operate the website, process payments, host services, provide analytics, support users, and maintain security. Mobile phone numbers, SMS opt in data, and SMS consent are subject to the specific restrictions below.",
+      "We do not sell or share mobile phone numbers, SMS opt in data, or SMS consent with third parties or affiliates for marketing or promotional purposes. We share this information only with service providers as necessary to deliver our messaging service.",
     ],
   },
   {
@@ -114,7 +122,7 @@ const privacySections: LegalSection[] = [
   {
     title: "Third-Party Services",
     body: [
-      "QuitTheApp may use third-party providers for hosting, payments, SMS delivery, analytics, email, customer support, and related business operations. Those providers process information according to their own terms and privacy practices.",
+      "QuitTheApp may use third-party providers for hosting, payments, SMS delivery, analytics, email, customer support, and related business operations. Our use of third-party providers is subject to the mobile phone number, SMS opt in data, and SMS consent restrictions in the Data Sharing section.",
     ],
   },
   {
@@ -144,7 +152,7 @@ const privacySections: LegalSection[] = [
   {
     title: "Contact Information",
     body: [
-      "Questions about this Privacy Policy or privacy requests may be sent to QuitTheApp through the contact or support options available on our website.",
+      "Questions about this Privacy Policy, privacy requests, or SMS support may be sent to support@quittheapp.com.",
     ],
   },
 ];
@@ -238,9 +246,9 @@ const termsSections: LegalSection[] = [
 ];
 
 export function PrivacyPolicyPage() {
-  return <LegalPage title="Privacy Policy" lastUpdated={lastUpdated} sections={privacySections} />;
+  return <LegalPage title="Privacy Policy" lastUpdated={privacyLastUpdated} sections={privacySections} />;
 }
 
 export function TermsPage() {
-  return <LegalPage title="Terms & Conditions" lastUpdated={lastUpdated} sections={termsSections} />;
+  return <LegalPage title="Terms & Conditions" lastUpdated={termsLastUpdated} sections={termsSections} />;
 }
