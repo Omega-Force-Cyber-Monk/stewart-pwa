@@ -92,6 +92,30 @@ export interface PublicBusinessResponse {
   data: PublicBusinessData;
 }
 
+export interface CreateRideRequestPayload {
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  pickupLocation: string;
+  destination: string;
+  requestedDate: string;
+  requestedTime: string;
+  passengerCount: number;
+  notes?: string;
+}
+
+export interface CreateRideRequestResponse {
+  success: true;
+  correlationId: string;
+  disclaimer: string;
+  driverEmailSent: boolean;
+  customerEmailSent: boolean;
+  message: string;
+}
+
+export const RIDE_REQUEST_DISCLAIMER =
+  "Your ride request has been sent. Your ride is not confirmed until the driver contacts you and confirms availability.";
+
 export interface BuyerInfo {
   fullName: string | null;
   email: string | null;

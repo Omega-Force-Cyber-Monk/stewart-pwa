@@ -76,6 +76,13 @@ export const adminApi = baseApi.injectEndpoints({
       query: (id) => ({ url: `/admin/leads/${id}`, method: "DELETE" }),
       invalidatesTags: (_result, _err, id) => ["Leads", { type: "Lead", id }],
     }),
+    retryLeadGuideSms: build.mutation<{ success: true }, string>({
+      query: (id) => ({
+        url: `/admin/leads/${id}/guide-sms/retry`,
+        method: "POST",
+      }),
+      invalidatesTags: (_result, _err, id) => ["Leads", { type: "Lead", id }],
+    }),
     exportLeads: build.query<Blob, AdminLeadExportQueryArgs | void>({
       query: (params) => ({
         url: "/admin/leads/export.csv",
@@ -315,6 +322,7 @@ export const {
   useGetLeadQuery,
   useUpdateLeadStatusMutation,
   useDeleteLeadMutation,
+  useRetryLeadGuideSmsMutation,
   useExportLeadsQuery,
   useLazyExportLeadsQuery,
   // Backward-compatible names used by the existing admin page

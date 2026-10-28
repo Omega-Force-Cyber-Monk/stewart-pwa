@@ -15,9 +15,12 @@ import {
   useApproveAdminDfyLogoMutation,
   useCreateAdminDfyAssetMutation,
   useDeleteAdminDfyAssetMutation,
+  useGenerateAdminDfyProofGraphicMutation,
   useGetAdminDfyOrderQuery,
   useGetAdminDfyTemplateSetsQuery,
   usePublishAdminDfyOrderMutation,
+  useReevaluateAdminDfyFulfillmentMutation,
+  useRetryAdminDfyFulfillmentMutation,
   useUpdateAdminDfyOrderMutation,
   useUpdateAdminDfyDeliverableMutation,
   useUploadAdminDfyLogoMutation,
@@ -52,6 +55,9 @@ export default function AdminDoneForYouDetailPage() {
   const [deleteAsset] = useDeleteAdminDfyAssetMutation();
   const [uploadLogo, { isLoading: isUploadingLogo }] = useUploadAdminDfyLogoMutation();
   const [approveLogo, { isLoading: isApprovingLogo }] = useApproveAdminDfyLogoMutation();
+  const [generateProofGraphic, { isLoading: isGeneratingProof }] = useGenerateAdminDfyProofGraphicMutation();
+  const [reevaluateFulfillment, { isLoading: isReevaluating }] = useReevaluateAdminDfyFulfillmentMutation();
+  const [retryFulfillment, { isLoading: isRetryingFulfillment }] = useRetryAdminDfyFulfillmentMutation();
   const [publishOrder, { isLoading: isPublishing }] = usePublishAdminDfyOrderMutation();
   const { openConfirm, confirmDialog, showAlert, alertDialog } = useConfirmDialog();
   const [assetDrafts, setAssetDrafts] = useState<Record<string, { title: string; assetType: DfyAssetType; linkUrl: string; textContent: string; file: File | null }>>({});
@@ -107,6 +113,61 @@ export default function AdminDoneForYouDetailPage() {
       showAlert({ title: "Logo uploaded", message: "The final logo is ready for approval.", type: "success" });
     } catch {
       showAlert({ title: "Logo upload failed", message: "Unable to upload the final logo.", type: "error" });
+    }
+  };
+
+  const runProofGeneration = async () => {
+    try {
+      const result = await generateProofGraphic({ orderId: id }).unwrap();
+      showAlert({
+        title: result.created ? "Proof graphic generated" : "Proof graphic already exists",
+        message: result.created
+          ? "One branded graphic was created for the customer dashboard. The source master was left unchanged."
+          : "An identical branded output already exists for this logo and source graphic.",
+        type: "success",
+      });
+    } catch (error) {
+      showAlert({
+        title: "Proof generation failed",
+        message: mutationMessage(error, "Unable to generate the branded proof graphic."),
+        type: "error",
+      });
+    }
+  };
+
+  const runFulfillmentReevaluate = async () => {
+    try {
+      const result = await reevaluateFulfillment(id).unwrap();
+      showAlert({
+        title: "Fulfillment re-checked",
+        message: result.processed
+          ? "Eligibility passed and the fulfillment job was processed."
+          : "Eligibility was evaluated. Generation did not run because prerequisites are incomplete or the job is already complete.",
+        type: "success",
+      });
+    } catch (error) {
+      showAlert({
+        title: "Fulfillment re-check failed",
+        message: mutationMessage(error, "Unable to re-evaluate fulfillment."),
+        type: "error",
+      });
+    }
+  };
+
+  const runFulfillmentRetry = async () => {
+    try {
+      await retryFulfillment(id).unwrap();
+      showAlert({
+        title: "Failed tasks retried",
+        message: "Only failed fulfillment tasks were re-queued. Successful outputs were preserved.",
+        type: "success",
+      });
+    } catch (error) {
+      showAlert({
+        title: "Retry failed",
+        message: mutationMessage(error, "Unable to retry failed fulfillment tasks."),
+        type: "error",
+      });
     }
   };
 
@@ -200,6 +261,48 @@ export default function AdminDoneForYouDetailPage() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0 flex-1">
             <DfyProgress value={progress} />
+            {order.fulfillment && (
+              <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">Automated fulfillment</p>
+                    <p className="mt-1 text-sm text-slate-600">
+                      Customer state: {order.fulfillment.state.replaceAll("_", " ")}
+                      {order.fulfillment.job ? ` • Job ${order.fulfillment.job.status.replaceAll("_", " ")}` : ""}
+                    </p>
+                    {order.fulfillment.job?.errorSummary && (
+                      <p className="mt-2 text-sm text-red-700">{order.fulfillment.job.errorSummary}</p>
+                    )}
+                    {order.fulfillment.blockers.length > 0 && (
+                      <ul className="mt-2 space-y-1 text-sm text-slate-600">
+                        {order.fulfillment.blockers.map((blocker) => (
+                          <li key={blocker.code}>{blocker.message}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      variant="secondary"
+                      onClick={() => void runFulfillmentReevaluate()}
+                      isLoading={isReevaluating}
+                      className="min-h-10"
+                    >
+                      Re-check eligibility
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() => void runFulfillmentRetry()}
+                      isLoading={isRetryingFulfillment}
+                      disabled={!order.fulfillment.job?.tasks.some((task) => task.status === "FAILED")}
+                      className="min-h-10"
+                    >
+                      Retry failed tasks
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
             {order.readiness.ready ? (
               <p className="mt-3 text-sm font-medium text-emerald-700">All required DFY deliverables are complete and ready to publish.</p>
             ) : (
@@ -441,6 +544,18 @@ export default function AdminDoneForYouDetailPage() {
                 ))}
               </div>
             )}
+            <Button
+              variant="secondary"
+              onClick={() => void runProofGeneration()}
+              disabled={order.brandProfile?.approvalStatus !== "APPROVED"}
+              isLoading={isGeneratingProof}
+              className="mt-3 w-full"
+            >
+              Generate proof graphic
+            </Button>
+            <p className="mt-2 text-xs leading-5 text-slate-500">
+              Creates one customer-branded social graphic from the approved logo and the first assigned source template. Source masters are never overwritten.
+            </p>
           </DashboardCard>
         </aside>
       </div>

@@ -8,6 +8,7 @@ import {
   useGetAdminLeadQuery,
   useGetAdminLeadsQuery,
   useLazyExportAdminLeadsQuery,
+  useRetryLeadGuideSmsMutation,
   useUpdateAdminLeadStatusMutation,
 } from "../store/api/Admin/admin.api";
 import type { Lead } from "../store/api/Admin/admin.type";
@@ -58,6 +59,7 @@ export default function LeadsPage() {
   const { data: detailData, isFetching: isDetailLoading } = useGetAdminLeadQuery(selectedId ?? "", { skip: !selectedId });
   const [updateLead, { isLoading: isUpdating }] = useUpdateAdminLeadStatusMutation();
   const [deleteLead, { isLoading: isDeleting }] = useDeleteAdminLeadMutation();
+  const [retryGuideSms, { isLoading: isRetryingSms }] = useRetryLeadGuideSmsMutation();
   const [exportLeads, { isFetching: isExporting }] = useLazyExportAdminLeadsQuery();
   const { openConfirm, confirmDialog, showAlert, alertDialog } = useConfirmDialog();
 
@@ -72,6 +74,21 @@ export default function LeadsPage() {
     } catch (error) {
       console.error("Failed to update lead status:", error);
       showAlert({ title: "Error", message: "Failed to update lead status.", type: "error" });
+    }
+  };
+
+  const canRetryGuideSms = (lead: Lead) => {
+    const status = lead.guideSmsStatus;
+    return status === "FAILED" || status === "UNDELIVERED" || status === "SKIPPED_DISABLED" || status === "NOT_ATTEMPTED";
+  };
+
+  const handleRetryGuideSms = async (lead: Lead) => {
+    try {
+      await retryGuideSms(lead.id).unwrap();
+      showAlert({ title: "Guide SMS", message: "Retry requested.", type: "success" });
+    } catch (error) {
+      console.error("Failed to retry guide SMS:", error);
+      showAlert({ title: "Error", message: "Failed to retry guide SMS.", type: "error" });
     }
   };
 
@@ -127,7 +144,7 @@ export default function LeadsPage() {
         </DataTable>
         {pagination && pagination.totalPages > 1 && <div className="flex items-center justify-center gap-2"><button disabled={page <= 1} onClick={() => setPage((current) => current - 1)} className="rounded-lg bg-slate-100 p-2 disabled:opacity-40"><ChevronLeft className="h-4 w-4" /></button><span className="text-sm text-slate-600">Page {page} of {pagination.totalPages}</span><button disabled={page >= pagination.totalPages} onClick={() => setPage((current) => current + 1)} className="rounded-lg bg-slate-100 p-2 disabled:opacity-40"><ChevronRight className="h-4 w-4" /></button></div>}
       </div>
-      {selectedId && <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4" role="dialog" aria-modal="true"><div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl"><div className="mb-5 flex items-center justify-between"><h3 className="text-xl font-bold text-slate-800">Lead Details</h3><button onClick={() => setSelectedId(null)} aria-label="Close"><X className="h-5 w-5 text-slate-500" /></button></div>{isDetailLoading || !selectedLead ? <Loader2 className="mx-auto my-12 h-7 w-7 animate-spin text-blue-600" /> : <><div className="mb-5 grid gap-4 sm:grid-cols-2">{([ ["Phone", selectedLead.phone], ["City", selectedLead.city], ["Source", selectedLead.sourcePage], ["Status", selectedLead.status], ["Consent version", selectedLead.consentTextVersion], ["Consent time", selectedLead.consentedAt], ["Submitted", selectedLead.submittedAt], ["Updated", selectedLead.updatedAt], ["IP address", selectedLead.ipAddress], ["User agent", selectedLead.userAgent], ["UTM source", selectedLead.utmSource], ["UTM medium", selectedLead.utmMedium], ["UTM campaign", selectedLead.utmCampaign], ["UTM term", selectedLead.utmTerm], ["UTM content", selectedLead.utmContent], ["Referrer", selectedLead.referrer] ] as const).map(([label, item]) => <div key={label}><dt className="text-xs font-medium uppercase tracking-wide text-slate-400">{label}</dt><dd className="mt-1 break-words text-sm text-slate-700">{label.includes("time") || label === "Submitted" || label === "Updated" ? formatDate(item) : value(item)}</dd></div>)}</div><div className="flex items-center justify-end gap-3 border-t border-slate-100 pt-4"><label className="text-sm font-medium text-slate-600">Update status<select value={selectedLead.status} disabled={isUpdating} onChange={(event) => handleStatus(selectedLead, event.target.value)} className={cn("ml-2 rounded-lg border border-slate-200 px-3 py-2 text-sm", isUpdating && "opacity-50")}>{statuses.map((item) => <option key={item} value={item}>{item[0] + item.slice(1).toLowerCase()}</option>)}</select></label><button onClick={() => handleDelete(selectedLead)} disabled={isDeleting} className="rounded-lg bg-red-50 px-4 py-2 text-sm font-medium text-red-600 disabled:opacity-50">Delete</button></div></>}</div></div>}
+      {selectedId && <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4" role="dialog" aria-modal="true"><div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl"><div className="mb-5 flex items-center justify-between"><h3 className="text-xl font-bold text-slate-800">Lead Details</h3><button onClick={() => setSelectedId(null)} aria-label="Close"><X className="h-5 w-5 text-slate-500" /></button></div>{isDetailLoading || !selectedLead ? <Loader2 className="mx-auto my-12 h-7 w-7 animate-spin text-blue-600" /> : <><div className="mb-5 grid gap-4 sm:grid-cols-2">{([ ["Phone", selectedLead.phone], ["City", selectedLead.city], ["Source", selectedLead.sourcePage], ["Status", selectedLead.status], ["Consent version", selectedLead.consentTextVersion], ["Consent time", selectedLead.consentedAt], ["Submitted", selectedLead.submittedAt], ["Updated", selectedLead.updatedAt], ["IP address", selectedLead.ipAddress], ["User agent", selectedLead.userAgent], ["UTM source", selectedLead.utmSource], ["UTM medium", selectedLead.utmMedium], ["UTM campaign", selectedLead.utmCampaign], ["UTM term", selectedLead.utmTerm], ["UTM content", selectedLead.utmContent], ["Referrer", selectedLead.referrer], ["Guide SMS status", selectedLead.guideSmsStatus], ["Guide SMS SID", selectedLead.guideSmsSid], ["Guide door", selectedLead.guideSmsDoorKey], ["Guide URL", selectedLead.guideSmsGuideUrl], ["Guide SMS error", selectedLead.guideSmsError], ["Guide SMS attempts", selectedLead.guideSmsAttemptCount], ["Guide SMS sent", selectedLead.guideSmsSentAt], ["Provider status", selectedLead.guideSmsLastProviderStatus] ] as const).map(([label, item]) => <div key={label}><dt className="text-xs font-medium uppercase tracking-wide text-slate-400">{label}</dt><dd className="mt-1 break-words text-sm text-slate-700">{label.includes("time") || label === "Submitted" || label === "Updated" || label === "Guide SMS sent" ? formatDate(typeof item === "number" ? String(item) : item) : value(item)}</dd></div>)}</div><div className="flex flex-wrap items-center justify-end gap-3 border-t border-slate-100 pt-4"><label className="text-sm font-medium text-slate-600">Update status<select value={selectedLead.status} disabled={isUpdating} onChange={(event) => handleStatus(selectedLead, event.target.value)} className={cn("ml-2 rounded-lg border border-slate-200 px-3 py-2 text-sm", isUpdating && "opacity-50")}>{statuses.map((item) => <option key={item} value={item}>{item[0] + item.slice(1).toLowerCase()}</option>)}</select></label>{canRetryGuideSms(selectedLead) ? <button onClick={() => handleRetryGuideSms(selectedLead)} disabled={isRetryingSms} className="rounded-lg bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 disabled:opacity-50">{isRetryingSms ? "Retrying SMS..." : "Retry guide SMS"}</button> : null}<button onClick={() => handleDelete(selectedLead)} disabled={isDeleting} className="rounded-lg bg-red-50 px-4 py-2 text-sm font-medium text-red-600 disabled:opacity-50">Delete</button></div></>}</div></div>}
       {confirmDialog}{alertDialog}
     </>
   );

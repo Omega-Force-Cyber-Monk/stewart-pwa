@@ -4,6 +4,8 @@ import type {
   BusinessProfileResponse,
   CreateBusinessRequest,
   UpdateBusinessRequest,
+  CreateRideRequestPayload,
+  CreateRideRequestResponse,
   PublicBusinessResponse,
   SetupStateResponse,
   UpdateSetupRequest,
@@ -51,6 +53,16 @@ export const businessApi = baseApi.injectEndpoints({
     }),
     getPublicBusinessBySlug: builder.query<PublicBusinessResponse, string>({
       query: (slug) => `/public/business/${slug}`,
+    }),
+    createPublicRideRequest: builder.mutation<
+      CreateRideRequestResponse,
+      { slug: string; body: CreateRideRequestPayload }
+    >({
+      query: ({ slug, body }) => ({
+        url: `/public/business/${slug}/ride-requests`,
+        method: "POST",
+        body,
+      }),
     }),
     getPublicLeadConfig: builder.query<PublicLeadConfigResponse, void>({
       query: () => "/public/lead-config",
@@ -150,6 +162,7 @@ export const {
   useLazyGetRiderDashboardQuery,
   useGetPublicBusinessFromHostQuery,
   useGetPublicBusinessBySlugQuery,
+  useCreatePublicRideRequestMutation,
   useGetPublicLeadConfigQuery,
   useCreatePublicLeadMutation,
   useInitializeSetupMutation,

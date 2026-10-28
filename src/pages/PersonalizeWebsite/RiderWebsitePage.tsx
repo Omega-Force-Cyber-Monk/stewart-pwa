@@ -1,5 +1,5 @@
 import { skipToken } from "@reduxjs/toolkit/query";
-import type { CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import { useGetPublicBusinessBySlugQuery } from "../../store/api/Business/business.api";
 import { WebsiteNavbar } from "./WebsiteNavbar";
 
@@ -12,6 +12,7 @@ import { ServiceAreaSection } from "./ServiceAreaSection";
 import { FAQSection } from "./FAQSection";
 import { ReserveRideBanner } from "./ReserveRideBanner";
 import { WebsiteFooter } from "./WebsiteFooter";
+import { RideRequestModal } from "./RideRequestModal";
 import { InstallPrompt } from "../../components/pwa/InstallPrompt";
 
 interface RiderWebsitePageProps {
@@ -21,6 +22,7 @@ interface RiderWebsitePageProps {
 export default function RiderWebsitePage({ slug }: RiderWebsitePageProps) {
   const { data: publicResponse, isLoading, isError } =
     useGetPublicBusinessBySlugQuery(slug ?? skipToken);
+  const [rideRequestOpen, setRideRequestOpen] = useState(false);
 
   const data = publicResponse?.data;
   const business = data?.business;
@@ -30,6 +32,7 @@ export default function RiderWebsitePage({ slug }: RiderWebsitePageProps) {
   const businessName = business?.name ?? "";
   const businessPhone = business?.phone ?? "";
   const businessEmail = business?.email ?? "";
+  const businessSlug = business?.slug ?? slug ?? "";
   const cityArea = serviceArea?.cityArea ?? null;
   const airports = serviceArea?.airports ?? [];
 
@@ -39,6 +42,8 @@ export default function RiderWebsitePage({ slug }: RiderWebsitePageProps) {
     "--qta-public-accent": isWomenTheme ? "#f42661" : "#22c55e",
     "--qta-public-accent-hover": isWomenTheme ? "#d91950" : "#16a34a",
   } as CSSProperties;
+
+  const openRideRequest = () => setRideRequestOpen(true);
 
   if (isLoading) {
     return (
@@ -79,8 +84,8 @@ export default function RiderWebsitePage({ slug }: RiderWebsitePageProps) {
         businessPhone={businessPhone}
         businessInfo={business?.businessInfo || ""}
         servingAreas={servingAreas}
-        bookingUrl={data?.booking?.bookingUrl ?? null}
         logoUrl={business?.logoUrl}
+        onRequestRide={openRideRequest}
       />
 
       {/* 3. Horizontal Trust Badges Ribbon (Directly after Banner) */}
@@ -99,7 +104,11 @@ export default function RiderWebsitePage({ slug }: RiderWebsitePageProps) {
       <ServiceAreaSection servingAreas={servingAreas} />
 
       {/* 8. Reserve My Ride CTA Banner */}
-      <ReserveRideBanner businessPhone={businessPhone} businessEmail={businessEmail} bookingUrl={data?.booking?.bookingUrl ?? null} />
+      <ReserveRideBanner
+        businessPhone={businessPhone}
+        businessEmail={businessEmail}
+        onRequestRide={openRideRequest}
+      />
 
       {/* 9. FAQ Section */}
       <FAQSection />
@@ -112,9 +121,15 @@ export default function RiderWebsitePage({ slug }: RiderWebsitePageProps) {
         logoUrl={business?.logoUrl}
         serviceAreas={servingAreas}
         airports={airports}
-        bookingUrl={data?.booking?.bookingUrl ?? null}
+        onRequestRide={openRideRequest}
       />
 
+      <RideRequestModal
+        open={rideRequestOpen}
+        onClose={() => setRideRequestOpen(false)}
+        businessSlug={businessSlug}
+        businessName={businessName}
+      />
     </div>
   );
 }

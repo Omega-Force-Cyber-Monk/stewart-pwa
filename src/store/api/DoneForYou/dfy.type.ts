@@ -4,6 +4,48 @@ export type DfyOrderStatus = "PENDING" | "IN_PROGRESS" | "IN_REVIEW" | "READY" |
 export type DfyDeliverableStatus = "NOT_STARTED" | "IN_PROGRESS" | "IN_REVIEW" | "COMPLETED" | "PUBLISHED";
 export type DfyAssetType = "IMAGE" | "VIDEO" | "DOCUMENT" | "ARCHIVE" | "LINK" | "TEXT";
 export type DfyBrandApprovalStatus = "NOT_SELECTED" | "SELECTED" | "UPLOADED" | "APPROVED";
+export type DfyCustomerFulfillmentState =
+  | "AWAITING_LOGO"
+  | "PREPARING"
+  | "READY"
+  | "NEEDS_ATTENTION";
+
+export interface DfyFulfillmentBlocker {
+  code: string;
+  message: string;
+}
+
+export interface DfyFulfillmentTaskSummary {
+  id: string;
+  type: string;
+  key: string;
+  status: string;
+  attempts: number;
+  maxAttempts: number;
+  sourceTemplateId: string | null;
+  outputAssetId: string | null;
+  errorMessage: string | null;
+}
+
+export interface DfyFulfillmentJobSummary {
+  id: string;
+  status: string;
+  trigger: string;
+  revision: number;
+  logoAssetId: string;
+  errorSummary: string | null;
+  startedAt: string | null;
+  completedAt: string | null;
+  tasks: DfyFulfillmentTaskSummary[];
+}
+
+export interface DfyFulfillmentView {
+  state: DfyCustomerFulfillmentState;
+  eligible: boolean;
+  blockers: DfyFulfillmentBlocker[];
+  sellingDoor: string | null;
+  job: DfyFulfillmentJobSummary | null;
+}
 
 export interface DfyLogoStyle {
   id: string;
@@ -89,6 +131,7 @@ export interface CustomerDfyOrder {
   status: DfyOrderStatus;
   audience: string;
   publishedAt: string | null;
+  fulfillment?: DfyFulfillmentView | null;
   business: {
     id: string;
     name: string;
@@ -114,6 +157,7 @@ export interface CustomerDfyResponse {
   access: {
     ownsDoneForYou: boolean;
     status: DfyOrderStatus | "LOCKED";
+    fulfillmentState?: DfyCustomerFulfillmentState | null;
   };
   deliverableCatalog?: Array<{
     key: string;
@@ -158,6 +202,7 @@ export interface AdminDfyOrder extends Omit<AdminDfyOrderListItem, "business" | 
   brandProfile: (DfyBrandProfile & { assets?: DfyAsset[] }) | null;
   deliverables: DfyDeliverable[];
   readiness: DfyReadiness;
+  fulfillment?: DfyFulfillmentView | null;
   productionContext: {
     customerName: string | null;
     email: string;

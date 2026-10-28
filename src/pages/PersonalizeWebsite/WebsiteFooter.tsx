@@ -8,10 +8,10 @@ interface WebsiteFooterProps {
   logoUrl?: string | null;
   serviceAreas?: string[];
   airports?: string[];
-  bookingUrl?: string | null;
+  onRequestRide: () => void;
 }
 
-export function WebsiteFooter({ businessName, businessPhone, businessEmail, logoUrl, serviceAreas = [], airports = [], bookingUrl }: WebsiteFooterProps) {
+export function WebsiteFooter({ businessName, businessPhone, businessEmail, logoUrl, serviceAreas = [], airports = [], onRequestRide }: WebsiteFooterProps) {
   // Real data only — never render fabricated brand/location text.
   const nameParts = businessName.split(" ");
   const firstWord = nameParts[0] ?? "";
@@ -127,14 +127,13 @@ export function WebsiteFooter({ businessName, businessPhone, businessEmail, logo
 
           {/* Column 5: Call to Action (span 2) */}
           <div className="lg:col-span-2 flex flex-col gap-5 items-start">
-            <a
-              href={bookingUrl || "#"}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={onRequestRide}
               className="w-full bg-[#4bae4f] hover:bg-[#439e47] text-white py-3.5 rounded-xl font-bold transition-all shadow-md mt-2 flex items-center justify-center"
             >
               Book Your Ride
-            </a>
+            </button>
 
             <div className="flex flex-col gap-3">
               <a

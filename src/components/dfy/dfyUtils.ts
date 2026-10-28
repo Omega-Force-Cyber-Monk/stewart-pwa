@@ -12,6 +12,29 @@ export function customerStatus(status: string) {
   return status === "READY" || status === "PUBLISHED" ? "Ready" : "In Progress";
 }
 
+export function customerFulfillmentLabel(state?: string | null) {
+  switch (state) {
+    case "AWAITING_LOGO":
+      return "Awaiting Logo";
+    case "PREPARING":
+      return "Preparing";
+    case "READY":
+      return "Ready";
+    case "NEEDS_ATTENTION":
+      return "Needs Attention";
+    default:
+      return null;
+  }
+}
+
+export function fulfillmentTone(state?: string | null) {
+  if (state === "READY") return "success";
+  if (state === "NEEDS_ATTENTION") return "danger";
+  if (state === "AWAITING_LOGO") return "warning";
+  if (state === "PREPARING") return "accent";
+  return "neutral";
+}
+
 export function calculateDfyProgress(deliverables: DfyDeliverable[]) {
   if (deliverables.length === 0) return 0;
   const completed = deliverables.filter((item) => item.status === "READY" || item.status === "PUBLISHED" || item.status === "COMPLETED").length;

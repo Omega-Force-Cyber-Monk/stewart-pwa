@@ -385,6 +385,16 @@ export type AdminLeadExportQueryArgs = AdminLeadExportFilters | {
   to?: string;
 };
 
+export type LeadGuideSmsStatus =
+  | "NOT_ATTEMPTED"
+  | "SKIPPED_NO_CONSENT"
+  | "SKIPPED_DISABLED"
+  | "QUEUED"
+  | "SENT"
+  | "DELIVERED"
+  | "UNDELIVERED"
+  | "FAILED";
+
 export interface Lead {
   id: string;
   phone: string;
@@ -400,11 +410,22 @@ export interface Lead {
   smsConsent: boolean;
   consentedAt?: string;
   consentTextVersion: string;
+  guideSmsConsent?: boolean;
+  marketingSmsConsent?: boolean;
+  funnelSource?: string | null;
   submittedAt: string;
   updatedAt: string;
   ipAddress: string | null;
   userAgent: string | null;
   status: LeadStatus;
+  guideSmsStatus?: LeadGuideSmsStatus | string;
+  guideSmsSid?: string | null;
+  guideSmsDoorKey?: string | null;
+  guideSmsGuideUrl?: string | null;
+  guideSmsError?: string | null;
+  guideSmsAttemptCount?: number;
+  guideSmsSentAt?: string | null;
+  guideSmsLastProviderStatus?: string | null;
 }
 
 export interface AdminLeadsResponse {

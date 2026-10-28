@@ -102,6 +102,59 @@ export const doneForYouApi = baseApi.injectEndpoints({
         "DoneForYou",
       ],
     }),
+    generateAdminDfyProofGraphic: build.mutation<
+      {
+        success: true;
+        created: boolean;
+        asset: DfyAsset;
+        provenance: {
+          generationKey: string;
+          sourcePublicId: string;
+          logoPublicId: string;
+          placementRevision: number;
+        };
+        sourceMaster: { templateId: string; publicId: string; unchanged: boolean };
+      },
+      { orderId: string; templateId?: string }
+    >({
+      query: ({ orderId, templateId }) => ({
+        url: `/admin/done-for-you/${orderId}/generate-proof`,
+        method: "POST",
+        body: templateId ? { templateId } : {},
+      }),
+      invalidatesTags: (_result, _error, { orderId }) => [
+        { type: "DoneForYouOrder", id: orderId },
+        "DoneForYou",
+      ],
+    }),
+    reevaluateAdminDfyFulfillment: build.mutation<
+      { success: true; processed: boolean; eligibility: unknown; job: unknown },
+      string
+    >({
+      query: (orderId) => ({
+        url: `/admin/done-for-you/${orderId}/fulfillment/reevaluate`,
+        method: "POST",
+      }),
+      invalidatesTags: (_result, _error, orderId) => [
+        { type: "DoneForYouOrder", id: orderId },
+        "DoneForYou",
+        "DoneForYouOrders",
+      ],
+    }),
+    retryAdminDfyFulfillment: build.mutation<
+      { success: true; processed: boolean; eligibility: unknown; job: unknown },
+      string
+    >({
+      query: (orderId) => ({
+        url: `/admin/done-for-you/${orderId}/fulfillment/retry-failed`,
+        method: "POST",
+      }),
+      invalidatesTags: (_result, _error, orderId) => [
+        { type: "DoneForYouOrder", id: orderId },
+        "DoneForYou",
+        "DoneForYouOrders",
+      ],
+    }),
     publishAdminDfyOrder: build.mutation<AdminDfyOrderResponse, string>({
       query: (orderId) => ({
         url: `/admin/done-for-you/${orderId}/publish`,
@@ -136,6 +189,9 @@ export const {
   useDeleteAdminDfyAssetMutation,
   useUploadAdminDfyLogoMutation,
   useApproveAdminDfyLogoMutation,
+  useGenerateAdminDfyProofGraphicMutation,
+  useReevaluateAdminDfyFulfillmentMutation,
+  useRetryAdminDfyFulfillmentMutation,
   usePublishAdminDfyOrderMutation,
   useGetAdminDfyLogoStylesQuery,
   useGetAdminDfyTemplateSetsQuery,

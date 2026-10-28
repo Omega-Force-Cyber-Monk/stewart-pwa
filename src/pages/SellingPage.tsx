@@ -64,8 +64,10 @@ export default function SellingPage() {
           businessPhone={setupResponse?.data?.business?.phone || "Phone not set"}
           businessInfo={setupResponse?.data?.business?.businessInfo || "Reliable and professional transportation."}
           servingAreas={setupResponse?.data?.serviceArea?.airports || ["Local Airport"]}
-          bookingUrl={setupResponse?.data?.acuity?.bookingUrl || null}
           logoUrl={setupResponse?.data?.business?.logoUrl || null}
+          onRequestRide={() => {
+            if (personalizedUrl) window.open(personalizedUrl, "_blank", "noopener,noreferrer");
+          }}
         />
       </div>
 

@@ -6,7 +6,14 @@ import { DfyProgress } from "../components/dfy/DfyProgress";
 import { DfyStatusBadge } from "../components/dfy/DfyStatusBadge";
 import { LogoStyleSelector } from "../components/dfy/LogoStyleSelector";
 import { MasterBrandCard } from "../components/dfy/MasterBrandCard";
-import { calculateDfyProgress, customerStatus, formatDate } from "../components/dfy/dfyUtils";
+import { Badge } from "../components/common/Badge";
+import {
+  calculateDfyProgress,
+  customerFulfillmentLabel,
+  customerStatus,
+  formatDate,
+  fulfillmentTone,
+} from "../components/dfy/dfyUtils";
 import { Button } from "../components/common/Button";
 import { DashboardCard } from "../components/layout/DashboardCard";
 import { useCreateRiderCheckoutSessionMutation } from "../store/api/Payment/payment.api";
@@ -64,16 +71,23 @@ export default function DoneForYouMarketingKitPage() {
   const order = data.order;
   const progress = calculateDfyProgress(order.deliverables);
   const readyCount = order.deliverables.filter((item) => customerStatus(item.status) === "Ready").length;
+  const fulfillmentLabel =
+    customerFulfillmentLabel(order.fulfillment?.state ?? data.access.fulfillmentState) ||
+    customerStatus(order.status);
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-sm font-semibold text-dashboard-rider">Done For You Marketing Kit</p>
-          <h2 className="mt-1 text-2xl font-bold tracking-tight text-slate-900">{customerStatus(order.status)}</h2>
+          <h2 className="mt-1 text-2xl font-bold tracking-tight text-slate-900">{fulfillmentLabel}</h2>
           <p className="mt-1 text-sm text-slate-500">Your production dashboard for finished brand, video, social, and response assets.</p>
         </div>
-        <DfyStatusBadge status={order.status} customerFacing />
+        {order.fulfillment?.state ? (
+          <Badge tone={fulfillmentTone(order.fulfillment.state)}>{fulfillmentLabel}</Badge>
+        ) : (
+          <DfyStatusBadge status={order.status} customerFacing />
+        )}
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1fr_360px]">
