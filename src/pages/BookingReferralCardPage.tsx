@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { Check, Copy, Download, ExternalLink, Hand, QrCode, ScanLine, Share2, TrendingUp, Scan, Car } from "lucide-react";
 import { useGetReferralCardQuery, useGetSetupStateQuery } from "../store/api/Business/business.api";
+import { getPersonalizedSiteUrl } from "../lib/personalizedSiteUrl";
 import { copyToClipboard } from "../utils/clipboard";
 import { toPng } from 'html-to-image';
 import referralCardBg from "../assets/referralCardBg.png";
@@ -22,7 +23,10 @@ export default function BookingReferralCardPage() {
   const [copied, setCopied] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const url = referral?.data.bookingUrl || referral?.data.websiteUrl || (setup?.data.business.slug ? `https://${setup.data.business.slug}.quittheapp.com` : "");
+  const siteUrl = setup?.data.business.slug
+    ? getPersonalizedSiteUrl(setup.data.business.slug)
+    : referral?.data.websiteUrl || "";
+  const url = referral?.data.bookingUrl || siteUrl;
   
   const copy = async () => {
     if (await copyToClipboard(url)) {

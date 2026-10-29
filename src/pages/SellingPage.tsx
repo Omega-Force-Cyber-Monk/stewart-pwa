@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ExternalLink, Share2, Copy, QrCode, Download, Mail, Smartphone, Users, BadgeDollarSign, MessageCircle } from "lucide-react";
 import { useGetSetupStateQuery, useGetReferralCardQuery } from "../store/api/Business/business.api";
+import { getPersonalizedSiteUrl } from "../lib/personalizedSiteUrl";
 import { copyToClipboard } from "../utils/clipboard";
 import { HeroSection } from "./PersonalizeWebsite/HeroSection";
 import ContactSupportModal from "../components/dashboard/ContactSupportModal";
@@ -12,7 +13,11 @@ export default function SellingPage() {
   const { data: referralResponse } = useGetReferralCardQuery();
 
   const businessSlug = setupResponse?.data?.business?.slug;
-  const personalizedUrl = referralResponse?.data?.digitalCardUrl || (businessSlug ? `https://${businessSlug}.quittheapp.com` : "");
+  // Prefer live local/prod site URL over stored digital card URL so preview
+  // works on localhost (/site/:slug) and production subdomains alike.
+  const personalizedUrl = businessSlug
+    ? getPersonalizedSiteUrl(businessSlug)
+    : referralResponse?.data?.digitalCardUrl || "";
 
   const handleCopyLink = async () => {
     const success = await copyToClipboard(personalizedUrl);

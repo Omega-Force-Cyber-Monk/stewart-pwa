@@ -18,6 +18,7 @@ import {
 import { AlertModal } from "../components/ui/AlertModal";
 import eleanorAvatar from "../assets/eleanorAvatar.png";
 import carCover from "../assets/carCover.png";
+import { getPersonalizedSiteUrl } from "../lib/personalizedSiteUrl";
 import { copyToClipboard } from "../utils/clipboard";
 
 interface ApiErrorPayload {
@@ -506,7 +507,9 @@ export default function ProfileSettingsPage() {
             <div className="flex flex-col gap-2 flex-1 max-w-xs md:max-w-none min-w-0">
               <p className="text-[13px] font-bold text-slate-700">Referral link</p>
               <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-600 break-all">
-                {referralResponse?.data?.digitalCardUrl || (setupResponse?.data?.business?.slug ? `https://${setupResponse.data.business.slug}.quittheapp.com` : "Not set up yet")}
+                {setupResponse?.data?.business?.slug
+                  ? getPersonalizedSiteUrl(setupResponse.data.business.slug)
+                  : referralResponse?.data?.digitalCardUrl || "Not set up yet"}
               </div>
             </div>
           </div>
@@ -514,7 +517,9 @@ export default function ProfileSettingsPage() {
           <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3">
             <button
               onClick={async () => {
-                const url = referralResponse?.data?.digitalCardUrl || (setupResponse?.data?.business?.slug ? `https://${setupResponse.data.business.slug}.quittheapp.com` : "");
+                const url = setupResponse?.data?.business?.slug
+                  ? getPersonalizedSiteUrl(setupResponse.data.business.slug)
+                  : referralResponse?.data?.digitalCardUrl || "";
                 if (url) {
                   const success = await copyToClipboard(url);
                   if (success) {
@@ -531,7 +536,9 @@ export default function ProfileSettingsPage() {
             </button>
             <button
               onClick={async () => {
-                const url = referralResponse?.data?.digitalCardUrl || (setupResponse?.data?.business?.slug ? `https://${setupResponse.data.business.slug}.quittheapp.com` : "");
+                const url = setupResponse?.data?.business?.slug
+                  ? getPersonalizedSiteUrl(setupResponse.data.business.slug)
+                  : referralResponse?.data?.digitalCardUrl || "";
                 if (url && navigator.share) {
                   navigator.share({
                     title: "Book Direct",

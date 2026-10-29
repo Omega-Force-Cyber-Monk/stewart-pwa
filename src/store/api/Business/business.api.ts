@@ -50,9 +50,11 @@ export const businessApi = baseApi.injectEndpoints({
     }),
     getPublicBusinessFromHost: builder.query<PublicBusinessResponse, void>({
       query: () => "/public/business-from-host",
+      keepUnusedDataFor: 300,
     }),
     getPublicBusinessBySlug: builder.query<PublicBusinessResponse, string>({
       query: (slug) => `/public/business/${slug}`,
+      keepUnusedDataFor: 300,
     }),
     createPublicRideRequest: builder.mutation<
       CreateRideRequestResponse,

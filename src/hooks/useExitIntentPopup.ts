@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { getExitIntentConfig, isExitIntentRoute, type ExitIntentRouteConfig } from "../components/marketing/exit-intent/exitIntentConfig";
 import { isMobileExitIntentVisible, canShowExitIntent, consumeExitIntent } from "../components/marketing/exit-intent/exitIntentLogic";
 import { areMarketingOverlaysVisible } from "../lib/marketingOverlay";
+import { useGetPublicLeadConfigQuery } from "../store/api/Business/business.api";
 
 type PopupState = {
   open: boolean;
@@ -16,7 +17,15 @@ export function useExitIntentPopup(): PopupState & { close: () => void } {
       ? location.pathname.slice(0, -1)
       : location.pathname;
   const config = useMemo(() => getExitIntentConfig(normalizedPath), [normalizedPath]);
-  const eligible = isExitIntentRoute(normalizedPath);
+  const isSpanishRoute = normalizedPath === "/spanish";
+  const { data: leadConfig, isLoading: leadConfigLoading } = useGetPublicLeadConfigQuery(
+    undefined,
+    { skip: !isSpanishRoute },
+  );
+  const spanishAllowed = !isSpanishRoute || Boolean(leadConfig?.spanishPopupEnabled);
+  const eligible =
+    isExitIntentRoute(normalizedPath) &&
+    (!isSpanishRoute || (!leadConfigLoading && spanishAllowed));
 
   const [popup, setPopup] = useState<PopupState>({ open: false, config: null });
 

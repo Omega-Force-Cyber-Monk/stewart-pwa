@@ -85,6 +85,9 @@ export default defineConfig({
     }),
   ],
   server: {
+    host: true,
+    // Allow {slug}.localhost tenant previews without hosts-file edits.
+    allowedHosts: [".localhost", "localhost", "127.0.0.1"],
     watch: {
       ignored: ["**/playwright-report/**", "**/test-results/**", "**/e2e/**"],
     },

@@ -6,6 +6,7 @@ import { GuideModal } from "../components/resources/GuideModal";
 import { useGetRiderProfileQuery } from "../store/api/Auth/auth.api";
 import { useGetBusinessResourcesQuery, useGetReferralCardQuery, useLazyDownloadBusinessResourceQuery } from "../store/api/Business/business.api";
 import type { BusinessResource } from "../store/api/Business/business.type";
+import { getPersonalizedSiteUrl } from "../lib/personalizedSiteUrl";
 import { copyToClipboard } from "../utils/clipboard";
 
 function downloadUrl(url: string, filename: string) {
@@ -35,7 +36,9 @@ export default function DashboardPage() {
   const user = profile?.user;
   const business = profile?.business;
   const referralData = referral?.data;
-  const websiteUrl = referralData?.websiteUrl || (business?.slug ? `https://${business.slug}.quittheapp.com` : "");
+  const websiteUrl = business?.slug
+    ? getPersonalizedSiteUrl(business.slug)
+    : referralData?.websiteUrl || "";
   const resources = resourcesResponse?.resources ?? [];
   const firstName = (user?.name || user?.email || "").split(" ")[0];
   const airports = referralData?.serviceArea?.airports ?? [];

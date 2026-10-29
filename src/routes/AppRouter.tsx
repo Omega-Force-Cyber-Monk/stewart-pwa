@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation, useParams } from "react-router-dom";
 import HomePage from "../pages/HomePage";
 import SpanishPage from "../pages/SpanishPage";
 import WomenPage from "../pages/WomenPage";
@@ -117,11 +117,18 @@ export function AppRouter() {
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/spanish" element={<SpanishPage />} />
+      {/* Local/dev preview of personalized rider site + ride-request form (no hosts file). */}
+      <Route path="/site/:slug" element={<LocalRiderSitePreview />} />
       <Route path="/settings" element={<SettingsRoute />} />
       <Route path="/" element={<HomePage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
+}
+
+function LocalRiderSitePreview() {
+  const { slug } = useParams<{ slug: string }>();
+  return <RiderWebsitePage slug={slug} />;
 }
 
 function AdminRoute({ children }: { children: React.ReactNode }) {
