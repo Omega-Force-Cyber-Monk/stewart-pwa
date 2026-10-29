@@ -2,12 +2,29 @@ import { Eye, Filter, Loader2, Search } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { DfyStatusBadge } from "../components/dfy/DfyStatusBadge";
-import { calculateDfyProgress, formatDate } from "../components/dfy/dfyUtils";
+import { formatDate } from "../components/dfy/dfyUtils";
 import { formatCategory } from "../lib/formatCategory";
 import { useGetAdminDfyOrdersQuery } from "../store/api/DoneForYou/dfy.api";
 
 const PAGE_SIZE = 12;
 const statuses = ["PENDING", "IN_PROGRESS", "IN_REVIEW", "READY", "PUBLISHED"] as const;
+
+function kitLabel(order: {
+  status: string;
+  publishedAt?: string | null;
+  brandProfile?: { approvalStatus?: string | null } | null;
+}) {
+  if (order.publishedAt || order.status === "PUBLISHED" || order.status === "READY") {
+    return "Kit ready";
+  }
+  if (order.brandProfile?.approvalStatus === "APPROVED") {
+    return "Automation running";
+  }
+  if (order.brandProfile?.approvalStatus === "UPLOADED") {
+    return "Logo uploaded";
+  }
+  return "Awaiting logo";
+}
 
 export default function AdminDoneForYouPage() {
   const [page, setPage] = useState(1);
@@ -27,7 +44,9 @@ export default function AdminDoneForYouPage() {
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <h2 className="text-2xl font-bold text-slate-800">Done For You Fulfillment</h2>
-          <p className="mt-1 text-sm text-slate-500">Track production status, deliverables, templates, and publishing for DFY customers.</p>
+          <p className="mt-1 text-sm text-slate-500">
+            Track logo approval and automated marketing kit fulfillment for DFY customers.
+          </p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row">
           <label className="relative block">
@@ -80,7 +99,7 @@ export default function AdminDoneForYouPage() {
                   <th className="px-5 py-4">Business</th>
                   <th className="px-5 py-4">Status</th>
                   <th className="px-5 py-4">Audience</th>
-                  <th className="px-5 py-4">Progress</th>
+                  <th className="px-5 py-4">Kit</th>
                   <th className="px-5 py-4">Purchased</th>
                   <th className="px-5 py-4">Updated</th>
                   <th className="px-5 py-4 text-right">Action</th>
@@ -90,7 +109,6 @@ export default function AdminDoneForYouPage() {
                 {orders.length === 0 ? (
                   <tr><td colSpan={8} className="px-5 py-12 text-center text-slate-500">No DFY orders found.</td></tr>
                 ) : orders.map((order) => {
-                  const progress = calculateDfyProgress(order.deliverables.map((item) => ({ ...item, title: item.key, description: null, displayOrder: 0, assets: [] })));
                   return (
                     <tr key={order.id} className="hover:bg-slate-50">
                       <td className="px-5 py-4">
@@ -100,7 +118,7 @@ export default function AdminDoneForYouPage() {
                       <td className="px-5 py-4 text-slate-700">{order.business.businessName}</td>
                       <td className="px-5 py-4"><DfyStatusBadge status={order.status} /></td>
                       <td className="px-5 py-4 text-slate-600">{formatCategory(order.audience)}</td>
-                      <td className="px-5 py-4 text-slate-600">{progress}%</td>
+                      <td className="px-5 py-4 text-slate-600">{kitLabel(order)}</td>
                       <td className="px-5 py-4 text-slate-600">{formatDate(order.createdAt)}</td>
                       <td className="px-5 py-4 text-slate-600">{formatDate(order.updatedAt)}</td>
                       <td className="px-5 py-4 text-right">

@@ -109,8 +109,6 @@ export const baseApi = createApi({
     "DoneForYou",
     "DoneForYouOrders",
     "DoneForYouOrder",
-    "DoneForYouLogoStyles",
-    "DoneForYouTemplateSets",
   ],
   endpoints: () => ({}),
 });

@@ -1,4 +1,21 @@
-import type { DfyAsset, DfyDeliverable, DfyOrderStatus } from "../../store/api/DoneForYou/dfy.type";
+import type {
+  CustomerDfyOrder,
+  DfyAsset,
+  DfyBrandProfile,
+  DfyDeliverable,
+  DfyOrderStatus,
+} from "../../store/api/DoneForYou/dfy.type";
+
+/** Customer-facing DFY journey statuses (spec §3 Section 1). */
+export type CustomerDfyJourneyStatus =
+  | "CHOOSE_LOGO"
+  | "LOGO_BEING_PREPARED"
+  | "PREPARING_KIT"
+  | "READY";
+
+export const DFY_CUSTOMER_GRAPHICS_KEY = "social_media_starter_content";
+export const DFY_CUSTOMER_VIDEOS_KEY = "personalized_launch_videos";
+export const DFY_CUSTOMER_CAPTIONS_KEY = "text_customer_response_templates";
 
 export function formatDfyStatus(status: string) {
   return status
@@ -8,37 +25,69 @@ export function formatDfyStatus(status: string) {
     .join(" ");
 }
 
-export function customerStatus(status: string) {
-  return status === "READY" || status === "PUBLISHED" ? "Ready" : "In Progress";
-}
-
-export function customerFulfillmentLabel(state?: string | null) {
-  switch (state) {
-    case "AWAITING_LOGO":
-      return "Awaiting Logo";
-    case "PREPARING":
-      return "Preparing";
+export function customerJourneyLabel(status: CustomerDfyJourneyStatus) {
+  switch (status) {
+    case "CHOOSE_LOGO":
+      return "Choose Your Logo";
+    case "LOGO_BEING_PREPARED":
+      return "Logo Being Prepared";
+    case "PREPARING_KIT":
+      return "Preparing Your Marketing Kit";
     case "READY":
       return "Ready";
-    case "NEEDS_ATTENTION":
-      return "Needs Attention";
-    default:
-      return null;
   }
 }
 
-export function fulfillmentTone(state?: string | null) {
-  if (state === "READY") return "success";
-  if (state === "NEEDS_ATTENTION") return "danger";
-  if (state === "AWAITING_LOGO") return "warning";
-  if (state === "PREPARING") return "accent";
+export function customerJourneyDescription(status: CustomerDfyJourneyStatus) {
+  switch (status) {
+    case "CHOOSE_LOGO":
+      return "Pick one of the five logo styles for your business. Your team will personalize it next.";
+    case "LOGO_BEING_PREPARED":
+      return "We've saved your style choice. Your personalized logo is being prepared.";
+    case "PREPARING_KIT":
+      return "Your final logo is ready. We're building your marketing graphics, videos, and captions.";
+    case "READY":
+      return "Your Done For You marketing kit is ready to download and use.";
+  }
+}
+
+export function customerJourneyTone(
+  status: CustomerDfyJourneyStatus,
+): "success" | "warning" | "accent" | "neutral" {
+  if (status === "READY") return "success";
+  if (status === "CHOOSE_LOGO") return "warning";
+  if (status === "PREPARING_KIT") return "accent";
   return "neutral";
 }
 
-export function calculateDfyProgress(deliverables: DfyDeliverable[]) {
-  if (deliverables.length === 0) return 0;
-  const completed = deliverables.filter((item) => item.status === "READY" || item.status === "PUBLISHED" || item.status === "COMPLETED").length;
-  return Math.round((completed / deliverables.length) * 100);
+export function hasApprovedFinalLogo(brand: DfyBrandProfile | null | undefined) {
+  if (!brand || brand.approvalStatus !== "APPROVED") return false;
+  return Boolean(brand.approvedLogo?.fileUrl || brand.approvedLogoAsset?.fileUrl);
+}
+
+export function resolveCustomerDfyJourneyStatus(
+  order: CustomerDfyOrder,
+): CustomerDfyJourneyStatus {
+  const brand = order.brand;
+  const hasStyle = Boolean(brand?.selectedLogoStyle);
+  const approved = hasApprovedFinalLogo(brand);
+  const ready =
+    Boolean(order.publishedAt) ||
+    order.status === "READY" ||
+    order.status === "PUBLISHED" ||
+    order.fulfillment?.state === "READY";
+
+  if (ready) return "READY";
+  if (approved) return "PREPARING_KIT";
+  if (hasStyle) return "LOGO_BEING_PREPARED";
+  return "CHOOSE_LOGO";
+}
+
+export function findCustomerDeliverable(
+  deliverables: DfyDeliverable[],
+  key: string,
+) {
+  return deliverables.find((item) => item.key === key) ?? null;
 }
 
 export function assetUrl(asset: DfyAsset) {
