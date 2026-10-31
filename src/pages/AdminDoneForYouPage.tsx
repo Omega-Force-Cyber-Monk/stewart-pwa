@@ -12,18 +12,14 @@ const statuses = ["PENDING", "IN_PROGRESS", "IN_REVIEW", "READY", "PUBLISHED"] a
 function kitLabel(order: {
   status: string;
   publishedAt?: string | null;
-  brandProfile?: { approvalStatus?: string | null } | null;
 }) {
   if (order.publishedAt || order.status === "PUBLISHED" || order.status === "READY") {
     return "Kit ready";
   }
-  if (order.brandProfile?.approvalStatus === "APPROVED") {
+  if (order.status === "IN_PROGRESS" || order.status === "IN_REVIEW") {
     return "Automation running";
   }
-  if (order.brandProfile?.approvalStatus === "UPLOADED") {
-    return "Logo uploaded";
-  }
-  return "Awaiting logo";
+  return "Preparing kit";
 }
 
 export default function AdminDoneForYouPage() {
@@ -45,7 +41,7 @@ export default function AdminDoneForYouPage() {
         <div>
           <h2 className="text-2xl font-bold text-slate-800">Done For You Fulfillment</h2>
           <p className="mt-1 text-sm text-slate-500">
-            Track logo approval and automated marketing kit fulfillment for DFY customers.
+            Track automated Done For You marketing kit fulfillment for customers.
           </p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row">

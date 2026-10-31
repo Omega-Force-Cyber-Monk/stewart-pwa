@@ -71,6 +71,7 @@ export interface DfyAsset {
   fileSize: number | null;
   displayOrder: number;
   published: boolean;
+  metadata?: Record<string, unknown> | null;
   createdAt: string;
   updatedAt: string;
 }

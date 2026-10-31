@@ -1,8 +1,7 @@
-import { AlertTriangle, Download, Loader2, PackageCheck } from "lucide-react";
+import { AlertTriangle, Loader2, PackageCheck } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { DfyAssetGallery } from "../components/dfy/DfyAssetGallery";
 import { DfyLockedState } from "../components/dfy/DfyLockedState";
-import { LogoStyleSelector } from "../components/dfy/LogoStyleSelector";
 import { Badge } from "../components/common/Badge";
 import {
   DFY_CUSTOMER_CAPTIONS_KEY,
@@ -11,33 +10,24 @@ import {
   customerJourneyDescription,
   customerJourneyLabel,
   customerJourneyTone,
-  downloadAsset,
   findCustomerDeliverable,
-  hasApprovedFinalLogo,
+  partitionTextAssets,
   resolveCustomerDfyJourneyStatus,
 } from "../components/dfy/dfyUtils";
 import { Button } from "../components/common/Button";
 import { DashboardCard } from "../components/layout/DashboardCard";
 import { useCreateRiderCheckoutSessionMutation } from "../store/api/Payment/payment.api";
-import {
-  useGetCustomerDoneForYouQuery,
-  useSelectDoneForYouLogoStyleMutation,
-} from "../store/api/DoneForYou/dfy.api";
+import { useGetCustomerDoneForYouQuery } from "../store/api/DoneForYou/dfy.api";
+import { Link } from "react-router-dom";
 
 export default function DoneForYouMarketingKitPage() {
   const [upgradeError, setUpgradeError] = useState("");
-  const [logoFeedback, setLogoFeedback] = useState<{
-    type: "success" | "error";
-    message: string;
-  } | null>(null);
   const [pollingInterval, setPollingInterval] = useState(0);
 
   const { data, isLoading, isError, refetch } = useGetCustomerDoneForYouQuery(
     undefined,
     { pollingInterval },
   );
-  const [selectLogoStyle, { isLoading: isSelectingLogo }] =
-    useSelectDoneForYouLogoStyleMutation();
   const [createCheckout, { isLoading: isStartingCheckout }] =
     useCreateRiderCheckoutSessionMutation();
 
@@ -80,7 +70,7 @@ export default function DoneForYouMarketingKitPage() {
     return (
       <DashboardCard className="text-center">
         <AlertTriangle className="mx-auto h-8 w-8 text-amber-500" />
-        <h2 className="mt-3 text-lg font-semibold text-slate-900">Unable to load your kit</h2>
+        <h2 className="mt-3 text-lg font-semibold text-slate-900">Unable to load your package</h2>
         <p className="mt-1 text-sm text-slate-500">Please retry in a moment.</p>
         <Button
           onClick={() => refetch()}
@@ -98,11 +88,11 @@ export default function DoneForYouMarketingKitPage() {
         <DashboardCard className="text-center">
           <PackageCheck className="mx-auto h-9 w-9 text-dashboard-rider" />
           <h2 className="mt-3 text-xl font-bold text-slate-900">
-            Your Done For You kit is being set up
+            Your Done For You package is being prepared
           </h2>
           <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-500">
-            We found your DFY purchase. This page will unlock as soon as your order is ready for
-            logo selection.
+            We found your DFY purchase. Marketing graphics, videos, and templates will appear here
+            automatically when ready.
           </p>
           <Button
             onClick={() => refetch()}
@@ -124,24 +114,21 @@ export default function DoneForYouMarketingKitPage() {
 
   const order = data.order;
   const status = journey ?? resolveCustomerDfyJourneyStatus(order);
-  const brand = order.brand;
-  const selectedStyle = brand?.selectedLogoStyle ?? null;
-  const finalLogo = brand?.approvedLogo ?? brand?.approvedLogoAsset ?? null;
-  const finalLogoReady = hasApprovedFinalLogo(brand);
-  const styleLocked = brand?.approvalStatus === "UPLOADED" || finalLogoReady;
   const graphics = findCustomerDeliverable(order.deliverables, DFY_CUSTOMER_GRAPHICS_KEY);
   const videos = findCustomerDeliverable(order.deliverables, DFY_CUSTOMER_VIDEOS_KEY);
   const captions = findCustomerDeliverable(order.deliverables, DFY_CUSTOMER_CAPTIONS_KEY);
+  const { readyToPost, responseTemplates, usageInstructions } = partitionTextAssets(
+    captions?.assets ?? [],
+  );
   const showMaterials =
     status === "READY" ||
     Boolean(graphics?.assets.length || videos?.assets.length || captions?.assets.length);
 
   return (
     <div className="space-y-6">
-      {/* Section 1 — DFY Status */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-semibold text-dashboard-rider">Done For You Marketing Kit</p>
+          <p className="text-sm font-semibold text-dashboard-rider">Done For You Marketing Package</p>
           <h2 className="mt-1 text-2xl font-bold tracking-tight text-slate-900">
             {customerJourneyLabel(status)}
           </h2>
@@ -152,109 +139,13 @@ export default function DoneForYouMarketingKitPage() {
         <Badge tone={customerJourneyTone(status)}>{customerJourneyLabel(status)}</Badge>
       </div>
 
-      {/* Section 2 — Choose Your Logo Style */}
-      {!styleLocked && (
-        <LogoStyleSelector
-          brand={brand}
-          logoStyles={data.logoStyles}
-          isLoading={isSelectingLogo}
-          locked={false}
-          feedback={logoFeedback}
-          onSelect={async (logoStyleKey) => {
-            setLogoFeedback(null);
-            try {
-              await selectLogoStyle({ logoStyleKey }).unwrap();
-              setLogoFeedback({ type: "success", message: "Logo style saved." });
-            } catch {
-              setLogoFeedback({
-                type: "error",
-                message: "Unable to save that logo style. Please try again.",
-              });
-            }
-          }}
-        />
-      )}
-
-      {/* Section 3 — Selected Logo Style (template, not final) */}
-      {selectedStyle && (
-        <DashboardCard className="space-y-4">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-dashboard-rider">
-              Your selected logo style
-            </p>
-            <h3 className="mt-1 text-lg font-bold text-slate-900">{selectedStyle.name}</h3>
-            <p className="mt-1 text-sm text-slate-500">
-              This is the template style you chose. Your personalized business logo is created
-              separately by the team using your company name and onboarding details.
-            </p>
-          </div>
-          <div className="max-w-sm rounded-lg border border-slate-200 bg-slate-50 p-4">
-            {selectedStyle.previewUrl ? (
-              <img
-                src={selectedStyle.previewUrl}
-                alt={selectedStyle.name}
-                className="aspect-video w-full object-contain"
-              />
-            ) : (
-              <div className="grid aspect-video place-items-center text-sm text-slate-500">
-                Style preview unavailable
-              </div>
-            )}
-          </div>
-        </DashboardCard>
-      )}
-
-      {/* Section 4 — Final Logo */}
-      <DashboardCard className="space-y-4">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-dashboard-rider">
-            Your final logo
-          </p>
-          <h3 className="mt-1 text-lg font-bold text-slate-900">{order.business.name}</h3>
-          <p className="mt-1 text-sm text-slate-500">
-            Your approved personalized logo used across your Done For You marketing materials.
-          </p>
-        </div>
-        {finalLogoReady && finalLogo?.fileUrl ? (
-          <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-            <img
-              src={finalLogo.fileUrl}
-              alt="Your final personalized logo"
-              className="max-h-44 w-full object-contain"
-            />
-            <button
-              type="button"
-              onClick={() => downloadAsset(finalLogo)}
-              className="mt-4 inline-flex cursor-pointer items-center gap-2 rounded-lg bg-dashboard-rider px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-dashboard-rider-dark"
-            >
-              <Download className="h-4 w-4" />
-              Download logo
-            </button>
-          </div>
-        ) : (
-          <p className="rounded-lg border border-dashed border-slate-200 bg-slate-50 p-5 text-sm text-slate-500">
-            {selectedStyle
-              ? "Your personalized logo will appear here after the team finishes and approves it."
-              : "Select a logo style above to get started."}
-          </p>
-        )}
-      </DashboardCard>
-
-      {/* Section 5 — Marketing Materials */}
       {showMaterials ? (
         <section className="space-y-4">
-          <div>
-            <h3 className="text-lg font-semibold text-slate-900">Marketing materials</h3>
-            <p className="mt-1 text-sm text-slate-500">
-              Customer-branded graphics, selling-door videos, and approved captions for your kit.
-            </p>
-          </div>
-
           <DashboardCard className="space-y-4">
             <div>
-              <h4 className="font-semibold text-slate-900">Marketing graphics</h4>
+              <h3 className="text-lg font-semibold text-slate-900">Marketing Graphics</h3>
               <p className="mt-1 text-sm text-slate-500">
-                Generated graphics personalized with your final logo.
+                Audience-specific graphics for your package. Preview or download to post.
               </p>
             </div>
             <DfyAssetGallery assets={graphics?.assets ?? []} />
@@ -262,9 +153,9 @@ export default function DoneForYouMarketingKitPage() {
 
           <DashboardCard className="space-y-4">
             <div>
-              <h4 className="font-semibold text-slate-900">Videos</h4>
+              <h3 className="text-lg font-semibold text-slate-900">Videos</h3>
               <p className="mt-1 text-sm text-slate-500">
-                The three launch videos for your selling door (unchanged source masters).
+                Your three launch videos. Preview or download as provided.
               </p>
             </div>
             <DfyAssetGallery assets={videos?.assets ?? []} />
@@ -272,31 +163,75 @@ export default function DoneForYouMarketingKitPage() {
 
           <DashboardCard className="space-y-4">
             <div>
-              <h4 className="font-semibold text-slate-900">Captions / instructions</h4>
+              <h3 className="text-lg font-semibold text-slate-900">Ready-to-Post Captions</h3>
               <p className="mt-1 text-sm text-slate-500">
-                Approved text you can view or copy for posts and replies.
+                Finished caption copy you can paste into posts. Use Copy — do not rewrite.
               </p>
             </div>
-            <DfyAssetGallery assets={captions?.assets ?? []} />
+            {readyToPost.length > 0 ? (
+              <DfyAssetGallery assets={readyToPost} />
+            ) : (
+              <p className="rounded-lg border border-dashed border-slate-200 bg-slate-50 p-4 text-sm text-slate-500">
+                Approved ready-to-post caption copy has not been imported for this audience yet.
+              </p>
+            )}
+          </DashboardCard>
+
+          <DashboardCard className="space-y-4">
+            <div>
+              <h3 className="text-lg font-semibold text-slate-900">Customer Response Templates</h3>
+              <p className="mt-1 text-sm text-slate-500">
+                Ready-to-send reply scripts for rider messages. Copy and paste as written.
+              </p>
+            </div>
+            {responseTemplates.length > 0 ? (
+              <DfyAssetGallery assets={responseTemplates} />
+            ) : (
+              <p className="rounded-lg border border-dashed border-slate-200 bg-slate-50 p-4 text-sm text-slate-500">
+                Approved response-template copy has not been imported for this audience yet.
+              </p>
+            )}
+          </DashboardCard>
+
+          <DashboardCard className="space-y-4">
+            <div>
+              <h3 className="text-lg font-semibold text-slate-900">Usage Instructions</h3>
+              <p className="mt-1 text-sm text-slate-500">
+                Guidance only — where and how to use your materials. Not post copy.
+              </p>
+            </div>
+            <DfyAssetGallery assets={usageInstructions} />
+          </DashboardCard>
+
+          <DashboardCard className="space-y-3">
+            <div>
+              <h3 className="text-lg font-semibold text-slate-900">Resources &amp; Guides</h3>
+              <p className="mt-1 text-sm text-slate-500">
+                Open your Local Client &amp; Positioning Guide and other approved resources.
+              </p>
+            </div>
+            <Link
+              to="/resources-guide"
+              className="inline-flex text-sm font-semibold text-dashboard-rider hover:underline"
+            >
+              Open Resources &amp; Guides
+            </Link>
           </DashboardCard>
         </section>
       ) : (
-        status !== "CHOOSE_LOGO" && (
-          <DashboardCard>
-            <h3 className="font-semibold text-slate-900">Marketing materials</h3>
-            <p className="mt-2 text-sm leading-6 text-slate-500">
-              {status === "LOGO_BEING_PREPARED"
-                ? "Your marketing kit will appear here after your personalized logo is approved."
-                : "We're preparing your graphics, videos, and captions. This page updates automatically."}
-            </p>
-          </DashboardCard>
-        )
+        <DashboardCard>
+          <h3 className="font-semibold text-slate-900">Preparing your package</h3>
+          <p className="mt-2 text-sm leading-6 text-slate-500">
+            We&apos;re assembling your graphics, videos, and templates. This page updates
+            automatically.
+          </p>
+        </DashboardCard>
       )}
 
       <DashboardCard>
         <h3 className="text-sm font-semibold text-slate-900">Need help?</h3>
         <p className="mt-2 text-sm leading-6 text-slate-500">
-          Questions about your Done For You kit can go through Support from your dashboard.
+          Questions about your Done For You package can go through Support from your dashboard.
         </p>
       </DashboardCard>
     </div>
