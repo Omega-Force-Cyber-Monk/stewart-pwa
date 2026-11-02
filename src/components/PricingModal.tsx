@@ -123,7 +123,7 @@ export function PricingModal({
         plan2Features: [
           "Configuración Completa de Negocio",
           "Todos los Materiales de Marketing",
-          "Configuración de Acuity Scheduling",
+          "Formulario nativo de solicitud de viaje",
           "Página de Venta Personalizada",
           "Código QR y Recursos de Referencia",
           "3 Videos de Lanzamiento",
@@ -187,7 +187,7 @@ export function PricingModal({
         plan2Features: [
           "Complete Business Setup",
           "All Marketing Materials",
-          "Acuity Scheduling Setup",
+          "Native Ride Request Form",
           "Personalized Selling Page",
           "QR Code & Referral Assets",
           "3 Launch Videos",

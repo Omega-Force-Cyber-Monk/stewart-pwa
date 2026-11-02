@@ -1,16 +1,27 @@
-import type { ExitIntentRoute } from "./exitIntentConfig";
+import type { ExitIntentRoute, ExitIntentSourcePage } from "./exitIntentConfig";
 import { isExitIntentRoute } from "./exitIntentConfig";
 import { readSessionStorageValue, writeSessionStorageValue, storageKeys } from "../../../lib/storage";
 
 export const CONSENT_TEXT_VERSION = "sms-consent-v1" as const;
 export const ENGLISH_GUIDE_CONSENT_TEXT =
-  "I agree to receive the requested QuitTheApp Quick Start Guide by text message at the phone number provided. Message and data rates may apply.";
+  "I agree to receive the requested QuitTheApp guide by text message at the phone number provided. Message and data rates may apply.";
+export const ENGLISH_WOMEN_GUIDE_CONSENT_TEXT =
+  "I agree to receive the requested QuitTheApp Women's Quick Start Guide by text message at the phone number provided. Message and data rates may apply.";
 export const ENGLISH_MARKETING_CONSENT_TEXT =
   "I agree to receive occasional marketing and promotional text messages from QuitTheApp. Consent is not a condition of purchase. Message frequency may vary. Reply STOP to opt out.";
 export const SPANISH_GUIDE_CONSENT_TEXT =
-  "Acepto recibir la Guia Rapida solicitada de QuitTheApp por mensaje de texto al numero de telefono proporcionado. Pueden aplicarse tarifas de mensajes y datos.";
+  "Acepto recibir la Guía Rápida solicitada de QuitTheApp por mensaje de texto al número de teléfono proporcionado. Pueden aplicarse tarifas de mensajes y datos.";
 export const SPANISH_MARKETING_CONSENT_TEXT =
-  "Acepto recibir mensajes de texto ocasionales de marketing y promociones de QuitTheApp. El consentimiento no es una condicion de compra. La frecuencia de mensajes puede variar. Responde STOP para cancelar.";
+  "Acepto recibir mensajes de texto ocasionales de marketing y promociones de QuitTheApp. El consentimiento no es una condición de compra. La frecuencia de mensajes puede variar. Responde STOP para cancelar.";
+
+export function guideConsentTextForSource(
+  sourcePage: ExitIntentSourcePage | string,
+  locale: "en" | "es",
+): string {
+  if (locale === "es") return SPANISH_GUIDE_CONSENT_TEXT;
+  if (sourcePage === "women") return ENGLISH_WOMEN_GUIDE_CONSENT_TEXT;
+  return ENGLISH_GUIDE_CONSENT_TEXT;
+}
 
 export function canShowExitIntent(): boolean {
   return !readSessionStorageValue(storageKeys.exitIntentShown);

@@ -65,9 +65,9 @@ export const exitIntentConfig: Record<ExitIntentRoute, ExitIntentRouteConfig> = 
   "/women": {
     sourcePage: "women",
     locale: "en",
-    headline: "Get Your FREE Safety & Trust Guide",
+    headline: "Get Your FREE Women's Quick Start Guide",
     subhead: "Practical steps to build a professional, safe operation from day one.",
-    submitLabel: "Send Me the Free Women's Guide",
+    submitLabel: "Send Me the Women's Quick Start Guide",
     microcopy: "No spam. Just real help to get you started.",
     guidePath: "/guides/QuitTheApp_Women_Local_Client_and_Positioning_Guide_FIXED.pdf",
     fields: ["phone", "city"],

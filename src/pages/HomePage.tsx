@@ -948,7 +948,7 @@ function FaqSection() {
         "Yes. The $295 QuitTheApp DIY system is a one-time payment with no monthly QuitTheApp platform fee. An optional $99 We Do It for You upgrade is available. Normal business expenses such as scheduling software, domain registration, payment processing, commercial insurance, licensing, fuel, vehicle maintenance, and other operating costs may still apply.",
     },
     {
-      question: "Is my personalized webpage and hosting included?",
+      question: "Are my personalized selling page and hosting included?",
       answer:
         "Yes. QuitTheApp builds and hosts your personalized selling page. Customers using the $295 DIY system provide their business information and follow the guided setup process. Customers who purchase the optional $99 We Do It for You upgrade receive additional setup assistance from our team. Separate third-party business expenses may still apply.",
     },

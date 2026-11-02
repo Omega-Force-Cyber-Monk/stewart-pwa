@@ -16,7 +16,6 @@ import {
   useUploadBusinessLogoMutation,
 } from "../store/api/Business/business.api";
 import { AlertModal } from "../components/ui/AlertModal";
-import eleanorAvatar from "../assets/eleanorAvatar.png";
 import carCover from "../assets/carCover.png";
 import { getPersonalizedSiteUrl } from "../lib/personalizedSiteUrl";
 import { copyToClipboard } from "../utils/clipboard";
@@ -363,11 +362,20 @@ export default function ProfileSettingsPage() {
             <div className="flex flex-col 2xl:flex-row items-center 2xl:items-start gap-8">
 
 	              <div className="relative shrink-0">
-                <img
-                  src={user?.avatarUrl || eleanorAvatar}
-                  alt={user?.name ?? "Profile avatar"}
-                  className="w-32 h-32 rounded-full object-cover shadow-sm border border-slate-100 bg-slate-50"
-                />
+                {user?.avatarUrl ? (
+                  <img
+                    src={user.avatarUrl}
+                    alt={user?.name ?? "Profile avatar"}
+                    className="w-32 h-32 rounded-full object-cover shadow-sm border border-slate-100 bg-slate-50"
+                  />
+                ) : (
+                  <div
+                    aria-label={user?.name ?? "Profile avatar"}
+                    className="flex h-32 w-32 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-3xl font-semibold text-slate-500 shadow-sm"
+                  >
+                    {(user?.name || user?.email || "Q").trim().charAt(0).toUpperCase()}
+                  </div>
+                )}
                 <button
                   onClick={() => setIsUploadModalOpen(true)}
                   className="absolute bottom-0 right-0 w-8 h-8 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center shadow-md transition-colors border-2 border-white"
@@ -788,11 +796,17 @@ export default function ProfileSettingsPage() {
                   <Loader2 className="w-8 h-8 text-green-500 animate-spin" />
                 ) : (
                   <>
-                    <img
-                      src={user?.avatarUrl || eleanorAvatar}
-                      alt="Current Avatar"
-                      className="w-full h-full rounded-full object-cover"
-                    />
+                    {user?.avatarUrl ? (
+                      <img
+                        src={user.avatarUrl}
+                        alt="Current Avatar"
+                        className="w-full h-full rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center rounded-full bg-slate-100 text-3xl font-semibold text-slate-500">
+                        {(user?.name || user?.email || "Q").trim().charAt(0).toUpperCase()}
+                      </div>
+                    )}
                     <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center shadow-sm border-4 border-white">
                       <ImagePlus className="w-5 h-5" />
                     </div>

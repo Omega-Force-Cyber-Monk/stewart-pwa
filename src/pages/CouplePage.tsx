@@ -204,7 +204,7 @@ function HeroBanner({ openPricingModal }: { openPricingModal: () => void }) {
                   <ul className="space-y-3 mb-6">
                     {[
                       "Clients book again",
-                      "Friends and family refer you",
+                      "Friends and family refer clients to you",
                       "Travelers save your contact information",
                       "Your reputation grows with every great ride",
                     ].map((item, i) => (
@@ -849,6 +849,9 @@ function FooterCTASection({
             <span key={label} className="max-w-[170px] sm:max-w-none">{label}</span>
           ))}
         </div>
+        <p className="pb-6 text-center text-xs text-slate-500">
+          © {new Date().getFullYear()} QuitTheApp. All Rights Reserved.
+        </p>
       </PageContainer>
     </section>
   );

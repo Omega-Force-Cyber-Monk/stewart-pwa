@@ -40,7 +40,7 @@ function category(payment: PaymentRecord) {
 
 function product(payment: PaymentRecord) {
   return category(payment) === "Add-Ons"
-    ? "Booking Setup Add-on"
+    ? "Done For You Upgrade — $99"
     : `${payment.items[0]?.name || "Private Airport Business"}`;
 }
 

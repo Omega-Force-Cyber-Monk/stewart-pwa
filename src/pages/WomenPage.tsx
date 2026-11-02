@@ -547,7 +547,7 @@ function HowItWorksAndFaqSection({ openDfyModal }: { openDfyModal: () => void })
       answer: "Results depend on your market, effort, and execution. The system provides the proven tools and framework for success.",
     },
     {
-      question: "Is my personalized selling page and hosting included?",
+      question: "Are my personalized selling page and hosting included?",
       answer: "Yes, your personalized selling page and its ongoing hosting are included in the one-time cost.",
     }
   ];

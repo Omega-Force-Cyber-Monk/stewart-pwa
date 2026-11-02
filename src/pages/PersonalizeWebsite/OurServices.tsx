@@ -41,9 +41,9 @@ export function OurServices() {
       icon: <Route className="w-5 h-5 text-white" />,
       title: "Long Distance Rides",
       points: [
-        "Naples to Miami",
-        "Naples to Fort Lauderdale",
-        "Marco Island transfers"
+        "Regional long-distance trips",
+        "Airport-to-airport transfers",
+        "Multi-city connections"
       ]
     }
   ];
