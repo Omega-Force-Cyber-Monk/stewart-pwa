@@ -169,7 +169,27 @@ export default function LaunchDashboardPage() {
   };
 
   const chooseCity = (suggestion: AirportSuggestion) => {
-    setServiceArea((current) => ({ ...current, cityArea: suggestion.cityArea, airports: Array.from(new Set([...current.airports, ...suggestion.airportOptions.map((option) => option.code)])) }));
+    // Keep the customer's typed service-area label when it is already more
+    // specific than the suggestion city (e.g. "Southwest Florida" must not
+    // become "Miami, FL" because an airport code was merged in).
+    setServiceArea((current) => {
+      const typed = current.cityArea.trim();
+      const keepTyped =
+        typed.length > 0 &&
+        !typed.toLowerCase().includes(suggestion.city.toLowerCase()) &&
+        typed.toLowerCase() !== suggestion.cityArea.toLowerCase() &&
+        typed.split(/\s+/).length >= 2;
+      return {
+        ...current,
+        cityArea: keepTyped ? typed : suggestion.cityArea,
+        airports: Array.from(
+          new Set([
+            ...current.airports,
+            ...suggestion.airportOptions.map((option) => option.code),
+          ]),
+        ),
+      };
+    });
     setSuggestions([]);
   };
 
@@ -298,26 +318,11 @@ export default function LaunchDashboardPage() {
                 />
               </label>
               {!addonOwned && (
-                <div className="rounded-lg bg-slate-50 p-4">
-                  <label className="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={acuity.connected}
-                      onChange={(event) => setAcuity((current) => ({ ...current, connected: event.target.checked }))}
-                    />{" "}
-                    Connect Acuity Scheduling
-                  </label>
-                  {acuity.connected && (
-                    <div className="mt-4">
-                      <Field
-                        label="Acuity Booking URL"
-                        required
-                        value={acuity.bookingUrl}
-                        onChange={(value) => setAcuity((current) => ({ ...current, bookingUrl: value }))}
-                        placeholder="https://acuityscheduling.com/..."
-                      />
-                    </div>
-                  )}
+                <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+                  <p className="font-semibold text-slate-800">Native ride request</p>
+                  <p className="mt-1 leading-6">
+                    Your selling page includes a built-in ride-request form. Acuity scheduling is not required for QuitTheApp launch.
+                  </p>
                 </div>
               )}
               <div className="flex justify-between">

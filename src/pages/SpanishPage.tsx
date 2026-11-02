@@ -922,7 +922,7 @@ function HowItWorksAndFaqSection({
             </div>
 
             <p className="text-slate-500 font-medium text-[10px] text-center mt-6">
-              © 2026 QuitTheApp, LLC. Todos los derechos reservados.
+              © {new Date().getFullYear()} QuitTheApp. Todos los derechos reservados.
             </p>
           </div>
         </div>

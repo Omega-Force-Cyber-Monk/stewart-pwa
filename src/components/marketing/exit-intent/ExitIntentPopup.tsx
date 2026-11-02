@@ -4,10 +4,9 @@ import { Link } from "react-router-dom";
 import type { ExitIntentRouteConfig } from "./exitIntentConfig";
 import {
   CONSENT_TEXT_VERSION,
-  ENGLISH_GUIDE_CONSENT_TEXT,
   ENGLISH_MARKETING_CONSENT_TEXT,
-  SPANISH_GUIDE_CONSENT_TEXT,
   SPANISH_MARKETING_CONSENT_TEXT,
+  guideConsentTextForSource,
   normalizeCity,
   normalizeConsent,
   normalizeUsPhone,
@@ -33,7 +32,7 @@ export function ExitIntentPopup({ config, onClose }: ExitIntentPopupProps) {
   
   const [createPublicLead, { isLoading }] = useCreatePublicLeadMutation();
 
-  const guideConsentText = config.locale === "es" ? SPANISH_GUIDE_CONSENT_TEXT : ENGLISH_GUIDE_CONSENT_TEXT;
+  const guideConsentText = guideConsentTextForSource(config.sourcePage, config.locale);
   const marketingConsentText = config.locale === "es" ? SPANISH_MARKETING_CONSENT_TEXT : ENGLISH_MARKETING_CONSENT_TEXT;
 
   useEffect(() => {

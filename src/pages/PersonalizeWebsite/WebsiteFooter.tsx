@@ -157,7 +157,7 @@ export function WebsiteFooter({ businessName, businessPhone, businessEmail, logo
 
         {/* Separator line & Copyright bottom bar */}
         <div className="border-t border-white/10 py-8 text-center text-sm text-slate-500">
-          <p>&copy; 2026 {businessName}. All Rights Reserved.</p>
+          <p>&copy; {new Date().getFullYear()} {businessName}. All Rights Reserved.</p>
         </div>
 
       </div>

@@ -58,10 +58,13 @@ export function RideRequestModal({
     event.preventDefault();
     setError(null);
     try {
+      // Browsers may emit HH:mm:ss; API expects HH:mm. Preserve AM/PM meaning.
+      const normalizedTime = (form.requestedTime || "").slice(0, 5);
       const result = await submitRideRequest({
         slug: businessSlug,
         body: {
           ...form,
+          requestedTime: normalizedTime,
           customerName: form.customerName.trim(),
           customerEmail: form.customerEmail.trim(),
           customerPhone: form.customerPhone.trim(),

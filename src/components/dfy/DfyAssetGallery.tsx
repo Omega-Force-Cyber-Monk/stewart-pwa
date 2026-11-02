@@ -8,9 +8,13 @@ interface DfyAssetGalleryProps {
   assets: DfyAsset[];
 }
 
+/** Strip internal door prefixes like "Main — " from customer-facing titles. */
+function customerFacingTitle(title: string) {
+  return title.replace(/^(Main|Women|50\+|Couples|Spanish)\s*[—–-]\s*/i, "").trim();
+}
+
 export function DfyAssetGallery({ assets }: DfyAssetGalleryProps) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
-
   if (assets.length === 0) {
     return (
       <p className="rounded-lg border border-dashed border-slate-200 bg-slate-50 p-4 text-sm text-slate-500">
@@ -40,8 +44,8 @@ export function DfyAssetGallery({ assets }: DfyAssetGalleryProps) {
             {isImageAsset(asset) && url ? (
               <img
                 src={url}
-                alt={asset.title}
-                className="aspect-video w-full rounded-md bg-slate-100 object-cover"
+                alt={customerFacingTitle(asset.title)}
+                className="aspect-[4/5] w-full rounded-md bg-slate-50 object-contain"
               />
             ) : isVideoAsset(asset) && url ? (
               <video
@@ -52,23 +56,21 @@ export function DfyAssetGallery({ assets }: DfyAssetGalleryProps) {
                 <source src={url} type={asset.mimeType || "video/mp4"} />
                 <track kind="captions" />
               </video>
-            ) : (
+            ) : asset.assetType === "TEXT" || asset.textContent ? null : (
               <div className="grid aspect-video place-items-center rounded-md bg-slate-100 text-slate-500">
                 {asset.assetType === "LINK" ? (
                   <LinkIcon className="h-8 w-8" />
-                ) : asset.assetType === "TEXT" ? (
-                  <Copy className="h-8 w-8" />
                 ) : (
                   <FileText className="h-8 w-8" />
                 )}
               </div>
             )}
             <div className="mt-3 min-w-0">
-              <h4 className="truncate text-sm font-semibold text-slate-900">
-                {asset.title}
+              <h4 className="text-sm font-semibold text-slate-900">
+                {customerFacingTitle(asset.title)}
               </h4>
               {asset.textContent && (
-                <p className="mt-2 line-clamp-4 whitespace-pre-wrap rounded-md bg-slate-50 p-3 text-xs leading-5 text-slate-600">
+                <p className="mt-2 max-h-64 overflow-y-auto whitespace-pre-wrap rounded-md bg-slate-50 p-3 text-xs leading-5 text-slate-700">
                   {asset.textContent}
                 </p>
               )}
@@ -109,7 +111,7 @@ export function DfyAssetGallery({ assets }: DfyAssetGalleryProps) {
                     ) : (
                       <Copy className="h-3.5 w-3.5" />
                     )}
-                    {copiedId === asset.id ? "Caption copied" : "Copy"}
+                    {copiedId === asset.id ? "Copied" : "Copy"}
                   </button>
                 )}
               </div>

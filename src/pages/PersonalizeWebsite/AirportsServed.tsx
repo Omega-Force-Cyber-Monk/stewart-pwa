@@ -9,7 +9,10 @@ export function AirportsServed({ airports = [] }: AirportsServedProps) {
   const airportList = airports
     .filter(Boolean)
     .map((name, index) => ({
-      code: name.match(/^([A-Z]{3})\s*-\s*/)?.[1] ?? String(index + 1).padStart(3, "0"),
+      code:
+        name.match(/^([A-Z]{3})\s*-\s*/)?.[1] ??
+        name.match(/^([A-Z]{3})\b/)?.[1] ??
+        String(index + 1),
       name,
       desc: "",
     }));

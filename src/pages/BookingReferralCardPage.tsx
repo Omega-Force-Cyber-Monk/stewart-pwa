@@ -67,7 +67,7 @@ export default function BookingReferralCardPage() {
 
   const checklist = [
     "Booking page created", "Contact form active", "Notifications enabled", 
-    "Print ready card", "Works direction", "Personal website", 
+    "Print ready card", "Works directory", "Personal website", 
     "Resource & guide share", "Booking notifications enabled"
   ];
 
