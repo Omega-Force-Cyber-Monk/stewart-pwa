@@ -204,7 +204,6 @@ export default function ProfileSettingsPage() {
         },
         serviceArea: {
           cityArea,
-          airports: setupResponse?.data?.serviceArea?.airports || [],
         },
       }).unwrap();
 
@@ -484,6 +483,7 @@ export default function ProfileSettingsPage() {
                   <p className="text-[12px] text-slate-400 mb-1">Business area</p>
                   <p className="text-[14px] font-bold text-slate-800 break-words">
                     {setupResponse?.data?.serviceArea?.cityArea || "Not set"}
+                    <a href="/launch-dashboard?step=3" className="ml-3 text-dashboard-rider underline">{(profileResponse?.user ?? authUser)?.driverProfile?.category === "SPANISH" ? "Editar ciudad y aeropuertos" : "Edit city and airports"}</a>
                   </p>
                 </div>
                 <div className="2xl:col-span-2">

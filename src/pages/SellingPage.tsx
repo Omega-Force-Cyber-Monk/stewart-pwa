@@ -68,7 +68,7 @@ export default function SellingPage() {
           businessName={setupResponse?.data?.business?.businessName || "Your Transportation Business"}
           businessPhone={setupResponse?.data?.business?.phone || "Phone not set"}
           businessInfo={setupResponse?.data?.business?.businessInfo || "Reliable and professional transportation."}
-          servingAreas={setupResponse?.data?.serviceArea?.airports || ["Local Airport"]}
+          servingAreas={[setupResponse?.data?.serviceArea?.cityArea, ...(setupResponse?.data?.serviceArea?.airports || [])].filter((value): value is string => Boolean(value))}
           logoUrl={setupResponse?.data?.business?.logoUrl || null}
           onRequestRide={() => {
             if (personalizedUrl) window.open(personalizedUrl, "_blank", "noopener,noreferrer");

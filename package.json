@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "test": "node --experimental-strip-types --test tests/exitIntentLogic.test.ts",
     "test:e2e": "playwright test",
+    "test:e2e:service-area": "playwright test --config playwright.service-area.config.ts",
     "preview": "vite preview"
   },
   "dependencies": {

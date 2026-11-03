@@ -230,7 +230,7 @@ function RiderRoute({ children }: { children: React.ReactNode }) {
     return <Navigate to="/launch-dashboard" replace />;
   }
 
-  if (onboardingComplete && isLaunchRoute && !onboardingJustCompleted) {
+  if (onboardingComplete && isLaunchRoute && !onboardingJustCompleted && new URLSearchParams(location.search).get("step") !== "3") {
     return <Navigate to="/dashboard" replace />;
   }
 

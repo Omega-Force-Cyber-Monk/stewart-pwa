@@ -26,7 +26,7 @@ import {
   useUpdateSetupStateMutation,
   useUploadBusinessLogoMutation,
 } from "../store/api/Business/business.api";
-import type { AirportSuggestion } from "../store/api/Business/business.type";
+import type { AirportOption, AirportSuggestion } from "../store/api/Business/business.type";
 import { trackOnboardingCompleted } from "../lib/gtmEvents";
 
 const stepTitles = ["Buyer Information", "Business Information", "Service Area", "Final Review"];
@@ -85,6 +85,22 @@ export default function LaunchDashboardPage() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [getAirportSuggestions] = useLazyGetAirportSuggestionsQuery();
   const { data: finalReview } = useGetFinalReviewQuery(undefined, { skip: step !== 4 });
+  const spanish = profile?.user.driverProfile?.category === "SPANISH";
+  const locationText = spanish ? {
+    city: "Ciudad o \u00e1rea metropolitana", cityHint: "Escribe tu ciudad real. Los aeropuertos se seleccionan por separado.",
+    cityPlaceholder: "Por ejemplo: Naples, FL", airports: "Aeropuertos que atiendes",
+    airportHint: "Busca por ciudad o c\u00f3digo y selecciona cada aeropuerto por separado.",
+    airportPlaceholder: "Busca una ciudad o un c\u00f3digo de aeropuerto", required: "Ingresa tu ciudad y selecciona al menos un aeropuerto.",
+    invalid: "No se pudo guardar. Ingresa una ciudad v\u00e1lida (m\u00e1ximo 160 caracteres) y c\u00f3digos de aeropuerto admitidos.",
+    remove: "Eliminar", back: "Atr\u00e1s", save: "Guardar y continuar",
+  } : {
+    city: "City or Metro Area", cityHint: "Enter your actual service city. Select airports separately.",
+    cityPlaceholder: "For example: Naples, FL", airports: "Airports Served",
+    airportHint: "Search by city or code and select each airport individually.",
+    airportPlaceholder: "Search a city or airport code", required: "City and at least one airport are required.",
+    invalid: "Enter a valid city (maximum 160 characters) and supported airport codes.",
+    remove: "Remove", back: "Back", save: "Save & Continue",
+  };
   const addonOwned = profile?.purchase?.addon ?? false;
 
   useEffect(() => {
@@ -94,7 +110,7 @@ export default function LaunchDashboardPage() {
     setBusiness({ businessName: data.business.businessName || "", email: data.business.email || "", phone: data.business.phone || "", businessInfo: data.business.businessInfo || "", logoUrl: data.business.logoUrl || "" });
     setAcuity({ connected: data.acuity.connected, bookingUrl: data.acuity.bookingUrl || "" });
     setServiceArea({ cityArea: data.serviceArea.cityArea || "", airports: data.serviceArea.airports || [] });
-    setStep(Math.min(4, Math.max(1, data.progress.currentStep || 1)));
+    setStep(new URLSearchParams(window.location.search).get("step") === "3" ? 3 : Math.min(4, Math.max(1, data.progress.currentStep || 1)));
     setHydrated(true);
   }, [hydrated, setupResponse]);
 
@@ -108,7 +124,7 @@ export default function LaunchDashboardPage() {
       const response = await updateSetup(section).unwrap();
       setStep(Math.min(4, Math.max(1, response.data.progress.currentStep || step + 1)));
     } catch (cause) {
-      setError(errorMessage(cause));
+      setError(spanish && section.serviceArea ? locationText.invalid : errorMessage(cause));
     }
   };
 
@@ -146,20 +162,21 @@ export default function LaunchDashboardPage() {
 
   const submitService = async (event: React.FormEvent) => {
     event.preventDefault();
-    const pendingAirport = airportSearch.trim().toUpperCase();
     const normalizedServiceArea = {
-      cityArea: serviceArea.cityArea.trim(),
+      cityArea: serviceArea.cityArea.trim().replace(/\s+/g, " "),
       airports: Array.from(
         new Set(
-          [...serviceArea.airports, ...(pendingAirport ? [pendingAirport] : [])]
-            .map((airport) => airport.trim().toUpperCase())
-            .filter(Boolean),
+          serviceArea.airports.filter(Boolean),
         ),
       ),
     };
 
     if (!normalizedServiceArea.cityArea || normalizedServiceArea.airports.length === 0) {
-      setError("City and at least one airport are required.");
+      setError(locationText.required);
+      return;
+    }
+    if (normalizedServiceArea.cityArea.length > 160 || /[<>\x00-\x1f\x7f]/.test(normalizedServiceArea.cityArea)) {
+      setError(locationText.invalid);
       return;
     }
     setAirportSearch("");
@@ -168,44 +185,27 @@ export default function LaunchDashboardPage() {
     await save({ serviceArea: normalizedServiceArea });
   };
 
-  const chooseCity = (suggestion: AirportSuggestion) => {
-    // Keep the customer's typed service-area label when it is already more
-    // specific than the suggestion city (e.g. "Southwest Florida" must not
-    // become "Miami, FL" because an airport code was merged in).
-    setServiceArea((current) => {
-      const typed = current.cityArea.trim();
-      const keepTyped =
-        typed.length > 0 &&
-        !typed.toLowerCase().includes(suggestion.city.toLowerCase()) &&
-        typed.toLowerCase() !== suggestion.cityArea.toLowerCase() &&
-        typed.split(/\s+/).length >= 2;
-      return {
-        ...current,
-        cityArea: keepTyped ? typed : suggestion.cityArea,
-        airports: Array.from(
-          new Set([
-            ...current.airports,
-            ...suggestion.airportOptions.map((option) => option.code),
-          ]),
-        ),
-      };
-    });
+  const matchesAirport = (value: string, option: AirportOption) =>
+    [option.code, option.name.toUpperCase(), option.label.toUpperCase()].includes(value.trim().toUpperCase());
+  const toggleAirport = (option: AirportOption) => {
+    setServiceArea((current) => ({ ...current, airports: current.airports.some((value) => matchesAirport(value, option))
+      ? current.airports.filter((value) => !matchesAirport(value, option))
+      : [...current.airports, option.code] }));
+  };
+
+  // Suggestions belong to the airport field. Ignore responses for older queries.
+  useEffect(() => {
+    let active = true;
     setSuggestions([]);
-  };
-
-  const updateCity = async (value: string) => {
-    setServiceArea((current) => ({ ...current, cityArea: value }));
-    if (value.trim().length <= 2) {
-      setSuggestions([]);
-      return;
-    }
-
-    try {
-      setSuggestions((await getAirportSuggestions({ cityArea: value }).unwrap()).suggestions);
-    } catch {
-      setSuggestions([]);
-    }
-  };
+    const query = airportSearch.trim();
+    if (step !== 3 || query.length < 2) return;
+    const timer = setTimeout(() => {
+      getAirportSuggestions({ cityArea: query }).unwrap()
+        .then((response) => { if (active) setSuggestions(response.suggestions); })
+        .catch(() => { if (active) setSuggestions([]); });
+    }, 250);
+    return () => { active = false; clearTimeout(timer); };
+  }, [airportSearch, getAirportSuggestions, step]);
 
   const removeLogo = () => {
     setLogoFile(null);
@@ -352,40 +352,28 @@ export default function LaunchDashboardPage() {
             <form onSubmit={submitService} className="max-w-3xl space-y-5 rounded-xl border border-slate-200 p-5">
               <div className="relative">
                 <label className="block text-sm font-medium text-slate-700">
-                  City or Metro Area<span className="text-red-500">*</span>
+                  {locationText.city}<span className="text-red-500">*</span>
                   <input
                     required
                     value={serviceArea.cityArea}
-                    onChange={(event) => updateCity(event.target.value)}
-                    placeholder="Enter the city or metro area you serve"
+                    maxLength={160}
+                    onChange={(event) => setServiceArea((current) => ({ ...current, cityArea: event.target.value }))}
+                    placeholder={locationText.cityPlaceholder}
                     className="mt-2 h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-dashboard-rider"
                   />
                 </label>
-                {suggestions.length > 0 && (
-                  <div className="absolute z-10 mt-1 w-full rounded-lg border border-slate-200 bg-white p-2 shadow-lg">
-                    {suggestions.map((suggestion) => (
-                      <button
-                        type="button"
-                        key={suggestion.cityArea}
-                        onClick={() => chooseCity(suggestion)}
-                        className="cursor-pointer block w-full rounded px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
-                      >
-                        <span className="font-medium text-slate-900">{suggestion.cityArea}</span>
-                        <span className="mt-0.5 block text-xs text-slate-500">{suggestion.airports.join(", ")}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
+                <p className="mt-2 text-xs text-slate-500">{locationText.cityHint}</p>
               </div>
               <label className="block text-sm font-medium text-slate-700">
-                Airports Served<span className="text-red-500">*</span>
+                {locationText.airports}<span className="text-red-500">*</span>
                 <div className="mt-2 flex gap-2">
                   <input
                     value={airportSearch}
                     onChange={(event) => setAirportSearch(event.target.value)}
                     onKeyDown={(event) => {
-                      if (event.key === "Enter" && airportSearch.trim()) {
+                      if (event.key === "Enter") {
                         event.preventDefault();
+                        if (!/^[A-Za-z]{3}$/.test(airportSearch.trim())) return;
                         setServiceArea((current) => ({
                           ...current,
                           airports: Array.from(new Set([...current.airports, airportSearch.trim().toUpperCase()])),
@@ -393,12 +381,23 @@ export default function LaunchDashboardPage() {
                         setAirportSearch("");
                       }
                     }}
-                    placeholder="Type airport code and press Enter"
-                    className="h-11 flex-1 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-dashboard-rider"
+                    placeholder={locationText.airportPlaceholder}
+                    className="h-11 min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-dashboard-rider"
                   />
                   <Plane className="mt-3 h-4 w-4 text-slate-400" />
                 </div>
               </label>
+              <p className="text-xs text-slate-500">{locationText.airportHint}</p>
+              {suggestions.length > 0 && (
+                <div className="max-h-60 overflow-y-auto rounded-lg border border-slate-200 p-2">
+                  {Array.from(new Map(suggestions.flatMap((item) => item.airportOptions).map((airport) => [airport.code, airport])).values()).map((airport) => (
+                    <label key={airport.code} className="flex cursor-pointer items-center gap-3 rounded p-3 text-sm hover:bg-slate-50">
+                      <input type="checkbox" checked={serviceArea.airports.some((value) => matchesAirport(value, airport))} onChange={() => toggleAirport(airport)} />
+                      <span>{airport.code} - {airport.name}</span>
+                    </label>
+                  ))}
+                </div>
+              )}
               <div className="flex flex-wrap gap-2">
                 {serviceArea.airports.map((airport) => (
                   <span key={airport} className="inline-flex items-center gap-2 rounded-lg bg-slate-100 px-3 py-2 text-sm text-slate-700">
@@ -407,7 +406,7 @@ export default function LaunchDashboardPage() {
                     <button
                       type="button"
                       onClick={() => setServiceArea((current) => ({ ...current, airports: current.airports.filter((item) => item !== airport) }))}
-                      aria-label={`Remove ${airport}`}
+                      aria-label={`${locationText.remove} ${airport}`}
                       className="cursor-pointer ml-1 text-slate-400 hover:text-slate-700"
                     >
                       ×
@@ -423,7 +422,7 @@ export default function LaunchDashboardPage() {
                   className="cursor-pointer inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <ChevronLeft className="h-4 w-4" />
-                  <span>Back</span>
+                  <span>{locationText.back}</span>
                 </button>
                 <button
                   type="submit"
@@ -431,7 +430,7 @@ export default function LaunchDashboardPage() {
                   className="cursor-pointer inline-flex items-center justify-center gap-2 rounded-lg bg-dashboard-rider px-5 py-2.5 text-sm font-semibold text-white hover:bg-dashboard-rider-dark transition disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
-                  <span>Save &amp; Continue</span>
+                  <span>{locationText.save}</span>
                   {!isSaving && <ChevronRight className="h-4 w-4" />}
                 </button>
               </div>

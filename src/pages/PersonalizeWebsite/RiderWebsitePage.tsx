@@ -127,6 +127,9 @@ export default function RiderWebsitePage({ slug }: RiderWebsitePageProps) {
       <RideRequestModal
         open={rideRequestOpen}
         onClose={() => setRideRequestOpen(false)}
+        airports={airports}
+        cityArea={cityArea}
+        spanish={business?.category === "SPANISH"}
         businessSlug={businessSlug}
         businessName={businessName}
       />

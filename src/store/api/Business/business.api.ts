@@ -51,10 +51,12 @@ export const businessApi = baseApi.injectEndpoints({
     getPublicBusinessFromHost: builder.query<PublicBusinessResponse, void>({
       query: () => "/public/business-from-host",
       keepUnusedDataFor: 300,
+      providesTags: ["Business"],
     }),
     getPublicBusinessBySlug: builder.query<PublicBusinessResponse, string>({
       query: (slug) => `/public/business/${slug}`,
       keepUnusedDataFor: 300,
+      providesTags: ["Business"],
     }),
     createPublicRideRequest: builder.mutation<
       CreateRideRequestResponse,
@@ -93,7 +95,7 @@ export const businessApi = baseApi.injectEndpoints({
         method: "PATCH",
         body,
       }),
-      invalidatesTags: ["Setup", "LaunchReady", "Dashboard", "Business"],
+      invalidatesTags: ["Setup", "LaunchReady", "Dashboard", "Business", "ReferralCard"],
     }),
     uploadBusinessLogo: builder.mutation<UploadLogoResponse, FormData>({
       query: (formData) => ({
@@ -144,6 +146,7 @@ export const businessApi = baseApi.injectEndpoints({
     }),
     getFinalReview: builder.query<FinalReviewResponse, void>({
       query: () => "/business/final-review",
+      providesTags: ["Setup"],
     }),
     completeLaunch: builder.mutation<CompleteLaunchResponse, void>({
       query: () => ({

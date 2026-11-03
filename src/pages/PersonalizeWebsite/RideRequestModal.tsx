@@ -11,6 +11,9 @@ type RideRequestModalProps = {
   onClose: () => void;
   businessSlug: string;
   businessName: string;
+  airports?: string[];
+  cityArea?: string | null;
+  spanish?: boolean;
 };
 
 const emptyForm: CreateRideRequestPayload = {
@@ -30,6 +33,9 @@ export function RideRequestModal({
   onClose,
   businessSlug,
   businessName,
+  airports = [],
+  cityArea,
+  spanish = false,
 }: RideRequestModalProps) {
   const [form, setForm] = useState<CreateRideRequestPayload>(emptyForm);
   const [error, setError] = useState<string | null>(null);
@@ -167,9 +173,12 @@ export function RideRequestModal({
                 />
               </Field>
             </div>
+            <datalist id="served-airports">{airports.map((airport) => <option key={airport} value={airport} />)}</datalist>
+            {cityArea && <p className="text-sm text-slate-500">{spanish ? "\u00c1rea de servicio" : "Service area"}: {cityArea}</p>}
             <Field label="Pickup location" required>
               <input
                 required
+                list="served-airports"
                 value={form.pickupLocation}
                 onChange={(event) => updateField("pickupLocation", event.target.value)}
                 className="field"
@@ -179,6 +188,7 @@ export function RideRequestModal({
             <Field label="Destination" required>
               <input
                 required
+                list="served-airports"
                 value={form.destination}
                 onChange={(event) => updateField("destination", event.target.value)}
                 className="field"
