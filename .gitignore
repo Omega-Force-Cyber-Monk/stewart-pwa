@@ -21,6 +21,7 @@ dist-ssr
 *.sln
 *.sw?
 config.bat
+.env
 .gitignore
 branch_structure.json
 temp_auto_push.bat
