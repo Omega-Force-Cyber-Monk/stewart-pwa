@@ -52,7 +52,9 @@ export default function WomenPage() {
       searchParams.get("dfy") === "true" ||
       searchParams.get("showDfy") === "true"
     ) {
-      setSearchParams({}, { replace: true });
+      const nextParams = new URLSearchParams(searchParams);
+      ["showPricing", "dfy", "showDfy"].forEach((key) => nextParams.delete(key));
+      setSearchParams(nextParams, { replace: true });
     }
   }, [searchParams, setSearchParams]);
 

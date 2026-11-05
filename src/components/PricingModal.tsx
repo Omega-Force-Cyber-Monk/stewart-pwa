@@ -6,6 +6,7 @@ import { readMarketingOverlayState, setMarketingOverlayState } from "../lib/mark
 import { Loader2, X, Check, AlertTriangle, Rocket, Users, Download, Share, Eye, ZoomIn, ZoomOut } from "lucide-react";
 import { LaunchPrice } from "./marketing/LaunchPrice";
 import { LAUNCH_PRICING } from "./marketing/pricing";
+import { startTrackedCheckout } from "../lib/gtmEvents";
 
 interface PricingModalProps {
   onClose: () => void;
@@ -265,7 +266,7 @@ export function PricingModal({
             startedAt: Date.now(),
           })
         );
-        window.location.href = result.checkoutUrl;
+        startTrackedCheckout(result.ecommerce, result.checkoutUrl);
       }
     } catch (err: unknown) {
       console.error("Checkout session failed:", err);

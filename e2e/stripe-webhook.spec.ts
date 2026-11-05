@@ -27,6 +27,7 @@ test("signed Stripe checkout webhook creates exactly one DFY order", async ({ pa
       object: {
         id: checkoutBody.sessionId,
         object: "checkout.session",
+        status: "complete",
         payment_status: "paid",
         payment_intent: `pi_test_dfy_e2e_${Date.now()}`,
         customer_email: user.email,

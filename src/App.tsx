@@ -9,6 +9,7 @@ import { AppRouter } from "./routes/AppRouter";
 import { resolveBusinessHost } from "./lib/businessHost";
 import { useAppDispatch, useAppSelector } from "./hooks/storeHooks";
 import { hydrateCredentials, logOut } from "./store/features/auth/authSlice";
+import { ProductAnalytics } from "./components/marketing/ProductAnalytics";
 
 export default function App() {
   const dispatch = useAppDispatch();
@@ -61,6 +62,7 @@ export default function App() {
 
   return (
     <>
+      {!isTenantHost && <ProductAnalytics />}
       <OfflineBanner />
       <AppShell>
         <AppRouter />

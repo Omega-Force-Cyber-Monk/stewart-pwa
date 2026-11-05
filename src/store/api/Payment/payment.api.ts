@@ -1,4 +1,5 @@
 import { baseApi } from "../baseApi";
+import type { Ecommerce, Purchase } from "../../../lib/gtmEvents";
 import type {
   CreateCheckoutSessionRequest,
   ConfirmCheckoutSessionRequest,
@@ -10,6 +11,12 @@ import type {
 
 export const paymentApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    getAnalyticsPricing: builder.query<Ecommerce, void>({
+      query: () => "/payments/pricing",
+    }),
+    claimPurchaseAnalytics: builder.mutation<{ confirmed: boolean; ecommerce: Purchase | null }, ConfirmCheckoutSessionRequest>({
+      query: (body) => ({ url: "/payments/checkout-session/analytics", method: "POST", body }),
+    }),
     createRiderCheckoutSession: builder.mutation<CreateCheckoutSessionResponse, CreateCheckoutSessionRequest>({
       query: (body) => ({
         url: "/payments/checkout-session",
@@ -45,6 +52,8 @@ export const paymentApi = baseApi.injectEndpoints({
 });
 
 export const {
+  useGetAnalyticsPricingQuery,
+  useClaimPurchaseAnalyticsMutation,
   useConfirmRiderCheckoutSessionMutation,
   useCreateRiderCheckoutSessionMutation,
   useGetRiderPaymentHistoryQuery,
