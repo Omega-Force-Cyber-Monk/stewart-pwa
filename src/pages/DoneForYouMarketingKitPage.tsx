@@ -19,6 +19,7 @@ import { DashboardCard } from "../components/layout/DashboardCard";
 import { useCreateRiderCheckoutSessionMutation } from "../store/api/Payment/payment.api";
 import { useGetCustomerDoneForYouQuery } from "../store/api/DoneForYou/dfy.api";
 import { Link } from "react-router-dom";
+import { startTrackedCheckout } from "../lib/gtmEvents";
 
 export default function DoneForYouMarketingKitPage() {
   const [upgradeError, setUpgradeError] = useState("");
@@ -52,7 +53,7 @@ export default function DoneForYouMarketingKitPage() {
         successUrl: `${window.location.origin}/payment/success?session_id={CHECKOUT_SESSION_ID}&plan=addon`,
         cancelUrl: window.location.href,
       }).unwrap();
-      if (result.checkoutUrl) window.location.href = result.checkoutUrl;
+      if (result.checkoutUrl) startTrackedCheckout(result.ecommerce, result.checkoutUrl);
     } catch {
       setUpgradeError("Unable to start checkout. Please try again.");
     }

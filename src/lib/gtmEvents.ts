@@ -1,39 +1,15 @@
-import { readStorageValue, writeStorageValue, storageKeys } from "./storage";
+import { readStorageValue, writeStorageValue } from "./storage";
 
-type DataLayerEvent = {
-  event: string;
-  [key: string]: unknown;
+export type Ecommerce = {
+  currency: string;
+  value: number;
+  items: Array<{ item_id: string; item_name: string; price: number; quantity: number }>;
 };
-
-type CheckoutPlan = "base" | "bundle";
-
-type AbandonedCheckoutState = {
-  sessionId?: string;
-  plan?: CheckoutPlan;
-};
-
+export type Purchase = Ecommerce & { transaction_id: string; tax?: number };
+type DataLayerEvent = { event?: string; [key: string]: unknown };
 declare global {
-  interface Window {
-    dataLayer?: DataLayerEvent[];
-  }
+  interface Window { dataLayer?: DataLayerEvent[] }
 }
-
-const trackedPurchasePrefix = "quittheapp:trackedPurchase:";
-const trackedOnboardingPrefix = "quittheapp:trackedOnboarding:";
-
-const purchasePayloadByPlan = {
-  base: {
-    value: 295,
-    items: [{ item_name: "QuitTheApp", price: 295, quantity: 1 }],
-  },
-  bundle: {
-    value: 394,
-    items: [
-      { item_name: "QuitTheApp", price: 295, quantity: 1 },
-      { item_name: "Done For You", price: 99, quantity: 1 },
-    ],
-  },
-} as const;
 
 function pushDataLayerEvent(payload: DataLayerEvent) {
   if (typeof window === "undefined") return;
@@ -41,51 +17,69 @@ function pushDataLayerEvent(payload: DataLayerEvent) {
   window.dataLayer.push(payload);
 }
 
-function normalizeCheckoutPlan(plan?: string | null): CheckoutPlan | null {
-  return plan === "base" || plan === "bundle" ? plan : null;
+function validEcommerce(data: Ecommerce | null | undefined): data is Ecommerce {
+  return Boolean(data && /^[A-Z]{3}$/.test(data.currency) && Number.isFinite(data.value) && data.value >= 0 &&
+    data.items.length > 0 && data.items.every((item) => item.item_id && item.item_name &&
+      Number.isFinite(item.price) && item.price >= 0 && Number.isInteger(item.quantity) && item.quantity > 0));
 }
 
-function readCheckoutPlan(stripeSessionId: string, fallbackPlan?: string | null): CheckoutPlan | null {
-  const normalizedFallback = normalizeCheckoutPlan(fallbackPlan);
-  const raw = readStorageValue(storageKeys.abandonedCheckout);
-  if (!raw) return normalizedFallback;
-
-  try {
-    const checkout = JSON.parse(raw) as AbandonedCheckoutState;
-    if (checkout.sessionId !== stripeSessionId) return normalizedFallback;
-    return normalizeCheckoutPlan(checkout.plan) ?? normalizedFallback;
-  } catch {
-    return normalizedFallback;
-  }
+export function trackEcommerce(event: "view_item" | "select_item" | "begin_checkout", ecommerce: Ecommerce) {
+  if (!validEcommerce(ecommerce)) return;
+  pushDataLayerEvent({ ecommerce: null });
+  pushDataLayerEvent({ event, ecommerce });
 }
 
-export function trackPurchaseCompleted(stripeSessionId: string, plan?: string | null) {
-  const trackedKey = `${trackedPurchasePrefix}${stripeSessionId}`;
-  if (readStorageValue(trackedKey)) return;
+const purchases = new Set<string>();
+export function trackPurchaseCompleted(ecommerce: Purchase) {
+  if (!/^cs_(test_|live_)?[A-Za-z0-9]+$/.test(ecommerce.transaction_id) || !validEcommerce(ecommerce)) return;
+  const key = `quittheapp:trackedPurchase:${ecommerce.transaction_id}`;
+  if (purchases.has(key) || readStorageValue(key)) return;
+  pushDataLayerEvent({ ecommerce: null });
+  // Keep legacy top-level fields consumed by the existing Meta purchase tag.
+  // GA4 should use the canonical ecommerce object, configured in GTM.
+  pushDataLayerEvent({ event: "purchase", ...ecommerce, ecommerce });
+  purchases.add(key);
+  writeStorageValue(key, "1");
+}
 
-  const checkoutPlan = readCheckoutPlan(stripeSessionId, plan);
-  if (!checkoutPlan) return;
+// Share the request and dispatch across React StrictMode effect replays.
+const confirmations = new Map<string, Promise<boolean>>();
+export function reportVerifiedPurchase(
+  sessionId: string,
+  load: () => Promise<{ confirmed: boolean; ecommerce: Purchase | null }>,
+): Promise<boolean> {
+  const existing = confirmations.get(sessionId);
+  if (existing) return existing;
+  const pending = load().then((result) => {
+    if (result.ecommerce) trackPurchaseCompleted(result.ecommerce);
+    if (!result.confirmed) confirmations.delete(sessionId);
+    return result.confirmed;
+  }).catch((error: unknown) => { confirmations.delete(sessionId); throw error; });
+  confirmations.set(sessionId, pending);
+  return pending;
+}
 
-  const payload = purchasePayloadByPlan[checkoutPlan];
+export function startTrackedCheckout(ecommerce: Ecommerce, url: string) {
+  let navigated = false;
+  const navigate = () => {
+    if (navigated) return;
+    navigated = true;
+    window.location.assign(url);
+  };
+  if (!validEcommerce(ecommerce)) { navigate(); return; }
+  pushDataLayerEvent({ ecommerce: null });
+  pushDataLayerEvent({ event: "select_item", ecommerce });
+  pushDataLayerEvent({ ecommerce: null });
+  const timer = window.setTimeout(navigate, 500);
   pushDataLayerEvent({
-    event: "purchase",
-    transaction_id: stripeSessionId,
-    value: payload.value,
-    currency: "USD",
-    items: payload.items,
+    event: "begin_checkout", ecommerce, eventTimeout: 450,
+    eventCallback: () => { window.clearTimeout(timer); navigate(); },
   });
-
-  writeStorageValue(trackedKey, "1");
 }
 
 export function trackOnboardingCompleted(userId?: string | null) {
-  const trackedKey = userId ? `${trackedOnboardingPrefix}${userId}` : null;
-  if (trackedKey && readStorageValue(trackedKey)) return;
-
-  pushDataLayerEvent({
-    event: "onboarding_completed",
-    user_id: userId || undefined,
-  });
-
-  if (trackedKey) writeStorageValue(trackedKey, "1");
+  const key = userId ? `quittheapp:trackedOnboarding:${userId}` : null;
+  if (key && readStorageValue(key)) return;
+  pushDataLayerEvent({ event: "onboarding_completed", user_id: userId || undefined });
+  if (key) writeStorageValue(key, "1");
 }
