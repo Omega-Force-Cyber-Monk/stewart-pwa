@@ -1,3 +1,4 @@
+import { useLanguage } from "../../i18n/LanguageProvider";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import {
@@ -13,6 +14,7 @@ import { removeStorageValue, storageKeys } from "../../lib/storage";
 type SignupStep = "register" | "verify-otp" | "success";
 
 export default function SignupPage() {
+  const { t } = useLanguage();
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const emailParam = searchParams.get("email")?.trim().toLowerCase() || "";
@@ -139,20 +141,18 @@ export default function SignupPage() {
 
   return (
     <AuthLayout
-      title="Start Your Transport Business"
+      title={t("Start Your Transport Business")}
       subtitle="Register a new profile today, verify your credentials, and get complete access to the launch kit."
     >
       {step === "register" && (
         <>
           <div>
             <h2 className="text-2xl font-bold tracking-tight text-slate-100">
-              Create your account
-            </h2>
+              {t("Create your account")}</h2>
             <p className="mt-2 text-sm text-slate-400">
-              Or{" "}
+              {t("Or")}{" "}
               <Link to="/login" className="font-semibold text-cyan-400 hover:text-cyan-300 transition-colors">
-                sign in to your existing account
-              </Link>
+                {t("sign in to your existing account")}</Link>
             </p>
           </div>
 
@@ -160,10 +160,9 @@ export default function SignupPage() {
             <div className="mt-6 bg-[#04B5A3]/10 border border-[#04B5A3]/30 rounded-lg p-4 flex items-start gap-3">
               <CheckCircle className="size-5 text-[#04B5A3] shrink-0 mt-0.5" />
               <div className="text-sm">
-                <p className="text-[#04B5A3] font-semibold mb-1">Payment Successful!</p>
+                <p className="text-[#04B5A3] font-semibold mb-1">{t("Payment Successful!")}</p>
                 <p className="text-[#04B5A3]/80 leading-snug">
-                  Please create your account below to access your Launch Package.
-                </p>
+                  {t("Please create your account below to access your Launch Package.")}</p>
               </div>
             </div>
           )}
@@ -178,8 +177,7 @@ export default function SignupPage() {
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-slate-300">
-                Email address
-              </label>
+                {t("Email address")}</label>
               <div className="mt-2 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="size-5 text-slate-400" />
@@ -200,8 +198,7 @@ export default function SignupPage() {
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-slate-300">
-                Password
-              </label>
+                {t("Password")}</label>
               <div className="mt-2 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="size-5 text-slate-400" />
@@ -219,7 +216,7 @@ export default function SignupPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-label={t(showPassword ? "Hide password" : "Show password")}
                   className="cursor-pointer absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-white transition-colors"
                 >
                   {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
@@ -229,8 +226,7 @@ export default function SignupPage() {
 
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-300">
-                Confirm Password
-              </label>
+                {t("Confirm Password")}</label>
               <div className="mt-2 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="size-5 text-slate-400" />
@@ -248,7 +244,7 @@ export default function SignupPage() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                  aria-label={t(showConfirmPassword ? "Hide password" : "Show password")}
                   className="cursor-pointer absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-white transition-colors"
                 >
                   {showConfirmPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
@@ -263,8 +259,7 @@ export default function SignupPage() {
                 className="w-full flex justify-center items-center gap-2 h-10 px-4 border border-transparent rounded-md text-sm font-semibold text-white bg-brand-btn hover:bg-brand-btn-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-brand-page focus:ring-cyan-500 transition disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {isRegistering && <Loader2 className="size-4 animate-spin" />}
-                Sign up
-              </button>
+                {t("Sign up")}</button>
             </div>
           </form>
         </>
@@ -274,10 +269,9 @@ export default function SignupPage() {
         <>
           <div>
             <h2 className="text-2xl font-bold tracking-tight text-slate-100">
-              Verify your email
-            </h2>
+              {t("Verify your email")}</h2>
             <p className="mt-2 text-sm text-slate-400">
-              We sent a verification code to <span className="font-medium text-slate-200">{email}</span>
+              {t("We sent a verification code to")}<span className="font-medium text-slate-200">{email}</span>
             </p>
           </div>
 
@@ -292,15 +286,14 @@ export default function SignupPage() {
             {devOtpCode && (
               <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-4 text-center">
                 <p className="text-sm text-cyan-200 font-medium">
-                  Development OTP: <span className="text-cyan-400 font-bold text-lg select-all">{devOtpCode}</span>
+                  {t("Development OTP:")}<span className="text-cyan-400 font-bold text-lg select-all">{devOtpCode}</span>
                 </p>
               </div>
             )}
 
             <div>
               <label htmlFor="otp" className="block text-sm font-medium text-slate-300">
-                Verification Code
-              </label>
+                {t("Verification Code")}</label>
               <div className="mt-2 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <KeyRound className="size-5 text-slate-400" />
@@ -313,7 +306,7 @@ export default function SignupPage() {
                   maxLength={6}
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
-                  placeholder="Enter OTP"
+                  placeholder={t("Enter OTP")}
                   className="block w-full pl-10 pr-3 py-2.5 bg-brand-input border border-brand-border rounded-md text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 tracking-wider text-center transition"
                 />
               </div>
@@ -326,8 +319,7 @@ export default function SignupPage() {
                 className="w-full flex justify-center items-center gap-2 h-10 px-4 border border-transparent rounded-md text-sm font-semibold text-white bg-brand-btn hover:bg-brand-btn-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-brand-page focus:ring-cyan-500 transition disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {isVerifying && <Loader2 className="size-4 animate-spin" />}
-                Confirm Verification
-              </button>
+                {t("Confirm Verification")}</button>
 
               <button
                 type="button"
@@ -335,7 +327,7 @@ export default function SignupPage() {
                 disabled={isResending}
                 className="w-full text-center text-sm font-semibold text-cyan-400 hover:text-cyan-300 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                {isResending ? "Resending..." : "Resend OTP Code"}
+                {t(isResending ? "Resending..." : "Resend OTP Code")}
               </button>
             </div>
           </form>
@@ -346,15 +338,13 @@ export default function SignupPage() {
         <div className="text-center py-6">
           <CheckCircle className="size-16 text-cyan-400 mx-auto animate-pulse" />
           <p className="mt-4 text-slate-200 text-sm font-semibold leading-relaxed">
-            Your account has been verified successfully. You can now log in and configure your transport setup.
-          </p>
+            {t("Your account has been verified successfully. You can now log in and configure your transport setup.")}</p>
           <div className="mt-8">
             <button
               onClick={() => navigate("/login")}
               className="w-full flex justify-center items-center h-10 px-4 border border-transparent rounded-md text-sm font-semibold text-white bg-brand-btn hover:bg-brand-btn-hover transition"
             >
-              Proceed to Login
-            </button>
+              {t("Proceed to Login")}</button>
           </div>
         </div>
       )}

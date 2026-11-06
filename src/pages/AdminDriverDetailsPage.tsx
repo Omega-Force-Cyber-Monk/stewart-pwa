@@ -169,6 +169,9 @@ export default function AdminDriverDetailsPage() {
         </span>
       </div>
 
+      <p className="rounded-lg border border-slate-200 bg-white p-3 text-sm text-slate-700">
+        Approval Status is the Admin driver review. Pending means the review has not been completed; use Approve or Reject below to finish it. Pending does not itself block a paid, active customer from setup or dashboard access. Email verification, account status, and purchase access are checked separately.
+      </p>
       {/* Cards Grid */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Driver Information Card */}

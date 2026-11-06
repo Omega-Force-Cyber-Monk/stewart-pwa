@@ -1,3 +1,4 @@
+import { LanguageProvider, useLanguage } from "../../i18n/LanguageProvider";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { useState, type CSSProperties } from "react";
 import { useGetPublicBusinessBySlugQuery } from "../../store/api/Business/business.api";
@@ -20,6 +21,14 @@ interface RiderWebsitePageProps {
 }
 
 export default function RiderWebsitePage({ slug }: RiderWebsitePageProps) {
+  const { data } = useGetPublicBusinessBySlugQuery(slug ?? skipToken);
+  const business = data?.data.business;
+  const spanish = business?.category === 'SPANISH' || business?.themeKey === 'SPANISH';
+  return <LanguageProvider key={slug ?? 'public'} defaultLanguage={spanish ? 'es' : 'en'} storageKey={`qta-passenger-language:${slug ?? 'public'}`}><RiderWebsiteContent slug={slug} /></LanguageProvider>;
+}
+
+function RiderWebsiteContent({ slug }: RiderWebsitePageProps) {
+  const { t } = useLanguage();
   const { data: publicResponse, isLoading, isError } =
     useGetPublicBusinessBySlugQuery(slug ?? skipToken);
   const [rideRequestOpen, setRideRequestOpen] = useState(false);
@@ -48,7 +57,7 @@ export default function RiderWebsitePage({ slug }: RiderWebsitePageProps) {
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center bg-slate-950 text-white">
-        <div className="animate-pulse text-lg font-bold">Loading website...</div>
+        <div className="animate-pulse text-lg font-bold">{t("Loading website...")}</div>
       </div>
     );
   }
@@ -58,17 +67,16 @@ export default function RiderWebsitePage({ slug }: RiderWebsitePageProps) {
       <div className="flex h-screen items-center justify-center bg-slate-950 text-white">
         <div className="text-center">
           <div className="text-4xl mb-4">😕</div>
-          <p className="text-lg font-bold mb-2">Website not found</p>
+          <p className="text-lg font-bold mb-2">{t("Website not found")}</p>
           <p className="text-sm text-slate-400">
-            This business page is unavailable or the business is not yet live.
-          </p>
+            {t("This business page is unavailable or the business is not yet live.")}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#070809] text-white flex flex-col font-sans relative" style={themeStyle}>
+    <div className="min-h-screen overflow-x-clip bg-[#070809] text-white flex flex-col font-sans relative" style={themeStyle}>
       <InstallPrompt personalized />
 
       {/* 1. Header Navigation */}

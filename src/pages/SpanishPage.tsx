@@ -36,8 +36,19 @@ import { LaunchPrice } from "../components/marketing/LaunchPrice";
 import { LAUNCH_PRICING } from "../components/marketing/pricing";
 import spanishHero from "../assets/spanishHero.png";
 import { getDfyUpgradeAsset } from "../config/dfyMapping";
+import HomePage from './HomePage';
+import { LanguageSelector, useLanguage } from '../i18n/LanguageProvider';
 
 export default function SpanishPage() {
+  const { language, setLanguage } = useLanguage();
+  useEffect(() => { setLanguage(language); }, [language, setLanguage]);
+  return <>
+    {language === 'es' ? <SpanishContent /> : <HomePage audience="spanish" />}
+    <div className="fixed bottom-4 right-4 z-50 shadow-lg"><LanguageSelector /></div>
+  </>;
+}
+
+function SpanishContent() {
   const [searchParams, setSearchParams] = useSearchParams();
   // Auto-open the pricing modal when redirected here with ?showPricing=true or ?dfy=true
   const isDfyParam =

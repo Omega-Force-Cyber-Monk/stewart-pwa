@@ -1,6 +1,8 @@
 import { ShieldCheck, Users, Plane, DollarSign, Calendar } from "lucide-react";
+import { useLanguage } from '../../i18n/LanguageProvider';
 
 export function TrustBadges() {
+  const { t } = useLanguage();
   const items = [
     {
       icon: <ShieldCheck className="w-8 h-8 text-green-500 shrink-0 stroke-[1.5]" />,
@@ -44,8 +46,8 @@ export function TrustBadges() {
           >
             {item.icon}
             <div className="flex flex-col text-left leading-tight">
-              <span className="text-sm font-semibold text-white tracking-wide">{item.t1}</span>
-              <span className="text-sm font-semibold text-white tracking-wide">{item.t2}</span>
+              <span className="text-sm font-semibold text-white tracking-wide">{t(item.t1)}</span>
+              <span className="text-sm font-semibold text-white tracking-wide">{t(item.t2)}</span>
             </div>
           </div>
         ))}

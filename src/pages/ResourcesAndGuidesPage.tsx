@@ -5,6 +5,7 @@ import { normalizedType } from "../components/resources/resourceUtils";
 import { GuideModal } from "../components/resources/GuideModal";
 import { useGetBusinessResourcesQuery, useLazyDownloadBusinessResourceQuery } from "../store/api/Business/business.api";
 import type { BusinessResource } from "../store/api/Business/business.type";
+import { useLanguage } from '../i18n/LanguageProvider';
 
 const filters = ["all", "video", "pdf", "link", "guide"] as const;
 type ResourceFilter = (typeof filters)[number];
@@ -21,6 +22,9 @@ function downloadBlob(blob: Blob, filename: string) {
 }
 
 export default function ResourcesAndGuidesPage() {
+  const { language, setLanguage } = useLanguage();
+  const spanish = language === 'es';
+  const [downloadError, setDownloadError] = useState(false);
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<ResourceFilter>("all");
@@ -33,7 +37,8 @@ export default function ResourcesAndGuidesPage() {
     return () => window.clearTimeout(timeout);
   }, [search]);
 
-  const { data, isLoading, isError } = useGetBusinessResourcesQuery({
+  const { currentData: data, isFetching: isLoading, isError } = useGetBusinessResourcesQuery({
+    language,
     search: query || undefined,
     type: filter === "all" ? undefined : filter,
     limit: 50,
@@ -41,6 +46,7 @@ export default function ResourcesAndGuidesPage() {
   const resources = data?.resources ?? [];
 
   const handleAction = async (resource: BusinessResource) => {
+    setDownloadError(false);
     const type = normalizedType(resource);
     if (type === "guide") {
       setSelectedGuide(resource);
@@ -58,31 +64,42 @@ export default function ResourcesAndGuidesPage() {
       const blob = await downloadResource(resource.id).unwrap();
       downloadBlob(blob, `${resource.name || resource.title || "resource"}.pdf`);
     } catch {
-      // The card remains available for retry if the download fails.
+      setDownloadError(true);
     }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" lang={language}>
       <div>
-        <h2 className="text-2xl font-bold tracking-tight text-slate-900">Resources &amp; Guides</h2>
-        <p className="mt-1 text-sm text-slate-500">Access step-by-step guides, scripts, templates, and downloadable resources designed to help you attract more customers and increase direct bookings.</p>
+        <h2 className="text-2xl font-bold tracking-tight text-slate-900">{spanish ? 'Recursos y guías' : 'Resources & Guides'}</h2>
+        <p className="mt-1 text-sm text-slate-500">{spanish ? 'Encuentra guías paso a paso, guiones, plantillas y recursos descargables para atraer más clientes y aumentar tus reservas directas.' : 'Access step-by-step guides, scripts, templates, and downloadable resources designed to help you attract more customers and increase direct bookings.'}</p>
+        <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="English / Español">
+          {(['en', 'es'] as const).map((value) => <button key={value} type="button" lang={value} aria-pressed={language === value} onClick={() => {
+            setLanguage(value);
+            setSearch('');
+            setQuery('');
+            setDownloadError(false);
+            setSelectedGuide(null);
+            setSelectedVideo(null);
+          }} className={`rounded-lg border px-4 py-2 text-sm font-medium ${language === value ? 'border-dashboard-rider bg-dashboard-rider text-white' : 'border-slate-300 bg-white text-slate-700'}`}>{value === 'es' ? 'Español' : 'English'}</button>)}
+        </div>
       </div>
       <div className="relative">
         <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-        <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search all lessons" className="h-11 w-full rounded-lg border border-slate-200 bg-white pl-12 pr-4 text-sm text-slate-900 outline-none focus:border-dashboard-rider focus:ring-2 focus:ring-green-100 placeholder:text-slate-400" />
+        <input value={search} onChange={(event) => setSearch(event.target.value)} aria-label={spanish ? 'Buscar recursos' : 'Search resources'} placeholder={spanish ? 'Buscar recursos' : 'Search all lessons'} className="h-11 w-full rounded-lg border border-slate-200 bg-white pl-12 pr-4 text-sm text-slate-900 outline-none focus:border-dashboard-rider focus:ring-2 focus:ring-green-100 placeholder:text-slate-400" />
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-slate-500">Showing {data?.pagination?.total ?? resources.length} resources</p>
+        <p className="text-sm text-slate-500">{spanish ? 'Mostrando' : 'Showing'} {data?.pagination?.total ?? resources.length} {spanish ? 'recursos' : 'resources'}</p>
         <select value={filter} onChange={(event) => setFilter(event.target.value as ResourceFilter)} className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 outline-none focus:border-dashboard-rider">
-          <option value="all">All resources</option>
-          {filters.slice(1).map((item) => <option key={item} value={item}>{item[0].toUpperCase() + item.slice(1)}</option>)}
+          <option value="all">{spanish ? 'Todos los recursos' : 'All resources'}</option>
+          {filters.slice(1).map((item) => <option key={item} value={item}>{spanish ? ({ all: 'Todos los recursos', video: 'Video', pdf: 'PDF', link: 'Enlace', guide: 'Guía' })[item] : item[0].toUpperCase() + item.slice(1)}</option>)}
         </select>
       </div>
       {isLoading && <div className="grid place-items-center py-20 text-dashboard-rider"><Loader2 className="h-8 w-8 animate-spin" /></div>}
-      {isError && <div className="rounded-xl border border-red-100 bg-red-50 p-6 text-center text-sm text-red-700">Unable to load resources right now.</div>}
-      {!isLoading && !isError && resources.length === 0 && <div className="rounded-xl border border-dashed border-slate-300 bg-white p-12 text-center text-sm text-slate-500">No resources match your search.</div>}
-      {!isLoading && !isError && resources.length > 0 && <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{resources.map((resource) => <ResourceCard key={resource.id} resource={resource} onAction={handleAction} />)}</div>}
+      {isError && <div role="alert" className="rounded-xl border border-red-100 bg-red-50 p-6 text-center text-sm text-red-700">{spanish ? 'No se pueden cargar los recursos en este momento.' : 'Unable to load resources right now.'}</div>}
+      {downloadError && <p role="alert" className="text-sm text-red-700">{spanish ? 'No se pudo descargar el archivo. Inténtalo de nuevo.' : 'Unable to download the file. Please try again.'}</p>}
+      {!isLoading && !isError && resources.length === 0 && <div className="rounded-xl border border-dashed border-slate-300 bg-white p-12 text-center text-sm text-slate-500">{spanish ? 'No hay recursos que coincidan con tu búsqueda.' : 'No resources match your search.'}</div>}
+      {!isLoading && !isError && resources.length > 0 && <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{resources.map((resource) => <ResourceCard key={resource.id} resource={resource} language={language} onAction={handleAction} />)}</div>}
       <GuideModal resource={selectedGuide} onClose={() => setSelectedGuide(null)} />
       {selectedVideo && (
         <div className="fixed inset-0 z-[90] grid place-items-center bg-slate-950/70 p-4" role="dialog" aria-modal="true">

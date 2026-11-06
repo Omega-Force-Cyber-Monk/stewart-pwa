@@ -1,3 +1,4 @@
+import { useLanguage } from "../../i18n/LanguageProvider";
 import { MapPin, ChevronRight, Phone } from "lucide-react";
 import personalizeBanner from "../../assets/personalizeBanner.png";
 
@@ -17,6 +18,7 @@ export function HeroSection({
   servingAreas,
   onRequestRide,
 }: HeroSectionProps) {
+  const { t } = useLanguage();
   return (
     <div 
       className="flex-1 w-full bg-cover bg-center flex items-center justify-center py-12 px-6 relative"
@@ -31,11 +33,10 @@ export function HeroSection({
         <div className="flex-1 lg:max-w-xl text-left flex flex-col gap-6 z-10">
           <div className="flex flex-col gap-2">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight tracking-tight text-white">
-              Premium Private <br />
+              {t("Premium Private")}<br />
               <span className="text-[var(--qta-public-accent)] font-black uppercase">{businessName}</span> <br />
               <span className="italic font-medium text-slate-200 text-2xl sm:text-3xl tracking-wide block mt-1">
-                On Time. Every Time.
-              </span>
+                {t("On Time. Every Time.")}</span>
             </h1>
           </div>
 
@@ -45,8 +46,7 @@ export function HeroSection({
 
           <div className="flex flex-col gap-3">
             <div className="text-sm font-bold text-[var(--qta-public-accent)] uppercase tracking-wider">
-              Serving:
-            </div>
+              {t("Serving:")}</div>
             <div className="grid grid-cols-2 gap-x-6 gap-y-3">
               {servingAreas.map((area, idx) => (
                 <div key={idx} className="flex items-center gap-2.5">
@@ -65,7 +65,7 @@ export function HeroSection({
               onClick={onRequestRide}
               className="flex-1 bg-[var(--qta-public-accent)] hover:bg-[var(--qta-public-accent-hover)] text-white py-3.5 px-6 rounded-xl text-sm font-bold transition-all shadow-md flex items-center justify-center gap-2 tracking-wide whitespace-nowrap"
             >
-              <span>BOOK YOUR RIDE NOW</span>
+              <span>{t("BOOK YOUR RIDE NOW")}</span>
               <ChevronRight className="w-4 h-4 shrink-0" />
             </button>
             <a 
@@ -73,7 +73,7 @@ export function HeroSection({
               className="flex-1 bg-black hover:bg-white/5 border border-white/30 text-white py-3.5 px-6 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2.5 tracking-wide whitespace-nowrap text-center"
             >
               <Phone className="w-4 h-4 text-white fill-white shrink-0" />
-              <span>Call Now</span>
+              <span>{t("Call Now")}</span>
             </a>
           </div>
         </div>
@@ -95,19 +95,19 @@ export function HeroSection({
                 <div className="w-5 h-5 rounded-full bg-[var(--qta-public-accent)] flex items-center justify-center shrink-0">
                   <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                 </div>
-                <span className="text-[13px] font-bold text-slate-200">Rated Service</span>
+                <span className="text-[13px] font-bold text-slate-200">{t("Rated Service")}</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-5 h-5 rounded-full bg-[var(--qta-public-accent)] flex items-center justify-center shrink-0">
                   <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                 </div>
-                <span className="text-[13px] font-bold text-slate-200">English Speaking Drivers</span>
+                <span className="text-[13px] font-bold text-slate-200">{t("English Speaking Drivers")}</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-5 h-5 rounded-full bg-[var(--qta-public-accent)] flex items-center justify-center shrink-0">
                   <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                 </div>
-                <span className="text-[13px] font-bold text-slate-200">Flat Rate Pricing</span>
+                <span className="text-[13px] font-bold text-slate-200">{t("Flat Rate Pricing")}</span>
               </div>
             </div>
           </div>
@@ -120,13 +120,12 @@ export function HeroSection({
             {/* Content Container: Static Booking Form Graphic */}
             <div className="flex-1 overflow-y-auto pt-10 pb-6 px-5 [&::-webkit-scrollbar]:hidden bg-white flex flex-col pointer-events-none select-none">
               <h3 className="text-xl font-bold text-[#1e1e1e] mb-5 text-center tracking-tight">
-                Book Your Ride
-              </h3>
+                {t("Book Your Ride")}</h3>
               
               <div className="flex flex-col gap-4 text-left">
                 {/* Pickup Location */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Pickup Location</label>
+                  <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">{t("Pickup Location")}</label>
                   <div className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 flex items-center justify-between">
                     <span>Naples, FL</span>
                     <svg className="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
@@ -135,7 +134,7 @@ export function HeroSection({
 
                 {/* Drop-off */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Drop-off</label>
+                  <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">{t("Drop-off")}</label>
                   <div className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700">
                     RSW Airport
                   </div>
@@ -144,13 +143,13 @@ export function HeroSection({
                 {/* Date & Time Row */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Date</label>
+                    <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">{t("Date")}</label>
                     <div className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700">
                       May 24, 2024
                     </div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Time</label>
+                    <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">{t("Time")}</label>
                     <div className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700">
                       10:00 AM
                     </div>
@@ -159,7 +158,7 @@ export function HeroSection({
 
                 {/* Passenger */}
                 <div className="flex flex-col gap-1.5 mb-2">
-                  <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Passenger</label>
+                  <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">{t("Passenger")}</label>
                   <div className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 flex items-center justify-between">
                     <span>1</span>
                     <svg className="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
@@ -168,8 +167,7 @@ export function HeroSection({
 
                 {/* Continue to Book Button */}
                 <div className="w-full bg-[var(--qta-public-accent)] text-white py-3.5 rounded-xl text-sm font-bold tracking-wide uppercase text-center shadow-md">
-                  CONTINUE TO BOOK
-                </div>
+                  {t("CONTINUE TO BOOK")}</div>
               </div>
             </div>
           </div>

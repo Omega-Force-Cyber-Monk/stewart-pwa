@@ -11,6 +11,7 @@ import { normalizedType } from "./resourceUtils";
 interface ResourceCardProps {
   resource: BusinessResource;
   compact?: boolean;
+  language?: 'en' | 'es';
   onAction: (resource: BusinessResource) => void;
 }
 
@@ -21,13 +22,15 @@ const typeLabels: Record<ResourceType, string> = {
   guide: "Guide",
 };
 
-export function ResourceCard({ resource, compact = false, onAction }: ResourceCardProps) {
+export function ResourceCard({ resource, compact = false, language = 'en', onAction }: ResourceCardProps) {
   const type = normalizedType(resource);
   const title = resource.name || resource.title || "Resource";
   const description = resource.description || "Access this resource to keep growing your business.";
   const fileUrl = resource.fileUrl || undefined;
   const icon = type === "video" ? <Play className="h-5 w-5" /> : type === "guide" ? <BookOpen className="h-5 w-5" /> : type === "link" ? <ExternalLink className="h-5 w-5" /> : <FileText className="h-5 w-5" />;
-  const actionLabel = type === "video" ? "Open" : type === "pdf" ? "Download" : type === "guide" ? "View Guide" : "Open";
+  const actionLabel = language === 'es'
+    ? type === 'pdf' ? 'Descargar' : type === 'guide' ? 'Ver guía' : 'Abrir'
+    : type === "pdf" ? "Download" : type === "guide" ? "View Guide" : "Open";
 
   return (
     <article className={`flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm ${compact ? "min-h-[190px]" : "min-h-[255px]"}`}>
@@ -41,7 +44,7 @@ export function ResourceCard({ resource, compact = false, onAction }: ResourceCa
         <div className="flex items-center gap-3 px-4 pt-4">
           <span className="grid h-9 w-9 place-items-center rounded-lg bg-blue-50 text-blue-600">{icon}</span>
           <div className="min-w-0">
-            <h3 className="truncate text-sm font-semibold text-slate-900">{title}</h3>
+            <h3 className="break-words text-sm font-semibold text-slate-900">{title}</h3>
             <span className={`mt-1 inline-flex rounded-full border px-2 py-0.5 text-[10px] font-medium ${type === "pdf" ? "border-violet-200 bg-violet-50 text-violet-600" : type === "guide" ? "border-orange-200 bg-orange-50 text-orange-600" : "border-cyan-200 bg-cyan-50 text-cyan-700"}`}>{typeLabels[type]}</span>
           </div>
         </div>

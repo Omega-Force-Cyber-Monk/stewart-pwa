@@ -1,3 +1,4 @@
+import { useLanguage } from "../../i18n/LanguageProvider";
 import { Plane, Luggage, Repeat, Route, Check } from "lucide-react";
 import firstCard from "../../assets/1st card.jpg";
 import secondCard from "../../assets/2nd card.jpg";
@@ -5,6 +6,7 @@ import thirdCard from "../../assets/3rd card.jpg";
 import fourthCard from "../../assets/4th card.jpg";
 
 export function OurServices() {
+  const { t } = useLanguage();
   const services = [
     {
       image: firstCard,
@@ -56,8 +58,7 @@ export function OurServices() {
         <div className="flex items-center justify-center gap-4 mb-14">
           <div className="w-8 h-0.5 bg-green-500 rounded-full"></div>
           <h2 className="text-2xl sm:text-3xl font-bold tracking-wide text-slate-800 uppercase">
-            Our Services
-          </h2>
+            {t("Our Services")}</h2>
           <div className="w-8 h-0.5 bg-green-500 rounded-full"></div>
         </div>
 
@@ -83,7 +84,7 @@ export function OurServices() {
               {/* Title & Bullet Points */}
               <div className="flex-1 px-5 flex flex-col items-center text-center">
                 <h3 className="text-lg sm:text-xl font-bold text-slate-800 mb-4 uppercase tracking-wide">
-                  {svc.title}
+                  {t(svc.title)}
                 </h3>
                 <ul className="flex flex-col gap-2.5 w-full items-start pl-3">
                   {svc.points.map((pt, pIdx) => (
@@ -92,7 +93,7 @@ export function OurServices() {
                         <Check className="w-2.5 h-2.5 stroke-[3]" />
                       </div>
                       <span className="text-sm sm:text-base font-semibold text-slate-600 leading-tight">
-                        {pt}
+                        {t(pt)}
                       </span>
                     </li>
                   ))}

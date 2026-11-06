@@ -1,3 +1,4 @@
+import { useLanguage } from "../../i18n/LanguageProvider";
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useResetUserPasswordMutation } from "../../store/api/Auth/auth.api";
@@ -5,6 +6,7 @@ import { AuthLayout } from "../../components/layout/AuthLayout";
 import { Loader2, Mail, Lock, Eye, EyeOff, KeyRound, AlertTriangle, CheckCircle } from "lucide-react";
 
 export default function ResetPasswordPage() {
+  const { t } = useLanguage();
   const [searchParams] = useSearchParams();
   const [email, setEmail] = useState(() => searchParams.get("email") ?? "");
   const [otp, setOtp] = useState("");
@@ -61,15 +63,14 @@ export default function ResetPasswordPage() {
 
   return (
     <AuthLayout
-      title="Create New Password"
+      title={t("Create New Password")}
       subtitle="Complete your verification by entering your 6-digit OTP code and choose a secure new password for your account."
     >
       {!successReset ? (
         <>
           <div>
             <h2 className="text-2xl font-bold tracking-tight text-slate-100">
-              Reset your password
-            </h2>
+              {t("Reset your password")}</h2>
           </div>
 
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -82,8 +83,7 @@ export default function ResetPasswordPage() {
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-slate-300">
-                Email address
-              </label>
+                {t("Email address")}</label>
               <div className="mt-2 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="size-5 text-slate-400" />
@@ -104,8 +104,7 @@ export default function ResetPasswordPage() {
 
             <div>
               <label htmlFor="otp" className="block text-sm font-medium text-slate-300">
-                OTP verification code
-              </label>
+                {t("OTP verification code")}</label>
               <div className="mt-2 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <KeyRound className="size-5 text-slate-400" />
@@ -118,7 +117,7 @@ export default function ResetPasswordPage() {
                   maxLength={6}
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
-                  placeholder="6-digit reset code"
+                  placeholder={t("6-digit reset code")}
                   className="block w-full pl-10 pr-3 py-2.5 bg-brand-input border border-brand-border rounded-md text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 tracking-wider text-center transition"
                 />
               </div>
@@ -126,8 +125,7 @@ export default function ResetPasswordPage() {
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-slate-300">
-                New Password
-              </label>
+                {t("New Password")}</label>
               <div className="mt-2 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="size-5 text-slate-400" />
@@ -145,7 +143,7 @@ export default function ResetPasswordPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-label={t(showPassword ? "Hide password" : "Show password")}
                   className="cursor-pointer absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-white transition-colors"
                 >
                   {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
@@ -155,8 +153,7 @@ export default function ResetPasswordPage() {
 
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-300">
-                Confirm New Password
-              </label>
+                {t("Confirm New Password")}</label>
               <div className="mt-2 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="size-5 text-slate-400" />
@@ -174,7 +171,7 @@ export default function ResetPasswordPage() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                  aria-label={t(showConfirmPassword ? "Hide password" : "Show password")}
                   className="cursor-pointer absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-white transition-colors"
                 >
                   {showConfirmPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
@@ -189,8 +186,7 @@ export default function ResetPasswordPage() {
                 className="w-full flex justify-center items-center gap-2 h-10 px-4 border border-transparent rounded-md text-sm font-semibold text-white bg-brand-btn hover:bg-brand-btn-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-brand-page focus:ring-cyan-500 transition disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {isLoading && <Loader2 className="size-4 animate-spin" />}
-                Reset Password
-              </button>
+                {t("Reset Password")}</button>
             </div>
           </form>
         </>
@@ -198,15 +194,13 @@ export default function ResetPasswordPage() {
         <div className="text-center py-6">
           <CheckCircle className="size-16 text-cyan-400 mx-auto animate-pulse" />
           <p className="mt-4 text-slate-200 text-sm font-semibold leading-relaxed">
-            Your password has been successfully updated. You can now use your new password to sign in.
-          </p>
+            {t("Your password has been successfully updated. You can now use your new password to sign in.")}</p>
           <div className="mt-8">
             <button
               onClick={() => navigate("/login")}
               className="w-full flex justify-center items-center h-10 px-4 border border-transparent rounded-md text-sm font-semibold text-white bg-brand-btn hover:bg-brand-btn-hover transition"
             >
-              Proceed to Login
-            </button>
+              {t("Proceed to Login")}</button>
           </div>
         </div>
       )}

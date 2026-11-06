@@ -1,3 +1,4 @@
+import { useLanguage } from "../../i18n/LanguageProvider";
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useLoginUserMutation } from "../../store/api/Auth/auth.api";
@@ -29,6 +30,7 @@ function isUnverifiedAccountError(error: unknown) {
 }
 
 export default function LoginPage() {
+  const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -95,18 +97,16 @@ export default function LoginPage() {
 
   return (
     <AuthLayout
-      title="Welcome Back"
+      title={t("Welcome Back")}
       subtitle="Sign in to your QuitTheApp account to manage your business, launch tools, resources, and support."
     >
       <div>
         <h2 className="text-2xl font-bold tracking-tight text-slate-100">
-          Sign in
-        </h2>
+          {t("Sign in")}</h2>
         <p className="mt-2 text-sm text-slate-400">
-          Or{" "}
+          {t("Or")}{" "}
           <Link to="/signup" className="font-semibold text-cyan-400 hover:text-cyan-300 transition-colors">
-            create a new account
-          </Link>
+            {t("create a new account")}</Link>
         </p>
       </div>
 
@@ -120,8 +120,7 @@ export default function LoginPage() {
 
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-slate-300">
-            Email address
-          </label>
+            {t("Email address")}</label>
           <div className="mt-2 relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Mail className="size-5 text-slate-400" />
@@ -143,8 +142,7 @@ export default function LoginPage() {
         <div>
           <div className="flex items-center justify-between">
             <label htmlFor="password" className="block text-sm font-medium text-slate-300">
-              Password
-            </label>
+              {t("Password")}</label>
           </div>
           <div className="mt-2 relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -164,7 +162,7 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              aria-label={showPassword ? "Hide password" : "Show password"}
+              aria-label={t(showPassword ? "Hide password" : "Show password")}
               className="cursor-pointer absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-white transition-colors"
             >
               {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
@@ -174,8 +172,7 @@ export default function LoginPage() {
             to="/forgot-password"
             className="text-sm font-semibold text-cyan-400 hover:text-cyan-300 transition-colors"
           >
-            Forgot password?
-          </Link>
+            {t("Forgot password?")}</Link>
         </div>
 
         <div>
@@ -185,8 +182,7 @@ export default function LoginPage() {
             className="w-full flex justify-center items-center gap-2 h-10 px-4 border border-transparent rounded-md text-sm font-semibold text-white bg-brand-btn hover:bg-brand-btn-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-brand-page focus:ring-cyan-500 transition disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {isLoading && <Loader2 className="size-4 animate-spin" />}
-            Sign in
-          </button>
+            {t("Sign in")}</button>
         </div>
       </form>
     </AuthLayout>

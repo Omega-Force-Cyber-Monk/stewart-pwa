@@ -1,3 +1,4 @@
+import { useLanguage } from "../i18n/LanguageProvider";
 import { useEffect, useRef, useState } from "react";
 import {
   AlertCircle,
@@ -46,14 +47,15 @@ function errorMessage(error: unknown) {
 }
 
 function Field({ label, value, onChange, type = "text", required = false, placeholder }: { label: string; value: string; onChange: (value: string) => void; type?: string; required?: boolean; placeholder?: string }) {
+  const { t } = useLanguage();
   return (
     <label className="block text-sm font-medium text-slate-700">
-      <span>{label}{required && <span className="text-red-500">*</span>}</span>
+      <span>{t(label)}{required && <span className="text-red-500">*</span>}</span>
       <input
         required={required}
         type={type}
         value={value}
-        placeholder={placeholder}
+        placeholder={t(placeholder)}
         onChange={(event) => onChange(event.target.value)}
         className="mt-2 h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-dashboard-rider focus:ring-2 focus:ring-green-100"
       />
@@ -62,6 +64,7 @@ function Field({ label, value, onChange, type = "text", required = false, placeh
 }
 
 export default function LaunchDashboardPage() {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const { data: profile, refetch: refetchProfile } = useGetRiderProfileQuery();
   const { data: setupResponse, isLoading } = useGetSetupStateQuery();
@@ -85,7 +88,8 @@ export default function LaunchDashboardPage() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [getAirportSuggestions] = useLazyGetAirportSuggestionsQuery();
   const { data: finalReview } = useGetFinalReviewQuery(undefined, { skip: step !== 4 });
-  const spanish = profile?.user.driverProfile?.category === "SPANISH";
+  const { language } = useLanguage();
+  const spanish = language === 'es';
   const locationText = spanish ? {
     city: "Ciudad o \u00e1rea metropolitana", cityHint: "Escribe tu ciudad real. Los aeropuertos se seleccionan por separado.",
     cityPlaceholder: "Por ejemplo: Naples, FL", airports: "Aeropuertos que atiendes",
@@ -240,29 +244,29 @@ export default function LaunchDashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-slate-900">Launch Dashboard</h2>
-        <p className="mt-1 text-sm text-slate-500">Complete your business setup to launch your direct booking website.</p>
+        <h2 className="text-2xl font-bold text-slate-900">{t("Launch Dashboard")}</h2>
+        <p className="mt-1 text-sm text-slate-500">{t("Complete your business setup to launch your direct booking website.")}</p>
       </div>
 
-      {error && <div className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700"><AlertCircle className="h-5 w-5 shrink-0" />{error}</div>}
-      {showSuccess && <div className="flex items-center gap-3 rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700"><Check className="h-5 w-5" />Your website and business assets are live. Redirecting to your dashboard...</div>}
+      {error && <div className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700"><AlertCircle className="h-5 w-5 shrink-0" />{t(error)}</div>}
+      {showSuccess && <div className="flex items-center gap-3 rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700"><Check className="h-5 w-5" />{t("Your website and business assets are live. Redirecting to your dashboard...")}</div>}
 
       <section className="rounded-2xl bg-white shadow-sm">
         <LaunchProgressStepper showFooter={false} currentStep={step} />
         <div className="border-t border-slate-100 p-5 sm:p-8">
           <div className="mb-6 flex items-start justify-between">
             <div>
-              <h3 className="text-xl font-semibold text-slate-900">{stepTitles[step - 1]}</h3>
-              <p className="mt-1 text-sm text-slate-500">{step === 1 ? "Please enter your personal details" : step === 2 ? "Provide your business details to personalize your website and business assets." : step === 3 ? "Tell us where you provide transportation services." : "Review your business details and generated assets before launching."}</p>
+              <h3 className="text-xl font-semibold text-slate-900">{t(stepTitles[step - 1])}</h3>
+              <p className="mt-1 text-sm text-slate-500">{t(step === 1 ? "Please enter your personal details" : step === 2 ? "Provide your business details to personalize your website and business assets." : step === 3 ? "Tell us where you provide transportation services." : "Review your business details and generated assets before launching.")}</p>
             </div>
             {step < 4 && <Pencil className="h-5 w-5 text-dashboard-rider" />}
           </div>
 
           {step === 1 && (
             <form onSubmit={submitBuyer} className="max-w-3xl space-y-5 rounded-xl border border-slate-200 p-5">
-              <Field label="Full Name" required value={buyer.fullName} onChange={(value) => setBuyer((current) => ({ ...current, fullName: value }))} />
-              <Field label="Email Address" required type="email" value={buyer.email} onChange={(value) => setBuyer((current) => ({ ...current, email: value }))} />
-              <Field label="Phone Number" required value={buyer.phone} onChange={(value) => setBuyer((current) => ({ ...current, phone: value }))} />
+              <Field label={t("Full Name")} required value={buyer.fullName} onChange={(value) => setBuyer((current) => ({ ...current, fullName: value }))} />
+              <Field label={t("Email Address")} required type="email" value={buyer.email} onChange={(value) => setBuyer((current) => ({ ...current, email: value }))} />
+              <Field label={t("Phone Number")} required value={buyer.phone} onChange={(value) => setBuyer((current) => ({ ...current, phone: value }))} />
               <div className="flex justify-end">
                 <button
                   type="submit"
@@ -270,7 +274,7 @@ export default function LaunchDashboardPage() {
                   className="cursor-pointer inline-flex items-center justify-center gap-2 rounded-lg bg-dashboard-rider px-5 py-2.5 text-sm font-semibold text-white hover:bg-dashboard-rider-dark transition disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
-                  <span>Save &amp; Continue</span>
+                  <span>{t("Save & Continue")}</span>
                   {!isSaving && <ChevronRight className="h-4 w-4" />}
                 </button>
               </div>
@@ -280,12 +284,11 @@ export default function LaunchDashboardPage() {
           {step === 2 && (
             <form onSubmit={submitBusiness} className="space-y-5 rounded-xl border border-slate-200 p-5">
               <div className="grid gap-5 md:grid-cols-2">
-                <Field label="Business Name" required value={business.businessName} onChange={(value) => setBusiness((current) => ({ ...current, businessName: value }))} />
-                <Field label="Phone Number" required value={business.phone} onChange={(value) => setBusiness((current) => ({ ...current, phone: value }))} />
-                <Field label="Email Address" required type="email" value={business.email} onChange={(value) => setBusiness((current) => ({ ...current, email: value }))} />
+                <Field label={t("Business Name")} required value={business.businessName} onChange={(value) => setBusiness((current) => ({ ...current, businessName: value }))} />
+                <Field label={t("Phone Number")} required value={business.phone} onChange={(value) => setBusiness((current) => ({ ...current, phone: value }))} />
+                <Field label={t("Email Address")} required type="email" value={business.email} onChange={(value) => setBusiness((current) => ({ ...current, email: value }))} />
                 <label className="text-sm font-medium text-slate-700">
-                  Upload Business Logo (optional)
-                  <input
+                  {t("Upload Business Logo (optional)")}<input
                     ref={logoInputRef}
                     type="file"
                     accept="image/png,image/jpeg,image/webp"
@@ -294,21 +297,21 @@ export default function LaunchDashboardPage() {
                   />
                   {(business.logoUrl || logoFile) && (
                     <div className="mt-2 flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-600">
-                      <span className="truncate">{logoFile ? logoFile.name : "Saved logo"}</span>
+                      <span className="truncate">{t(logoFile ? logoFile.name : "Saved logo")}</span>
                       <button
                         type="button"
                         onClick={removeLogo}
                         className="cursor-pointer inline-flex items-center gap-1 font-semibold text-slate-500 hover:text-red-600"
                       >
                         <X className="h-3.5 w-3.5" />
-                        <span>Remove</span>
+                        <span>{t("Remove")}</span>
                       </button>
                     </div>
                   )}
                 </label>
               </div>
               <label className="block text-sm font-medium text-slate-700">
-                Business Information<span className="text-red-500">*</span>
+                {t("Business Information")}<span className="text-red-500">*</span>
                 <textarea
                   required
                   value={business.businessInfo}
@@ -319,10 +322,9 @@ export default function LaunchDashboardPage() {
               </label>
               {!addonOwned && (
                 <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
-                  <p className="font-semibold text-slate-800">Native ride request</p>
+                  <p className="font-semibold text-slate-800">{t("Native ride request")}</p>
                   <p className="mt-1 leading-6">
-                    Your selling page includes a built-in ride-request form. Acuity scheduling is not required for QuitTheApp launch.
-                  </p>
+                    {t("Your selling page includes a built-in ride-request form. Acuity scheduling is not required for QuitTheApp launch.")}</p>
                 </div>
               )}
               <div className="flex justify-between">
@@ -333,7 +335,7 @@ export default function LaunchDashboardPage() {
                   className="cursor-pointer inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <ChevronLeft className="h-4 w-4" />
-                  <span>Back</span>
+                  <span>{t("Back")}</span>
                 </button>
                 <button
                   type="submit"
@@ -341,7 +343,7 @@ export default function LaunchDashboardPage() {
                   className="cursor-pointer inline-flex items-center justify-center gap-2 rounded-lg bg-dashboard-rider px-5 py-2.5 text-sm font-semibold text-white hover:bg-dashboard-rider-dark transition disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
-                  <span>Save &amp; Continue</span>
+                  <span>{t("Save & Continue")}</span>
                   {!isSaving && <ChevronRight className="h-4 w-4" />}
                 </button>
               </div>
@@ -358,7 +360,7 @@ export default function LaunchDashboardPage() {
                     value={serviceArea.cityArea}
                     maxLength={160}
                     onChange={(event) => setServiceArea((current) => ({ ...current, cityArea: event.target.value }))}
-                    placeholder={locationText.cityPlaceholder}
+                    placeholder={t(locationText.cityPlaceholder)}
                     className="mt-2 h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-dashboard-rider"
                   />
                 </label>
@@ -381,7 +383,7 @@ export default function LaunchDashboardPage() {
                         setAirportSearch("");
                       }
                     }}
-                    placeholder={locationText.airportPlaceholder}
+                    placeholder={t(locationText.airportPlaceholder)}
                     className="h-11 min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-dashboard-rider"
                   />
                   <Plane className="mt-3 h-4 w-4 text-slate-400" />
@@ -406,7 +408,7 @@ export default function LaunchDashboardPage() {
                     <button
                       type="button"
                       onClick={() => setServiceArea((current) => ({ ...current, airports: current.airports.filter((item) => item !== airport) }))}
-                      aria-label={`${locationText.remove} ${airport}`}
+                      aria-label={t(`${locationText.remove} ${airport}`)}
                       className="cursor-pointer ml-1 text-slate-400 hover:text-slate-700"
                     >
                       ×
@@ -442,14 +444,14 @@ export default function LaunchDashboardPage() {
               <div className="grid gap-5 lg:grid-cols-2">
                 <div className="rounded-xl border border-slate-200 p-5">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                    <h4 className="font-semibold text-slate-900">Information Overview</h4>
-                    <button type="button" onClick={() => setStep(1)} className="cursor-pointer text-dashboard-rider hover:opacity-80" aria-label="Edit information">
+                    <h4 className="font-semibold text-slate-900">{t("Information Overview")}</h4>
+                    <button type="button" onClick={() => setStep(1)} className="cursor-pointer text-dashboard-rider hover:opacity-80" aria-label={t("Edit information")}>
                       <Pencil className="h-4 w-4" />
                     </button>
                   </div>
                   <dl className="mt-4 space-y-4 text-sm">
                     <div>
-                      <dt className="font-semibold text-slate-800">Personal Information</dt>
+                      <dt className="font-semibold text-slate-800">{t("Personal Information")}</dt>
                       <dd className="mt-1 text-slate-500">
                         {review?.buyer?.fullName || buyer.fullName}
                         <br />
@@ -459,7 +461,7 @@ export default function LaunchDashboardPage() {
                       </dd>
                     </div>
                     <div>
-                      <dt className="font-semibold text-slate-800">Business Information</dt>
+                      <dt className="font-semibold text-slate-800">{t("Business Information")}</dt>
                       <dd className="mt-1 text-slate-500">
                         {review?.business?.name || business.businessName}
                         <br />
@@ -469,7 +471,7 @@ export default function LaunchDashboardPage() {
                       </dd>
                     </div>
                     <div>
-                      <dt className="font-semibold text-slate-800">Service Area Information</dt>
+                      <dt className="font-semibold text-slate-800">{t("Service Area Information")}</dt>
                       <dd className="mt-1 text-slate-500">
                         {review?.serviceArea?.cityArea || serviceArea.cityArea}
                         <br />
@@ -479,10 +481,10 @@ export default function LaunchDashboardPage() {
                   </dl>
                 </div>
                 <div className="rounded-xl border border-slate-200 p-5">
-                  <h4 className="border-b border-slate-100 pb-4 font-semibold text-slate-900">Generated Assets</h4>
-                  <div className="mt-4 space-y-4 text-sm">
+                  <h4 className="border-b border-slate-100 pb-4 font-semibold text-slate-900">{t("Generated Assets")}</h4>
+                  <div className="mt-4 space-y-4 text-sm text-slate-900 [&_strong]:font-semibold [&_strong]:text-slate-900">
                     <p>
-                      <strong>Driver Website</strong>
+                      <strong>{t("Driver Website")}</strong>
                       <br />
                       {websiteUrl ? (
                         <a href={websiteUrl} target="_blank" rel="noopener noreferrer" className="cursor-pointer inline-flex items-center gap-1 break-all text-dashboard-rider hover:underline">
@@ -490,27 +492,27 @@ export default function LaunchDashboardPage() {
                           <ExternalLink className="h-3.5 w-3.5 shrink-0" />
                         </a>
                       ) : (
-                        <span className="text-slate-500">Your website URL will appear after the business name is saved.</span>
+                        <span className="text-slate-500">{t("Your website URL will appear after the business name is saved.")}</span>
                       )}
                     </p>
                     <p>
-                      <strong>Referral Card &amp; QR Code</strong>
+                      <strong>{t("Referral Card & QR Code")}</strong>
                       <br />
-                      <span className="text-slate-500">Your QR code is generated automatically when you confirm launch.</span>
+                      <span className="text-slate-500">{t("Your QR code is generated automatically when you confirm launch.")}</span>
                     </p>
                     <p>
-                      <strong>Selling Page</strong>
+                      <strong>{t("Selling Page")}</strong>
                       <br />
-                      <span className="text-slate-500">Your shareable landing page is ready to promote your services.</span>
+                      <span className="text-slate-500">{t("Your shareable landing page is ready to promote your services.")}</span>
                     </p>
                     <p>
-                      <strong>Resources &amp; Guides</strong>
+                      <strong>{t("Resources & Guides")}</strong>
                       <br />
-                      <span className="text-slate-500">Marketing resources and launch materials are available to help you grow.</span>
+                      <span className="text-slate-500">{t("Marketing resources and launch materials are available to help you grow.")}</span>
                     </p>
                     {!canLaunch && missingRequirements.length > 0 && (
                       <div className="rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
-                        Missing: {missingRequirements.join(", ")}
+                        {t("Missing:")}{missingRequirements.join(", ")}
                       </div>
                     )}
                   </div>
@@ -524,7 +526,7 @@ export default function LaunchDashboardPage() {
                   className="cursor-pointer inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <ChevronLeft className="h-4 w-4" />
-                  <span>Back</span>
+                  <span>{t("Back")}</span>
                 </button>
                 <button
                   type="submit"
@@ -534,12 +536,12 @@ export default function LaunchDashboardPage() {
                   {isLaunching ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      <span>Launching business...</span>
+                      <span>{t("Launching business...")}</span>
                     </>
                   ) : (
                     <>
                       <Rocket className="h-4 w-4" />
-                      <span>Confirm &amp; Launch</span>
+                      <span>{t("Confirm & Launch")}</span>
                     </>
                   )}
                 </button>

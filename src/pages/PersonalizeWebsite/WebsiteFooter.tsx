@@ -1,3 +1,4 @@
+import { useLanguage } from "../../i18n/LanguageProvider";
 import { Car, Phone, Mail } from "lucide-react";
 import { FaFacebookF, FaGoogle, FaInstagram } from "react-icons/fa";
 
@@ -12,6 +13,7 @@ interface WebsiteFooterProps {
 }
 
 export function WebsiteFooter({ businessName, businessPhone, businessEmail, logoUrl, serviceAreas = [], airports = [], onRequestRide }: WebsiteFooterProps) {
+  const { t } = useLanguage();
   // Real data only — never render fabricated brand/location text.
   const nameParts = businessName.split(" ");
   const firstWord = nameParts[0] ?? "";
@@ -43,7 +45,7 @@ export function WebsiteFooter({ businessName, businessPhone, businessEmail, logo
                         <span className="text-xs text-slate-400 tracking-wide block uppercase">{restOfName}</span>
                       </>
                     ) : (
-                      <span className="text-xl font-bold tracking-wider text-white block uppercase">My Business</span>
+                      <span className="text-xl font-bold tracking-wider text-white block uppercase">{t("My Business")}</span>
                     )}
                   </div>
                 </div>
@@ -51,8 +53,7 @@ export function WebsiteFooter({ businessName, businessPhone, businessEmail, logo
             </div>
 
             <p className="text-white text-base font-normal tracking-wide">
-              On Time. Every Time.
-            </p>
+              {t("On Time. Every Time.")}</p>
 
             {/* Circular Social Icons */}
             <div className="flex gap-3">
@@ -66,7 +67,7 @@ export function WebsiteFooter({ businessName, businessPhone, businessEmail, logo
               <a
                 href="#"
                 className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-black hover:bg-slate-200 transition-colors"
-                aria-label="Google Reviews"
+                aria-label={t("Google Reviews")}
               >
                 <FaGoogle />
               </a>
@@ -83,8 +84,7 @@ export function WebsiteFooter({ businessName, businessPhone, businessEmail, logo
           {/* Column 2: Service Areas (span 2) */}
           <div className="lg:col-span-2 flex flex-col gap-4">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Service Areas
-            </span>
+              {t("Service Areas")}</span>
             <ul className="flex flex-col gap-2.5 text-sm">
               {serviceAreas.length === 0 ? (
                 <li className="text-slate-600">—</li>
@@ -99,8 +99,7 @@ export function WebsiteFooter({ businessName, businessPhone, businessEmail, logo
           {/* Column 3: Airports (span 2) */}
           <div className="lg:col-span-2 flex flex-col gap-4">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Airports
-            </span>
+              {t("Airports")}</span>
             <ul className="flex flex-col gap-2.5 text-sm">
               {airports.length === 0 ? (
                 <li className="text-slate-600">—</li>
@@ -115,13 +114,12 @@ export function WebsiteFooter({ businessName, businessPhone, businessEmail, logo
           {/* Column 4: Company (span 2) */}
           <div className="lg:col-span-2 flex flex-col gap-4">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Company
-            </span>
+              {t("Company")}</span>
             <ul className="flex flex-col gap-2.5 text-sm">
-              <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Reviews</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t("About Us")}</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t("Reviews")}</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t("Contact Us")}</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t("Privacy Policy")}</a></li>
             </ul>
           </div>
 
@@ -132,8 +130,7 @@ export function WebsiteFooter({ businessName, businessPhone, businessEmail, logo
               onClick={onRequestRide}
               className="w-full bg-[#4bae4f] hover:bg-[#439e47] text-white py-3.5 rounded-xl font-bold transition-all shadow-md mt-2 flex items-center justify-center"
             >
-              Book Your Ride
-            </button>
+              {t("Book Your Ride")}</button>
 
             <div className="flex flex-col gap-3">
               <a
@@ -157,7 +154,7 @@ export function WebsiteFooter({ businessName, businessPhone, businessEmail, logo
 
         {/* Separator line & Copyright bottom bar */}
         <div className="border-t border-white/10 py-8 text-center text-sm text-slate-500">
-          <p>&copy; {new Date().getFullYear()} {businessName}. All Rights Reserved.</p>
+          <p>&copy; {new Date().getFullYear()} {businessName}{t(". All Rights Reserved.")}</p>
         </div>
 
       </div>

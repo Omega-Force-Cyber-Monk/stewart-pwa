@@ -9,8 +9,10 @@ import standardLogo from "../assets/standardLogo.png";
 import standardBanner from "../assets/standardBanner.png";
 import { removeStorageValue, storageKeys } from "../lib/storage";
 import { reportVerifiedPurchase } from "../lib/gtmEvents";
+import { LanguageSelector, useLanguage } from '../i18n/LanguageProvider';
 
 export default function PaymentSuccessPage() {
+  const { t, language, setLanguage } = useLanguage();
   const dispatch = useAppDispatch();
   const accessToken = useAppSelector((state) => state.auth.accessToken);
   const navigate = useNavigate();
@@ -20,6 +22,7 @@ export default function PaymentSuccessPage() {
   const [confirmedSession, setConfirmedSession] = useState<string | null>(null);
   const [confirmationError, setConfirmationError] = useState(false);
   const purchaseConfirmed = Boolean(stripeSessionId && confirmedSession === stripeSessionId);
+  useEffect(() => { setLanguage(language); }, [language, setLanguage]);
 
   useEffect(() => {
     if (!stripeSessionId) return;
@@ -51,10 +54,10 @@ export default function PaymentSuccessPage() {
   useEffect(() => {
     if (!stripeSessionId || accessToken || !purchaseConfirmed) return;
     const timer = window.setTimeout(() => {
-      navigate(`/signup?session_id=${encodeURIComponent(stripeSessionId)}`, { replace: true });
+      navigate(`/signup?session_id=${encodeURIComponent(stripeSessionId)}&lang=${language}`, { replace: true });
     }, 1200);
     return () => window.clearTimeout(timer);
-  }, [accessToken, navigate, stripeSessionId, purchaseConfirmed]);
+  }, [accessToken, navigate, stripeSessionId, purchaseConfirmed, language]);
 
   // Keep account state in sync; purchase confirmation uses this checkout only.
   const { data: profileData } = useGetRiderProfileQuery(undefined, {
@@ -121,28 +124,29 @@ export default function PaymentSuccessPage() {
         </div>
 
         {/* Heading */}
+        <div className="mb-4"><LanguageSelector /></div>
         <h1 className="text-2xl font-bold text-white tracking-tight mb-3">
-          {purchaseConfirmed ? "Payment Successful!" : "Checking your payment"}
+          {t(purchaseConfirmed ? "Payment Successful!" : "Checking your payment")}
         </h1>
 
         {/* Body */}
         <p className="text-sm text-slate-300 leading-relaxed mb-2">
-          {purchaseConfirmed ? "Your purchase has been confirmed." : "We are verifying your checkout with Stripe."}
+          {t(purchaseConfirmed ? "Your purchase has been confirmed." : "We are verifying your checkout with Stripe.")}
         </p>
         <p className="text-sm text-slate-400 leading-relaxed mb-8">
-          {purchaseConfirmed ? (accessToken
+          {t(purchaseConfirmed ? (accessToken
             ? "Your launch dashboard is ready. We are taking you there now."
             : "Next, create your account so we can connect this purchase to your launch package.")
-            : "Please keep this page open while we check your payment status."}
+            : "Please keep this page open while we check your payment status.")}
         </p>
 
         {/* Waiting state: webhook not processed yet */}
         {waiting && (
           <div className="flex flex-col items-center gap-3 mb-8 py-4">
             <Loader2 className="size-8 text-[#04B5A3] animate-spin" />
-            <p className="text-sm text-slate-400">{confirmationError || !stripeSessionId
+            <p className="text-sm text-slate-400">{t(confirmationError || !stripeSessionId
               ? "We could not confirm this checkout. Please refresh to retry, or contact support if you were charged."
-              : "Confirming your payment… this usually takes a few seconds."}</p>
+              : "Confirming your payment… this usually takes a few seconds.")}</p>
           </div>
         )}
 
@@ -153,7 +157,7 @@ export default function PaymentSuccessPage() {
             className="w-full flex justify-center items-center gap-2 h-11 px-6 rounded-lg text-sm font-semibold text-white bg-[#04B5A3] hover:bg-[#039384] transition shadow-lg shadow-[#04B5A3]/20 mb-4"
           >
             <CheckCircle2 className="size-5" />
-            Continue to Launch Dashboard →
+            {t('Continue to Launch Dashboard →')}
           </Link>
         )}
 
@@ -162,7 +166,7 @@ export default function PaymentSuccessPage() {
           to="/"
           className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
         >
-          Return to Homepage
+          {t('Return to Homepage')}
         </Link>
       </div>
     </div>

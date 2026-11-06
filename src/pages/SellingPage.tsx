@@ -1,3 +1,4 @@
+import { useLanguage } from "../i18n/LanguageProvider";
 import { useState } from "react";
 import { ExternalLink, Share2, Copy, QrCode, Download, Mail, Smartphone, Users, BadgeDollarSign, MessageCircle } from "lucide-react";
 import { useGetSetupStateQuery, useGetReferralCardQuery } from "../store/api/Business/business.api";
@@ -7,6 +8,7 @@ import { HeroSection } from "./PersonalizeWebsite/HeroSection";
 import ContactSupportModal from "../components/dashboard/ContactSupportModal";
 
 export default function SellingPage() {
+  const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
   const [isSupportOpen, setIsSupportOpen] = useState(false);
   const { data: setupResponse } = useGetSetupStateQuery();
@@ -55,11 +57,9 @@ export default function SellingPage() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-[24px] font-bold text-slate-900 mb-2">
-          Personalized Selling Page™
-        </h1>
+          {t("Personalized Selling Page™")}</h1>
         <p className="text-sm text-slate-500">
-          Share your personalized booking page with passengers and let them book directly without third-party apps.
-        </p>
+          {t("Share your personalized booking page with passengers and let them book directly without third-party apps.")}</p>
       </div>
 
       {/* Landing Page Preview Card */}
@@ -79,7 +79,7 @@ export default function SellingPage() {
       {/* Share Section */}
       <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 flex flex-col shadow-sm mb-8">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-[18px] font-bold text-slate-900">Landing page</h3>
+          <h3 className="text-[18px] font-bold text-slate-900">{t("Landing page")}</h3>
           {personalizedUrl ? (
             <a
               href={personalizedUrl}
@@ -87,13 +87,11 @@ export default function SellingPage() {
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-[#2ea043] hover:text-[#238636] font-bold text-[14px] transition-colors"
             >
-              Preview Landing page
-              <ExternalLink className="w-4 h-4" />
+              {t("Preview Landing page")}<ExternalLink className="w-4 h-4" />
             </a>
           ) : (
             <span className="flex items-center gap-2 text-slate-300 font-bold text-[14px]">
-              Preview Landing page
-              <ExternalLink className="w-4 h-4" />
+              {t("Preview Landing page")}<ExternalLink className="w-4 h-4" />
             </span>
           )}
         </div>
@@ -101,7 +99,7 @@ export default function SellingPage() {
         <div className="flex flex-col xl:flex-row xl:items-center gap-6">
           <div className="flex items-center gap-3 w-full max-w-md">
             <Share2 className="w-5 h-5 text-slate-400 shrink-0" />
-            <span className="font-bold text-slate-700 text-[15px] shrink-0">Share:</span>
+            <span className="font-bold text-slate-700 text-[15px] shrink-0">{t("Share:")}</span>
             <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-[14px] text-slate-600 truncate">
               {personalizedUrl}
             </div>
@@ -117,19 +115,18 @@ export default function SellingPage() {
                 } disabled:opacity-50`}
             >
               <Copy className="w-4 h-4" />
-              {copied ? "Copied!" : "Copy link"}
+              {t(copied ? "Copied!" : "Copy link")}
             </button>
 
             <button onClick={() => setShowQr(true)} className="flex items-center gap-2 bg-white hover:bg-slate-50 border border-slate-200 px-5 py-3 rounded-xl font-bold text-[14px] text-slate-700 transition-colors shadow-sm">
               <QrCode className="w-4 h-4 text-slate-500" />
-              View QR Code
-            </button>
+              {t("View QR Code")}</button>
 
             <button onClick={handleDownloadQr} className="flex items-center gap-2 bg-white hover:bg-slate-50 border border-slate-200 px-5 py-3 rounded-xl font-bold text-[14px] text-slate-700 transition-colors shadow-sm">
               <Download className="w-4 h-4 text-slate-500" />
               <div className="flex flex-col items-start">
-                <span>Download QR Code</span>
-                <span className="text-[10px] text-slate-400 font-normal leading-none">PNG format</span>
+                <span>{t("Download QR Code")}</span>
+                <span className="text-[10px] text-slate-400 font-normal leading-none">{t("PNG format")}</span>
               </div>
             </button>
 
@@ -153,7 +150,7 @@ export default function SellingPage() {
       {/* How Customers Book */}
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_300px]">
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 flex flex-col shadow-sm">
-          <h3 className="text-[18px] font-bold text-slate-900 mb-8">How Customers Book</h3>
+          <h3 className="text-[18px] font-bold text-slate-900 mb-8">{t("How Customers Book")}</h3>
 
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-2">
 
@@ -162,8 +159,8 @@ export default function SellingPage() {
               <div className="w-16 h-16 mb-4 flex items-center justify-center text-[#2ea043]">
                 <Smartphone className="w-10 h-10" />
               </div>
-              <h4 className="text-[15px] font-bold text-slate-900 mb-1">Visit Your Page</h4>
-              <p className="text-[12px] text-slate-500">Customer Opens your landing page.</p>
+              <h4 className="text-[15px] font-bold text-slate-900 mb-1">{t("Visit Your Page")}</h4>
+              <p className="text-[12px] text-slate-500">{t("Customer Opens your landing page.")}</p>
             </div>
 
             <div className="hidden md:flex text-green-200">
@@ -177,8 +174,8 @@ export default function SellingPage() {
               <div className="w-16 h-16 mb-4 flex items-center justify-center text-[#2ea043]">
                 <Users className="w-10 h-10" />
               </div>
-              <h4 className="text-[15px] font-bold text-slate-900 mb-1">Review Service</h4>
-              <p className="text-[12px] text-slate-500">They check your services, pricing and reviews.</p>
+              <h4 className="text-[15px] font-bold text-slate-900 mb-1">{t("Review Service")}</h4>
+              <p className="text-[12px] text-slate-500">{t("They check your services, pricing and reviews.")}</p>
             </div>
 
             <div className="hidden md:flex text-green-200">
@@ -191,11 +188,10 @@ export default function SellingPage() {
             <div className="flex flex-col items-center text-center max-w-[200px]">
               <div className="w-16 h-16 mb-4 flex items-center justify-center">
                 <span className="bg-[#2ea043] text-white px-4 py-2 rounded-lg font-bold text-[14px] shadow-sm">
-                  Book Now
-                </span>
+                  {t("Book Now")}</span>
               </div>
-              <h4 className="text-[15px] font-bold text-slate-900 mb-1">Click Book Now</h4>
-              <p className="text-[12px] text-slate-500">They click the book now button to start booking.</p>
+              <h4 className="text-[15px] font-bold text-slate-900 mb-1">{t("Click Book Now")}</h4>
+              <p className="text-[12px] text-slate-500">{t("They click the book now button to start booking.")}</p>
             </div>
 
             <div className="hidden md:flex text-green-200">
@@ -209,8 +205,8 @@ export default function SellingPage() {
               <div className="w-16 h-16 mb-4 flex items-center justify-center text-[#2ea043]">
                 <BadgeDollarSign className="w-10 h-10" />
               </div>
-              <h4 className="text-[15px] font-bold text-slate-900 mb-1">Booking Confirm</h4>
-              <p className="text-[12px] text-slate-500">They complete the form and booking is sent.</p>
+              <h4 className="text-[15px] font-bold text-slate-900 mb-1">{t("Booking Confirm")}</h4>
+              <p className="text-[12px] text-slate-500">{t("They complete the form and booking is sent.")}</p>
             </div>
 
           </div>
@@ -220,15 +216,14 @@ export default function SellingPage() {
           <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-[#2ea043]">
             <MessageCircle className="h-6 w-6" />
           </div>
-          <h3 className="text-[18px] font-bold text-slate-900">Need Help?</h3>
-          <p className="mb-5 mt-1 text-[13px] text-slate-600">We're here for you.</p>
+          <h3 className="text-[18px] font-bold text-slate-900">{t("Need Help?")}</h3>
+          <p className="mb-5 mt-1 text-[13px] text-slate-600">{t("We're here for you.")}</p>
           <button
             type="button"
             onClick={() => setIsSupportOpen(true)}
             className="w-full rounded-xl bg-[#2ea043] px-5 py-3 text-[14px] font-bold text-white shadow-sm transition-colors hover:bg-[#238636]"
           >
-            Contact Support
-          </button>
+            {t("Contact Support")}</button>
         </aside>
       </div>
 
@@ -237,17 +232,15 @@ export default function SellingPage() {
       {showQr && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 p-4">
           <div className="rounded-2xl bg-white p-6 shadow-xl max-w-sm w-full text-center">
-            <h3 className="text-lg font-bold text-slate-900 mb-4">Your QR Code</h3>
+            <h3 className="text-lg font-bold text-slate-900 mb-4">{t("Your QR Code")}</h3>
             {referralResponse?.data?.qrCodeUrl ? (
               <img src={referralResponse.data.qrCodeUrl} alt="QR Code" className="mx-auto w-48 h-48 mb-6" />
             ) : (
               <div className="w-48 h-48 mx-auto bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 mb-6">
-                Not Available
-              </div>
+                {t("Not Available")}</div>
             )}
             <button onClick={() => setShowQr(false)} className="w-full py-3 rounded-xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200 transition-colors">
-              Close
-            </button>
+              {t("Close")}</button>
           </div>
         </div>
       )}

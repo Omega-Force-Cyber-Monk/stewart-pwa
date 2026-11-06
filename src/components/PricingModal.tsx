@@ -30,9 +30,7 @@ export function PricingModal({
   initialPlan,
   initialShowUpsell,
 }: PricingModalProps) {
-  const spanish = Boolean(
-    isSpanish || funnelCategory === "SPANISH" || sourcePage === "SPANISH"
-  );
+  const spanish = isSpanish ?? (funnelCategory === 'SPANISH' || sourcePage === 'SPANISH');
 
   const { accessToken, user } = useAppSelector((state) => state.auth);
   const [selectedPlan, setSelectedPlan] = useState<"base" | "bundle" | null>(
@@ -252,8 +250,8 @@ export function PricingModal({
         ...(accessToken ? {} : { email }),
         ...(funnelCategory ? { funnelCategory } : {}),
         ...(sourcePage ? { sourcePage } : {}),
-        ...(spanish ? { locale: "es" } : {}),
-        successUrl: `${window.location.origin}/payment/success?session_id={CHECKOUT_SESSION_ID}&plan=${plan}`,
+        locale: spanish ? 'es' : 'en',
+        successUrl: `${window.location.origin}/payment/success?session_id={CHECKOUT_SESSION_ID}&plan=${plan}&lang=${spanish ? 'es' : 'en'}`,
         cancelUrl: currentUrl.toString(),
       }).unwrap();
       if (result.checkoutUrl) {

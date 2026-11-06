@@ -1,3 +1,4 @@
+import { useLanguage } from "../../i18n/LanguageProvider";
 import { Plane, Clock, DollarSign, RefreshCw } from "lucide-react";
 
 const faqs = [
@@ -24,6 +25,7 @@ const faqs = [
 ];
 
 export function FAQSection() {
+  const { t } = useLanguage();
   return (
     <section className="w-full bg-white border-t border-slate-100 py-3">
       <div className="container">
@@ -32,8 +34,7 @@ export function FAQSection() {
         <div className="flex items-center justify-center gap-4 mb-10">
           <div className="w-8 h-0.5 bg-green-500 rounded-full"></div>
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight">
-            Frequently Asked Questions
-          </h2>
+            {t("Frequently Asked Questions")}</h2>
           <div className="w-8 h-0.5 bg-green-500 rounded-full"></div>
         </div>
 
@@ -51,12 +52,12 @@ export function FAQSection() {
               <div className="flex flex-col">
                 {/* Question */}
                 <span className="text-xl font-semibold text-slate-800 leading-snug">
-                  {faq.question}
+                  {t(faq.question)}
                 </span>
 
                 {/* Answer */}
                 <span className="text-base text-slate-500 leading-relaxed">
-                  {faq.answer}
+                  {t(faq.answer)}
                 </span>
               </div>
             </div>

@@ -119,9 +119,10 @@ export const businessApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["ReferralCard", "Setup", "LaunchReady"],
     }),
-    getBusinessResources: builder.query<BusinessResourcesResponse, { type?: string; search?: string; page?: number; limit?: number } | void>({
+    getBusinessResources: builder.query<BusinessResourcesResponse, { language?: 'en' | 'es'; type?: string; search?: string; page?: number; limit?: number } | void>({
       query: (params) => {
         const queryParams = new URLSearchParams();
+        if (params?.language) queryParams.append("language", params.language);
         if (params?.type) queryParams.append("type", params.type);
         if (params?.search) queryParams.append("search", params.search);
         if (params?.page) queryParams.append("page", String(params.page));

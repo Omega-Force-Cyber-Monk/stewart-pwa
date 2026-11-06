@@ -1,3 +1,4 @@
+import { useLanguage } from "../../i18n/LanguageProvider";
 import { Check, Copy, Download, ExternalLink, FileText, Link as LinkIcon, Play } from "lucide-react";
 import { useState } from "react";
 import type { DfyAsset } from "../../store/api/DoneForYou/dfy.type";
@@ -14,12 +15,12 @@ function customerFacingTitle(title: string) {
 }
 
 export function DfyAssetGallery({ assets }: DfyAssetGalleryProps) {
+  const { t } = useLanguage();
   const [copiedId, setCopiedId] = useState<string | null>(null);
   if (assets.length === 0) {
     return (
       <p className="rounded-lg border border-dashed border-slate-200 bg-slate-50 p-4 text-sm text-slate-500">
-        No assets available yet.
-      </p>
+        {t("No assets available yet.")}</p>
     );
   }
 
@@ -87,8 +88,7 @@ export function DfyAssetGallery({ assets }: DfyAssetGalleryProps) {
                     ) : (
                       <ExternalLink className="h-3.5 w-3.5" />
                     )}
-                    Open
-                  </a>
+                    {t("Open")}</a>
                 )}
                 {url && (
                   <button
@@ -97,8 +97,7 @@ export function DfyAssetGallery({ assets }: DfyAssetGalleryProps) {
                     className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
                   >
                     <Download className="h-3.5 w-3.5" />
-                    Download
-                  </button>
+                    {t("Download")}</button>
                 )}
                 {canCopy && (
                   <button
@@ -111,7 +110,7 @@ export function DfyAssetGallery({ assets }: DfyAssetGalleryProps) {
                     ) : (
                       <Copy className="h-3.5 w-3.5" />
                     )}
-                    {copiedId === asset.id ? "Copied" : "Copy"}
+                    {t(copiedId === asset.id ? "Copied" : "Copy")}
                   </button>
                 )}
               </div>

@@ -1,3 +1,4 @@
+import { LanguageSelector, useLanguage } from "../../i18n/LanguageProvider";
 import { useState, type FormEvent, type ReactNode } from "react";
 import { Loader2, X } from "lucide-react";
 import {
@@ -37,6 +38,7 @@ export function RideRequestModal({
   cityArea,
   spanish = false,
 }: RideRequestModalProps) {
+  const { t, language } = useLanguage();
   const [form, setForm] = useState<CreateRideRequestPayload>(emptyForm);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -70,6 +72,7 @@ export function RideRequestModal({
         slug: businessSlug,
         body: {
           ...form,
+          language,
           requestedTime: normalizedTime,
           customerName: form.customerName.trim(),
           customerEmail: form.customerEmail.trim(),
@@ -80,7 +83,7 @@ export function RideRequestModal({
           passengerCount: Number(form.passengerCount),
         },
       }).unwrap();
-      setSuccessMessage(result.disclaimer || RIDE_REQUEST_DISCLAIMER);
+      setSuccessMessage(RIDE_REQUEST_DISCLAIMER);
       setCorrelationId(result.correlationId);
     } catch (submitError) {
       const message =
@@ -95,7 +98,10 @@ export function RideRequestModal({
               Array.isArray((submitError as { data?: { message?: string[] } }).data?.message)
             ? (submitError as { data: { message: string[] } }).data.message.join(" ")
             : "We could not send your ride request. Please try again or call the business.";
-      setError(message);
+      const translated = t(message);
+      setError(language === 'es' && translated === message
+        ? 'No se pudo enviar la solicitud. Revisa los datos o llama al negocio para obtener ayuda.'
+        : translated);
     }
   };
 
@@ -107,17 +113,17 @@ export function RideRequestModal({
       aria-labelledby="ride-request-title"
     >
       <div className="w-full sm:max-w-lg max-h-[92vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl bg-white text-slate-900 shadow-2xl">
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white px-5 py-4">
+        <div className="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 bg-white px-5 py-4">
           <div>
             <h2 id="ride-request-title" className="text-lg font-bold text-slate-900">
-              Request a ride
-            </h2>
+              {t("Request a ride")}</h2>
             <p className="text-sm text-slate-500">{businessName}</p>
           </div>
+          <LanguageSelector />
           <button
             type="button"
             onClick={handleClose}
-            aria-label="Close ride request form"
+            aria-label={t("Close ride request form")}
             className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"
           >
             <X className="h-5 w-5" />
@@ -127,22 +133,21 @@ export function RideRequestModal({
         {successMessage ? (
           <div className="space-y-4 px-5 py-6">
             <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-900">
-              {successMessage}
+              {t(successMessage)}
             </p>
             {correlationId ? (
-              <p className="text-xs text-slate-500">Request ID: {correlationId}</p>
+              <p className="text-xs text-slate-500">{t("Request ID:")} {correlationId}</p>
             ) : null}
             <button
               type="button"
               onClick={handleClose}
               className="w-full rounded-xl bg-[var(--qta-public-accent,#4bae4f)] px-4 py-3 text-sm font-bold text-white"
             >
-              Close
-            </button>
+              {t("Close")}</button>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4 px-5 py-5">
-            <Field label="Full name" required>
+            <Field label={t("Full name")} required>
               <input
                 required
                 value={form.customerName}
@@ -152,7 +157,7 @@ export function RideRequestModal({
               />
             </Field>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Email" required>
+              <Field label={t("Email")} required>
                 <input
                   required
                   type="email"
@@ -162,7 +167,7 @@ export function RideRequestModal({
                   maxLength={254}
                 />
               </Field>
-              <Field label="Phone" required>
+              <Field label={t("Phone")} required>
                 <input
                   required
                   value={form.customerPhone}
@@ -174,8 +179,8 @@ export function RideRequestModal({
               </Field>
             </div>
             <datalist id="served-airports">{airports.map((airport) => <option key={airport} value={airport} />)}</datalist>
-            {cityArea && <p className="text-sm text-slate-500">{spanish ? "\u00c1rea de servicio" : "Service area"}: {cityArea}</p>}
-            <Field label="Pickup location" required>
+            {cityArea && <p className="text-sm text-slate-500">{t(spanish ? "\u00c1rea de servicio" : "Service area")}: {cityArea}</p>}
+            <Field label={t("Pickup location")} required>
               <input
                 required
                 list="served-airports"
@@ -185,7 +190,7 @@ export function RideRequestModal({
                 maxLength={300}
               />
             </Field>
-            <Field label="Destination" required>
+            <Field label={t("Destination")} required>
               <input
                 required
                 list="served-airports"
@@ -196,7 +201,7 @@ export function RideRequestModal({
               />
             </Field>
             <div className="grid gap-4 sm:grid-cols-3">
-              <Field label="Date" required>
+              <Field label={t("Date")} required>
                 <input
                   required
                   type="date"
@@ -205,7 +210,7 @@ export function RideRequestModal({
                   className="field"
                 />
               </Field>
-              <Field label="Time" required>
+              <Field label={t("Time")} required>
                 <input
                   required
                   type="time"
@@ -214,7 +219,7 @@ export function RideRequestModal({
                   className="field"
                 />
               </Field>
-              <Field label="Passengers" required>
+              <Field label={t("Passengers")} required>
                 <input
                   required
                   type="number"
@@ -228,7 +233,7 @@ export function RideRequestModal({
                 />
               </Field>
             </div>
-            <Field label="Notes / special instructions">
+            <Field label={t("Notes / special instructions")}>
               <textarea
                 value={form.notes}
                 onChange={(event) => updateField("notes", event.target.value)}
@@ -238,12 +243,12 @@ export function RideRequestModal({
             </Field>
 
             <p className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-xs leading-relaxed text-slate-600">
-              {RIDE_REQUEST_DISCLAIMER}
+              {t(RIDE_REQUEST_DISCLAIMER)}
             </p>
 
             {error ? (
               <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-                {error}
+                {t(error)}
               </p>
             ) : null}
 
@@ -253,7 +258,7 @@ export function RideRequestModal({
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--qta-public-accent,#4bae4f)] px-4 py-3 text-sm font-bold uppercase tracking-wide text-white disabled:opacity-60"
             >
               {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-              {isLoading ? "Sending request..." : "Send ride request"}
+              {t(isLoading ? "Sending request..." : "Send ride request")}
             </button>
           </form>
         )}
@@ -286,10 +291,11 @@ function Field({
   required?: boolean;
   children: ReactNode;
 }) {
+  const { t } = useLanguage();
   return (
     <label className="flex flex-col gap-1.5 text-left">
       <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-        {label}
+        {t(label)}
         {required ? " *" : ""}
       </span>
       {children}

@@ -93,6 +93,7 @@ export interface PublicBusinessResponse {
 }
 
 export interface CreateRideRequestPayload {
+  language?: 'en' | 'es';
   customerName: string;
   customerEmail: string;
   customerPhone: string;

@@ -38,9 +38,9 @@ export const paymentApi = baseApi.injectEndpoints({
       query: () => "/payments/history",
       providesTags: ["Payments"],
     }),
-    getRiderPaymentInvoice: builder.query<Blob | InvoiceDownloadResponse, string>({
-      query: (id) => ({
-        url: `/payments/history/${id}/invoice`,
+    getRiderPaymentInvoice: builder.query<Blob | InvoiceDownloadResponse, string | { id: string; language: 'en' | 'es' }>({
+      query: (value) => ({
+        url: typeof value === 'string' ? `/payments/history/${value}/invoice` : `/payments/history/${value.id}/invoice?language=${value.language}`,
         responseHandler: async (response) => {
           const contentType = response.headers.get("content-type") || "";
           return contentType.includes("application/json") ? response.json() : response.blob();

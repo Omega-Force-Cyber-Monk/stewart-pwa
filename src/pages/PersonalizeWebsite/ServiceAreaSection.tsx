@@ -1,3 +1,4 @@
+import { useLanguage } from "../../i18n/LanguageProvider";
 import { MapPin, XCircle, CheckCircle2, Plane } from "lucide-react";
 
 interface ServiceAreaSectionProps {
@@ -19,6 +20,7 @@ const fixes = [
 ];
 
 export function ServiceAreaSection({ servingAreas }: ServiceAreaSectionProps) {
+  const { t } = useLanguage();
   // Real service-area data only; never render fabricated default locations.
   const areas = servingAreas ?? [];
 
@@ -34,8 +36,7 @@ export function ServiceAreaSection({ servingAreas }: ServiceAreaSectionProps) {
             <div className="flex items-center gap-3 mb-8">
               <div className="w-8 h-0.5 bg-green-500 rounded-full"></div>
               <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight">
-                Our Service Area
-              </h2>
+                {t("Our Service Area")}</h2>
               <div className="w-8 h-0.5 bg-green-500 rounded-full"></div>
             </div>
 
@@ -44,7 +45,7 @@ export function ServiceAreaSection({ servingAreas }: ServiceAreaSectionProps) {
               {/* Cities list — real data only */}
               <ul className="flex flex-col gap-3.5 shrink-0 min-w-40">
                 {areas.length === 0 ? (
-                  <li className="text-sm text-slate-400">Service area not published yet.</li>
+                  <li className="text-sm text-slate-400">{t("Service area not published yet.")}</li>
                 ) : (
                   areas.map((area, idx) => (
                     <li key={idx} className="flex items-center gap-2.5">
@@ -59,7 +60,7 @@ export function ServiceAreaSection({ servingAreas }: ServiceAreaSectionProps) {
               {areas.length > 0 && (
                 <div className="flex-1 w-full rounded-xl overflow-hidden border border-slate-200 shadow-sm min-h-52">
                   <iframe
-                    title="Service Area Map"
+                    title={t("Service Area Map")}
                     src={`https://maps.google.com/maps?q=${encodeURIComponent(areas[0])}&z=9&output=embed`}
                     width="100%"
                     height="100%"
@@ -81,9 +82,8 @@ export function ServiceAreaSection({ servingAreas }: ServiceAreaSectionProps) {
             <div className="flex items-start justify-between mb-6 gap-4">
               <div>
                 <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight mb-1">
-                  Traveling Soon?
-                </h2>
-                <p className="text-base text-slate-500">Most travelers worry:</p>
+                  {t("Traveling Soon?")}</h2>
+                <p className="text-base text-slate-500">{t("Most travelers worry:")}</p>
               </div>
               <Plane className="w-14 h-14 text-slate-200 shrink-0 -rotate-12 mt-1" />
             </div>
@@ -104,8 +104,7 @@ export function ServiceAreaSection({ servingAreas }: ServiceAreaSectionProps) {
               {/* Fixes column */}
               <div className="flex flex-col gap-3.5">
                 <span className="text-base font-bold text-green-600 uppercase tracking-wide">
-                  We Fix That:
-                </span>
+                  {t("We Fix That:")}</span>
                 <ul className="flex flex-col gap-3.5">
                   {fixes.map((fix, idx) => (
                     <li key={idx} className="flex items-start gap-2.5">

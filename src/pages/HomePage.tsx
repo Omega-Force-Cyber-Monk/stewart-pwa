@@ -41,7 +41,7 @@ import coupleComparisonRight from "../assets/coupleComparisonSectionRight.png";
 import standardHero from "../assets/standardHero.png";
 import { getDfyUpgradeAsset } from "../config/dfyMapping";
 
-export default function HomePage() {
+export default function HomePage({ audience = 'main' }: { audience?: 'main' | 'spanish' }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const { accessToken } = useAppSelector((state) => state.auth);
@@ -101,9 +101,10 @@ export default function HomePage() {
       {showPricingModal && (
         <PricingModal
           onClose={() => setShowPricingModal(false)}
-          upsellKitImageSrc={getDfyUpgradeAsset("main")}
-          funnelCategory="STANDARD"
-          sourcePage="MAIN"
+          upsellKitImageSrc={getDfyUpgradeAsset(audience)}
+          funnelCategory={audience === 'spanish' ? 'SPANISH' : 'STANDARD'}
+          sourcePage={audience === 'spanish' ? 'SPANISH' : 'MAIN'}
+          isSpanish={false}
           initialShowUpsell={initialShowUpsell}
           initialPlan={initialPlan}
         />
