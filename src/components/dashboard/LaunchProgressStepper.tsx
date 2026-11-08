@@ -1,3 +1,4 @@
+import { useLanguage } from "../../i18n/LanguageProvider";
 import { Check, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "../../lib/cn";
@@ -11,6 +12,7 @@ interface LaunchProgressStepperProps {
 }
 
 export function LaunchProgressStepper({ showFooter = true, currentStep }: LaunchProgressStepperProps) {
+  const { t } = useLanguage();
   const { data: setupData } = useGetSetupStateQuery();
   const step = currentStep ?? setupData?.data.progress.currentStep ?? 1;
   const percentage = setupData?.data.progress.percentage ?? 0;
@@ -28,15 +30,15 @@ export function LaunchProgressStepper({ showFooter = true, currentStep }: Launch
                 <span className={cn("grid h-8 w-8 shrink-0 place-items-center rounded-full border-2 text-xs font-bold", completed ? "border-dashboard-rider bg-dashboard-rider text-white" : active ? "border-slate-300 bg-slate-100 text-slate-700" : "border-slate-200 text-slate-400")}>{completed ? <Check className="h-4 w-4" /> : number}</span>
                 {index < SETUP_STEPS.length - 1 && <span className={cn("ml-2 hidden h-px flex-1 border-t border-dashed md:block", completed ? "border-dashboard-rider" : "border-slate-300")} />}
               </div>
-              <span className={cn("text-xs font-semibold md:text-center", completed || active ? "text-slate-800" : "text-slate-400")}>{label}</span>
+              <span className={cn("text-xs font-semibold md:text-center", completed || active ? "text-slate-800" : "text-slate-400")}>{t(label)}</span>
             </div>
           );
         })}
       </div>
       {showFooter && (
         <div className="mt-7 flex flex-col gap-4 border-t border-slate-100 pt-5 sm:flex-row sm:items-center sm:justify-between">
-          <div><p className="font-semibold text-slate-900">You&apos;re making great progress!</p><p className="mt-1 text-sm text-slate-500">Complete the next section to keep your business launch moving forward.</p><Link to="/launch-dashboard" className="mt-4 inline-flex items-center gap-2 rounded-lg bg-dashboard-rider px-5 py-2.5 text-sm font-semibold text-white hover:bg-dashboard-rider-dark">Continue Launch Setup <ArrowRight className="h-4 w-4" /></Link></div>
-          <p className="text-sm font-semibold text-dashboard-rider">{percentage}% Complete</p>
+          <div><p className="font-semibold text-slate-900">{t("You're making great progress!")}</p><p className="mt-1 text-sm text-slate-500">{t("Complete the next section to keep your business launch moving forward.")}</p><Link to="/launch-dashboard" className="mt-4 inline-flex items-center gap-2 rounded-lg bg-dashboard-rider px-5 py-2.5 text-sm font-semibold text-white hover:bg-dashboard-rider-dark">{t("Continue Launch Setup")} <ArrowRight className="h-4 w-4" /></Link></div>
+          <p className="text-sm font-semibold text-dashboard-rider">{percentage}{t("% Complete")}</p>
         </div>
       )}
     </div>

@@ -6,6 +6,7 @@ import { readMarketingOverlayState, setMarketingOverlayState } from "../lib/mark
 import { Loader2, X, Check, AlertTriangle, Rocket, Users, Download, Share, Eye, ZoomIn, ZoomOut } from "lucide-react";
 import { LaunchPrice } from "./marketing/LaunchPrice";
 import { LAUNCH_PRICING } from "./marketing/pricing";
+import { startTrackedCheckout } from "../lib/gtmEvents";
 
 interface PricingModalProps {
   onClose: () => void;
@@ -29,9 +30,7 @@ export function PricingModal({
   initialPlan,
   initialShowUpsell,
 }: PricingModalProps) {
-  const spanish = Boolean(
-    isSpanish || funnelCategory === "SPANISH" || sourcePage === "SPANISH"
-  );
+  const spanish = isSpanish ?? (funnelCategory === 'SPANISH' || sourcePage === 'SPANISH');
 
   const { accessToken, user } = useAppSelector((state) => state.auth);
   const [selectedPlan, setSelectedPlan] = useState<"base" | "bundle" | null>(
@@ -123,7 +122,7 @@ export function PricingModal({
         plan2Features: [
           "Configuración Completa de Negocio",
           "Todos los Materiales de Marketing",
-          "Configuración de Acuity Scheduling",
+          "Formulario nativo de solicitud de viaje",
           "Página de Venta Personalizada",
           "Código QR y Recursos de Referencia",
           "3 Videos de Lanzamiento",
@@ -187,7 +186,7 @@ export function PricingModal({
         plan2Features: [
           "Complete Business Setup",
           "All Marketing Materials",
-          "Acuity Scheduling Setup",
+          "Native Ride Request Form",
           "Personalized Selling Page",
           "QR Code & Referral Assets",
           "3 Launch Videos",
@@ -251,8 +250,8 @@ export function PricingModal({
         ...(accessToken ? {} : { email }),
         ...(funnelCategory ? { funnelCategory } : {}),
         ...(sourcePage ? { sourcePage } : {}),
-        ...(spanish ? { locale: "es" } : {}),
-        successUrl: `${window.location.origin}/payment/success?session_id={CHECKOUT_SESSION_ID}&plan=${plan}`,
+        locale: spanish ? 'es' : 'en',
+        successUrl: `${window.location.origin}/payment/success?session_id={CHECKOUT_SESSION_ID}&plan=${plan}&lang=${spanish ? 'es' : 'en'}`,
         cancelUrl: currentUrl.toString(),
       }).unwrap();
       if (result.checkoutUrl) {
@@ -265,7 +264,7 @@ export function PricingModal({
             startedAt: Date.now(),
           })
         );
-        window.location.href = result.checkoutUrl;
+        startTrackedCheckout(result.ecommerce, result.checkoutUrl);
       }
     } catch (err: unknown) {
       console.error("Checkout session failed:", err);

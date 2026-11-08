@@ -53,7 +53,9 @@ export default function SeniorPage() {
       searchParams.get("dfy") === "true" ||
       searchParams.get("showDfy") === "true"
     ) {
-      setSearchParams({}, { replace: true });
+      const nextParams = new URLSearchParams(searchParams);
+      ["showPricing", "dfy", "showDfy"].forEach((key) => nextParams.delete(key));
+      setSearchParams(nextParams, { replace: true });
     }
   }, [searchParams, setSearchParams]);
 
@@ -376,7 +378,7 @@ function HeroBanner() {
                 <ul className="space-y-2 mb-4">
                   {[
                     "Clients book again",
-                    "Friends and family refer you",
+                    "Friends and family refer clients to you",
                     "Travelers save your contact information",
                     "Your reputation grows with every great ride",
                   ].map((item, i) => (
@@ -924,7 +926,7 @@ function FooterCTASection({
             ))}
           </div>
           <p className="text-slate-500 text-xs">
-            © 2026 QuitTheApp. All Rights Reserved.
+            © {new Date().getFullYear()} QuitTheApp. All Rights Reserved.
           </p>
         </div>
       </PageContainer>

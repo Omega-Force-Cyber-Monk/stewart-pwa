@@ -4,6 +4,8 @@ import type {
   BusinessProfileResponse,
   CreateBusinessRequest,
   UpdateBusinessRequest,
+  CreateRideRequestPayload,
+  CreateRideRequestResponse,
   PublicBusinessResponse,
   SetupStateResponse,
   UpdateSetupRequest,
@@ -48,9 +50,23 @@ export const businessApi = baseApi.injectEndpoints({
     }),
     getPublicBusinessFromHost: builder.query<PublicBusinessResponse, void>({
       query: () => "/public/business-from-host",
+      keepUnusedDataFor: 300,
+      providesTags: ["Business"],
     }),
     getPublicBusinessBySlug: builder.query<PublicBusinessResponse, string>({
       query: (slug) => `/public/business/${slug}`,
+      keepUnusedDataFor: 300,
+      providesTags: ["Business"],
+    }),
+    createPublicRideRequest: builder.mutation<
+      CreateRideRequestResponse,
+      { slug: string; body: CreateRideRequestPayload }
+    >({
+      query: ({ slug, body }) => ({
+        url: `/public/business/${slug}/ride-requests`,
+        method: "POST",
+        body,
+      }),
     }),
     getPublicLeadConfig: builder.query<PublicLeadConfigResponse, void>({
       query: () => "/public/lead-config",
@@ -79,7 +95,7 @@ export const businessApi = baseApi.injectEndpoints({
         method: "PATCH",
         body,
       }),
-      invalidatesTags: ["Setup", "LaunchReady", "Dashboard", "Business"],
+      invalidatesTags: ["Setup", "LaunchReady", "Dashboard", "Business", "ReferralCard"],
     }),
     uploadBusinessLogo: builder.mutation<UploadLogoResponse, FormData>({
       query: (formData) => ({
@@ -103,9 +119,10 @@ export const businessApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["ReferralCard", "Setup", "LaunchReady"],
     }),
-    getBusinessResources: builder.query<BusinessResourcesResponse, { type?: string; search?: string; page?: number; limit?: number } | void>({
+    getBusinessResources: builder.query<BusinessResourcesResponse, { language?: 'en' | 'es'; type?: string; search?: string; page?: number; limit?: number } | void>({
       query: (params) => {
         const queryParams = new URLSearchParams();
+        if (params?.language) queryParams.append("language", params.language);
         if (params?.type) queryParams.append("type", params.type);
         if (params?.search) queryParams.append("search", params.search);
         if (params?.page) queryParams.append("page", String(params.page));
@@ -130,6 +147,7 @@ export const businessApi = baseApi.injectEndpoints({
     }),
     getFinalReview: builder.query<FinalReviewResponse, void>({
       query: () => "/business/final-review",
+      providesTags: ["Setup"],
     }),
     completeLaunch: builder.mutation<CompleteLaunchResponse, void>({
       query: () => ({
@@ -150,6 +168,7 @@ export const {
   useLazyGetRiderDashboardQuery,
   useGetPublicBusinessFromHostQuery,
   useGetPublicBusinessBySlugQuery,
+  useCreatePublicRideRequestMutation,
   useGetPublicLeadConfigQuery,
   useCreatePublicLeadMutation,
   useInitializeSetupMutation,

@@ -1,4 +1,16 @@
-import type { DfyAsset, DfyDeliverable, DfyOrderStatus } from "../../store/api/DoneForYou/dfy.type";
+import type {
+  CustomerDfyOrder,
+  DfyAsset,
+  DfyDeliverable,
+  DfyOrderStatus,
+} from "../../store/api/DoneForYou/dfy.type";
+
+/** Customer-facing DFY journey (no custom logo workflow). */
+export type CustomerDfyJourneyStatus = "PREPARING_KIT" | "READY";
+
+export const DFY_CUSTOMER_GRAPHICS_KEY = "social_media_starter_content";
+export const DFY_CUSTOMER_VIDEOS_KEY = "personalized_launch_videos";
+export const DFY_CUSTOMER_CAPTIONS_KEY = "text_customer_response_templates";
 
 export function formatDfyStatus(status: string) {
   return status
@@ -8,14 +20,48 @@ export function formatDfyStatus(status: string) {
     .join(" ");
 }
 
-export function customerStatus(status: string) {
-  return status === "READY" || status === "PUBLISHED" ? "Ready" : "In Progress";
+export function customerJourneyLabel(status: CustomerDfyJourneyStatus) {
+  switch (status) {
+    case "PREPARING_KIT":
+      return "Preparing Your Marketing Package";
+    case "READY":
+      return "Ready";
+  }
 }
 
-export function calculateDfyProgress(deliverables: DfyDeliverable[]) {
-  if (deliverables.length === 0) return 0;
-  const completed = deliverables.filter((item) => item.status === "READY" || item.status === "PUBLISHED" || item.status === "COMPLETED").length;
-  return Math.round((completed / deliverables.length) * 100);
+export function customerJourneyDescription(status: CustomerDfyJourneyStatus) {
+  switch (status) {
+    case "PREPARING_KIT":
+      return "We're assembling your audience graphics, videos, and templates. This page updates automatically.";
+    case "READY":
+      return "Your Done For You marketing package is ready to download and use.";
+  }
+}
+
+export function customerJourneyTone(
+  status: CustomerDfyJourneyStatus,
+): "success" | "warning" | "accent" | "neutral" {
+  if (status === "READY") return "success";
+  return "accent";
+}
+
+export function resolveCustomerDfyJourneyStatus(
+  order: CustomerDfyOrder,
+): CustomerDfyJourneyStatus {
+  const ready =
+    Boolean(order.publishedAt) ||
+    order.status === "READY" ||
+    order.status === "PUBLISHED" ||
+    order.fulfillment?.state === "READY";
+
+  return ready ? "READY" : "PREPARING_KIT";
+}
+
+export function findCustomerDeliverable(
+  deliverables: DfyDeliverable[],
+  key: string,
+) {
+  return deliverables.find((item) => item.key === key) ?? null;
 }
 
 export function assetUrl(asset: DfyAsset) {
@@ -59,3 +105,42 @@ export function formatDate(value?: string | null) {
   });
 }
 
+function textKind(asset: DfyAsset): "caption" | "response" | "usage" {
+  const metadata =
+    asset.metadata && typeof asset.metadata === "object"
+      ? (asset.metadata as Record<string, unknown>)
+      : {};
+  const kind = typeof metadata.contentKind === "string" ? metadata.contentKind : "";
+  if (kind === "caption" || kind === "ready_to_post") return "caption";
+  if (kind === "response" || kind === "template") return "response";
+  if (kind === "usage" || kind === "instruction") return "usage";
+
+  const title = (asset.title || "").toLowerCase();
+  if (title.includes("instruction") || title.includes("post branded") || title.includes("share the three")) {
+    return "usage";
+  }
+  if (title.includes("reply") || title.includes("response") || title.includes("confirmation")) {
+    return "response";
+  }
+  if (title.includes("caption")) return "caption";
+  // Default seeded operational text → usage (not inventing ready-to-post copy).
+  return "usage";
+}
+
+/** Split TEXT deliverable assets into copy categories without inventing content. */
+export function partitionTextAssets(assets: DfyAsset[]) {
+  const readyToPost: DfyAsset[] = [];
+  const responseTemplates: DfyAsset[] = [];
+  const usageInstructions: DfyAsset[] = [];
+  for (const asset of assets) {
+    if (asset.assetType !== "TEXT" && !asset.textContent) {
+      usageInstructions.push(asset);
+      continue;
+    }
+    const kind = textKind(asset);
+    if (kind === "caption") readyToPost.push(asset);
+    else if (kind === "response") responseTemplates.push(asset);
+    else usageInstructions.push(asset);
+  }
+  return { readyToPost, responseTemplates, usageInstructions };
+}

@@ -1,3 +1,4 @@
+import { useLanguage } from "../../i18n/LanguageProvider";
 import { Plane } from "lucide-react";
 
 interface AirportsServedProps {
@@ -5,11 +6,15 @@ interface AirportsServedProps {
 }
 
 export function AirportsServed({ airports = [] }: AirportsServedProps) {
+  const { t } = useLanguage();
   // Real airports from the business service area only — no fabricated defaults.
   const airportList = airports
     .filter(Boolean)
     .map((name, index) => ({
-      code: name.match(/^([A-Z]{3})\s*-\s*/)?.[1] ?? String(index + 1).padStart(3, "0"),
+      code:
+        name.match(/^([A-Z]{3})\s*-\s*/)?.[1] ??
+        name.match(/^([A-Z]{3})\b/)?.[1] ??
+        String(index + 1),
       name,
       desc: "",
     }));
@@ -21,15 +26,13 @@ export function AirportsServed({ airports = [] }: AirportsServedProps) {
         <div className="flex items-center justify-center gap-4 mb-12">
           <div className="w-8 h-0.5 bg-green-500 rounded-full"></div>
           <h2 className="text-2xl sm:text-3xl font-bold tracking-wide text-slate-800 uppercase">
-            Airports We Serve
-          </h2>
+            {t("Airports We Serve")}</h2>
           <div className="w-8 h-0.5 bg-green-500 rounded-full"></div>
         </div>
 
         {airportList.length === 0 ? (
           <p className="text-center text-sm text-slate-400">
-            Airport list coming soon.
-          </p>
+            {t("Airport list coming soon.")}</p>
         ) : (
         /* Grid of Airport Cards */
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

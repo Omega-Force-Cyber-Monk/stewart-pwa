@@ -207,7 +207,8 @@ test.describe.serial("DFY Purchase-First E2E Customer Journey", () => {
     await expect(page.getByText("Women Specialty Brand Kit").first()).toBeVisible({ timeout: 45_000 });
   });
 
-  test("Phase 11 - 15: Admin fulfillment, master references, blockers, uploads, and publication", async ({ browser, request }) => {
+  test.skip("Phase 11 - 15: Admin fulfillment, master references, blockers, uploads, and publication", async ({ browser, request }) => {
+    // Step 10: manual deliverable upload / Publish & Notify UI removed; use automation runners.
     test.setTimeout(360_000);
     if (!orderId) {
       const fixture = runFixture<{ email: string; password: string; orderId: string; businessName: string }>("prepare-order");
@@ -339,7 +340,8 @@ test.describe.serial("DFY Purchase-First E2E Customer Journey", () => {
     await adminContext.close();
   });
 
-  test("Phase 16: Customer delivery and finished asset downloads", async ({ page, request }) => {
+  test.skip("Phase 16: Customer delivery and finished asset downloads", async ({ page, request }) => {
+    // Depends on retired Phase 11-15 manual publish path.
     if (!customerEmail) {
       const fixture = runFixture<{ email: string; password: string; orderId: string; businessName: string }>("prepare-order");
       orderId = fixture.orderId;

@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { LanguageSelector, useLanguage } from '../../i18n/LanguageProvider';
 import standardBanner from "../../assets/standardBanner.png";
 import seniorLogo from "../../assets/seniorLogo.png";
 
@@ -10,6 +11,7 @@ interface AuthLayoutProps {
 }
 
 export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
+  const { t } = useLanguage();
   return (
     <div className="min-h-screen w-full relative flex items-center justify-center lg:justify-start py-12 px-6 sm:px-12 lg:px-20 xl:px-32 overflow-x-hidden selection:bg-brand-btn/30">
       {/* Full-screen Background Banner */}
@@ -32,13 +34,14 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
           </Link>
         </div>
 
+        <div className="mb-5"><LanguageSelector /></div>
         {/* Title and Subtitle */}
         <div className="text-left mb-8">
           <h1 className="text-3xl font-semibold tracking-tight text-white leading-tight">
-            {title}
+            {t(title)}
           </h1>
           <div className="mt-2 text-sm text-slate-300 leading-relaxed font-medium">
-            {subtitle}
+            {t(subtitle)}
           </div>
         </div>
 

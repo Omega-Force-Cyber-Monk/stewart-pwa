@@ -1,5 +1,6 @@
 import { RefreshCw, Wifi, X } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { useRegisterSW } from "virtual:pwa-register/react";
 
 import { Button } from "../common/Button";
@@ -7,6 +8,11 @@ import { Button } from "../common/Button";
 type NoticeType = "offline" | "refresh";
 
 export function PWAUpdatePrompt() {
+  const location = useLocation();
+  const isSpanish = useMemo(
+    () => location.pathname === "/spanish" || location.pathname.startsWith("/es"),
+    [location.pathname],
+  );
   const [dismissedNotice, setDismissedNotice] = useState<NoticeType | null>(null);
   const {
     offlineReady: [offlineReady, setOfflineReady],
@@ -15,13 +21,11 @@ export function PWAUpdatePrompt() {
   } = useRegisterSW({
     onRegistered(r) {
       if (!r) return;
-      
-      // Periodically check for updates every 60 minutes
+
       setInterval(() => {
         r.update();
       }, 60 * 60 * 1000);
 
-      // Check for updates when the app comes back to the foreground
       document.addEventListener("visibilitychange", () => {
         if (document.visibilityState === "visible") {
           r.update();
@@ -44,6 +48,22 @@ export function PWAUpdatePrompt() {
 
   if (!currentNotice || dismissedNotice === currentNotice) return null;
 
+  const title = needRefresh
+    ? isSpanish
+      ? "Hay una nueva versión disponible."
+      : "A new version is available."
+    : isSpanish
+      ? "La app está lista para usarse sin conexión."
+      : "App is ready for offline use.";
+
+  const body = needRefresh
+    ? isSpanish
+      ? "Actualiza ahora para cargar la experiencia más reciente de QuitTheApp."
+      : "Update now to load the latest QuitTheApp experience."
+    : isSpanish
+      ? "QuitTheApp está guardada en este dispositivo."
+      : "QuitTheApp is cached on this device.";
+
   return (
     <div
       aria-live="polite"
@@ -60,19 +80,13 @@ export function PWAUpdatePrompt() {
             )}
           </span>
           <div>
-            <p className="text-sm font-semibold text-slate-950">
-              {needRefresh ? "A new version is available." : "App is ready for offline use."}
-            </p>
-            <p className="mt-1 text-sm text-slate-600">
-              {needRefresh
-                ? "Update now to load the latest QuitTheApp experience."
-                : "QuitTheApp is cached on this device."}
-            </p>
+            <p className="text-sm font-semibold text-slate-950">{title}</p>
+            <p className="mt-1 text-sm text-slate-600">{body}</p>
           </div>
         </div>
 
         <Button
-          aria-label="Dismiss PWA notification"
+          aria-label={isSpanish ? "Cerrar aviso" : "Dismiss PWA notification"}
           className="size-9 shrink-0 px-0"
           onClick={close}
           variant="ghost"
@@ -84,9 +98,11 @@ export function PWAUpdatePrompt() {
       {needRefresh && (
         <div className="mt-4 flex justify-end gap-2">
           <Button onClick={close} variant="secondary">
-            Later
+            {isSpanish ? "Después" : "Later"}
           </Button>
-          <Button onClick={() => updateServiceWorker(true)}>Update</Button>
+          <Button onClick={() => updateServiceWorker(true)}>
+            {isSpanish ? "Actualizar" : "Update"}
+          </Button>
         </div>
       )}
     </div>

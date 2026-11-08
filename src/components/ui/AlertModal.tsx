@@ -1,3 +1,4 @@
+import { useLanguage } from "../../i18n/LanguageProvider";
 import { X, CheckCircle2, AlertCircle, Info, HelpCircle, Loader2 } from "lucide-react";
 import { cn } from "../../lib/cn";
 
@@ -24,6 +25,7 @@ export function AlertModal({
   onConfirm,
   isLoading = false,
 }: AlertModalProps) {
+  const { t } = useLanguage();
   if (!isOpen) return null;
 
   return (
@@ -66,10 +68,10 @@ export function AlertModal({
 
         {/* Text Details */}
         <h3 className="text-[18px] font-bold text-slate-900 mb-2 tracking-tight">
-          {title}
+          {t(title)}
         </h3>
         <p className="text-sm text-slate-500 leading-relaxed mb-6 px-1">
-          {message}
+          {t(message)}
         </p>
 
         {/* Action Buttons */}

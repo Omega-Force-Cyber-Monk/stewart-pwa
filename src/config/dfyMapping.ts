@@ -1,6 +1,5 @@
 import dfyMain from "../assets/dfy_main_upgrade.png";
 import dfyWomen from "../assets/dfy_women_upgrade.png";
-import dfySenior from "../assets/dfy_50_upgrade.png";
 import dfyCouples from "../assets/dfy_couples_upgrade.png";
 import dfySpanish from "../assets/dfy_spanish_upgrade.png";
 
@@ -13,14 +12,10 @@ export type SellingPageAudience = "main" | "women" | "50+" | "couples" | "spanis
 export const DFY_AUDIENCE_ASSET_MAP: Record<SellingPageAudience, string> = {
   main: dfyMain,
   women: dfyWomen,
-  "50+": seniorDfyAsset(dfySenior),
+  "50+": dfyMain,
   couples: dfyCouples,
   spanish: dfySpanish,
 };
-
-function seniorDfyAsset(asset: string): string {
-  return asset;
-}
 
 export function getDfyUpgradeAsset(audience: SellingPageAudience): string {
   return DFY_AUDIENCE_ASSET_MAP[audience] || dfyMain;

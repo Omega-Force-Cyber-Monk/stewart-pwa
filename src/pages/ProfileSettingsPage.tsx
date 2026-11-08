@@ -1,3 +1,4 @@
+import { useLanguage } from "../i18n/LanguageProvider";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Copy, Share2, Download, ImagePlus, X, Loader2, Pencil, Eye, EyeOff } from "lucide-react";
@@ -16,8 +17,8 @@ import {
   useUploadBusinessLogoMutation,
 } from "../store/api/Business/business.api";
 import { AlertModal } from "../components/ui/AlertModal";
-import eleanorAvatar from "../assets/eleanorAvatar.png";
 import carCover from "../assets/carCover.png";
+import { getPersonalizedSiteUrl } from "../lib/personalizedSiteUrl";
 import { copyToClipboard } from "../utils/clipboard";
 
 interface ApiErrorPayload {
@@ -45,6 +46,7 @@ const formatMemberSince = (iso?: string | null) => {
 };
 
 export default function ProfileSettingsPage() {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const authUser = useAppSelector((state) => state.auth.user);
@@ -204,7 +206,6 @@ export default function ProfileSettingsPage() {
         },
         serviceArea: {
           cityArea,
-          airports: setupResponse?.data?.serviceArea?.airports || [],
         },
       }).unwrap();
 
@@ -339,10 +340,9 @@ export default function ProfileSettingsPage() {
     <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto w-full relative animate-fade-in">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-[24px] font-bold text-slate-900 mb-2">My Profile</h1>
+        <h1 className="text-[24px] font-bold text-slate-900 mb-2">{t("My Profile")}</h1>
         <p className="text-sm text-slate-500">
-          Manage your account preferences, security settings, notifications, and business configuration in one place.
-        </p>
+          {t("Manage your account preferences, security settings, notifications, and business configuration in one place.")}</p>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6 mb-6">
@@ -352,9 +352,9 @@ export default function ProfileSettingsPage() {
           {/* Personal Information */}
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm relative">
             <div className="flex items-start justify-between mb-8">
-              <h3 className="text-[16px] font-bold text-slate-900">Personal Information</h3>
+              <h3 className="text-[16px] font-bold text-slate-900">{t("Personal Information")}</h3>
               <div className="text-right">
-                <p className="text-[12px] text-slate-400 mb-0.5">Member since</p>
+                <p className="text-[12px] text-slate-400 mb-0.5">{t("Member since")}</p>
                 <p className="text-[14px] font-medium text-slate-700">{formatMemberSince(user?.createdAt)}</p>
               </div>
             </div>
@@ -362,11 +362,20 @@ export default function ProfileSettingsPage() {
             <div className="flex flex-col 2xl:flex-row items-center 2xl:items-start gap-8">
 
 	              <div className="relative shrink-0">
-                <img
-                  src={user?.avatarUrl || eleanorAvatar}
-                  alt={user?.name ?? "Profile avatar"}
-                  className="w-32 h-32 rounded-full object-cover shadow-sm border border-slate-100 bg-slate-50"
-                />
+                {user?.avatarUrl ? (
+                  <img
+                    src={user.avatarUrl}
+                    alt={user?.name ?? "Profile avatar"}
+                    className="w-32 h-32 rounded-full object-cover shadow-sm border border-slate-100 bg-slate-50"
+                  />
+                ) : (
+                  <div
+                    aria-label={t(user?.name ?? "Profile avatar")}
+                    className="flex h-32 w-32 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-3xl font-semibold text-slate-500 shadow-sm"
+                  >
+                    {(user?.name || user?.email || "Q").trim().charAt(0).toUpperCase()}
+                  </div>
+                )}
                 <button
                   onClick={() => setIsUploadModalOpen(true)}
                   className="absolute bottom-0 right-0 w-8 h-8 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center shadow-md transition-colors border-2 border-white"
@@ -377,15 +386,15 @@ export default function ProfileSettingsPage() {
 
               <div className="flex-1 grid grid-cols-1 2xl:grid-cols-2 gap-y-6 gap-x-4 w-full min-w-0">
                 <div>
-                  <p className="text-[12px] text-slate-400 mb-1">Full name</p>
+                  <p className="text-[12px] text-slate-400 mb-1">{t("Full name")}</p>
                   <p className="text-[14px] font-bold text-slate-800 break-words">{user?.name || "N/A"}</p>
                 </div>
                 <div>
-                  <p className="text-[12px] text-slate-400 mb-1">Email address</p>
+                  <p className="text-[12px] text-slate-400 mb-1">{t("Email address")}</p>
                   <p className="text-[14px] font-bold text-slate-800 break-all">{user?.email || "N/A"}</p>
                 </div>
                 <div>
-                  <p className="text-[12px] text-slate-400 mb-1">Phone number</p>
+                  <p className="text-[12px] text-slate-400 mb-1">{t("Phone number")}</p>
                   <p className="text-[14px] font-bold text-slate-800 break-words">{user?.phone || "N/A"}</p>
                 </div>
               </div>
@@ -395,8 +404,7 @@ export default function ProfileSettingsPage() {
 	                  onClick={openProfileEditModal}
 	                  className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-5 py-2.5 rounded-lg font-bold text-[13px] transition-colors shadow-sm w-full 2xl:w-auto text-center"
 	                >
-                  Edit Information
-                </button>
+                  {t("Edit Information")}</button>
               </div>
             </div>
           </div>
@@ -404,16 +412,15 @@ export default function ProfileSettingsPage() {
           {/* Security System */}
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm flex flex-col xl:flex-row flex-wrap xl:items-center justify-between gap-6">
             <div>
-              <h3 className="text-[16px] font-bold text-slate-900 mb-4">Security System</h3>
-              <p className="text-[12px] text-slate-400 mb-1">Password</p>
+              <h3 className="text-[16px] font-bold text-slate-900 mb-4">{t("Security System")}</h3>
+              <p className="text-[12px] text-slate-400 mb-1">{t("Password")}</p>
               <p className="text-[18px] font-bold text-slate-800 leading-none">*******</p>
             </div>
             <button
               onClick={() => setIsEditPasswordModalOpen(true)}
               className="bg-green-100 hover:bg-green-200 text-green-700 px-5 py-2.5 rounded-lg font-bold text-[13px] transition-colors shadow-sm w-full xl:w-auto text-center"
             >
-              Edit Password
-            </button>
+              {t("Edit Password")}</button>
           </div>
 
         </div>
@@ -423,14 +430,14 @@ export default function ProfileSettingsPage() {
           {/* Business Information */}
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm h-full relative">
             <div className="flex items-center justify-between gap-4 mb-6 border-b border-slate-100 pb-4">
-              <h3 className="text-[16px] font-bold text-slate-900">Business Information</h3>
+              <h3 className="text-[16px] font-bold text-slate-900">{t("Business Information")}</h3>
               <button
                 type="button"
                 onClick={openBusinessEditModal}
                 disabled={!setupResponse?.data}
                 className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-700 transition-colors hover:bg-green-200 disabled:cursor-not-allowed disabled:opacity-50"
-                aria-label="Edit business information"
-                title="Edit business information"
+                aria-label={t("Edit business information")}
+                title={t("Edit business information")}
               >
                 <Pencil className="size-4" />
               </button>
@@ -448,39 +455,40 @@ export default function ProfileSettingsPage() {
 
               <div className="flex-1 grid grid-cols-1 2xl:grid-cols-2 gap-y-6 gap-x-4 w-full min-w-0">
                 <div>
-                  <p className="text-[12px] text-slate-400 mb-1">Business name</p>
+                  <p className="text-[12px] text-slate-400 mb-1">{t("Business name")}</p>
                   <p className="text-[14px] font-bold text-slate-800 break-words">
-                    {setupResponse?.data?.business?.businessName || "Not set"}
+                    {t(setupResponse?.data?.business?.businessName || "Not set")}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[12px] text-slate-400 mb-1">Email address</p>
+                  <p className="text-[12px] text-slate-400 mb-1">{t("Email address")}</p>
                   <p className="text-[14px] font-bold text-slate-800 break-all">
-                    {setupResponse?.data?.business?.email || "Not set"}
+                    {t(setupResponse?.data?.business?.email || "Not set")}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[12px] text-slate-400 mb-1">Driver ID</p>
+                  <p className="text-[12px] text-slate-400 mb-1">{t("Driver ID")}</p>
                   <p className="text-[14px] font-bold text-slate-800 break-words">
                     #{user?.id ? user.id.slice(-6).toUpperCase() : "DR0001"}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[12px] text-slate-400 mb-1">Phone number</p>
+                  <p className="text-[12px] text-slate-400 mb-1">{t("Phone number")}</p>
                   <p className="text-[14px] font-bold text-slate-800 break-words">
-                    {setupResponse?.data?.business?.phone || "Not set"}
+                    {t(setupResponse?.data?.business?.phone || "Not set")}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[12px] text-slate-400 mb-1">Business area</p>
+                  <p className="text-[12px] text-slate-400 mb-1">{t("Business area")}</p>
                   <p className="text-[14px] font-bold text-slate-800 break-words">
-                    {setupResponse?.data?.serviceArea?.cityArea || "Not set"}
+                    {t(setupResponse?.data?.serviceArea?.cityArea || "Not set")}
+                    <a href="/launch-dashboard?step=3" className="ml-3 text-dashboard-rider underline">{t((profileResponse?.user ?? authUser)?.driverProfile?.category === "SPANISH" ? "Editar ciudad y aeropuertos" : "Edit city and airports")}</a>
                   </p>
                 </div>
                 <div className="2xl:col-span-2">
-                  <p className="text-[12px] text-slate-400 mb-1">Business details</p>
+                  <p className="text-[12px] text-slate-400 mb-1">{t("Business details")}</p>
                   <p className="text-[13px] text-slate-800 leading-relaxed max-w-sm">
-                    {setupResponse?.data?.business?.businessInfo || "An independent transportation business designed to help you earn more through direct customer bookings."}
+                    {t(setupResponse?.data?.business?.businessInfo || "An independent transportation business designed to help you earn more through direct customer bookings.")}
                   </p>
                 </div>
               </div>
@@ -493,20 +501,22 @@ export default function ProfileSettingsPage() {
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-end justify-between gap-8 min-w-0">
 
         <div className="flex-1 max-w-2xl border-t border-slate-100 pt-6 md:border-none md:pt-0 min-w-0">
-          <h3 className="text-[16px] font-bold text-slate-900 mb-6">Referral Information</h3>
+          <h3 className="text-[16px] font-bold text-slate-900 mb-6">{t("Referral Information")}</h3>
 
           <div className="flex flex-col sm:flex-row gap-6 mb-6">
             <div className="flex flex-col gap-2">
-              <p className="text-[13px] font-bold text-slate-700">Your referral code</p>
+              <p className="text-[13px] font-bold text-slate-700">{t("Your referral code")}</p>
               <div className="bg-slate-100 rounded-lg px-4 py-3 text-[14px] font-bold text-slate-800 border border-slate-200 break-all">
                 {referralResponse?.data?.businessSlug || "CODE2026"}
               </div>
             </div>
 
             <div className="flex flex-col gap-2 flex-1 max-w-xs md:max-w-none min-w-0">
-              <p className="text-[13px] font-bold text-slate-700">Referral link</p>
+              <p className="text-[13px] font-bold text-slate-700">{t("Referral link")}</p>
               <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-600 break-all">
-                {referralResponse?.data?.digitalCardUrl || (setupResponse?.data?.business?.slug ? `https://${setupResponse.data.business.slug}.quittheapp.com` : "Not set up yet")}
+                {t(setupResponse?.data?.business?.slug
+                  ? getPersonalizedSiteUrl(setupResponse.data.business.slug)
+                  : referralResponse?.data?.digitalCardUrl || "Not set up yet")}
               </div>
             </div>
           </div>
@@ -514,7 +524,9 @@ export default function ProfileSettingsPage() {
           <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3">
             <button
               onClick={async () => {
-                const url = referralResponse?.data?.digitalCardUrl || (setupResponse?.data?.business?.slug ? `https://${setupResponse.data.business.slug}.quittheapp.com` : "");
+                const url = setupResponse?.data?.business?.slug
+                  ? getPersonalizedSiteUrl(setupResponse.data.business.slug)
+                  : referralResponse?.data?.digitalCardUrl || "";
                 if (url) {
                   const success = await copyToClipboard(url);
                   if (success) {
@@ -527,11 +539,12 @@ export default function ProfileSettingsPage() {
               className="flex items-center justify-center gap-2 bg-green-100 hover:bg-green-200 text-green-700 px-5 py-2.5 rounded-lg font-bold text-[13px] transition-colors shadow-sm w-full sm:w-auto"
             >
               <Copy className="w-4 h-4" />
-              Copy link
-            </button>
+              {t("Copy link")}</button>
             <button
               onClick={async () => {
-                const url = referralResponse?.data?.digitalCardUrl || (setupResponse?.data?.business?.slug ? `https://${setupResponse.data.business.slug}.quittheapp.com` : "");
+                const url = setupResponse?.data?.business?.slug
+                  ? getPersonalizedSiteUrl(setupResponse.data.business.slug)
+                  : referralResponse?.data?.digitalCardUrl || "";
                 if (url && navigator.share) {
                   navigator.share({
                     title: "Book Direct",
@@ -549,8 +562,7 @@ export default function ProfileSettingsPage() {
               className="flex items-center justify-center gap-2 bg-green-100 hover:bg-green-200 text-green-700 px-5 py-2.5 rounded-lg font-bold text-[13px] transition-colors shadow-sm w-full sm:w-auto"
             >
               <Share2 className="w-4 h-4" />
-              Share link
-            </button>
+              {t("Share link")}</button>
             <button
               onClick={() => {
                 const url = referralResponse?.data?.qrCodeUrl;
@@ -564,8 +576,7 @@ export default function ProfileSettingsPage() {
               className="flex items-center justify-center gap-2 bg-green-100 hover:bg-green-200 text-green-700 px-5 py-2.5 rounded-lg font-bold text-[13px] transition-colors shadow-sm w-full sm:w-auto"
             >
               <Download className="w-4 h-4" />
-              Download QR Code
-            </button>
+              {t("Download QR Code")}</button>
           </div>
         </div>
 
@@ -603,14 +614,14 @@ export default function ProfileSettingsPage() {
           >
             <div className="flex shrink-0 items-center justify-between border-b border-slate-200 px-6 py-5 sm:px-8">
               <div>
-                <h2 className="text-[18px] font-bold text-slate-900">Edit Business Information</h2>
-                <p className="mt-1 text-xs text-slate-500">These details appear on your personalized website.</p>
+                <h2 className="text-[18px] font-bold text-slate-900">{t("Edit Business Information")}</h2>
+                <p className="mt-1 text-xs text-slate-500">{t("These details appear on your personalized website.")}</p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsEditBusinessModalOpen(false)}
                 className="inline-flex size-9 items-center justify-center text-slate-400 transition-colors hover:text-slate-600"
-                aria-label="Close business information editor"
+                aria-label={t("Close business information editor")}
               >
                 <X className="size-5" />
               </button>
@@ -619,7 +630,7 @@ export default function ProfileSettingsPage() {
             <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6 sm:px-8">
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="editBusinessName" className="text-[13px] font-bold text-slate-700">Business Name</label>
+                  <label htmlFor="editBusinessName" className="text-[13px] font-bold text-slate-700">{t("Business Name")}</label>
                   <input
                     type="text"
                     id="editBusinessName"
@@ -632,7 +643,7 @@ export default function ProfileSettingsPage() {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="editBusinessEmail" className="text-[13px] font-bold text-slate-700">Email Address</label>
+                  <label htmlFor="editBusinessEmail" className="text-[13px] font-bold text-slate-700">{t("Email Address")}</label>
                   <input
                     type="email"
                     id="editBusinessEmail"
@@ -644,7 +655,7 @@ export default function ProfileSettingsPage() {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="editBusinessPhone" className="text-[13px] font-bold text-slate-700">Phone Number</label>
+                  <label htmlFor="editBusinessPhone" className="text-[13px] font-bold text-slate-700">{t("Phone Number")}</label>
                   <input
                     type="tel"
                     id="editBusinessPhone"
@@ -657,7 +668,7 @@ export default function ProfileSettingsPage() {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="editBusinessArea" className="text-[13px] font-bold text-slate-700">Business Area</label>
+                  <label htmlFor="editBusinessArea" className="text-[13px] font-bold text-slate-700">{t("Business Area")}</label>
                   <input
                     type="text"
                     id="editBusinessArea"
@@ -670,7 +681,7 @@ export default function ProfileSettingsPage() {
                 </div>
 
                 <div className="flex flex-col gap-2 sm:col-span-2">
-                  <label htmlFor="editBusinessInfo" className="text-[13px] font-bold text-slate-700">Business Description</label>
+                  <label htmlFor="editBusinessInfo" className="text-[13px] font-bold text-slate-700">{t("Business Description")}</label>
                   <textarea
                     id="editBusinessInfo"
                     value={businessForm.businessInfo}
@@ -683,7 +694,7 @@ export default function ProfileSettingsPage() {
                 </div>
 
                 <div className="flex flex-col gap-2 sm:col-span-2">
-                  <label htmlFor="editBusinessLogoUrl" className="text-[13px] font-bold text-slate-700">Logo URL</label>
+                  <label htmlFor="editBusinessLogoUrl" className="text-[13px] font-bold text-slate-700">{t("Logo URL")}</label>
                   <input
                     type="url"
                     id="editBusinessLogoUrl"
@@ -713,9 +724,9 @@ export default function ProfileSettingsPage() {
                     />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold text-slate-800">
-                        {businessLogoFile?.name || "Current business logo"}
+                        {t(businessLogoFile?.name || "Current business logo")}
                       </p>
-                      <p className="mt-1 text-xs text-slate-500">PNG, JPG, or WEBP, up to 5 MB</p>
+                      <p className="mt-1 text-xs text-slate-500">{t("PNG, JPG, or WEBP, up to 5 MB")}</p>
                     </div>
                     <button
                       type="button"
@@ -723,8 +734,7 @@ export default function ProfileSettingsPage() {
                       className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg bg-green-100 px-4 text-sm font-bold text-green-700 transition-colors hover:bg-green-200"
                     >
                       <ImagePlus className="size-4" />
-                      Choose Logo
-                    </button>
+                      {t("Choose Logo")}</button>
                   </div>
                 </div>
               </div>
@@ -737,16 +747,14 @@ export default function ProfileSettingsPage() {
                 disabled={isUpdatingBusiness || isUploadingBusinessLogo}
                 className="h-10 rounded-lg border border-slate-200 px-5 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-50 disabled:opacity-50"
               >
-                Cancel
-              </button>
+                {t("Cancel")}</button>
               <button
                 type="submit"
                 disabled={isUpdatingBusiness || isUploadingBusinessLogo}
                 className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#22c55e] px-5 text-sm font-bold text-white transition-colors hover:bg-[#1ea951] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {(isUpdatingBusiness || isUploadingBusinessLogo) && <Loader2 className="size-4 animate-spin" />}
-                Save Changes
-              </button>
+                {t("Save Changes")}</button>
             </div>
           </form>
         </div>
@@ -762,7 +770,7 @@ export default function ProfileSettingsPage() {
             >
               <X className="w-5 h-5" />
             </button>
-            <h2 className="text-[18px] font-bold text-slate-900 mb-8">Update Profile Image</h2>
+            <h2 className="text-[18px] font-bold text-slate-900 mb-8">{t("Update Profile Image")}</h2>
 
             <input
               type="file"
@@ -781,18 +789,24 @@ export default function ProfileSettingsPage() {
                   <Loader2 className="w-8 h-8 text-green-500 animate-spin" />
                 ) : (
                   <>
-                    <img
-                      src={user?.avatarUrl || eleanorAvatar}
-                      alt="Current Avatar"
-                      className="w-full h-full rounded-full object-cover"
-                    />
+                    {user?.avatarUrl ? (
+                      <img
+                        src={user.avatarUrl}
+                        alt="Current Avatar"
+                        className="w-full h-full rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center rounded-full bg-slate-100 text-3xl font-semibold text-slate-500">
+                        {(user?.name || user?.email || "Q").trim().charAt(0).toUpperCase()}
+                      </div>
+                    )}
                     <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center shadow-sm border-4 border-white">
                       <ImagePlus className="w-5 h-5" />
                     </div>
                   </>
                 )}
               </div>
-              <p className="text-[12px] text-slate-500">Upload PNG, JPG, WEBP format (Max 5MB)</p>
+              <p className="text-[12px] text-slate-500">{t("Upload PNG, JPG, WEBP format (Max 5MB)")}</p>
             </div>
 
             <div className="flex justify-center">
@@ -802,8 +816,7 @@ export default function ProfileSettingsPage() {
                 disabled={isUploadingAvatar}
                 className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-8 py-3 rounded-xl font-bold text-[14px] transition-colors shadow-sm disabled:opacity-50"
               >
-                Select Image File
-              </button>
+                {t("Select Image File")}</button>
             </div>
           </div>
         </div>
@@ -824,11 +837,11 @@ export default function ProfileSettingsPage() {
             >
               <X className="w-5 h-5" />
             </button>
-            <h2 className="text-[18px] font-bold text-slate-900 mb-6">Edit Personal Information</h2>
+            <h2 className="text-[18px] font-bold text-slate-900 mb-6">{t("Edit Personal Information")}</h2>
 
             <div className="flex flex-col gap-5 mb-8">
               <div className="flex flex-col gap-2">
-                <label htmlFor="editName" className="text-[13px] font-bold text-slate-700">Full Name</label>
+                <label htmlFor="editName" className="text-[13px] font-bold text-slate-700">{t("Full Name")}</label>
                 <input
                   type="text"
                   id="editName"
@@ -839,7 +852,7 @@ export default function ProfileSettingsPage() {
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <label htmlFor="editPhone" className="text-[13px] font-bold text-slate-700">Phone Number</label>
+                <label htmlFor="editPhone" className="text-[13px] font-bold text-slate-700">{t("Phone Number")}</label>
                 <input
                   type="tel"
                   id="editPhone"
@@ -857,8 +870,7 @@ export default function ProfileSettingsPage() {
                 className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-8 py-3 rounded-xl font-bold text-[14px] transition-colors shadow-sm disabled:opacity-50 flex items-center gap-2"
               >
                 {isUpdatingProfile && <Loader2 className="w-4 h-4 animate-spin" />}
-                Update Information
-              </button>
+                {t("Update Information")}</button>
             </div>
           </form>
         </div>
@@ -882,7 +894,7 @@ export default function ProfileSettingsPage() {
             >
               <X className="w-5 h-5" />
             </button>
-            <h2 className="text-[18px] font-bold text-slate-900 mb-6">Edit Password</h2>
+            <h2 className="text-[18px] font-bold text-slate-900 mb-6">{t("Edit Password")}</h2>
 
             {passwordError && (
               <div className="mb-4 text-xs font-bold text-red-500 bg-red-50 border border-red-200 p-3 rounded-xl">
@@ -892,7 +904,7 @@ export default function ProfileSettingsPage() {
 
             <div className="flex flex-col gap-6 mb-8">
               <div className="flex flex-col gap-2">
-                <label htmlFor="currentPassword" className="text-[13px] font-bold text-slate-700">Current Password</label>
+                <label htmlFor="currentPassword" className="text-[13px] font-bold text-slate-700">{t("Current Password")}</label>
                 <div className="relative">
                   <input
                     type={showPasswordModal ? "text" : "password"}
@@ -908,7 +920,7 @@ export default function ProfileSettingsPage() {
                 </div>
               </div>
               <div className="flex flex-col gap-2">
-                <label htmlFor="newPassword" className="text-[13px] font-bold text-slate-700">New Password</label>
+                <label htmlFor="newPassword" className="text-[13px] font-bold text-slate-700">{t("New Password")}</label>
                 <div className="relative">
                   <input
                     type={showPasswordModal ? "text" : "password"}
@@ -924,7 +936,7 @@ export default function ProfileSettingsPage() {
                 </div>
               </div>
               <div className="flex flex-col gap-2">
-                <label htmlFor="confirmPassword" className="text-[13px] font-bold text-slate-700">Confirm Password</label>
+                <label htmlFor="confirmPassword" className="text-[13px] font-bold text-slate-700">{t("Confirm Password")}</label>
                 <div className="relative">
                   <input
                     type={showPasswordModal ? "text" : "password"}
@@ -948,8 +960,7 @@ export default function ProfileSettingsPage() {
                 className="bg-[#22c55e] hover:bg-[#1ea951] text-white px-8 py-3 rounded-xl font-bold text-[14px] transition-colors shadow-sm disabled:opacity-50 flex items-center gap-2"
               >
                 {isChangingPassword && <Loader2 className="w-4 h-4 animate-spin" />}
-                Update Password
-              </button>
+                {t("Update Password")}</button>
             </div>
           </form>
         </div>
@@ -964,7 +975,7 @@ export default function ProfileSettingsPage() {
             alertModal.onConfirm();
           }
         }}
-        title={alertModal.title}
+        title={t(alertModal.title)}
         message={alertModal.message}
         type={alertModal.type}
         onConfirm={() => {

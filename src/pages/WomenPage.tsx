@@ -52,7 +52,9 @@ export default function WomenPage() {
       searchParams.get("dfy") === "true" ||
       searchParams.get("showDfy") === "true"
     ) {
-      setSearchParams({}, { replace: true });
+      const nextParams = new URLSearchParams(searchParams);
+      ["showPricing", "dfy", "showDfy"].forEach((key) => nextParams.delete(key));
+      setSearchParams(nextParams, { replace: true });
     }
   }, [searchParams, setSearchParams]);
 
@@ -547,7 +549,7 @@ function HowItWorksAndFaqSection({ openDfyModal }: { openDfyModal: () => void })
       answer: "Results depend on your market, effort, and execution. The system provides the proven tools and framework for success.",
     },
     {
-      question: "Is my personalized selling page and hosting included?",
+      question: "Are my personalized selling page and hosting included?",
       answer: "Yes, your personalized selling page and its ongoing hosting are included in the one-time cost.",
     }
   ];

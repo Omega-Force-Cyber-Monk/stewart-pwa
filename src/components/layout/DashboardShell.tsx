@@ -1,3 +1,4 @@
+import { LanguageSelector, useLanguage } from "../../i18n/LanguageProvider";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -86,6 +87,7 @@ function getInitials(name: string) {
 }
 
 export function DashboardShell({ children, title = "Dashboard Overview", variant }: DashboardShellProps) {
+  const { t } = useLanguage();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const location = useLocation();
@@ -120,7 +122,7 @@ export function DashboardShell({ children, title = "Dashboard Overview", variant
       {isMobileMenuOpen && (
         <button
           type="button"
-          aria-label="Close navigation"
+          aria-label={t("Close navigation")}
           className="fixed inset-0 z-40 bg-slate-950/50 lg:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
@@ -135,14 +137,15 @@ export function DashboardShell({ children, title = "Dashboard Overview", variant
           <Link to={isRider ? "/dashboard" : "/admin"} className="text-2xl font-bold tracking-tight">
             Quit<span className="text-blue-500">The</span>App
           </Link>
-          <button type="button" className="text-slate-300 lg:hidden" onClick={() => setIsMobileMenuOpen(false)} aria-label="Close menu">
+          <button type="button" className="text-slate-300 lg:hidden" onClick={() => setIsMobileMenuOpen(false)} aria-label={t("Close menu")}>
             <X className="h-5 w-5" />
           </button>
         </div>
         <nav className="flex-1 space-y-5 px-4">
+          {isRider && <LanguageSelector />}
           {sections.map((section) => (
             <div key={section.title || "main"}>
-              {section.title && <h2 className="mb-2 border-b border-white/20 px-2 pb-2 text-[11px] font-medium text-slate-400">{section.title}</h2>}
+              {section.title && <h2 className="mb-2 border-b border-white/20 px-2 pb-2 text-[11px] font-medium text-slate-400">{t(section.title)}</h2>}
               <div className="space-y-1">
                 {section.items.map((item) => {
                   const active = item.path === "/admin" || item.path === "/dashboard"
@@ -159,7 +162,7 @@ export function DashboardShell({ children, title = "Dashboard Overview", variant
                       style={active ? { backgroundColor: accent } : undefined}
                     >
                       <item.icon className="h-[18px] w-[18px]" />
-                      {item.name}
+                      {t(item.name)}
                     </Link>
                   );
                 })}
@@ -174,18 +177,18 @@ export function DashboardShell({ children, title = "Dashboard Overview", variant
             className="cursor-pointer flex w-full items-center gap-3 rounded-lg bg-red-500/20 px-3 py-2.5 text-sm font-medium text-red-400 transition-colors hover:bg-red-500/30"
           >
             <LogOut className="h-[18px] w-[18px]" />
-            Log Out
-          </button>
+            {t("Log Out")}</button>
         </div>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-        <header className="flex h-16 shrink-0 items-center justify-between bg-dashboard-navy px-4 text-white shadow-sm sm:px-6">
-          <div className="flex items-center gap-3">
-            <button type="button" className="lg:hidden" onClick={() => setIsMobileMenuOpen(true)} aria-label="Open menu">
+        <header className="flex min-h-16 shrink-0 flex-wrap items-center justify-between gap-2 bg-dashboard-navy px-4 py-2 text-white shadow-sm sm:px-6">
+          <div className="flex min-w-0 items-center gap-3">
+            <button type="button" className="lg:hidden" onClick={() => setIsMobileMenuOpen(true)} aria-label={t("Open menu")}>
               <Menu className="h-5 w-5" />
             </button>
-            <h1 className="text-base font-semibold sm:text-lg">{title}</h1>
+            <h1 className="min-w-0 break-words text-sm font-semibold sm:text-lg">{t(title)}</h1>
           </div>
+          {isRider && <LanguageSelector />}
           <Link to={isRider ? "/profile-settings" : "/admin/settings"} className="flex items-center gap-3 rounded-lg px-2 py-1 hover:bg-white/10">
             <div className="hidden text-right sm:block">
               <p className="text-sm font-semibold leading-tight">{displayName}</p>

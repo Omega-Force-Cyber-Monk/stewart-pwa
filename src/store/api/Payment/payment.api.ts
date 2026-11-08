@@ -1,4 +1,5 @@
 import { baseApi } from "../baseApi";
+import type { Ecommerce, Purchase } from "../../../lib/gtmEvents";
 import type {
   CreateCheckoutSessionRequest,
   ConfirmCheckoutSessionRequest,
@@ -10,6 +11,12 @@ import type {
 
 export const paymentApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    getAnalyticsPricing: builder.query<Ecommerce, void>({
+      query: () => "/payments/pricing",
+    }),
+    claimPurchaseAnalytics: builder.mutation<{ confirmed: boolean; ecommerce: Purchase | null }, ConfirmCheckoutSessionRequest>({
+      query: (body) => ({ url: "/payments/checkout-session/analytics", method: "POST", body }),
+    }),
     createRiderCheckoutSession: builder.mutation<CreateCheckoutSessionResponse, CreateCheckoutSessionRequest>({
       query: (body) => ({
         url: "/payments/checkout-session",
@@ -31,9 +38,9 @@ export const paymentApi = baseApi.injectEndpoints({
       query: () => "/payments/history",
       providesTags: ["Payments"],
     }),
-    getRiderPaymentInvoice: builder.query<Blob | InvoiceDownloadResponse, string>({
-      query: (id) => ({
-        url: `/payments/history/${id}/invoice`,
+    getRiderPaymentInvoice: builder.query<Blob | InvoiceDownloadResponse, string | { id: string; language: 'en' | 'es' }>({
+      query: (value) => ({
+        url: typeof value === 'string' ? `/payments/history/${value}/invoice` : `/payments/history/${value.id}/invoice?language=${value.language}`,
         responseHandler: async (response) => {
           const contentType = response.headers.get("content-type") || "";
           return contentType.includes("application/json") ? response.json() : response.blob();
@@ -45,6 +52,8 @@ export const paymentApi = baseApi.injectEndpoints({
 });
 
 export const {
+  useGetAnalyticsPricingQuery,
+  useClaimPurchaseAnalyticsMutation,
   useConfirmRiderCheckoutSessionMutation,
   useCreateRiderCheckoutSessionMutation,
   useGetRiderPaymentHistoryQuery,

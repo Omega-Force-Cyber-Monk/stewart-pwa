@@ -41,7 +41,7 @@ import coupleComparisonRight from "../assets/coupleComparisonSectionRight.png";
 import standardHero from "../assets/standardHero.png";
 import { getDfyUpgradeAsset } from "../config/dfyMapping";
 
-export default function HomePage() {
+export default function HomePage({ audience = 'main' }: { audience?: 'main' | 'spanish' }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const { accessToken } = useAppSelector((state) => state.auth);
@@ -74,7 +74,9 @@ export default function HomePage() {
       searchParams.get("dfy") === "true" ||
       searchParams.get("showDfy") === "true"
     ) {
-      setSearchParams({}, { replace: true });
+      const nextParams = new URLSearchParams(searchParams);
+      ["showPricing", "dfy", "showDfy"].forEach((key) => nextParams.delete(key));
+      setSearchParams(nextParams, { replace: true });
     }
   }, [searchParams, setSearchParams]);
 
@@ -99,9 +101,10 @@ export default function HomePage() {
       {showPricingModal && (
         <PricingModal
           onClose={() => setShowPricingModal(false)}
-          upsellKitImageSrc={getDfyUpgradeAsset("main")}
-          funnelCategory="STANDARD"
-          sourcePage="MAIN"
+          upsellKitImageSrc={getDfyUpgradeAsset(audience)}
+          funnelCategory={audience === 'spanish' ? 'SPANISH' : 'STANDARD'}
+          sourcePage={audience === 'spanish' ? 'SPANISH' : 'MAIN'}
+          isSpanish={false}
           initialShowUpsell={initialShowUpsell}
           initialPlan={initialPlan}
         />
@@ -948,7 +951,7 @@ function FaqSection() {
         "Yes. The $295 QuitTheApp DIY system is a one-time payment with no monthly QuitTheApp platform fee. An optional $99 We Do It for You upgrade is available. Normal business expenses such as scheduling software, domain registration, payment processing, commercial insurance, licensing, fuel, vehicle maintenance, and other operating costs may still apply.",
     },
     {
-      question: "Is my personalized webpage and hosting included?",
+      question: "Are my personalized selling page and hosting included?",
       answer:
         "Yes. QuitTheApp builds and hosts your personalized selling page. Customers using the $295 DIY system provide their business information and follow the guided setup process. Customers who purchase the optional $99 We Do It for You upgrade receive additional setup assistance from our team. Separate third-party business expenses may still apply.",
     },

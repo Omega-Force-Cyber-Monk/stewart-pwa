@@ -1,3 +1,4 @@
+import { useLanguage } from "../i18n/LanguageProvider";
 import { useState } from "react";
 import {
   AlertCircle,
@@ -55,6 +56,7 @@ const getLastMessage = (ticket: RiderTicket) => {
 };
 
 export default function SupportPage() {
+  const { t } = useLanguage();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [replyText, setReplyText] = useState("");
@@ -85,14 +87,11 @@ export default function SupportPage() {
         <header className="flex flex-col justify-between gap-4 rounded-2xl border border-green-100 bg-white p-6 shadow-sm sm:flex-row sm:items-center">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-dashboard-rider">
-              Support
-            </p>
+              {t("Support")}</p>
             <h2 className="mt-2 text-2xl font-bold text-slate-900">
-              Support Conversations
-            </h2>
+              {t("Support Conversations")}</h2>
             <p className="mt-1 text-sm leading-6 text-slate-500">
-              Keep your support requests and team replies in one place.
-            </p>
+              {t("Keep your support requests and team replies in one place.")}</p>
           </div>
           <button
             type="button"
@@ -100,16 +99,15 @@ export default function SupportPage() {
             className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-dashboard-rider px-5 text-sm font-bold text-white shadow-sm transition hover:bg-dashboard-rider-dark"
           >
             <Plus className="h-4 w-4" />
-            New Ticket
-          </button>
+            {t("New Ticket")}</button>
         </header>
 
         <section className="rounded-2xl border border-slate-100 bg-white shadow-sm">
           <div className="flex items-center justify-between gap-3 border-b border-slate-100 p-5">
             <div>
-              <h3 className="text-lg font-bold text-slate-900">My Tickets</h3>
+              <h3 className="text-lg font-bold text-slate-900">{t("My Tickets")}</h3>
               <p className="text-sm text-slate-500">
-                {tickets.length} active conversation{tickets.length === 1 ? "" : "s"}
+                {tickets.length}  {t("active conversation")}{tickets.length === 1 ? "" : "s"}
               </p>
             </div>
             <button
@@ -117,7 +115,7 @@ export default function SupportPage() {
               onClick={refetch}
               disabled={isLoading}
               className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition hover:bg-slate-50 disabled:opacity-50"
-              aria-label="Refresh tickets"
+              aria-label={t("Refresh tickets")}
             >
               <RefreshCw className={cn("h-4 w-4", isLoading && "animate-spin")} />
             </button>
@@ -136,37 +134,31 @@ export default function SupportPage() {
             <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
               <AlertCircle className="h-10 w-10 text-red-400" />
               <h3 className="mt-4 text-lg font-bold text-slate-900">
-                Could not load support tickets
-              </h3>
+                {t("Could not load support tickets")}</h3>
               <p className="mt-2 max-w-sm text-sm leading-6 text-slate-500">
-                Please retry in a moment.
-              </p>
+                {t("Please retry in a moment.")}</p>
               <button
                 type="button"
                 onClick={refetch}
                 className="mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-dashboard-rider px-4 text-sm font-semibold text-white transition hover:bg-dashboard-rider-dark"
               >
                 <RefreshCw className="h-4 w-4" />
-                Retry
-              </button>
+                {t("Retry")}</button>
             </div>
           ) : tickets.length === 0 ? (
             <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
               <Inbox className="h-12 w-12 text-green-300" />
               <h3 className="mt-4 text-lg font-bold text-slate-900">
-                No support conversations yet
-              </h3>
+                {t("No support conversations yet")}</h3>
               <p className="mt-2 max-w-sm text-sm leading-6 text-slate-500">
-                Start a ticket and your conversation history will appear here.
-              </p>
+                {t("Start a ticket and your conversation history will appear here.")}</p>
               <button
                 type="button"
                 onClick={() => setIsCreateOpen(true)}
                 className="mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-dashboard-rider px-4 text-sm font-semibold text-white transition hover:bg-dashboard-rider-dark"
               >
                 <Plus className="h-4 w-4" />
-                New Ticket
-              </button>
+                {t("New Ticket")}</button>
             </div>
           ) : (
             <div className="divide-y divide-slate-100">
@@ -193,13 +185,13 @@ export default function SupportPage() {
                               "border-slate-100 bg-slate-50 text-slate-600",
                           )}
                         >
-                          {formatStatus(ticket.status)}
+                          {t(formatStatus(ticket.status))}
                         </span>
                       </div>
                       <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-500">
-                        {lastMessage
+                        {t(lastMessage
                           ? `${lastMessage.isAdmin ? "Support" : "You"}: ${lastMessage.message}`
-                          : "No messages yet."}
+                          : "No messages yet.")}
                       </p>
                     </div>
                     <div className="flex shrink-0 items-center justify-between gap-4 md:justify-end">
@@ -230,7 +222,7 @@ export default function SupportPage() {
             type="button"
             className="hidden flex-1 lg:block"
             onClick={() => setSelectedId(null)}
-            aria-label="Close support conversation"
+            aria-label={t("Close support conversation")}
           />
           <aside className="flex h-full w-full max-w-xl flex-col bg-white shadow-xl">
             <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-slate-100 bg-white p-6">
@@ -239,11 +231,11 @@ export default function SupportPage() {
                   <MessageCircle className="h-5 w-5" />
                 </div>
                 <h3 className="truncate text-xl font-bold text-slate-900">
-                  {selectedTicket?.subject || "Support Conversation"}
+                  {t(selectedTicket?.subject || "Support Conversation")}
                 </h3>
                 {selectedTicket && (
                   <p className="mt-1 text-xs text-slate-500">
-                    Opened {formatDate(selectedTicket.createdAt).date}
+                    {t("Opened")}{formatDate(selectedTicket.createdAt).date}
                   </p>
                 )}
               </div>
@@ -251,7 +243,7 @@ export default function SupportPage() {
                 type="button"
                 onClick={() => setSelectedId(null)}
                 className="rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
-                aria-label="Close conversation"
+                aria-label={t("Close conversation")}
               >
                 <X className="h-6 w-6" />
               </button>
@@ -271,15 +263,14 @@ export default function SupportPage() {
                         "border-slate-100 bg-slate-50 text-slate-600",
                     )}
                   >
-                    {formatStatus(selectedTicket.status)}
+                    {t(formatStatus(selectedTicket.status))}
                   </span>
                 </div>
 
                 <div className="flex-1 space-y-4 overflow-y-auto p-6">
                   {selectedTicket.messages.length === 0 ? (
                     <p className="py-10 text-center text-sm text-slate-400">
-                      No messages yet.
-                    </p>
+                      {t("No messages yet.")}</p>
                   ) : (
                     selectedTicket.messages.map((message) => {
                       const sent = formatDate(message.createdAt);
@@ -303,7 +294,7 @@ export default function SupportPage() {
                                 message.isAdmin ? "text-slate-400" : "text-green-100",
                               )}
                             >
-                              {message.isAdmin ? "Support" : "You"} - {sent.date} {sent.time}
+                              {t(message.isAdmin ? "Support" : "You")} - {sent.date} {sent.time}
                             </p>
                           </div>
                         </div>
@@ -316,7 +307,7 @@ export default function SupportPage() {
                   <textarea
                     value={replyText}
                     onChange={(event) => setReplyText(event.target.value)}
-                    placeholder="Type your reply..."
+                    placeholder={t("Type your reply...")}
                     rows={3}
                     className="w-full resize-none rounded-xl border border-slate-200 p-4 text-sm text-slate-700 outline-none transition focus:border-dashboard-rider focus:ring-2 focus:ring-green-500/20"
                   />
@@ -332,15 +323,13 @@ export default function SupportPage() {
                       ) : (
                         <Send className="h-4 w-4" />
                       )}
-                      Send Reply
-                    </button>
+                      {t("Send Reply")}</button>
                   </div>
                 </div>
               </>
             ) : (
               <div className="grid flex-1 place-items-center p-6 text-center text-sm text-slate-500">
-                Ticket not found.
-              </div>
+                {t("Ticket not found.")}</div>
             )}
           </aside>
         </div>

@@ -9,10 +9,15 @@ import { AppRouter } from "./routes/AppRouter";
 import { resolveBusinessHost } from "./lib/businessHost";
 import { useAppDispatch, useAppSelector } from "./hooks/storeHooks";
 import { hydrateCredentials, logOut } from "./store/features/auth/authSlice";
+import { ProductAnalytics } from "./components/marketing/ProductAnalytics";
+import { LanguageProvider } from './i18n/LanguageProvider';
+import { useLocation } from 'react-router-dom';
 
 export default function App() {
   const dispatch = useAppDispatch();
-  const { accessToken } = useAppSelector((state) => state.auth);
+  const { accessToken, user } = useAppSelector((state) => state.auth);
+  const location = useLocation();
+  const defaultLanguage = user?.driverProfile?.category === 'SPANISH' || location.pathname === '/spanish' || new URLSearchParams(location.search).get('lang') === 'es' ? 'es' : 'en';
   const isTenantHost =
     resolveBusinessHost(
       window.location.hostname,
@@ -60,7 +65,8 @@ export default function App() {
   }, [dispatch]);
 
   return (
-    <>
+    <LanguageProvider key={user?.id ?? 'visitor'} defaultLanguage={defaultLanguage} storageKey={`qta-language:${user?.id ?? 'visitor'}`}>
+      {!isTenantHost && <ProductAnalytics />}
       <OfflineBanner />
       <AppShell>
         <AppRouter />
@@ -69,6 +75,6 @@ export default function App() {
       {!isTenantHost && accessToken && <InstallPrompt />}
       {!isTenantHost && <AbandonedCheckoutPrompt />}
       {!isTenantHost && <MarketingExitIntent />}
-    </>
+    </LanguageProvider>
   );
 }

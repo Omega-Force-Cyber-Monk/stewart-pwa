@@ -1,3 +1,4 @@
+import { useLanguage } from "../i18n/LanguageProvider";
 import { useState } from "react";
 import { Download, Inbox, Loader2, Receipt } from "lucide-react";
 import {
@@ -6,8 +7,8 @@ import {
 } from "../store/api/Payment/payment.api";
 import type { PaymentRecord } from "../store/api/Payment/payment.type";
 
-const formatDate = (iso: string) =>
-  new Date(iso).toLocaleDateString("en-US", {
+const formatDate = (iso: string, language: string) =>
+  new Date(iso).toLocaleDateString(language === 'es' ? 'es-US' : 'en-US', {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -40,11 +41,12 @@ function category(payment: PaymentRecord) {
 
 function product(payment: PaymentRecord) {
   return category(payment) === "Add-Ons"
-    ? "Booking Setup Add-on"
+    ? "Done For You Upgrade — $99"
     : `${payment.items[0]?.name || "Private Airport Business"}`;
 }
 
 export default function PaymentBillingPage() {
+  const { t, language } = useLanguage();
   const { data, isLoading, isError } = useGetRiderPaymentHistoryQuery();
   const [getInvoice] = useLazyGetRiderPaymentInvoiceQuery();
   const [invoiceLoadingId, setInvoiceLoadingId] = useState<string | null>(null);
@@ -56,7 +58,7 @@ export default function PaymentBillingPage() {
   const handleInvoice = async (id: string) => {
     setInvoiceLoadingId(id);
     try {
-      downloadInvoice(await getInvoice(id).unwrap());
+      downloadInvoice(await getInvoice({ id, language }).unwrap());
     } catch {
       setUnavailableInvoiceIds((current) => new Set(current).add(id));
     } finally {
@@ -67,10 +69,9 @@ export default function PaymentBillingPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-slate-900">Payment &amp; Billing</h2>
+        <h2 className="text-2xl font-bold text-slate-900">{t("Payment & Billing")}</h2>
         <p className="mt-1 text-sm text-slate-500">
-          View your payment history, invoices, and receipts for your one-time purchases.
-        </p>
+          {t("View your payment history, invoices, and receipts for your one-time purchases.")}</p>
       </div>
 
       {isLoading && (
@@ -81,14 +82,13 @@ export default function PaymentBillingPage() {
 
       {isError && (
         <div className="rounded-xl bg-red-50 p-6 text-center text-sm text-red-700">
-          Failed to load payment history. Please try again.
-        </div>
+          {t("Failed to load payment history. Please try again.")}</div>
       )}
 
       {!isLoading && !isError && orders.length === 0 && (
         <div className="grid place-items-center gap-2 rounded-xl bg-white p-16 text-slate-500 shadow-sm">
           <Inbox className="h-8 w-8 text-slate-300" />
-          <p className="text-sm">No paid payments yet.</p>
+          <p className="text-sm">{t("No paid payments yet.")}</p>
         </div>
       )}
 
@@ -105,8 +105,8 @@ export default function PaymentBillingPage() {
                     <Receipt className="h-5 w-5" />
                   </span>
                   <div>
-                    <p className="text-sm font-semibold text-green-600">{category(payment)}</p>
-                    <h3 className="mt-1 font-semibold text-slate-900">{product(payment)}</h3>
+                    <p className="text-sm font-semibold text-green-600">{t(category(payment))}</p>
+                    <h3 className="mt-1 font-semibold text-slate-900">{t(product(payment))}</h3>
                   </div>
                 </div>
                 <span
@@ -116,31 +116,31 @@ export default function PaymentBillingPage() {
                       : "bg-slate-100 text-slate-500"
                   }`}
                 >
-                  {payment.status}
+                  {t(payment.status === 'paid' ? 'Paid' : payment.status)}
                 </span>
               </div>
 
               <div className="grid gap-5 pt-5 sm:grid-cols-2 lg:grid-cols-5">
                 <div>
-                  <p className="text-xs text-slate-400">Order ID</p>
+                  <p className="text-xs text-slate-400">{t("Order ID")}</p>
                   <p className="mt-1 text-sm font-medium text-slate-800">
                     {payment.orderNumber || `#QTA-${payment.id.slice(0, 4).toUpperCase()}`}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-400">Purchase Date</p>
+                  <p className="text-xs text-slate-400">{t("Purchase Date")}</p>
                   <p className="mt-1 text-sm font-medium text-slate-800">
-                    {formatDate(payment.paidAt || payment.createdAt)}
+                    {formatDate(payment.paidAt || payment.createdAt, language)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-400">Amount</p>
+                  <p className="text-xs text-slate-400">{t("Amount")}</p>
                   <p className="mt-1 text-sm font-medium text-slate-800">
                     ${(payment.totalAmount / 100).toFixed(2)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-400">Payment Method</p>
+                  <p className="text-xs text-slate-400">{t("Payment Method")}</p>
                   <p className="mt-1 text-sm font-medium text-slate-800">
                     {payment.paymentBrand || "Stripe"}{" "}
                     {payment.paymentLast4 ? `•••• ${payment.paymentLast4}` : ""}
@@ -159,8 +159,7 @@ export default function PaymentBillingPage() {
                       ) : (
                         <Download className="h-4 w-4" />
                       )}
-                      Download Invoice
-                    </button>
+                      {t("Download Invoice")}</button>
                   )}
                 </div>
               </div>

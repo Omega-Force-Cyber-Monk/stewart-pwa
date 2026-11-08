@@ -76,7 +76,7 @@ const privacySections: LegalSection[] = [
   {
     title: "Phone Numbers and SMS Data",
     body: [
-      "You may provide your phone number to receive the requested QuitTheApp Quick Start Guide or related checklist by text message.",
+      "You may provide your phone number to receive the requested QuitTheApp guide (including the Women's Quick Start Guide where applicable) or related checklist by text message.",
       "We may record SMS consent status, consent text version, consent timestamp, funnel source, phone number, delivery status, and opt-out activity where supported by our systems and service providers.",
     ],
   },
@@ -197,7 +197,7 @@ const termsSections: LegalSection[] = [
   {
     title: "SMS Communications",
     body: [
-      "Users may opt in to receive requested content, such as a Quick Start Guide, by SMS. Optional marketing or promotional SMS messages require separate consent.",
+      "Users may opt in to receive requested content, such as a launch checklist or the Women's Quick Start Guide, by SMS. Optional marketing or promotional SMS messages require separate consent.",
       "You can reply STOP to opt out. Message and data rates may apply.",
     ],
   },

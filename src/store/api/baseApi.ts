@@ -83,6 +83,8 @@ const baseQueryWithReauth: BaseQueryFn<
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQueryWithReauth,
+  // Keep recently viewed admin/customer pages warm while navigating the dashboard.
+  keepUnusedDataFor: 120,
   tagTypes: [
     "Dashboard",
     "Drivers",
@@ -107,8 +109,6 @@ export const baseApi = createApi({
     "DoneForYou",
     "DoneForYouOrders",
     "DoneForYouOrder",
-    "DoneForYouLogoStyles",
-    "DoneForYouTemplateSets",
   ],
   endpoints: () => ({}),
 });

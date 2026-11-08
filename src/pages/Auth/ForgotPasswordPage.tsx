@@ -1,3 +1,4 @@
+import { useLanguage } from "../../i18n/LanguageProvider";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForgotUserPasswordMutation } from "../../store/api/Auth/auth.api";
@@ -5,6 +6,7 @@ import { AuthLayout } from "../../components/layout/AuthLayout";
 import { Loader2, Mail, ArrowLeft, AlertTriangle } from "lucide-react";
 
 export default function ForgotPasswordPage() {
+  const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [validationError, setValidationError] = useState("");
 
@@ -48,16 +50,14 @@ export default function ForgotPasswordPage() {
 
   return (
     <AuthLayout
-      title="Recover Your Password"
+      title={t("Recover Your Password")}
       subtitle="Enter your registered email address below, and we will send you a 6-digit OTP code to safely reset your password."
     >
       <div>
         <h2 className="text-2xl font-bold tracking-tight text-slate-100">
-          Forgot password?
-        </h2>
+          {t("Forgot password?")}</h2>
         <p className="mt-2 text-sm text-slate-400">
-          We will send you a reset code.
-        </p>
+          {t("We will send you a reset code.")}</p>
       </div>
 
       <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -70,8 +70,7 @@ export default function ForgotPasswordPage() {
 
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-slate-300">
-            Email address
-          </label>
+            {t("Email address")}</label>
           <div className="mt-2 relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Mail className="size-5 text-slate-400" />
@@ -97,8 +96,7 @@ export default function ForgotPasswordPage() {
             className="w-full flex justify-center items-center gap-2 h-10 px-4 border border-transparent rounded-md text-sm font-semibold text-white bg-brand-btn hover:bg-brand-btn-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-brand-page focus:ring-cyan-500 transition disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {isLoading && <Loader2 className="size-4 animate-spin" />}
-            Send Reset Code
-          </button>
+            {t("Send Reset Code")}</button>
         </div>
       </form>
 
@@ -108,8 +106,7 @@ export default function ForgotPasswordPage() {
           className="inline-flex items-center gap-2 text-sm font-semibold text-cyan-400 hover:text-cyan-300 transition-colors"
         >
           <ArrowLeft className="size-4" />
-          Back to Sign In
-        </Link>
+          {t("Back to Sign In")}</Link>
       </div>
     </AuthLayout>
   );

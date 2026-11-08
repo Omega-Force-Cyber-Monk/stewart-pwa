@@ -1,3 +1,5 @@
+import type { Ecommerce } from "../../../lib/gtmEvents";
+
 export interface CheckoutSessionItem {
   productId: string;
   quantity: number;
@@ -14,6 +16,7 @@ export interface CreateCheckoutSessionRequest {
 }
 
 export interface CreateCheckoutSessionResponse {
+  ecommerce: Ecommerce;
   success: boolean;
   message?: string;
   checkoutUrl: string | null;

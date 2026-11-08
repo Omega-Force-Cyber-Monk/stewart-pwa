@@ -36,10 +36,16 @@ export function resolveBusinessHost(
     normalizedHostname === normalizedDomain ||
     normalizedHostname === "localhost" ||
     normalizedHostname === "127.0.0.1" ||
-    normalizedHostname === "[::1]" ||
-    normalizedHostname.endsWith(".localhost")
+    normalizedHostname === "[::1]"
   ) {
     return { kind: "main" };
+  }
+
+  // Local subdomain testing: {slug}.localhost (browsers map *.localhost → 127.0.0.1)
+  if (normalizedHostname.endsWith(".localhost")) {
+    return resolveTenantSlug(
+      normalizedHostname.slice(0, -".localhost".length),
+    );
   }
 
   const suffix = `.${normalizedDomain}`;
@@ -47,8 +53,10 @@ export function resolveBusinessHost(
     return { kind: "main" };
   }
 
-  const slug = normalizedHostname.slice(0, -suffix.length);
+  return resolveTenantSlug(normalizedHostname.slice(0, -suffix.length));
+}
 
+function resolveTenantSlug(slug: string): BusinessHostResolution {
   if (RESERVED_BUSINESS_SUBDOMAINS.has(slug)) {
     return { kind: "main" };
   }

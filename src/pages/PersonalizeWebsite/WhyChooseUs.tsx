@@ -1,3 +1,4 @@
+import { useLanguage } from "../../i18n/LanguageProvider";
 import { ShieldCheck, Car, Users, DollarSign } from "lucide-react";
 import rightImage from "../../assets/rightImage.jpg";
 
@@ -25,6 +26,7 @@ const reasons = [
 ];
 
 export function WhyChooseUs() {
+  const { t } = useLanguage();
   return (
     <section className="w-full bg-white py-3">
       <div className="container bg-[#121416] rounded-2xl overflow-hidden">
@@ -39,8 +41,7 @@ export function WhyChooseUs() {
             {/* Title */}
             <div className="flex flex-col gap-2 ">
               <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-                Why Choose Us
-              </h2>
+                {t("Why Choose Us")}</h2>
               <div className="w-10 h-0.5 bg-green-500 rounded-full"></div>
             </div>
 
@@ -53,8 +54,8 @@ export function WhyChooseUs() {
                     {reason.icon}
                   </div>
                   <div className="flex flex-col gap-0.5">
-                    <span className="text-base font-bold text-white">{reason.title}</span>
-                    <span className="text-sm text-slate-400 leading-snug">{reason.desc}</span>
+                    <span className="text-base font-bold text-white">{t(reason.title)}</span>
+                    <span className="text-sm text-slate-400 leading-snug">{t(reason.desc)}</span>
                   </div>
                 </li>
               ))}

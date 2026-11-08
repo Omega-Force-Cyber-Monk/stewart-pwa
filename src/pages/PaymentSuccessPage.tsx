@@ -1,49 +1,69 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Loader2, CheckCircle2 } from "lucide-react";
 import { useGetRiderProfileQuery } from "../store/api/Auth/auth.api";
-import { useConfirmRiderCheckoutSessionMutation } from "../store/api/Payment/payment.api";
+import { useClaimPurchaseAnalyticsMutation } from "../store/api/Payment/payment.api";
 import { useAppDispatch, useAppSelector } from "../hooks/storeHooks";
 import { updateUser } from "../store/features/auth/authSlice";
 import standardLogo from "../assets/standardLogo.png";
 import standardBanner from "../assets/standardBanner.png";
 import { removeStorageValue, storageKeys } from "../lib/storage";
-import { trackPurchaseCompleted } from "../lib/gtmEvents";
+import { reportVerifiedPurchase } from "../lib/gtmEvents";
+import { LanguageSelector, useLanguage } from '../i18n/LanguageProvider';
 
 export default function PaymentSuccessPage() {
+  const { t, language, setLanguage } = useLanguage();
   const dispatch = useAppDispatch();
   const accessToken = useAppSelector((state) => state.auth.accessToken);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const stripeSessionId = searchParams.get("session_id");
-  const checkoutPlan = searchParams.get("plan");
-  const [confirmCheckoutSession] = useConfirmRiderCheckoutSessionMutation();
+  const [claimAnalytics] = useClaimPurchaseAnalyticsMutation();
+  const [confirmedSession, setConfirmedSession] = useState<string | null>(null);
+  const [confirmationError, setConfirmationError] = useState(false);
+  const purchaseConfirmed = Boolean(stripeSessionId && confirmedSession === stripeSessionId);
+  useEffect(() => { setLanguage(language); }, [language, setLanguage]);
 
   useEffect(() => {
     if (!stripeSessionId) return;
-    trackPurchaseCompleted(stripeSessionId, checkoutPlan);
-    removeStorageValue(storageKeys.abandonedCheckout);
-
-    if (!accessToken) return;
-    void confirmCheckoutSession({ stripeSessionId }).catch(() => undefined);
-  }, [accessToken, stripeSessionId, checkoutPlan, confirmCheckoutSession]);
+    let active = true;
+    let timer: number | undefined;
+    let attempts = 0;
+    const verify = async () => {
+      try {
+        const confirmed = await reportVerifiedPurchase(stripeSessionId, () =>
+          claimAnalytics({ stripeSessionId }).unwrap(),
+        );
+        if (!active) return;
+        if (confirmed) {
+          setConfirmedSession(stripeSessionId);
+          setConfirmationError(false);
+          removeStorageValue(storageKeys.abandonedCheckout);
+          return;
+        }
+      } catch {
+        if (!active) return;
+      }
+      if (++attempts < 20) timer = window.setTimeout(() => { void verify(); }, 3000);
+      else setConfirmationError(true);
+    };
+    void verify();
+    return () => { active = false; window.clearTimeout(timer); };
+  }, [stripeSessionId, claimAnalytics]);
 
   useEffect(() => {
-    if (!stripeSessionId || accessToken) return;
+    if (!stripeSessionId || accessToken || !purchaseConfirmed) return;
     const timer = window.setTimeout(() => {
-      navigate(`/signup?session_id=${encodeURIComponent(stripeSessionId)}`, { replace: true });
+      navigate(`/signup?session_id=${encodeURIComponent(stripeSessionId)}&lang=${language}`, { replace: true });
     }, 1200);
     return () => window.clearTimeout(timer);
-  }, [accessToken, navigate, stripeSessionId]);
+  }, [accessToken, navigate, stripeSessionId, purchaseConfirmed, language]);
 
-  // Poll /auth/me to pick up the updated status after the Stripe webhook fires
+  // Keep account state in sync; purchase confirmation uses this checkout only.
   const { data: profileData } = useGetRiderProfileQuery(undefined, {
     skip: !accessToken,
     pollingInterval: 3000, // poll every 3s until the purchase is confirmed
   });
-  // The Stripe webhook marks the payment as paid asynchronously; only continue
-  // once the backend confirms ownership.
-  const purchaseConfirmed = profileData?.purchase?.status === "paid";
   const waiting = !purchaseConfirmed;
 
   // Sync the latest user into Redux when the profile refreshes
@@ -54,12 +74,12 @@ export default function PaymentSuccessPage() {
   }, [profileData, dispatch]);
 
   useEffect(() => {
-    if (!purchaseConfirmed) return;
+    if (!purchaseConfirmed || !accessToken) return;
     const timer = window.setTimeout(() => {
       navigate("/launch-dashboard", { replace: true });
     }, 1200);
     return () => window.clearTimeout(timer);
-  }, [navigate, purchaseConfirmed]);
+  }, [navigate, purchaseConfirmed, accessToken]);
 
   return (
     <div className="min-h-screen w-full relative flex items-center justify-center py-12 px-6 overflow-x-hidden selection:bg-brand-btn/30">
@@ -104,36 +124,40 @@ export default function PaymentSuccessPage() {
         </div>
 
         {/* Heading */}
+        <div className="mb-4"><LanguageSelector /></div>
         <h1 className="text-2xl font-bold text-white tracking-tight mb-3">
-          Payment Successful!
+          {t(purchaseConfirmed ? "Payment Successful!" : "Checking your payment")}
         </h1>
 
         {/* Body */}
         <p className="text-sm text-slate-300 leading-relaxed mb-2">
-          Your purchase has been confirmed.
+          {t(purchaseConfirmed ? "Your purchase has been confirmed." : "We are verifying your checkout with Stripe.")}
         </p>
         <p className="text-sm text-slate-400 leading-relaxed mb-8">
-          {accessToken
+          {t(purchaseConfirmed ? (accessToken
             ? "Your launch dashboard is ready. We are taking you there now."
-            : "Next, create your account so we can connect this purchase to your launch package."}
+            : "Next, create your account so we can connect this purchase to your launch package.")
+            : "Please keep this page open while we check your payment status.")}
         </p>
 
         {/* Waiting state: webhook not processed yet */}
         {waiting && (
           <div className="flex flex-col items-center gap-3 mb-8 py-4">
             <Loader2 className="size-8 text-[#04B5A3] animate-spin" />
-            <p className="text-sm text-slate-400">{accessToken ? "Confirming your payment… this usually takes a few seconds." : "Taking you to signup..."}</p>
+            <p className="text-sm text-slate-400">{t(confirmationError || !stripeSessionId
+              ? "We could not confirm this checkout. Please refresh to retry, or contact support if you were charged."
+              : "Confirming your payment… this usually takes a few seconds.")}</p>
           </div>
         )}
 
         {/* Primary CTA */}
-        {purchaseConfirmed && (
+        {purchaseConfirmed && accessToken && (
           <Link
             to="/launch-dashboard"
             className="w-full flex justify-center items-center gap-2 h-11 px-6 rounded-lg text-sm font-semibold text-white bg-[#04B5A3] hover:bg-[#039384] transition shadow-lg shadow-[#04B5A3]/20 mb-4"
           >
             <CheckCircle2 className="size-5" />
-            Continue to Launch Dashboard →
+            {t('Continue to Launch Dashboard →')}
           </Link>
         )}
 
@@ -142,7 +166,7 @@ export default function PaymentSuccessPage() {
           to="/"
           className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
         >
-          Return to Homepage
+          {t('Return to Homepage')}
         </Link>
       </div>
     </div>
