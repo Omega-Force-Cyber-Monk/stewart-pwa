@@ -6,11 +6,13 @@ const name = 'Coastal Airport Transportation and Local Private Passenger Service
 const disclaimer = 'Your ride request has been sent. Your ride is not confirmed until the driver contacts you and confirms availability.';
 
 async function fixtures(page: Page, category: string, onboarding = false) {
-  const user = { id: 'qa-driver', email: 'qa@example.test', name: 'Ana', role: 'rider', isVerified: true, driverProfile: { category } };
+  const user = { id: 'qa-driver', email: 'qa@example.test', name: 'Ana', phone: '', role: 'rider', isVerified: true, driverProfile: { category } };
   const purchase = { baseVariant: true, addon: true };
   const business = { id: 'qa-business', businessName: name, name, phone, email: 'qa@example.test', businessInfo: 'Customer supplied description', slug: 'qa-coastal', status: onboarding ? 'IN_PROGRESS' : 'ACTIVE' };
   const setup = { success: true, data: { buyer: { fullName: 'Ana', email: 'qa@example.test', phone }, business, acuity: { connected: false }, serviceArea: { cityArea: 'Naples, FL', airports: ['RSW'] }, progress: { currentStep: 1, completedSteps: [], totalSteps: 4 }, assets: {}, launchReady: { ready: false } } };
   await page.addInitScript((u) => {
+    if (sessionStorage.getItem('qa-fixture-initialized')) return;
+    sessionStorage.setItem('qa-fixture-initialized', 'true');
     localStorage.setItem('accessToken', 'fixture-token');
     localStorage.setItem('refreshToken', 'fixture-refresh');
     localStorage.setItem('user', JSON.stringify(u));
@@ -19,7 +21,11 @@ async function fixtures(page: Page, category: string, onboarding = false) {
     const url = new URL(route.request().url());
     const path = url.pathname.replace('/api/v1', '');
     let response: unknown = { success: true, data: [] };
-    if (path === '/auth/me') response = { success: true, user, purchase, business };
+    if (path === '/auth/me') {
+      if (route.request().method() === 'PATCH') Object.assign(user, route.request().postDataJSON());
+      response = { success: true, user, purchase, business };
+    }
+    if (path === '/auth/login') response = { success: true, user, accessToken: 'fixture-token', refreshToken: 'fixture-refresh' };
     if (path === '/business/dashboard') response = { success: true, purchase, business, launchReady: !onboarding };
     if (path === '/business/setup' || path === '/business/setup/initialize') {
       if (route.request().method() === 'PATCH') {
@@ -39,6 +45,38 @@ async function fixtures(page: Page, category: string, onboarding = false) {
     if (path === '/payments/history') response = { success: true, payments: [{ id: 'f240-test', orderNumber: 'QTA-F240', status: 'paid', createdAt: '2026-11-06T08:00:00Z', paidAt: '2026-11-06T08:00:00Z', totalAmount: 39400, items: [{ type: 'base_variant', name: 'QuitTheApp System — $295' }] }] };
     if (path.includes('support') && path.endsWith('tickets')) response = { success: true, tickets: [] };
     await route.fulfill({ json: response });
+  });
+}
+
+for (const category of categories) {
+  test(`${category}: profile name and phone survive save, reload and a fresh login`, async ({ page }) => {
+    await fixtures(page, category);
+    await page.goto('/profile-settings');
+    // Use English labels consistently while retaining the account's original audience.
+    await page.locator('header').first().getByRole('button', { name: 'English', exact: true }).click();
+    await page.getByRole('button', { name: 'Edit Information', exact: true }).click();
+    await page.locator('#editName').fill('Updated Profile Name');
+    await page.locator('#editPhone').fill('+1 (239) 555-0198');
+    const saved = page.waitForResponse((response) => response.url().endsWith('/auth/me') && response.request().method() === 'PATCH');
+    await page.getByRole('button', { name: 'Update Information', exact: true }).click();
+    expect((await saved).ok()).toBeTruthy();
+    await expect(page.locator('#editName')).toHaveCount(0);
+    await expect(page.getByText('+1 (239) 555-0198', { exact: true })).toBeVisible();
+    await page.reload();
+    await expect(page.getByText('+1 (239) 555-0198', { exact: true })).toBeVisible();
+    // Clear persisted credentials to exercise the actual login form and profile fetch.
+    await page.evaluate(() => {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('user');
+    });
+    await page.goto('/login?redirect=/profile-settings');
+    await page.locator('input[type="email"]').fill('qa@example.test');
+    await page.locator('input[type="password"]').fill('Fixture-password-123');
+    await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+    await expect(page).toHaveURL(/\/profile-settings/);
+    await expect(page.getByText('+1 (239) 555-0198', { exact: true })).toBeVisible();
+    await expect(page.getByText('Updated Profile Name', { exact: true }).last()).toBeVisible();
   });
 }
 

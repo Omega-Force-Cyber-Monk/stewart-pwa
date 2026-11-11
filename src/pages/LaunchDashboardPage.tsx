@@ -179,7 +179,10 @@ export default function LaunchDashboardPage() {
       setError(locationText.required);
       return;
     }
-    if (normalizedServiceArea.cityArea.length > 160 || /[<>\x00-\x1f\x7f]/.test(normalizedServiceArea.cityArea)) {
+    const hasUnsafeCharacter = Array.from(normalizedServiceArea.cityArea).some((character) =>
+      character.charCodeAt(0) < 32 || character.charCodeAt(0) === 127 || character === '<' || character === '>',
+    );
+    if (normalizedServiceArea.cityArea.length > 160 || hasUnsafeCharacter) {
       setError(locationText.invalid);
       return;
     }

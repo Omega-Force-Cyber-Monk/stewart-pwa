@@ -95,7 +95,7 @@ export const businessApi = baseApi.injectEndpoints({
         method: "PATCH",
         body,
       }),
-      invalidatesTags: ["Setup", "LaunchReady", "Dashboard", "Business", "ReferralCard"],
+      invalidatesTags: ["User", "Setup", "LaunchReady", "Dashboard", "Business", "ReferralCard"],
     }),
     uploadBusinessLogo: builder.mutation<UploadLogoResponse, FormData>({
       query: (formData) => ({

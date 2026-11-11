@@ -32,6 +32,8 @@ export function LanguageProvider({ children, defaultLanguage = 'en', storageKey 
   return <LanguageContext.Provider value={value}><div lang={language} className="contents">{children}</div></LanguageContext.Provider>;
 }
 
+// The shared context hook intentionally lives with its provider.
+// eslint-disable-next-line react-refresh/only-export-components
 export function useLanguage() {
   return useContext(LanguageContext);
 }

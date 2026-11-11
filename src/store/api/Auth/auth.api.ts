@@ -55,6 +55,7 @@ export const authApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
+      invalidatesTags: ["User", "Dashboard", "Business", "Setup", "LaunchReady", "ReferralCard", "Resources"],
     }),
     refreshUserToken: builder.mutation<RefreshTokenResponse, RefreshTokenRequest>({
       query: (body) => ({

@@ -34,9 +34,10 @@ export default function DoneForYouMarketingKitPage() {
   const [createCheckout, { isLoading: isStartingCheckout }] =
     useCreateRiderCheckoutSessionMutation();
 
+  const journeyOrder = data?.order;
   const journey = useMemo(
-    () => (data?.order ? resolveCustomerDfyJourneyStatus(data.order) : null),
-    [data?.order],
+    () => (journeyOrder ? resolveCustomerDfyJourneyStatus(journeyOrder) : null),
+    [journeyOrder],
   );
 
   useEffect(() => {
