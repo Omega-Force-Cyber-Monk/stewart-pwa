@@ -1,0 +1,157 @@
+{
+  "checkedAt": "2026-11-11T06:34:48.576Z",
+  "pages": [
+    {
+      "route": "/",
+      "viewport": 1440,
+      "status": 200,
+      "title": "QuitTheApp",
+      "contentLength": 6341,
+      "width": 1440,
+      "documentWidth": 1440,
+      "applicationScripts": [
+        "https://quittheapp.com/assets/index-C0Z_JC_t.js"
+      ],
+      "errors": [],
+      "apiErrors": [],
+      "passed": true
+    },
+    {
+      "route": "/women",
+      "viewport": 1440,
+      "status": 200,
+      "title": "QuitTheApp",
+      "contentLength": 5056,
+      "width": 1440,
+      "documentWidth": 1440,
+      "applicationScripts": [
+        "https://quittheapp.com/assets/index-C0Z_JC_t.js"
+      ],
+      "errors": [],
+      "apiErrors": [],
+      "passed": true
+    },
+    {
+      "route": "/couple",
+      "viewport": 1440,
+      "status": 200,
+      "title": "QuitTheApp",
+      "contentLength": 5916,
+      "width": 1440,
+      "documentWidth": 1440,
+      "applicationScripts": [
+        "https://quittheapp.com/assets/index-C0Z_JC_t.js"
+      ],
+      "errors": [],
+      "apiErrors": [],
+      "passed": true
+    },
+    {
+      "route": "/senior",
+      "viewport": 1440,
+      "status": 200,
+      "title": "QuitTheApp",
+      "contentLength": 6046,
+      "width": 1440,
+      "documentWidth": 1440,
+      "applicationScripts": [
+        "https://quittheapp.com/assets/index-C0Z_JC_t.js"
+      ],
+      "errors": [],
+      "apiErrors": [],
+      "passed": true
+    },
+    {
+      "route": "/spanish",
+      "viewport": 1440,
+      "status": 200,
+      "title": "QuitTheApp",
+      "contentLength": 4258,
+      "width": 1440,
+      "documentWidth": 1440,
+      "applicationScripts": [
+        "https://quittheapp.com/assets/index-C0Z_JC_t.js"
+      ],
+      "errors": [],
+      "apiErrors": [],
+      "passed": true
+    },
+    {
+      "route": "/",
+      "viewport": 390,
+      "status": 200,
+      "title": "QuitTheApp",
+      "contentLength": 6279,
+      "width": 390,
+      "documentWidth": 390,
+      "applicationScripts": [
+        "https://quittheapp.com/assets/index-C0Z_JC_t.js"
+      ],
+      "errors": [],
+      "apiErrors": [],
+      "passed": true
+    },
+    {
+      "route": "/women",
+      "viewport": 390,
+      "status": 200,
+      "title": "QuitTheApp",
+      "contentLength": 4976,
+      "width": 390,
+      "documentWidth": 390,
+      "applicationScripts": [
+        "https://quittheapp.com/assets/index-C0Z_JC_t.js"
+      ],
+      "errors": [],
+      "apiErrors": [],
+      "passed": true
+    },
+    {
+      "route": "/couple",
+      "viewport": 390,
+      "status": 200,
+      "title": "QuitTheApp",
+      "contentLength": 5818,
+      "width": 390,
+      "documentWidth": 390,
+      "applicationScripts": [
+        "https://quittheapp.com/assets/index-C0Z_JC_t.js"
+      ],
+      "errors": [],
+      "apiErrors": [],
+      "passed": true
+    },
+    {
+      "route": "/senior",
+      "viewport": 390,
+      "status": 200,
+      "title": "QuitTheApp",
+      "contentLength": 5942,
+      "width": 390,
+      "documentWidth": 390,
+      "applicationScripts": [
+        "https://quittheapp.com/assets/index-C0Z_JC_t.js"
+      ],
+      "errors": [],
+      "apiErrors": [],
+      "passed": true
+    },
+    {
+      "route": "/spanish",
+      "viewport": 390,
+      "status": 200,
+      "title": "QuitTheApp",
+      "contentLength": 4161,
+      "width": 390,
+      "documentWidth": 390,
+      "applicationScripts": [
+        "https://quittheapp.com/assets/index-C0Z_JC_t.js"
+      ],
+      "errors": [],
+      "apiErrors": [],
+      "passed": true
+    }
+  ],
+  "analyticsAccountVerification": "skipped_at_user_request",
+  "passed": true
+}
