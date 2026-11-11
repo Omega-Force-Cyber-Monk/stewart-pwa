@@ -59,19 +59,19 @@ for (const category of ['STANDARD', 'WOMEN', 'COUPLE', 'FIFTY_PLUS', 'SPANISH'])
       if (codes.length === 2) await pgd.check(); else await pgd.uncheck();
       await expect(city).toHaveValue(cityName);
       await save().click();
-      await expect(page.getByRole('heading', { name: 'Final Review', exact: true })).toBeVisible();
+      await expect(page.getByRole('heading', { name: spanish ? 'Revisi\u00f3n final' : 'Final Review', exact: true })).toBeVisible();
       expect(area).toEqual({ cityArea: cityName, airports: [...codes] });
       await expect(page.locator('dd').filter({ hasText: cityName })).toBeVisible();
-      await page.getByRole('button', { name: 'Back', exact: true }).click();
+      await page.getByRole('button', { name: spanish ? 'Atr\u00e1s' : 'Back', exact: true }).click();
       await expect(city).toHaveValue(cityName);
       await page.reload();
-      await page.getByRole('button', { name: 'Back', exact: true }).click();
+      await page.getByRole('button', { name: spanish ? 'Atr\u00e1s' : 'Back', exact: true }).click();
       await expect(city).toHaveValue(cityName);
     }
     // Going to the previous business step and back must preserve location edits.
     await city.fill('Marco Island, FL');
     await page.getByRole('button', { name: spanish ? 'Atr\u00e1s' : 'Back', exact: true }).click();
-    await page.getByRole('button', { name: 'Save & Continue', exact: true }).click();
+    await page.getByRole('button', { name: spanish ? 'Guardar y continuar' : 'Save & Continue', exact: true }).click();
     await expect(city).toHaveValue('Marco Island, FL');
     // A late airport search response cannot overwrite current results or city.
     await airport.fill('Miami');
@@ -94,7 +94,7 @@ for (const category of ['STANDARD', 'WOMEN', 'COUPLE', 'FIFTY_PLUS', 'SPANISH'])
     await page.getByRole('checkbox', { name: /RSW -/ }).check();
     await page.getByRole('checkbox', { name: /PGD -/ }).uncheck();
     await save().click();
-    await expect(page.getByRole('heading', { name: 'Final Review', exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { name: spanish ? 'Revisi\u00f3n final' : 'Final Review', exact: true })).toBeVisible();
     await page.goto('/dashboard');
     await expect(page.locator('dd').filter({ hasText: 'Naples, FL' })).toBeVisible();
     await expect(page.locator('dd').filter({ hasText: 'RSW' })).toBeVisible();
@@ -102,7 +102,7 @@ for (const category of ['STANDARD', 'WOMEN', 'COUPLE', 'FIFTY_PLUS', 'SPANISH'])
     await page.goto('/site/coastal-rides');
     await expect(page.getByText('Naples, FL', { exact: true }).first()).toBeVisible();
     await expect(page.getByText('PGD', { exact: true })).toHaveCount(0);
-    await page.getByRole('button', { name: 'BOOK YOUR RIDE NOW' }).click();
+    await page.getByRole('button', { name: spanish ? 'SOLICITA TU VIAJE AHORA' : 'BOOK YOUR RIDE NOW' }).click();
     await expect(page.getByRole('dialog')).toBeVisible();
     await expect(page.getByText(spanish ? '\u00c1rea de servicio: Naples, FL' : 'Service area: Naples, FL', { exact: true })).toBeVisible();
     await expect(page.locator('#served-airports option')).toHaveAttribute('value', 'RSW');
