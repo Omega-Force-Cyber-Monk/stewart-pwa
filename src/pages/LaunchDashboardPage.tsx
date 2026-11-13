@@ -31,6 +31,7 @@ import type { AirportOption, AirportSuggestion } from "../store/api/Business/bus
 import { trackOnboardingCompleted } from "../lib/gtmEvents";
 
 const stepTitles = ["Buyer Information", "Business Information", "Service Area", "Final Review"];
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type ApiError = { data?: { message?: string | string[] | { message?: string }; missingRequirements?: string[] } };
 
@@ -84,6 +85,8 @@ export default function LaunchDashboardPage() {
   const [suggestions, setSuggestions] = useState<AirportSuggestion[]>([]);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const logoInputRef = useRef<HTMLInputElement | null>(null);
+  const submissionInFlightRef = useRef(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [getAirportSuggestions] = useLazyGetAirportSuggestionsQuery();
@@ -122,6 +125,18 @@ export default function LaunchDashboardPage() {
     initializeSetup().catch(() => undefined);
   }, [initializeSetup]);
 
+  const runSubmission = async (action: () => Promise<void>) => {
+    if (submissionInFlightRef.current) return;
+    submissionInFlightRef.current = true;
+    setIsSubmitting(true);
+    try {
+      await action();
+    } finally {
+      submissionInFlightRef.current = false;
+      setIsSubmitting(false);
+    }
+  };
+
   const save = async (section: Parameters<typeof updateSetup>[0]) => {
     setError(null);
     try {
@@ -134,34 +149,56 @@ export default function LaunchDashboardPage() {
 
   const submitBuyer = async (event: React.FormEvent) => {
     event.preventDefault();
-    await save({ buyer });
+    const normalizedBuyer = {
+      fullName: buyer.fullName.trim(),
+      email: buyer.email.trim(),
+      phone: buyer.phone.trim(),
+    };
+    if (!normalizedBuyer.fullName || !emailPattern.test(normalizedBuyer.email) || !normalizedBuyer.phone) {
+      setError("Enter your full name, a valid email address, and phone number.");
+      return;
+    }
+    await runSubmission(() => save({ buyer: normalizedBuyer }));
   };
 
   const submitBusiness = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!addonOwned && acuity.connected && !acuity.bookingUrl.trim()) {
-      setError("Acuity booking URL is required when connected.");
+    const normalizedBusiness = {
+      businessName: business.businessName.trim(),
+      email: business.email.trim(),
+      phone: business.phone.trim(),
+      businessInfo: business.businessInfo.trim(),
+    };
+    if (!normalizedBusiness.businessName || !emailPattern.test(normalizedBusiness.email) || !normalizedBusiness.phone || !normalizedBusiness.businessInfo) {
+      setError("Enter a business name, valid business email, phone number, and business information.");
       return;
     }
 
-    let logoUrl = business.logoUrl;
-    try {
-      if (logoFile) {
-        const formData = new FormData();
-        formData.append("file", logoFile);
-        logoUrl = (await uploadLogo(formData).unwrap()).logoUrl;
+    await runSubmission(async () => {
+      if (!addonOwned && acuity.connected && !acuity.bookingUrl.trim()) {
+        setError("Acuity booking URL is required when connected.");
+        return;
       }
-      setBusiness((current) => ({ ...current, logoUrl: logoUrl || "" }));
-      setLogoFile(null);
-      if (logoInputRef.current) logoInputRef.current.value = "";
-      const nextBusiness = { ...business, logoUrl: logoUrl || "" };
-      await save({
-        business: { ...nextBusiness, logoUrl: logoUrl?.trim() ? logoUrl.trim() : null },
-        ...(addonOwned ? {} : { acuity: { connected: acuity.connected, bookingUrl: acuity.connected && acuity.bookingUrl?.trim() ? acuity.bookingUrl.trim() : null } })
-      });
-    } catch (cause) {
-      setError(errorMessage(cause));
-    }
+
+      let logoUrl = business.logoUrl;
+      try {
+        if (logoFile) {
+          const formData = new FormData();
+          formData.append("file", logoFile);
+          logoUrl = (await uploadLogo(formData).unwrap()).logoUrl;
+        }
+        const nextBusiness = { ...normalizedBusiness, logoUrl: logoUrl || "" };
+        setBusiness((current) => ({ ...current, ...nextBusiness }));
+        setLogoFile(null);
+        if (logoInputRef.current) logoInputRef.current.value = "";
+        await save({
+          business: { ...nextBusiness, logoUrl: logoUrl?.trim() ? logoUrl.trim() : null },
+          ...(addonOwned ? {} : { acuity: { connected: acuity.connected, bookingUrl: acuity.connected && acuity.bookingUrl?.trim() ? acuity.bookingUrl.trim() : null } })
+        });
+      } catch (cause) {
+        setError(errorMessage(cause));
+      }
+    });
   };
 
   const submitService = async (event: React.FormEvent) => {
@@ -189,7 +226,7 @@ export default function LaunchDashboardPage() {
     setAirportSearch("");
     setSuggestions([]);
     setServiceArea(normalizedServiceArea);
-    await save({ serviceArea: normalizedServiceArea });
+    await runSubmission(() => save({ serviceArea: normalizedServiceArea }));
   };
 
   const matchesAirport = (value: string, option: AirportOption) =>
@@ -222,19 +259,21 @@ export default function LaunchDashboardPage() {
 
   const launch = async (event: React.FormEvent) => {
     event.preventDefault();
-    setError(null);
-    try {
-      await completeLaunch().unwrap();
-      trackOnboardingCompleted(profile?.user?.id);
-      setShowSuccess(true);
-      await Promise.all([
-        triggerGetDashboard().unwrap().catch(() => null),
-        refetchProfile().unwrap().catch(() => null),
-      ]);
-      navigate("/dashboard?onboarding=completed", { replace: true });
-    } catch (cause) {
-      setError(errorMessage(cause));
-    }
+    await runSubmission(async () => {
+      setError(null);
+      try {
+        await completeLaunch().unwrap();
+        trackOnboardingCompleted(profile?.user?.id);
+        setShowSuccess(true);
+        await Promise.all([
+          triggerGetDashboard().unwrap().catch(() => null),
+          refetchProfile().unwrap().catch(() => null),
+        ]);
+        navigate("/dashboard?onboarding=completed", { replace: true });
+      } catch (cause) {
+        setError(errorMessage(cause));
+      }
+    });
   };
 
   if (isLoading) return <div className="grid min-h-[50vh] place-items-center text-dashboard-rider"><Rocket className="h-8 w-8 animate-pulse" /></div>;
@@ -273,7 +312,7 @@ export default function LaunchDashboardPage() {
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  disabled={isSaving}
+                  disabled={isSaving || isSubmitting}
                   className="cursor-pointer inline-flex items-center justify-center gap-2 rounded-lg bg-dashboard-rider px-5 py-2.5 text-sm font-semibold text-white hover:bg-dashboard-rider-dark transition disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
@@ -334,7 +373,7 @@ export default function LaunchDashboardPage() {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  disabled={isSaving}
+                  disabled={isSaving || isSubmitting}
                   className="cursor-pointer inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <ChevronLeft className="h-4 w-4" />
@@ -342,7 +381,7 @@ export default function LaunchDashboardPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={isSaving}
+                  disabled={isSaving || isSubmitting}
                   className="cursor-pointer inline-flex items-center justify-center gap-2 rounded-lg bg-dashboard-rider px-5 py-2.5 text-sm font-semibold text-white hover:bg-dashboard-rider-dark transition disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
@@ -423,7 +462,7 @@ export default function LaunchDashboardPage() {
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  disabled={isSaving}
+                  disabled={isSaving || isSubmitting}
                   className="cursor-pointer inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <ChevronLeft className="h-4 w-4" />
@@ -431,7 +470,7 @@ export default function LaunchDashboardPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={isSaving}
+                  disabled={isSaving || isSubmitting}
                   className="cursor-pointer inline-flex items-center justify-center gap-2 rounded-lg bg-dashboard-rider px-5 py-2.5 text-sm font-semibold text-white hover:bg-dashboard-rider-dark transition disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
@@ -525,7 +564,7 @@ export default function LaunchDashboardPage() {
                 <button
                   type="button"
                   onClick={() => setStep(3)}
-                  disabled={isLaunching}
+                  disabled={isLaunching || isSubmitting}
                   className="cursor-pointer inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <ChevronLeft className="h-4 w-4" />
@@ -533,7 +572,7 @@ export default function LaunchDashboardPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={!canLaunch || isLaunching}
+                  disabled={!canLaunch || isLaunching || isSubmitting}
                   className="cursor-pointer inline-flex items-center justify-center gap-2 rounded-lg bg-dashboard-rider px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-dashboard-rider-dark transition disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {isLaunching ? (
