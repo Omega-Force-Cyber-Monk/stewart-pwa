@@ -5,9 +5,9 @@ const phone = '+1 (239) 555-0147';
 const name = 'Coastal Airport Transportation and Local Private Passenger Services';
 const disclaimer = 'Your ride request has been sent. Your ride is not confirmed until the driver contacts you and confirms availability.';
 
-async function fixtures(page: Page, category: string, onboarding = false) {
+async function fixtures(page: Page, category: string, onboarding = false, addon = true) {
   const user = { id: 'qa-driver', email: 'qa@example.test', name: 'Ana', phone: '', role: 'rider', isVerified: true, driverProfile: { category } };
-  const purchase = { baseVariant: true, addon: true };
+  const purchase = { baseVariant: true, addon };
   const business = { id: 'qa-business', businessName: name, name, phone, email: 'qa@example.test', businessInfo: 'Customer supplied description', slug: 'qa-coastal', status: onboarding ? 'IN_PROGRESS' : 'ACTIVE' };
   const setup = { success: true, data: { buyer: { fullName: 'Ana', email: 'qa@example.test', phone }, business, acuity: { connected: false }, serviceArea: { cityArea: 'Naples, FL', airports: ['RSW'] }, progress: { currentStep: 1, completedSteps: [], totalSteps: 4 }, assets: {}, launchReady: { ready: false } } };
   await page.addInitScript((u) => {
@@ -26,7 +26,13 @@ async function fixtures(page: Page, category: string, onboarding = false) {
       response = { success: true, user, purchase, business };
     }
     if (path === '/auth/login') response = { success: true, user, accessToken: 'fixture-token', refreshToken: 'fixture-refresh' };
-    if (path === '/business/dashboard') response = { success: true, purchase, business, launchReady: !onboarding };
+    if (path === '/business/dashboard') response = { success: true, purchase, business, launchReady: business.status === 'ACTIVE' };
+    if (path === '/business/complete-launch' && route.request().method() === 'POST') {
+      business.status = 'ACTIVE';
+      setup.data.progress.currentStep = 4;
+      setup.data.progress.completedSteps = [1, 2, 3, 4];
+      response = { success: true, alreadyActive: false, businessStatus: 'ACTIVE', launchReady: true, progress: { currentStep: 4, completedSteps: [1, 2, 3, 4], totalSteps: 4, percentage: 100, completed: true } };
+    }
     if (path === '/business/setup' || path === '/business/setup/initialize') {
       if (route.request().method() === 'PATCH') {
         const body = route.request().postDataJSON();
@@ -37,7 +43,7 @@ async function fixtures(page: Page, category: string, onboarding = false) {
       response = setup;
     }
     if (path === '/business/final-review') response = setup;
-    if (path === '/business/launch-ready') response = { success: true, ready: false, missingRequirements: [] };
+    if (path === '/business/launch-ready') response = { success: true, ready: business.status === 'ACTIVE', readyForFinalReview: true, missingRequirements: [] };
     if (path === '/business/referral-card') response = { success: true, data: { businessName: name, businessSlug: business.slug, websiteUrl: '/site/qa-coastal', serviceArea: setup.data.serviceArea, missingRequirements: [] } };
     if (path === '/public/business/qa-coastal') response = { success: true, data: { business: { ...business, category, themeKey: category }, serviceArea: setup.data.serviceArea, booking: {}, referralCard: {} } };
     if (path === '/public/business/qa-coastal/ride-requests') response = { success: true, disclaimer, correlationId: 'qa-request-1' };
@@ -128,6 +134,32 @@ test('Spanish driver can switch onboarding language without losing entered data'
     return 1.05 / (channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722 + 0.05);
   });
   expect(contrast).toBeGreaterThan(7);
+});
+
+test('customer completes all four onboarding steps and can return to the dashboard', async ({ page }) => {
+  await fixtures(page, 'STANDARD', true, false);
+  await page.goto('/launch-dashboard');
+
+  await expect(page.getByRole('heading', { name: 'Buyer Information', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Save & Continue', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Business Information', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Save & Continue', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Service Area', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Save & Continue', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Final Review', exact: true })).toBeVisible();
+
+  await page.getByRole('button', { name: 'Confirm & Launch', exact: true }).click();
+  await expect(page).toHaveURL(/\/dashboard/);
+  await page.reload();
+  await expect(page).toHaveURL(/\/dashboard/);
+
+  await page.getByRole('button', { name: 'Log Out', exact: true }).click();
+  await page.getByRole('button', { name: 'Yes', exact: true }).click();
+  await expect(page).toHaveURL(/\/login/);
+  await page.getByLabel('Email address').fill('qa@example.test');
+  await page.getByRole('textbox', { name: 'Password' }).fill('Fixture-password-123');
+  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+  await expect(page).toHaveURL(/\/dashboard/);
 });
 
 test('Spanish resources, billing, support and settings share the dashboard language', async ({ page }) => {

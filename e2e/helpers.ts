@@ -128,8 +128,8 @@ export async function completeOnboardingViaUi(page: Page, businessName: string, 
 
   // Step 3: Service Area
   await expect(page.getByRole("heading", { name: "Service Area" })).toBeVisible({ timeout: 30_000 });
-  await page.getByPlaceholder("Enter the city or metro area you serve").fill("Austin, TX");
-  const airportInput = page.getByPlaceholder("Type airport code and press Enter");
+  await page.getByLabel("City or Metro Area", { exact: false }).fill("Austin, TX");
+  const airportInput = page.getByPlaceholder("Search a city or airport code");
   await airportInput.fill("AUS");
   await airportInput.press("Enter");
   await expect(page.getByText("AUS")).toBeVisible({ timeout: 30_000 });
