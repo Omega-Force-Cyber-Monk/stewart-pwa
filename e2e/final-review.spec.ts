@@ -5,15 +5,27 @@ import path from 'node:path';
 const categories = ['STANDARD', 'WOMEN', 'FIFTY_PLUS', 'COUPLE', 'SPANISH'];
 const phone = '+1 (239) 555-0147';
 const name = 'Coastal Airport Transportation and Local Private Passenger Services';
+// Distinct identity per audience so evidence screenshots are unique and audience-correct.
+const audienceProfiles: Record<string, { owner: string; business: string; phone: string; email: string; city: string; airports: string[] }> = {
+  STANDARD: { owner: 'Ana', business: name, phone, email: 'qa@example.test', city: 'Naples, FL', airports: ['RSW'] },
+  WOMEN: { owner: 'Maria Lopez', business: 'SafeRide Women Airport Transportation', phone: '+1 (305) 555-0121', email: 'qa-women@example.test', city: 'Miami, FL', airports: ['MIA', 'FLL'] },
+  COUPLE: { owner: 'Ryan & Michelle Carter', business: 'Carter Couples Airport Car Service', phone: '+1 (407) 555-0133', email: 'qa-couple@example.test', city: 'Orlando, FL', airports: ['MCO'] },
+  FIFTY_PLUS: { owner: 'Doug Lawson', business: 'Lawson Senior Friendly Airport Rides', phone: '+1 (813) 555-0158', email: 'qa-fifty@example.test', city: 'Tampa, FL', airports: ['TPA', 'PIE'] },
+  SPANISH: { owner: 'Carlos Rivera', business: 'Rivera Transporte Privado al Aeropuerto', phone: '+1 (786) 555-0177', email: 'qa-spanish@example.test', city: 'Hialeah, FL', airports: ['MIA'] },
+};
+const qrCodeFixture = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAAAklEQVR4AewaftIAAAbjSURBVO3BQQ7jwBEEwayG/v/l8l594AAmQUu7nRHpH0haaZC01iBprUHSWoOktQZJaw2S1hokrTVIWmuQtNYgaa1B0lqDpLUGSWsNktYaJK314aEk/IvacpKEJ9pyVxLe0pY3JeFKW06ScNKWkyT8i9py1yBprUHSWoOktQZJaw2S1hokrTVIWuvDy9ryq5JwV1ueSMJb2vItSfgbteVXJeEtg6S1BklrDZLWGiStNUhaa5C01iBprQ9floS3tOUtSThpy11tOUnCSRJO2nIlCSdteaItV5Jw0pZvScJb2vItg6S1BklrDZLWGiStNUhaa5C01gfd0paTJNyVhJO2nCThJAlX2nKShCeSoN8xSFprkLTWIGmtQdJag6S1BklrDZLW+qCvaMuVJDzRlpMk3NWWkySctEW/Y5C01iBprUHSWoOktQZJaw2S1hokrfXhy9ryN0rCtyThpC1vScK3JOGkLW9py79okLTWIGmtQdJag6S1BklrDZLWGiSt9eFlSdioLSdJuNKWkyT8qracJOFKW74lCRsNktYaJK01SFprkLTWIGmtQdJa6R/o/y4JV9ryLUk4acsTSXhLW/S/GSStNUhaa5C01iBprUHSWoOktQZJa314KAknbTlJwpW2vCkJd7XlibZcScK/qi13JeEtSThpyxNJuNKWkySctOWuQdJag6S1BklrDZLWGiStNUhaa5C01ocva8uVJDzRlpO2XEnCm5JwpS1PJOGkLVeScJKEJ9pyJQlPJOFXteVKEr5lkLTWIGmtQdJag6S1BklrDZLWGiSt9eEv1pYnkvAtbbkrCSdteUtbTpJwkoS72vJEEu5KwlvacpKEtwyS1hokrTVIWmuQtNYgaa1B0lrpH/yjknDSlruScNKWkyTc1ZaTJJy05VuScFdb3pKEk7acJOGkLb9okLTWIGmtQdJag6S1BklrDZLWGiStlf7BA0l4S1tOkvAtbTlJwklbriThTW25koQn2nJXEp5oy0kSrrTlVyXhpC13DZLWGiStNUhaa5C01iBprUHSWoOktT481JaTJJy05UoS3tSWu5LwLW35WyXhFyXhpC1vScK3DJLWGiStNUhaa5C01iBprUHSWoOktT48lIQnkvAtSbirLb8qCW9py0kSTtpyJQlPJOGkLXcl4aQtd7XlJAlvGSStNUhaa5C01iBprUHSWoOktT481JYnknBXW/5WSbjSlpMknLTlJAl3JeGkLd/Sln9RW94ySFprkLTWIGmtQdJag6S1BklrDZLW+vBQEk7acldbTpLwlrb8qracJOGutpwk4S1tOUnCE0m4qy3fkoSTttw1SFprkLTWIGmtQdJag6S1BklrDZLW+vBQW06ScNKWK0k4actJEk7aclcSviUJb0nCtyThpC1/qyT8okHSWoOktQZJaw2S1hokrTVIWmuQtNaHh5LwRBKutOUkCSdtOUnCW9pykoS3tOWuJJy05SQJJ225KwknbbmrLSdJeKItdyXhLYOktQZJaw2S1hokrTVIWmuQtNaHh9ryRBK+pS13JeGJtrwlCSdteUtbTpJwpS1PJOGkLVeScNKWb2nLWwZJaw2S1hokrTVIWmuQtNYgaa1B0lofHkrCE225koSTtpwk4a62nLTlJAknbfkbJeGkLXcl4U1JuCsJT7TlShJO2vKWQdJag6S1BklrDZLWGiStNUhaa5C0VvoH+p8l4Ym2/KIkvKktV5LwRFvekoS3tOUkCSdtuWuQtNYgaa1B0lqDpLUGSWsNktYaJK314aEk/Iva8i1JOGnLSRLe0pa3tOUkCU8k4UpbnmjL32iQtNYgaa1B0lqDpLUGSWsNktb68LK2/Kok3NWWb0nCSVtOknClLSdJOGnLSRK+pS36b4OktQZJaw2S1hokrTVIWmuQtNYgaa0PX5aEt7TlW5JwV1tOknCShF/VlitJeCIJ35KEk7b8okHSWoOktQZJaw2S1hokrTVIWmuQtNYH/XXacpKEu5Jw0pYnknClLU8k4aQtV5LwpiRcacu3DJLWGiStNUhaa5C01iBprUHSWoOktT7oliSctOWuJJy05aQtJ0l4SxLuSsK3tOUkCSdtuSsJ3zJIWmuQtNYgaa1B0lqDpLUGSWulf/BAEk7a8quScKUtTyThpC13JeGkLb8qCW9py11JOGnLSRJO2vKLBklrDZLWGiStNUhaa5C01iBprUHSWh9eloR/URLekoSTtpwk4VvactKWu5LwRBLuSsJJW96ShJO23DVIWmuQtNYgaa1B0lqDpLUGSWsNktZK/0DSSoOktQZJaw2S1hokrTVIWmuQtNYgaa1B0lqDpLUGSWsNktYaJK01SFprkLTWfwAkCyJZsKSKlQAAAABJRU5ErkJggg==';
 const disclaimer = 'Your ride request has been sent. Your ride is not confirmed until the driver contacts you and confirms availability.';
 const evidenceDir = path.resolve(process.cwd(), 'docs/customer-flow-evidence');
 
 async function fixtures(page: Page, category: string, onboarding = false, addon = true) {
-  const user = { id: 'qa-driver', email: 'qa@example.test', name: 'Ana', phone: '', avatarUrl: null as string | null, role: 'rider', isVerified: true, driverProfile: { category } };
+  const profile = audienceProfiles[category] ?? audienceProfiles.STANDARD;
+  const user = { id: 'qa-driver', email: profile.email, name: profile.owner, phone: '', avatarUrl: null as string | null, role: 'rider', isVerified: true, driverProfile: { category } };
   const purchase = { baseVariant: true, addon };
-  const business = { id: 'qa-business', businessName: name, name, phone, email: 'qa@example.test', businessInfo: 'Customer supplied description', slug: 'qa-coastal', status: onboarding ? 'IN_PROGRESS' : 'ACTIVE' };
-  const setup = { success: true, data: { buyer: { fullName: 'Ana', email: 'qa@example.test', phone }, business, acuity: { connected: false }, serviceArea: { cityArea: 'Naples, FL', airports: ['RSW'] }, progress: { currentStep: 1, completedSteps: [], totalSteps: 4 }, assets: {}, launchReady: { ready: false } } };
+  const business = { id: 'qa-business', businessName: profile.business, name: profile.business, phone: profile.phone, email: profile.email, businessInfo: 'Customer supplied description', slug: 'qa-coastal', status: onboarding ? 'IN_PROGRESS' : 'ACTIVE' };
+  const setup = { success: true, data: { buyer: { fullName: profile.owner, email: profile.email, phone: profile.phone }, business, acuity: { connected: false }, serviceArea: { cityArea: profile.city, airports: profile.airports }, progress: { currentStep: 1, completedSteps: [], totalSteps: 4 }, assets: {}, launchReady: { ready: false } } };
   await page.addInitScript((u) => {
+    // Treat the app as already installed so the PWA install banner never covers evidence screenshots.
+    try { Object.defineProperty(navigator, 'standalone', { value: true, configurable: true }); } catch { /* ignore */ }
     if (sessionStorage.getItem('qa-fixture-initialized')) return;
     sessionStorage.setItem('qa-fixture-initialized', 'true');
     localStorage.setItem('accessToken', 'fixture-token');
@@ -51,7 +63,7 @@ async function fixtures(page: Page, category: string, onboarding = false, addon 
     }
     if (path === '/business/final-review') response = setup;
     if (path === '/business/launch-ready') response = { success: true, ready: business.status === 'ACTIVE', readyForFinalReview: true, missingRequirements: [] };
-    if (path === '/business/referral-card') response = { success: true, data: { businessName: name, businessSlug: business.slug, websiteUrl: '/site/qa-coastal', serviceArea: setup.data.serviceArea, missingRequirements: [] } };
+    if (path === '/business/referral-card') response = { success: true, data: { businessName: business.businessName, businessSlug: business.slug, businessPhone: business.phone, businessEmail: business.email, websiteUrl: '/site/qa-coastal', qrCodeUrl: business.status === 'ACTIVE' ? qrCodeFixture : null, serviceArea: setup.data.serviceArea, missingRequirements: [] } };
     if (path === '/public/business/qa-coastal') response = { success: true, data: { business: { ...business, category, themeKey: category }, serviceArea: setup.data.serviceArea, booking: {}, referralCard: {} } };
     if (path === '/public/business/qa-coastal/ride-requests') response = { success: true, disclaimer, correlationId: 'qa-request-1' };
     if (path === '/business/resources') response = { success: true, resources: url.searchParams.get('language') === 'es' ? [{ id: 'resource-es-local-partners', name: 'Kit de hoteles y negocios locales', description: 'Conecta con hoteles y negocios de tu zona.', type: 'pdf', hasFile: true }] : [{ id: 'english', name: 'English resource guide', description: 'Original English resource.', type: 'pdf', hasFile: true }] };
@@ -231,6 +243,8 @@ test('customer completes all four onboarding steps and can return to the dashboa
   await page.reload();
   await expect(page).toHaveURL(/\/dashboard/);
 
+  const openMenu = page.getByRole('button', { name: /Open menu|Abrir menú/i });
+  if (await openMenu.isVisible()) await openMenu.click();
   await page.getByRole('button', { name: 'Log Out', exact: true }).click();
   await page.getByRole('button', { name: 'Yes', exact: true }).click();
   await expect(page).toHaveURL(/\/login/);
@@ -307,7 +321,9 @@ for (const journey of [
     await page.goto('/resources-guide');
     await expect(page.getByText(journey.spanish ? 'Kit de hoteles y negocios locales' : 'English resource guide', { exact: true })).toBeVisible();
     await page.goto('/site/qa-coastal');
-    await expect(page.locator('header').first().getByText(phone, { exact: true })).toBeVisible();
+    const profile = audienceProfiles[journey.category];
+    await expect(page.locator('header').first().getByText(profile.phone, { exact: true })).toBeVisible();
+    await expect(page.locator('header').first().getByText(profile.business, { exact: true })).toBeVisible();
     await page.getByRole('button', { name: journey.spanish ? 'SOLICITA TU VIAJE AHORA' : 'BOOK YOUR RIDE NOW' }).click();
     await expect(page.getByRole('dialog')).toBeVisible();
     await page.getByRole('button', { name: journey.spanish ? 'Cerrar formulario de solicitud' : 'Close ride request form' }).click();
