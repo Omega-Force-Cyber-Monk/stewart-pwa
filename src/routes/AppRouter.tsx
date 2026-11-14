@@ -21,6 +21,7 @@ import AdminDashboardPage from "../pages/AdminDashboardPage";
 import AdminLeadsPage from "../pages/AdminLeadsPage";
 import AdminDriversPage from "../pages/AdminDriversPage";
 import AdminDriverDetailsPage from "../pages/AdminDriverDetailsPage";
+import AdminDriverDashboardPage from "../pages/AdminDriverDashboardPage";
 import AdminResourcesUploadPage from "../pages/AdminResourcesUploadPage";
 import AdminBillingsPage from "../pages/AdminBillingsPage";
 import AdminSupportPage from "../pages/AdminSupportPage";
@@ -104,7 +105,7 @@ export function AppRouter() {
       <Route path="/admin/settings" element={<AdminRoute><AdminDashboardLayout title="Settings"><AdminSettingsPage /></AdminDashboardLayout></AdminRoute>} />
 
       {/* Legacy admin paths redirect to the consolidated destinations. */}
-      <Route path="/admin/drivers/:id/dashboard" element={<Navigate to=".." relative="path" replace />} />
+      <Route path="/admin/drivers/:id/dashboard" element={<AdminRoute><AdminDashboardLayout title="Driver Dashboard"><AdminDriverDashboardPage /></AdminDashboardLayout></AdminRoute>} />
       <Route path="/admin/resources" element={<Navigate to="/admin/resources-upload" replace />} />
       <Route path="/admin/resources/add" element={<Navigate to="/admin/resources-upload" replace />} />
       <Route path="/admin/resources/edit/:id" element={<Navigate to="/admin/resources-upload" replace />} />

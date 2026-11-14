@@ -37,14 +37,15 @@ import { LAUNCH_PRICING } from "../components/marketing/pricing";
 import spanishHero from "../assets/spanishHero.png";
 import { getDfyUpgradeAsset } from "../config/dfyMapping";
 import HomePage from './HomePage';
-import { LanguageSelector, useLanguage } from '../i18n/LanguageProvider';
+import { useLanguage } from '../i18n/LanguageProvider';
+import { MarketingLanguageSwitch } from '../components/marketing/MarketingLanguageSwitch';
 
 export default function SpanishPage() {
   const { language, setLanguage } = useLanguage();
   useEffect(() => { setLanguage(language); }, [language, setLanguage]);
   return <>
     {language === 'es' ? <SpanishContent /> : <HomePage audience="spanish" />}
-    <div className="fixed bottom-4 right-4 z-50 shadow-lg"><LanguageSelector /></div>
+    <MarketingLanguageSwitch />
   </>;
 }
 

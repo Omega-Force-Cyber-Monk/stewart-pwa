@@ -33,6 +33,7 @@ import { LaunchPrice } from "../components/marketing/LaunchPrice";
 import { LAUNCH_PRICING } from "../components/marketing/pricing";
 import womenHero from "../assets/womenHero.png";
 import { getDfyUpgradeAsset } from "../config/dfyMapping";
+import { MarketingLanguageSwitch } from "../components/marketing/MarketingLanguageSwitch";
 
 export default function WomenPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -76,6 +77,7 @@ export default function WomenPage() {
 
   return (
     <>
+      <MarketingLanguageSwitch englishPath="/women" />
       {showPricingModal && (
         <PricingModal
           onClose={() => setShowPricingModal(false)}

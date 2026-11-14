@@ -433,11 +433,11 @@ export default function LaunchDashboardPage() {
               </label>
               <p className="text-xs text-slate-500">{locationText.airportHint}</p>
               {suggestions.length > 0 && (
-                <div className="max-h-60 overflow-y-auto rounded-lg border border-slate-200 p-2">
+                <div className="max-h-60 overflow-y-auto rounded-lg border border-slate-300 bg-white p-2 text-slate-900 shadow-sm">
                   {Array.from(new Map(suggestions.flatMap((item) => item.airportOptions).map((airport) => [airport.code, airport])).values()).map((airport) => (
-                    <label key={airport.code} className="flex cursor-pointer items-center gap-3 rounded p-3 text-sm hover:bg-slate-50">
-                      <input type="checkbox" checked={serviceArea.airports.some((value) => matchesAirport(value, airport))} onChange={() => toggleAirport(airport)} />
-                      <span>{airport.code} - {airport.name}</span>
+                    <label key={airport.code} className="flex cursor-pointer items-center gap-3 rounded p-3 text-sm text-slate-900 hover:bg-slate-100 focus-within:bg-slate-100">
+                      <input className="accent-green-700" type="checkbox" checked={serviceArea.airports.some((value) => matchesAirport(value, airport))} onChange={() => toggleAirport(airport)} />
+                      <span><strong className="font-bold text-slate-950">{airport.code}</strong><span className="text-slate-700"> - {airport.name}</span></span>
                     </label>
                   ))}
                 </div>

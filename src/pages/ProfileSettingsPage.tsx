@@ -378,6 +378,7 @@ export default function ProfileSettingsPage() {
                 )}
                 <button
                   onClick={() => setIsUploadModalOpen(true)}
+                  aria-label={t("Update Profile Image")}
                   className="absolute bottom-0 right-0 w-8 h-8 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center shadow-md transition-colors border-2 border-white"
                 >
                   <ImagePlus className="w-4 h-4" />

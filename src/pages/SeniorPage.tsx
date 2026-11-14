@@ -35,6 +35,7 @@ import { LaunchPrice } from "../components/marketing/LaunchPrice";
 import { LAUNCH_PRICING } from "../components/marketing/pricing";
 import seniorHero from "../assets/seniorHero.png";
 import { getDfyUpgradeAsset } from "../config/dfyMapping";
+import { MarketingLanguageSwitch } from "../components/marketing/MarketingLanguageSwitch";
 
 export default function SeniorPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -77,6 +78,7 @@ export default function SeniorPage() {
 
   return (
     <>
+      <MarketingLanguageSwitch englishPath="/senior" />
       {showPricingModal && (
         <PricingModal
           onClose={() => setShowPricingModal(false)}

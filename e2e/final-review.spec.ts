@@ -1,12 +1,15 @@
 import { test, expect, type Page } from '@playwright/test';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const categories = ['STANDARD', 'WOMEN', 'FIFTY_PLUS', 'COUPLE', 'SPANISH'];
 const phone = '+1 (239) 555-0147';
 const name = 'Coastal Airport Transportation and Local Private Passenger Services';
 const disclaimer = 'Your ride request has been sent. Your ride is not confirmed until the driver contacts you and confirms availability.';
+const evidenceDir = path.resolve(process.cwd(), 'docs/customer-flow-evidence');
 
 async function fixtures(page: Page, category: string, onboarding = false, addon = true) {
-  const user = { id: 'qa-driver', email: 'qa@example.test', name: 'Ana', phone: '', role: 'rider', isVerified: true, driverProfile: { category } };
+  const user = { id: 'qa-driver', email: 'qa@example.test', name: 'Ana', phone: '', avatarUrl: null as string | null, role: 'rider', isVerified: true, driverProfile: { category } };
   const purchase = { baseVariant: true, addon };
   const business = { id: 'qa-business', businessName: name, name, phone, email: 'qa@example.test', businessInfo: 'Customer supplied description', slug: 'qa-coastal', status: onboarding ? 'IN_PROGRESS' : 'ACTIVE' };
   const setup = { success: true, data: { buyer: { fullName: 'Ana', email: 'qa@example.test', phone }, business, acuity: { connected: false }, serviceArea: { cityArea: 'Naples, FL', airports: ['RSW'] }, progress: { currentStep: 1, completedSteps: [], totalSteps: 4 }, assets: {}, launchReady: { ready: false } } };
@@ -24,6 +27,10 @@ async function fixtures(page: Page, category: string, onboarding = false, addon 
     if (path === '/auth/me') {
       if (route.request().method() === 'PATCH') Object.assign(user, route.request().postDataJSON());
       response = { success: true, user, purchase, business };
+    }
+    if (path === '/auth/me/avatar' && route.request().method() === 'POST') {
+      user.avatarUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
+      response = { success: true, avatarUrl: user.avatarUrl, user };
     }
     if (path === '/auth/login') response = { success: true, user, accessToken: 'fixture-token', refreshToken: 'fixture-refresh' };
     if (path === '/business/dashboard') response = { success: true, purchase, business, launchReady: business.status === 'ACTIVE' };
@@ -53,6 +60,77 @@ async function fixtures(page: Page, category: string, onboarding = false, addon 
     await route.fulfill({ json: response });
   });
 }
+
+test('profile photo persists after refresh and a fresh login', async ({ page }) => {
+  await fixtures(page, 'STANDARD');
+  await page.goto('/profile-settings');
+  await page.getByRole('button', { name: 'Update Profile Image', exact: true }).click();
+  await page.locator('input[type="file"][accept*="image/png"]').setInputFiles({
+    name: 'qa-avatar.png',
+    mimeType: 'image/png',
+    buffer: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=', 'base64'),
+  });
+  await expect(page.getByText('Profile Image Updated', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Okay', exact: true }).click();
+  await expect(page.getByRole('img', { name: 'Ana' })).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole('img', { name: 'Ana' })).toBeVisible();
+  await page.evaluate(() => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
+  });
+  await page.goto('/login?redirect=/profile-settings');
+  await page.getByLabel('Email address').fill('qa@example.test');
+  await page.getByRole('textbox', { name: 'Password' }).fill('Fixture-password-123');
+  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+  await expect(page).toHaveURL(/\/profile-settings/);
+  await expect(page.getByRole('img', { name: 'Ana' })).toBeVisible();
+});
+
+for (const [route, label] of [['/women', 'Women'], ['/couple', 'Couples'], ['/senior', 'Seniors']] as const) {
+  test(`${label} page exposes a working English/Español switch`, async ({ page }) => {
+    await page.route('**/api/v1/**', (request) => request.fulfill({ json: { success: true, spanishPopupEnabled: false } }));
+    await page.goto(route);
+    const language = page.getByRole('group', { name: 'English / Español' });
+    await expect(language.getByRole('button', { name: 'English', exact: true })).toHaveAttribute('aria-pressed', 'true');
+    await language.getByRole('button', { name: 'Español', exact: true }).click();
+    await expect(page).toHaveURL(/\/spanish$/);
+    await expect(page.getByRole('button', { name: 'Español', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  });
+}
+
+test('administrator View Driver Dashboard opens the real read-only dashboard', async ({ page }) => {
+  const admin = { id: 'admin-1', email: 'admin@example.test', role: 'admin', isVerified: true, status: 'active' };
+  await page.addInitScript((user) => {
+    localStorage.setItem('accessToken', 'admin-token');
+    localStorage.setItem('refreshToken', 'admin-refresh');
+    localStorage.setItem('user', JSON.stringify(user));
+  }, admin);
+  await page.route('**/api/v1/**', async (route) => {
+    const path = new URL(route.request().url()).pathname.replace('/api/v1', '');
+    if (path === '/auth/me') return route.fulfill({ json: { success: true, user: admin } });
+    if (path === '/admin/drivers/driver-1/dashboard') return route.fulfill({ json: {
+      success: true,
+      driver: {
+        id: 'driver-1', driverCode: 'QTA-1', category: 'WOMEN', avatarUrl: null, verificationStatus: 'PENDING', rejectionReason: null, approvedAt: null, rejectedAt: null, createdAt: '2026-11-01T00:00:00Z', updatedAt: '2026-11-01T00:00:00Z',
+        user: { id: 'user-1', email: 'driver@example.test', name: 'QA Driver', phone: '+12395550147', status: 'active', isVerified: true },
+        business: { id: 'business-1', name: 'QA Coastal', slug: 'qa-coastal', email: 'driver@example.test', phone: '+12395550147', status: 'IN_PROGRESS', createdAt: '2026-11-01T00:00:00Z', updatedAt: '2026-11-01T00:00:00Z', owner: {}, setup: {}, purchase: {} },
+        serviceArea: { cityArea: 'Miami, FL', airports: ['MIA'] }, setup: { currentStep: 4, completedSteps: [1, 2, 3], percentage: 75 }, referralCard: { websiteUrl: null, qrCodeUrl: null, digitalCardUrl: null, printCardUrl: null },
+      },
+      dashboard: {
+        setup: { currentStep: 4, completedSteps: [1, 2, 3], percentage: 75, requiredSteps: [1, 2, 3, 4], launchReady: false, readyForFinalReview: true, missingRequirements: [], businessStatus: 'IN_PROGRESS', steps: [1, 2, 3, 4].map((step) => ({ step, label: `Step ${step}`, completed: step < 4 })) },
+        purchase: { basePurchased: true, addonPurchased: false, paidState: 'paid', purchaseDate: '2026-11-01T00:00:00Z' },
+      },
+    } });
+    return route.fulfill({ json: { success: true } });
+  });
+  await page.goto('/admin/drivers/driver-1/dashboard');
+  await expect(page).toHaveURL(/\/admin\/drivers\/driver-1\/dashboard$/);
+  await expect(page.getByText('Read-only administrator view')).toBeVisible();
+  await expect(page.getByText('75%', { exact: true })).toBeVisible();
+  await expect(page.getByText('Ready for final review', { exact: true })).toBeVisible();
+});
 
 for (const category of categories) {
   test(`${category}: profile name and phone survive save, reload and a fresh login`, async ({ page }) => {
@@ -161,6 +239,91 @@ test('customer completes all four onboarding steps and can return to the dashboa
   await page.getByRole('button', { name: 'Sign in', exact: true }).click();
   await expect(page).toHaveURL(/\/dashboard/);
 });
+
+for (const journey of [
+  { category: 'WOMEN', route: '/women', spanish: false },
+  { category: 'COUPLE', route: '/couple', spanish: false },
+  { category: 'FIFTY_PLUS', route: '/senior', spanish: false },
+  { category: 'SPANISH', route: '/spanish', spanish: true },
+] as const) {
+  test(`${journey.category}: checkout and signup retain the audience and Stripe session`, async ({ page }) => {
+    const email = `qa-${journey.category.toLowerCase()}@example.test`;
+    const sessionId = `cs_test_${journey.category.toLowerCase()}`;
+    let checkout: Record<string, unknown> | undefined;
+    let registration: Record<string, unknown> | undefined;
+    let verified = false;
+    await page.route('**/api/v1/**', async (route) => {
+      const endpoint = new URL(route.request().url()).pathname.replace('/api/v1', '');
+      if (endpoint === '/payments/checkout-session') {
+        checkout = route.request().postDataJSON();
+        return route.fulfill({ json: { success: true, checkoutUrl: null, sessionId } });
+      }
+      if (endpoint === '/auth/register') {
+        registration = route.request().postDataJSON();
+        return route.fulfill({ json: { success: true, message: 'OTP sent', delivery: { channel: 'development', devOtp: '123456' } } });
+      }
+      if (endpoint === '/auth/verify-otp') {
+        verified = true;
+        return route.fulfill({ json: { success: true, message: 'Account verified successfully.' } });
+      }
+      return route.fulfill({ json: { success: true, spanishPopupEnabled: false } });
+    });
+
+    await page.goto(`${journey.route}?showPricing=true`);
+    await page.locator('#guest-checkout-email').fill(email);
+    await page.getByRole('button').filter({ hasText: '$295' }).first().click();
+    await expect.poll(() => checkout?.funnelCategory).toBe(journey.category);
+    expect(checkout?.locale).toBe(journey.spanish ? 'es' : 'en');
+
+    await page.goto(`/signup?session_id=${sessionId}`);
+    await page.locator('#email').fill(email);
+    await page.locator('#password').fill('Fixture-password-123!');
+    await page.locator('#confirmPassword').fill('Fixture-password-123!');
+    await page.getByRole('button', { name: /Sign up|Crear cuenta/i }).click();
+    await page.locator('#otp').fill('123456');
+    await page.getByRole('button', { name: /Confirm Verification|Confirmar verificación/i }).click();
+    await expect.poll(() => verified).toBe(true);
+    expect(registration?.email).toBe(email);
+    expect(registration?.stripeSessionId).toBe(sessionId);
+  });
+
+  test(`${journey.category}: complete onboarding, dashboard, website, form, guides and returning login`, async ({ page }, testInfo) => {
+    await fixtures(page, journey.category, true, false);
+    await page.goto('/launch-dashboard');
+    const save = journey.spanish ? 'Guardar y continuar' : 'Save & Continue';
+    const headings = journey.spanish
+      ? ['Información del comprador', 'Información del negocio', 'Área de servicio', 'Revisión final']
+      : ['Buyer Information', 'Business Information', 'Service Area', 'Final Review'];
+    for (let index = 0; index < 3; index += 1) {
+      await expect(page.getByRole('heading', { name: headings[index], exact: true })).toBeVisible();
+      await page.getByRole('button', { name: save, exact: true }).click();
+    }
+    await expect(page.getByRole('heading', { name: headings[3], exact: true })).toBeVisible();
+    await page.getByRole('button', { name: journey.spanish ? 'Confirmar y publicar' : 'Confirm & Launch', exact: true }).click();
+    await expect(page).toHaveURL(/\/dashboard/);
+    fs.mkdirSync(evidenceDir, { recursive: true });
+    await page.screenshot({ path: path.join(evidenceDir, `${journey.category.toLowerCase()}-${testInfo.project.name}-dashboard.png`), fullPage: true });
+
+    await page.goto('/resources-guide');
+    await expect(page.getByText(journey.spanish ? 'Kit de hoteles y negocios locales' : 'English resource guide', { exact: true })).toBeVisible();
+    await page.goto('/site/qa-coastal');
+    await expect(page.locator('header').first().getByText(phone, { exact: true })).toBeVisible();
+    await page.getByRole('button', { name: journey.spanish ? 'SOLICITA TU VIAJE AHORA' : 'BOOK YOUR RIDE NOW' }).click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+    await page.getByRole('button', { name: journey.spanish ? 'Cerrar formulario de solicitud' : 'Close ride request form' }).click();
+    await page.screenshot({ path: path.join(evidenceDir, `${journey.category.toLowerCase()}-${testInfo.project.name}-website.png`), fullPage: true });
+
+    await page.goto('/dashboard');
+    const openMenu = page.getByRole('button', { name: /Open menu|Abrir menú/i });
+    if (await openMenu.isVisible()) await openMenu.click();
+    await page.getByRole('button', { name: journey.spanish ? 'Cerrar sesión' : 'Log Out', exact: true }).click();
+    await page.getByRole('button', { name: journey.spanish ? 'Sí' : 'Yes', exact: true }).click();
+    await page.getByRole('textbox', { name: /Email address|Correo electrónico/i }).fill('qa@example.test');
+    await page.getByRole('textbox', { name: /Password|Contraseña/i }).fill('Fixture-password-123');
+    await page.getByRole('button', { name: /Sign in|Iniciar sesión/i }).click();
+    await expect(page).toHaveURL(/\/dashboard/);
+  });
+}
 
 test('Spanish resources, billing, support and settings share the dashboard language', async ({ page }) => {
   await fixtures(page, 'SPANISH');

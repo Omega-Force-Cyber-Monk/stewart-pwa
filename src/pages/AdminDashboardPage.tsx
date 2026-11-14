@@ -146,7 +146,12 @@ export default function AdminDashboardPage() {
                 <Wallet className="h-4 w-4 text-purple-500" />
               </div>
             </div>
-            <p className="text-sm font-medium text-slate-600">Platform Sales Revenue</p>
+            <div>
+              <p className="text-sm font-medium text-slate-600">Platform Sales Revenue</p>
+              <p className="mt-1 text-xs text-slate-500">
+                {data.payments.paid} paid {data.payments.paid === 1 ? "transaction" : "transactions"}; pending, failed, and expired records are excluded
+              </p>
+            </div>
           </div>
         </div>
 

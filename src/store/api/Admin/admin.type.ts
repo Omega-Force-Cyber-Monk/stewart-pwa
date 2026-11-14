@@ -130,6 +130,25 @@ export interface DriverVerificationResponse {
   };
 }
 
+export interface AdminDriverDashboardResponse {
+  success: true;
+  driver: Driver;
+  dashboard: null | {
+    setup: {
+      currentStep: number;
+      completedSteps: number[];
+      percentage: number;
+      requiredSteps: number[];
+      launchReady: boolean;
+      readyForFinalReview: boolean;
+      missingRequirements: string[];
+      businessStatus: string;
+      steps: Array<{ step: number; label: string; completed: boolean }>;
+    };
+    purchase: BusinessPurchase;
+  };
+}
+
 // ---- Businesses ----
 export interface BusinessOwner {
   id: string;

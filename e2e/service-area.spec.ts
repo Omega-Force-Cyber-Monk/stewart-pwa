@@ -73,6 +73,32 @@ for (const category of ['STANDARD', 'WOMEN', 'COUPLE', 'FIFTY_PLUS', 'SPANISH'])
     await page.getByRole('button', { name: spanish ? 'Atr\u00e1s' : 'Back', exact: true }).click();
     await page.getByRole('button', { name: spanish ? 'Guardar y continuar' : 'Save & Continue', exact: true }).click();
     await expect(city).toHaveValue('Marco Island, FL');
+    // MIA/Miami results must remain readable on both desktop and mobile.
+    await airport.fill('MIA');
+    const miaText = page.getByText(/^MIA -/).first();
+    await expect(miaText).toBeVisible();
+    const suggestionContrast = await miaText.evaluate((element) => {
+      const parse = (value: string) => (value.match(/[\d.]+/g) || []).slice(0, 3).map(Number);
+      const luminance = (rgb: number[]) => {
+        const channels = rgb.map((value) => value / 255).map((value) => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4);
+        return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+      };
+      const foreground = parse(getComputedStyle(element).color);
+      let node: Element | null = element;
+      let background = [255, 255, 255];
+      while (node) {
+        const style = getComputedStyle(node);
+        if (style.backgroundColor !== 'rgba(0, 0, 0, 0)' && style.backgroundColor !== 'transparent') {
+          background = parse(style.backgroundColor);
+          break;
+        }
+        node = node.parentElement;
+      }
+      const light = Math.max(luminance(foreground), luminance(background));
+      const dark = Math.min(luminance(foreground), luminance(background));
+      return (light + 0.05) / (dark + 0.05);
+    });
+    expect(suggestionContrast).toBeGreaterThanOrEqual(7);
     // A late airport search response cannot overwrite current results or city.
     await airport.fill('Miami');
     await page.waitForTimeout(300);

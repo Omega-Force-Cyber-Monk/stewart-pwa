@@ -37,6 +37,7 @@ import card2 from "../assets/2nd card.jpg";
 import card4 from "../assets/4th card.jpg";
 import coupleHero from "../assets/coupleHero.png";
 import { getDfyUpgradeAsset } from "../config/dfyMapping";
+import { MarketingLanguageSwitch } from "../components/marketing/MarketingLanguageSwitch";
 
 export default function CouplePage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -79,6 +80,7 @@ export default function CouplePage() {
 
   return (
     <>
+      <MarketingLanguageSwitch englishPath="/couple" />
       {showPricingModal && (
         <PricingModal
           onClose={() => setShowPricingModal(false)}
