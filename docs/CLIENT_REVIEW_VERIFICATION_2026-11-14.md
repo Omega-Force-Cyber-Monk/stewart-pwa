@@ -48,7 +48,16 @@ The browser tests use isolated test identities and intercepted test checkout/OTP
 
 ## Deployment status
 
-Pending push and CI/CD verification. This section must be updated only after both deployment workflows finish and the live application is rechecked.
+Deployed and verified on 2026-11-14.
+
+- Frontend deployed head: `90f94df`; feature commit: `ce60958`
+- Frontend GitHub Actions: run `43554551678` — test, image build/push, and server deployment all passed
+- Backend deployed head: `a54c958`; reconciliation commit: `985b481`
+- Backend GitHub Actions: run `43554537482` — security/malware scan, compile, image build/push, SSH deployment, health check, and rollback-only production acceptance all passed
+- Live health: `https://quittheapp.com`, `https://app.quittheapp.com`, and `https://api.quittheapp.com/health` returned HTTP 200
+- Live language controls: Women, Couples, Seniors, and Spanish all exposed the switch; the three English audience pages navigated to `/spanish` when Español was selected
+- Live analytics: GA4 `G-Q248DS5W0T` sent `page_view` and scroll collection requests; Microsoft Clarity `yg1kfsihk2` loaded and sent collection requests
+- Protected admin dashboard endpoint returned HTTP 401 without a token, confirming that the deployed route exists and remains authentication-protected
 
 ## Remaining access-dependent check
 
